@@ -1,0 +1,47 @@
+{
+  "name": "fullstack-dev-skills",
+  "version": "1.0.0",
+  "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
+  "keywords": [
+    "claude-code-plugin",
+    "skills",
+    "fullstack",
+    "typescript",
+    "python",
+    "react",
+    "nestjs",
+    "django",
+    "fastapi",
+    "flutter",
+    "react-native",
+    "debugging",
+    "security",
+    "architecture"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "claudeCode": {
+    "type": "plugin",
+    "skills": [
+      "devops-engineer",
+      "feature-forge",
+      "fullstack-guardian",
+      "spec-miner",
+      "test-master",
+      "code-documenter",
+      "playwright-expert",
+      "nestjs-expert",
+      "django-expert",
+      "fastapi-expert",
+      "react-expert",
+      "react-native-expert",
+      "flutter-expert",
+      "debugging-wizard",
+      "monitoring-expert",
+      "architecture-designer",
+      "code-reviewer",
+      "secure-code-guardian",
+      "security-reviewer"
+    ]
+  }
+}
