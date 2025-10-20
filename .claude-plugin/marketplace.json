@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
-    "version": "0.0.3"
+    "version": "0.0.4"
   },
   "plugins": [
     {
       "name": "fullstack-dev-skills",
       "source": "./",
       "description": "19 specialized skills for full-stack development: NestJS, Django, FastAPI, React, React Native, Flutter, plus debugging, monitoring, architecture, code review, and security skills",
-      "version": "0.0.3",
+      "version": "0.0.4",
       "author": {
         "name": "jeffallan",
         "email": "github@jeffallan"
