@@ -47,4 +47,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[1.0.0]: https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin/releases/tag/v1.0.0
+[1.0.0]: https://github.com/jeffallan/claude-skills/releases/tag/v1.0.0

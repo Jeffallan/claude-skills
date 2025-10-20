@@ -43,10 +43,10 @@ Once this plugin is published to GitHub, install it using Claude Code's plugin s
 
 ```bash
 # In Claude Code, add the marketplace
-/plugin marketplace add YOUR-USERNAME/claude-skills
+/plugin marketplace add jeffallan/claude-skills
 
 # Install the plugin
-/plugin install fullstack-dev-skills@YOUR-USERNAME
+/plugin install fullstack-dev-skills@jeffallan
 
 # Restart Claude Code when prompted
 ```
@@ -120,8 +120,8 @@ git commit -m "Initial commit: Fullstack Dev Skills Plugin v1.0.0"
 
 ##### Step 3: Push to GitHub
 ```bash
-# Add remote origin (replace YOUR-USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin.git
+# Add remote origin (replace jeffallan with your GitHub username)
+git remote add origin https://github.com/jeffallan/claude-skills.git
 
 # Push to GitHub
 git branch -M main
@@ -143,7 +143,7 @@ Creating releases makes it easier for users to install specific versions:
    
    ### Installation
    ```
-   claude plugin install https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin
+   claude plugin install https://github.com/jeffallan/claude-skills
    ```
    
    ### Included Skills
@@ -185,16 +185,16 @@ cat > package.json << 'PACKAGEJSON'
     "security",
     "architecture"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "jeffallan",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin.git"
+    "url": "https://github.com/jeffallan/claude-skills.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin/issues"
+    "url": "https://github.com/jeffallan/claude-skills/issues"
   },
-  "homepage": "https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin#readme",
+  "homepage": "https://github.com/jeffallan/claude-skills#readme",
   "claudeCode": {
     "type": "plugin",
     "skills": [
@@ -241,10 +241,10 @@ Once published on GitHub, you can submit your plugin to the official Claude Code
 Share your plugin with others:
 ```
 Installation command:
-claude plugin install https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin
+claude plugin install https://github.com/jeffallan/claude-skills
 
 Or add to README badge:
-[![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-blue)](https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-blue)](https://github.com/jeffallan/claude-skills)
 ```
 
 ### Option 3: Install from Local Directory (Development)
@@ -370,8 +370,8 @@ Created for fullstack engineers working across the modern web development stack.
 
 ## Support
 
-- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin/issues)
-- **Discussions**: Join discussions on [GitHub Discussions](https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin/discussions)
+- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/jeffallan/claude-skills/issues)
+- **Discussions**: Join discussions on [GitHub Discussions](https://github.com/jeffallan/claude-skills/discussions)
 
 ## Changelog
 

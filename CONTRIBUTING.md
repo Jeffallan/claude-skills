@@ -25,8 +25,8 @@ When suggesting a new skill:
 #### 1. Fork and Clone
 ```bash
 # Fork on GitHub, then:
-git clone https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin.git
-cd fullstack-dev-skills-plugin
+git clone https://github.com/jeffallan/claude-skills.git
+cd claude-skills
 ```
 
 #### 2. Create a Branch
@@ -221,7 +221,7 @@ Before submitting:
 
 ## Questions?
 
-- Open a [GitHub Discussion](https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin/discussions)
+- Open a [GitHub Discussion](https://github.com/jeffallan/claude-skills/discussions)
 - Comment on relevant issues
 - Reach out to maintainers
 

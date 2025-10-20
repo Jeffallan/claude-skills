@@ -2,11 +2,9 @@
   "name": "fullstack-dev-skills",
   "version": "1.0.0",
   "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security. Includes 19 specialized skills: NestJS, Django, FastAPI, React, React Native, Flutter experts, plus debugging, monitoring, architecture design, code review, and security analysis.",
-  "author": {
-    "name": "Dmitry"
-  },
+  "author": "jeffallan",
   "license": "MIT",
-  "repository": "https://github.com/YOUR_USERNAME/claude-skills",
+  "repository": "https://github.com/jeffallan/claude-skills",
   "keywords": [
     "claude-skill",
     "claude-code",

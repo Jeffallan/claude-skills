@@ -12,7 +12,7 @@ Restart Claude Code. Done! ✅
 
 ### Install from GitHub (Recommended for Teams)
 ```bash
-claude plugin install https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin
+claude plugin install https://github.com/jeffallan/claude-skills
 ```
 Replace YOUR-USERNAME with the actual GitHub username.
 
@@ -156,7 +156,7 @@ Add your own skills! See `CONTRIBUTING.md`.
 If you find this useful, share with your team:
 ```bash
 # They can install with one command
-claude plugin install https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin
+claude plugin install https://github.com/jeffallan/claude-skills
 ```
 
 ## Quick Reference Card
