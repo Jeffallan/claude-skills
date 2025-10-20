@@ -1,0 +1,57 @@
+{
+  "name": "fullstack-dev-skills",
+  "owner": {
+    "name": "Dmitry",
+    "email": "your.email@example.com"
+  },
+  "metadata": {
+    "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "fullstack-dev-skills",
+      "source": "./",
+      "description": "19 specialized skills for full-stack development: NestJS, Django, FastAPI, React, React Native, Flutter, plus debugging, monitoring, architecture, code review, and security skills",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry"
+      },
+      "homepage": "https://github.com/YOUR_USERNAME/claude-skills",
+      "repository": "https://github.com/YOUR_USERNAME/claude-skills",
+      "license": "MIT",
+      "keywords": [
+        "claude-skill",
+        "claude-code",
+        "fullstack",
+        "typescript",
+        "python",
+        "go",
+        "dart",
+        "react",
+        "react-native",
+        "flutter",
+        "nestjs",
+        "django",
+        "fastapi",
+        "debugging",
+        "monitoring",
+        "architecture",
+        "security",
+        "code-review",
+        "testing",
+        "playwright",
+        "model-invoked"
+      ],
+      "category": "development",
+      "tags": [
+        "fullstack",
+        "development",
+        "frameworks",
+        "security",
+        "testing",
+        "workflows"
+      ]
+    }
+  ]
+}

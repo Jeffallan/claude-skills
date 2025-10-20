@@ -37,29 +37,43 @@ A comprehensive Claude Code plugin with 19 specialized skills for full-stack dev
 
 ## Installation
 
-### Option 1: Install Skills Directly (Local Use)
-Copy skills to your global skills directory:
+### Option 1: Install from GitHub (Recommended)
+
+Once this plugin is published to GitHub, install it using Claude Code's plugin system:
+
 ```bash
-cp -r ~/fullstack-dev-skills-plugin/skills/* ~/.claude/skills/
+# In Claude Code, add the marketplace
+/plugin marketplace add YOUR-USERNAME/claude-skills
+
+# Install the plugin
+/plugin install fullstack-dev-skills@YOUR-USERNAME
+
+# Restart Claude Code when prompted
+```
+
+### Option 2: Install from Local Directory (Development/Testing)
+
+For local development or testing before publishing:
+
+```bash
+# In Claude Code, add your local repository as a marketplace
+/plugin marketplace add /path/to/claude-skills
+
+# Install the plugin
+/plugin install fullstack-dev-skills@local
+
+# Restart Claude Code when prompted
+```
+
+### Option 3: Install Skills Directly (Without Plugin System)
+
+Copy skills directly to your global skills directory:
+```bash
+cp -r ~/projects/claude-skills/skills/* ~/.claude/skills/
 ```
 Then restart Claude Code.
 
-### Option 2: Install as Claude Code Plugin from GitHub
-
-#### For Users (Installing the Plugin)
-1. Install directly from GitHub:
-   ```bash
-   # Claude Code will automatically detect and install the plugin
-   claude plugin install https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin
-   ```
-
-2. Or manually clone to plugins directory:
-   ```bash
-   cd ~/.claude/plugins
-   git clone https://github.com/YOUR-USERNAME/fullstack-dev-skills-plugin.git
-   ```
-
-3. Restart Claude Code
+**Note**: This method installs skills but bypasses the plugin management system.
 
 #### For Authors (Publishing as a Plugin)
 
