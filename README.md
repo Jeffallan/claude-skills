@@ -1,44 +1,25 @@
 # Fullstack Dev Skills Plugin
 
-[![Version](https://img.shields.io/badge/version-0.0.4-blue.svg)](https://github.com/jeffallan/claude-skills)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/jeffallan/claude-skills)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-purple.svg)](https://github.com/jeffallan/claude-skills)
 
-> A comprehensive Claude Code plugin with 19 specialized skills for full-stack developers. Now with selective disclosure architecture for 50% faster skill loading.
+> A comprehensive Claude Code plugin with 19 specialized skills for full-stack developers with selective disclosure architecture for 50% faster skill loading.
 
-Transform Claude Code into your expert pair programmer across the entire development stack - from React frontends to FastAPI backends, from debugging to deployment, from code review to security analysis.
+Transform Claude Code into your expert pair programmer across the entire development stack including React frontends, popular backend frameworks, debugging, deployment, code review, and security analysis.
 
-## Why This Plugin?
-
-Traditional monolithic skills load thousands of tokens upfront. This plugin uses **selective disclosure** - each skill starts lean (~80-100 lines) with a routing table, then loads detailed knowledge only when needed from 91 specialized reference files.
-
-**The Result:** 50% token reduction on initial skill load, faster responses, and surgical precision when you need deep expertise.
 
 ## Quick Start
 
-### Install from Marketplace
+Get started in minutes with our **[Quick Start Guide](QUICKSTART.md)**.
 
+**TL;DR:**
 ```bash
-# Add the marketplace
 /plugin marketplace add jeffallan/claude-skills
-
-# Install the plugin
-/plugin install fullstack-dev-skills@jeffallan
-
-# Restart Claude Code when prompted
 ```
-
-### Try It Out
-
+then
 ```bash
-# "Help me build a NestJS API with authentication"
-# → Activates NestJS Expert, loads auth patterns
-
-# "Debug this React performance issue"
-# → Activates React Expert + Debugging Wizard, loads performance reference
-
-# "Review this code for security vulnerabilities"
-# → Activates Security Reviewer, loads OWASP patterns
+/plugin install fullstack-dev-skills@jeffallan
 ```
 
 ## Architecture
@@ -100,59 +81,17 @@ claude-skills/
 
 ## Skills Overview
 
-### Backend Frameworks
+**19 specialized skills** across 7 categories:
 
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **NestJS Expert** | TypeScript backend with dependency injection, guards, pipes | 5 files: modules, decorators, database, testing, websockets |
-| **Django Expert** | Python web framework with Django/DRF | 4 files: ORM, DRF, auth, async |
-| **FastAPI Expert** | Async Python APIs with Pydantic validation | 4 files: Pydantic v2, async SQLAlchemy, auth, testing |
+- **Backend Frameworks**: NestJS, Django, FastAPI experts
+- **Frontend & Mobile**: React, React Native, Flutter experts
+- **Testing & Quality**: Test Master, Playwright, Code Reviewer, Code Documenter
+- **DevOps & Operations**: DevOps Engineer, Monitoring Expert
+- **Architecture & Design**: Architecture Designer, Feature Forge, Spec Miner
+- **Security**: Secure Code Guardian, Security Reviewer
+- **Workflow**: Debugging Wizard, Fullstack Guardian
 
-### Frontend & Mobile
-
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **React Expert** | React 19, Server Components, hooks, performance | 6 files: RSC, React 19, state, hooks, performance, testing |
-| **React Native Expert** | Cross-platform mobile with Expo & native modules | 5 files: navigation, native modules, performance, storage, gestures |
-| **Flutter Expert** | Cross-platform apps with Dart, Material Design | 5 files: state, navigation, async, native, testing |
-
-### Testing & Quality
-
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **Test Master** | Comprehensive testing strategy (unit, integration, E2E, performance) | 6 files: strategy, unit, integration, E2E, performance, security |
-| **Playwright Expert** | E2E browser testing and automation | 4 files: selectors, fixtures, visual testing, CI |
-| **Code Reviewer** | Thorough code review with best practices | 5 files: checklist, patterns, performance, security, refactoring |
-| **Code Documenter** | Inline docs and OpenAPI specifications | 4 files: JSDoc, Python docs, OpenAPI, technical writing |
-
-### DevOps & Operations
-
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **DevOps Engineer** | CI/CD, Docker, Kubernetes, infrastructure | 6 files: Docker, K8s, CI/CD, IaC, monitoring, security |
-| **Monitoring Expert** | Observability, logging, metrics, alerting | 5 files: metrics, logging, tracing, alerting, dashboards |
-
-### Architecture & Design
-
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **Architecture Designer** | System design, microservices, ADRs | 6 files: patterns, microservices, event-driven, database, caching, ADRs |
-| **Feature Forge** | Requirements gathering and specification | 4 files: requirements, user stories, specs, validation |
-| **Spec Miner** | Code analysis and reverse engineering (read-only) | 4 files: static analysis, patterns, documentation, metrics |
-
-### Security
-
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **Secure Code Guardian** | Writing secure code, preventing vulnerabilities | 6 files: OWASP Top 10, input validation, auth, crypto, API security |
-| **Security Reviewer** | Security code review and SAST analysis | 5 files: SAST, vulnerability patterns, secrets, dependencies, threat modeling |
-
-### Workflow Skills
-
-| Skill | Description | Reference Files |
-|-------|-------------|-----------------|
-| **Debugging Wizard** | Systematic debugging across all languages | 5 files: methodology, tools, common issues, performance, concurrency |
-| **Fullstack Guardian** | Full-stack feature implementation | 5 files: API design, frontend integration, database, deployment, testing |
+See **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** for when to use each skill, workflows, and examples.
 
 ## Usage Patterns
 
@@ -249,6 +188,9 @@ Secure Code Guardian → Security Reviewer → Test Master
 
 ```bash
 /plugin marketplace add jeffallan/claude-skills
+```
+then
+```bash
 /plugin install fullstack-dev-skills@jeffallan
 ```
 
@@ -282,36 +224,6 @@ cp -r ./skills/* ~/.claude/skills/
 - **skills/*/SKILL.md** - Individual skill documentation
 - **skills/*/references/** - Deep-dive reference materials
 
-## Performance Benefits
-
-### Before (Monolithic Skills)
-```
-Skill load: 2,000-3,000 tokens
-Response time: Slower initial analysis
-Precision: Generic responses
-```
-
-### After (Selective Disclosure)
-```
-Skill load: ~80-100 tokens
-Reference load: 200-400 tokens (only when needed)
-Response time: 50% faster initial responses
-Precision: Surgical, context-specific guidance
-```
-
-### Example Token Savings
-
-**Scenario:** "Help me build a React component"
-
-**Old approach:**
-- Load entire React skill: 2,500 tokens
-- Most content unused
-
-**New approach:**
-- Load React Expert core: 80 tokens
-- User mentions "performance issue"
-- Load performance.md: 350 tokens
-- **Total:** 430 tokens (83% reduction)
 
 ## Contributing
 
@@ -356,30 +268,9 @@ Keep references focused (200-400 lines each):
 - Clear when-to-use guidance
 - Cross-references where helpful
 
-## Version History
+## Changelog
 
-### v0.0.4 (Current)
-- Selective disclosure architecture
-- 91 reference files across 19 skills
-- 50% token reduction
-- Improved routing tables
-
-### v0.0.3
-- Added 3 new skills (Flutter, Monitoring, Security Reviewer)
-- Updated framework versions
-- Enhanced documentation
-
-### v0.0.2
-- Initial skill collection
-- 16 skills covering full-stack development
-
-## Roadmap
-
-- [ ] Add GraphQL Expert skill
-- [ ] Expand Go backend coverage
-- [ ] Add Kubernetes advanced patterns
-- [ ] Create migration guides between frameworks
-- [ ] Add video tutorials for common workflows
+See [CHANGELOG.md](CHANGELOG.md) for full version history and release notes.
 
 ## License
 
