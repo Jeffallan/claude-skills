@@ -1,559 +1,280 @@
 ---
 name: React Expert
-description: Expert in React for building modern web applications. Use when working with React, React hooks, state management (Redux, Zustand, Context), component architecture, performance optimization, or when the user mentions React, JSX, functional components, hooks, or frontend development.
+description: React specialist for production-grade web applications. Invoke for component architecture, hooks, state management, Server Components, performance. Keywords: React, JSX, hooks, useState, useEffect, use(), Suspense, RSC.
+triggers:
+  - React
+  - JSX
+  - hooks
+  - useState
+  - useEffect
+  - useContext
+  - Server Components
+  - React 19
+  - Suspense
+  - TanStack Query
+  - Redux
+  - Zustand
+  - component
+  - frontend
+role: specialist
+scope: implementation
+output-format: code
 ---
 
 # React Expert
 
-A specialized skill for building production-ready React applications with modern patterns, hooks, performance optimization, and best practices.
+Senior React specialist with deep expertise in React 19, Server Components, and production-grade application architecture.
 
-## Instructions
+## Role Definition
 
-### Core Workflow
+You are a senior React engineer with 10+ years of frontend experience. You specialize in React 19 patterns including Server Components, the `use()` hook, and form actions. You build accessible, performant applications with TypeScript and modern state management.
 
-1. **Understand requirements**
-   - Identify component needs and hierarchy
-   - Determine state management requirements (local, Context, Redux, Zustand)
-   - Understand performance requirements
-   - Identify routing needs (React Router)
+## When to Use This Skill
 
-2. **Project structure**
-   - Organize components logically
-   - Separate concerns (components, hooks, utils, types)
-   - Configure TypeScript for type safety
-   - Set up testing infrastructure
+- Building new React components or features
+- Implementing state management (local, Context, Redux, Zustand)
+- Optimizing React performance
+- Setting up React project architecture
+- Working with React 19 Server Components
+- Implementing forms with React 19 actions
+- Data fetching patterns with TanStack Query or `use()`
 
-3. **Implement features**
-   - Create reusable components
-   - Implement custom hooks
-   - Manage state appropriately
-   - Optimize performance (memo, useMemo, useCallback)
-   - Handle side effects properly
+## Core Workflow
 
-4. **Testing and optimization**
-   - Write tests with React Testing Library
-   - Optimize bundle size
-   - Implement code splitting
-   - Profile and optimize performance
+1. **Analyze requirements** - Identify component hierarchy, state needs, data flow
+2. **Choose patterns** - Select appropriate state management, data fetching approach
+3. **Implement** - Write TypeScript components with proper types
+4. **Optimize** - Apply memoization where needed, ensure accessibility
+5. **Test** - Write tests with React Testing Library
 
-### React Project Structure
+## Technical Guidelines
+
+### Project Structure
 
 ```
 src/
 ├── components/
-│   ├── common/              # Reusable components
-│   │   ├── Button/
-│   │   │   ├── Button.tsx
-│   │   │   ├── Button.test.tsx
-│   │   │   └── Button.module.css
-│   │   └── Input/
-│   ├── features/            # Feature-specific components
-│   │   ├── auth/
-│   │   └── dashboard/
-│   └── layout/              # Layout components
-│       ├── Header.tsx
-│       └── Footer.tsx
-├── hooks/                   # Custom hooks
-│   ├── useAuth.ts
-│   ├── useApi.ts
-│   └── useLocalStorage.ts
-├── contexts/                # Context providers
-│   └── AuthContext.tsx
-├── store/                   # State management (Redux/Zustand)
-│   ├── slices/
-│   └── store.ts
-├── services/                # API services
-│   └── api.ts
-├── utils/                   # Utility functions
-│   └── format.ts
-├── types/                   # TypeScript types
-│   └── index.ts
-├── pages/                   # Page components (if using routing)
-│   ├── Home.tsx
-│   └── Dashboard.tsx
-└── App.tsx
+│   ├── ui/                 # Reusable UI components
+│   └── features/           # Feature-specific components
+├── hooks/                  # Custom hooks
+├── lib/                    # Utilities, API clients
+├── types/                  # TypeScript types
+└── app/                    # Routes (App Router)
 ```
 
-### Modern Component Patterns
+### React 19 Server Components
 
-```typescript
-// Functional component with TypeScript
-import { FC, useState, useEffect, useMemo, useCallback } from 'react';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
+```tsx
+// app/users/page.tsx - Server Component (default)
+async function UsersPage() {
+  const users = await db.users.findMany();
+  return <UserList users={users} />;
 }
 
-interface UserListProps {
-  initialUsers?: User[];
-  onUserSelect?: (user: User) => void;
+// Client Component (explicit)
+'use client';
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
+}
+```
+
+### The use() Hook (React 19)
+
+```tsx
+import { use, Suspense } from 'react';
+
+function Comments({ commentsPromise }: { commentsPromise: Promise<Comment[]> }) {
+  const comments = use(commentsPromise);
+  return (
+    <ul>
+      {comments.map(c => <li key={c.id}>{c.text}</li>)}
+    </ul>
+  );
 }
 
-export const UserList: FC<UserListProps> = ({ 
-  initialUsers = [],
-  onUserSelect 
-}) => {
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
+// Usage with Suspense
+<Suspense fallback={<Loading />}>
+  <Comments commentsPromise={fetchComments(postId)} />
+</Suspense>
+```
 
-  // Fetch users on mount
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch('/api/users');
-        const data = await response.json();
-        setUsers(data);
-      } catch (error) {
-        console.error('Failed to fetch users:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+### React 19 Form Actions
 
-    if (initialUsers.length === 0) {
-      fetchUsers();
-    }
-  }, [initialUsers.length]);
+```tsx
+'use client';
+import { useFormStatus, useActionState } from 'react';
 
-  // Memoized filtered users
-  const filteredUsers = useMemo(() => {
-    return users.filter(user =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [users, searchTerm]);
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return <button disabled={pending}>{pending ? 'Saving...' : 'Save'}</button>;
+}
 
-  // Memoized callback
-  const handleUserClick = useCallback((user: User) => {
-    onUserSelect?.(user);
-  }, [onUserSelect]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+function CreatePost() {
+  const [state, formAction] = useActionState(createPostAction, null);
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search users..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <ul>
-        {filteredUsers.map(user => (
-          <li key={user.id} onClick={() => handleUserClick(user)}>
-            {user.name} - {user.email}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <form action={formAction}>
+      <input name="title" required />
+      {state?.error && <p className="error">{state.error}</p>}
+      <SubmitButton />
+    </form>
   );
-};
+}
+
+// Server Action
+async function createPostAction(prevState: any, formData: FormData) {
+  'use server';
+  const title = formData.get('title') as string;
+
+  try {
+    await db.posts.create({ data: { title } });
+    revalidatePath('/posts');
+    return { success: true };
+  } catch {
+    return { error: 'Failed to create post' };
+  }
+}
 ```
 
 ### Custom Hooks
 
-```typescript
-// useApi.ts - Generic API hook
-import { useState, useEffect } from 'react';
-
-interface UseApiOptions<T> {
-  url: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  body?: any;
-  dependencies?: any[];
-}
-
-interface UseApiReturn<T> {
-  data: T | null;
-  loading: boolean;
-  error: Error | null;
-  refetch: () => Promise<void>;
-}
-
-export function useApi<T = any>({
-  url,
-  method = 'GET',
-  body,
-  dependencies = []
-}: UseApiOptions<T>): UseApiReturn<T> {
+```tsx
+// useApi.ts - Data fetching hook
+function useApi<T>(url: string) {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: body ? JSON.stringify(body) : undefined,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      setData(result);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
-  }, dependencies);
+    const controller = new AbortController();
 
-  return { data, loading, error, refetch: fetchData };
-}
+    fetch(url, { signal: controller.signal })
+      .then(res => res.json())
+      .then(setData)
+      .catch(err => {
+        if (err.name !== 'AbortError') setError(err);
+      })
+      .finally(() => setLoading(false));
 
-// useLocalStorage.ts
-import { useState, useEffect } from 'react';
+    return () => controller.abort();
+  }, [url]);
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return [storedValue, setValue] as const;
+  return { data, error, loading };
 }
 
 // useDebounce.ts
-import { useState, useEffect } from 'react';
-
-export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+function useDebounce<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
   }, [value, delay]);
 
-  return debouncedValue;
+  return debounced;
 }
 ```
 
-### Context API for State Management
+### State Management
 
-```typescript
-// AuthContext.tsx
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+```tsx
+// Context for simple global state
+const ThemeContext = createContext<'light' | 'dark'>('light');
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
+// Zustand for complex state
+import { create } from 'zustand';
+
+interface Store {
+  count: number;
+  increment: () => void;
 }
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check for existing session
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/auth/me');
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
-
-    const userData = await response.json();
-    setUser(userData);
-  };
-
-  const logout = () => {
-    fetch('/api/auth/logout', { method: 'POST' });
-    setUser(null);
-  };
-
-  return (
-    <AuthContext.Provider value={{
-      user,
-      loading,
-      login,
-      logout,
-      isAuthenticated: !!user,
-    }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
+const useStore = create<Store>((set) => ({
+  count: 0,
+  increment: () => set((s) => ({ count: s.count + 1 })),
+}));
 ```
 
-### Performance Optimization
+### Performance Patterns
 
-```typescript
-import { memo, useMemo, useCallback } from 'react';
+```tsx
+import { memo, useMemo, useCallback, lazy, Suspense } from 'react';
 
-// Memoized component (only re-renders if props change)
-export const ExpensiveComponent = memo(({ data }: { data: any[] }) => {
-  return (
-    <div>
-      {data.map(item => (
-        <div key={item.id}>{item.name}</div>
-      ))}
-    </div>
-  );
+// Memoize expensive components
+const ExpensiveList = memo(function ExpensiveList({ items }: Props) {
+  return items.map(item => <Item key={item.id} {...item} />);
 });
 
-// Parent component
-export const ParentComponent = () => {
-  const [count, setCount] = useState(0);
-  const [users, setUsers] = useState([]);
+// Memoize calculations
+const sorted = useMemo(() =>
+  [...items].sort((a, b) => a.name.localeCompare(b.name)),
+  [items]
+);
 
-  // Memoize expensive calculations
-  const sortedUsers = useMemo(() => {
-    return [...users].sort((a, b) => a.name.localeCompare(b.name));
-  }, [users]);
+// Memoize callbacks passed to children
+const handleClick = useCallback((id: string) => {
+  setSelected(id);
+}, []);
 
-  // Memoize callbacks to prevent child re-renders
-  const handleUserAdd = useCallback((user) => {
-    setUsers(prev => [...prev, user]);
-  }, []);
+// Code splitting
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
 
-  return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
-      {/* ExpensiveComponent won't re-render when count changes */}
-      <ExpensiveComponent data={sortedUsers} />
-    </div>
-  );
-};
+<Suspense fallback={<Skeleton />}>
+  <HeavyComponent />
+</Suspense>
 ```
 
-### Form Handling with React Hook Form
+### Testing
 
-```typescript
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-type FormData = z.infer<typeof schema>;
-
-export const RegisterForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
-
-  const onSubmit = async (data: FormData) => {
-    try {
-      await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-    } catch (error) {
-      console.error('Registration failed:', error);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <input {...register('email')} placeholder="Email" />
-        {errors.email && <span>{errors.email.message}</span>}
-      </div>
-
-      <div>
-        <input {...register('password')} type="password" placeholder="Password" />
-        {errors.password && <span>{errors.password.message}</span>}
-      </div>
-
-      <div>
-        <input {...register('confirmPassword')} type="password" placeholder="Confirm Password" />
-        {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
-      </div>
-
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Submitting...' : 'Register'}
-      </button>
-    </form>
-  );
-};
-```
-
-### Testing with React Testing Library
-
-```typescript
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+```tsx
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserList } from './UserList';
 
-describe('UserList', () => {
-  const mockUsers = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-  ];
+test('increments counter', async () => {
+  const user = userEvent.setup();
+  render(<Counter />);
 
-  it('renders users', () => {
-    render(<UserList initialUsers={mockUsers} />);
+  await user.click(screen.getByRole('button'));
 
-    expect(screen.getByText('John Doe - john@example.com')).toBeInTheDocument();
-    expect(screen.getByText('Jane Smith - jane@example.com')).toBeInTheDocument();
-  });
-
-  it('filters users by search term', async () => {
-    render(<UserList initialUsers={mockUsers} />);
-
-    const searchInput = screen.getByPlaceholderText('Search users...');
-    await userEvent.type(searchInput, 'John');
-
-    expect(screen.getByText('John Doe - john@example.com')).toBeInTheDocument();
-    expect(screen.queryByText('Jane Smith - jane@example.com')).not.toBeInTheDocument();
-  });
-
-  it('calls onUserSelect when user is clicked', async () => {
-    const onUserSelect = jest.fn();
-    render(<UserList initialUsers={mockUsers} onUserSelect={onUserSelect} />);
-
-    const firstUser = screen.getByText('John Doe - john@example.com');
-    fireEvent.click(firstUser);
-
-    expect(onUserSelect).toHaveBeenCalledWith(mockUsers[0]);
-  });
-
-  it('shows loading state', () => {
-    render(<UserList />);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
+  expect(screen.getByText('1')).toBeInTheDocument();
 });
 ```
 
-## Critical Rules
+## Constraints
 
-### Always Do
-- Use TypeScript for type safety
-- Implement proper error boundaries
-- Memoize expensive calculations with useMemo
-- Memoize callbacks with useCallback when passing to child components
-- Use React.memo for components that render often with same props
-- Keep components small and focused
-- Extract reusable logic into custom hooks
-- Write tests for components
-- Use proper key props in lists
-- Handle loading and error states
+### MUST DO
+- Use TypeScript with strict mode
+- Implement error boundaries for graceful failures
+- Use `key` props correctly (stable, unique identifiers)
+- Clean up effects (return cleanup function)
+- Use semantic HTML and ARIA for accessibility
+- Memoize when passing callbacks/objects to memoized children
+- Use Suspense boundaries for async operations
 
-### Never Do
-- Never mutate state directly
-- Never use index as key in dynamic lists
-- Never forget cleanup in useEffect
-- Never create functions inside JSX (causes re-renders)
-- Never ignore ESLint warnings
-- Never use inline styles for everything (use CSS modules or styled-components)
-- Never skip error boundaries
-- Never ignore accessibility (use semantic HTML, ARIA labels)
+### MUST NOT DO
+- Mutate state directly
+- Use array index as key for dynamic lists
+- Create functions inside JSX (causes re-renders)
+- Forget useEffect cleanup (memory leaks)
+- Ignore React strict mode warnings
+- Skip error boundaries in production
 
-## Knowledge Base
+## Output Templates
 
-- **React Core**: Hooks, Context, Suspense, Error Boundaries
-- **State Management**: Redux, Zustand, Jotai, Context API
-- **Routing**: React Router, TanStack Router
-- **Forms**: React Hook Form, Formik
-- **Testing**: React Testing Library, Jest
-- **Styling**: CSS Modules, Styled Components, Tailwind CSS
-- **Performance**: Code splitting, lazy loading, memoization
-- **TypeScript**: Type safety, generics, utility types
+When implementing React features, provide:
+1. Component file with TypeScript types
+2. Test file if non-trivial logic
+3. Brief explanation of key decisions
 
-## Integration with Other Skills
+## Knowledge Reference
 
-- **Works with**: Fullstack Guardian, Playwright Expert, Test Master
-- **Complements**: React Native Expert (mobile), Code Reviewer
+React 19, Server Components, use() hook, Suspense, TypeScript, TanStack Query, Zustand, Redux Toolkit, React Router, React Testing Library, Vitest/Jest, Next.js App Router, accessibility (WCAG)
 
-## Best Practices Summary
+## Related Skills
 
-1. **TypeScript**: Use for all components and hooks
-2. **Hooks**: Prefer functional components with hooks
-3. **Custom Hooks**: Extract reusable logic
-4. **Performance**: Memo, useMemo, useCallback where needed
-5. **Testing**: Comprehensive tests with React Testing Library
-6. **Accessibility**: Semantic HTML, ARIA labels, keyboard navigation
-7. **Code Splitting**: Lazy load routes and heavy components
-8. **Error Handling**: Error boundaries for graceful degradation
-9. **State Management**: Choose appropriate solution for complexity
-10. **Clean Code**: Small, focused, well-named components
+- **Fullstack Guardian** - Full-stack feature implementation
+- **Playwright Expert** - E2E testing for React apps
+- **Test Master** - Comprehensive testing strategies

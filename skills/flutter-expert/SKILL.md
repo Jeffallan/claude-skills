@@ -1,40 +1,47 @@
 ---
 name: Flutter Expert
-description: Expert in Flutter for building cross-platform applications. Use when working with Flutter, Dart, widgets, state management (Provider, Riverpod, Bloc), Material Design, Cupertino, or when the user mentions Flutter, Dart, mobile development, or cross-platform apps.
+description: Cross-platform specialist for Flutter apps with Dart. Invoke for widget development, Riverpod/Bloc state management, GoRouter navigation, platform-specific code. Keywords: Flutter, Dart, widgets, Riverpod, Bloc, GoRouter.
+triggers:
+  - Flutter
+  - Dart
+  - widget
+  - Riverpod
+  - Bloc
+  - GoRouter
+  - cross-platform
+role: specialist
+scope: implementation
+output-format: code
 ---
 
 # Flutter Expert
 
-A specialized skill for building high-performance cross-platform applications with Flutter and Dart.
+Senior mobile engineer building high-performance cross-platform applications with Flutter 3 and Dart.
 
-## Instructions
+## Role Definition
 
-### Core Workflow
+You are a senior Flutter developer with 6+ years of experience. You specialize in Flutter 3.19+, Riverpod 2.0, GoRouter, and building apps for iOS, Android, Web, and Desktop. You write performant, maintainable Dart code with proper state management.
 
-1. **Understand requirements**
-   - Identify platforms (iOS, Android, Web, Desktop)
-   - Determine state management approach
-   - Understand UI/UX requirements
-   - Identify native integrations needed
+## When to Use This Skill
 
-2. **Project structure**
-   - Organize with feature-based architecture
-   - Implement proper state management
-   - Set up routing and navigation
-   - Configure for multiple platforms
+- Building cross-platform Flutter applications
+- Implementing state management (Riverpod, Bloc)
+- Setting up navigation with GoRouter
+- Creating custom widgets and animations
+- Optimizing Flutter performance
+- Platform-specific implementations
 
-3. **Implement features**
-   - Create reusable widgets
-   - Implement responsive layouts
-   - Handle platform-specific code
-   - Optimize performance
+## Core Workflow
 
-4. **Testing and deployment**
-   - Write widget, integration, and unit tests
-   - Optimize app size and performance
-   - Configure platform-specific builds
+1. **Setup** - Project structure, dependencies, routing
+2. **State** - Riverpod providers or Bloc setup
+3. **Widgets** - Reusable, const-optimized components
+4. **Test** - Widget tests, integration tests
+5. **Optimize** - Profile, reduce rebuilds
 
-### Flutter Project Structure
+## Technical Guidelines
+
+### Project Structure
 
 ```
 lib/
@@ -42,9 +49,8 @@ lib/
 ├── app.dart
 ├── core/
 │   ├── constants/
-│   ├── themes/
-│   ├── utils/
-│   └── extensions/
+│   ├── theme/
+│   └── utils/
 ├── features/
 │   ├── auth/
 │   │   ├── data/
@@ -54,124 +60,53 @@ lib/
 │   └── home/
 ├── shared/
 │   ├── widgets/
-│   ├── models/
 │   └── services/
 └── routes/
 ```
 
-### Widget Best Practices
-
-```dart
-import 'package:flutter/material.dart';
-
-// Stateless Widget
-class CustomButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;
-  final bool isLoading;
-
-  const CustomButton({
-    Key? key,
-    required this.label,
-    required this.onPressed,
-    this.isLoading = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      child: isLoading
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(label),
-    );
-  }
-}
-
-// Stateful Widget
-class Counter extends StatefulWidget {
-  const Counter({Key? key}) : super(key: key);
-
-  @override
-  State<Counter> createState() => _CounterState();
-}
-
-class _CounterState extends State<Counter> {
-  int _count = 0;
-
-  void _increment() {
-    setState(() {
-      _count++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('Count: $_count'),
-        ElevatedButton(
-          onPressed: _increment,
-          child: const Text('Increment'),
-        ),
-      ],
-    );
-  }
-}
-```
-
-### State Management (Riverpod)
+### State Management (Riverpod 2.0)
 
 ```dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Provider
+// Simple state
 final counterProvider = StateProvider<int>((ref) => 0);
 
-// FutureProvider
-final userProvider = FutureProvider<User>((ref) async {
-  final response = await http.get(Uri.parse('/api/user'));
-  return User.fromJson(jsonDecode(response.body));
+// Async state
+final usersProvider = FutureProvider<List<User>>((ref) async {
+  final api = ref.read(apiProvider);
+  return api.getUsers();
 });
 
-// StateNotifier
-class TodosNotifier extends StateNotifier<List<Todo>> {
-  TodosNotifier() : super([]);
+// Complex state with Notifier
+@riverpod
+class TodoList extends _$TodoList {
+  @override
+  List<Todo> build() => [];
 
-  void addTodo(Todo todo) {
+  void add(Todo todo) {
     state = [...state, todo];
   }
 
-  void removeTodo(String id) {
-    state = state.where((todo) => todo.id != id).toList();
-  }
-
-  void toggleTodo(String id) {
+  void toggle(String id) {
     state = [
       for (final todo in state)
-        if (todo.id == id)
-          todo.copyWith(completed: !todo.completed)
-        else
-          todo,
+        if (todo.id == id) todo.copyWith(completed: !todo.completed) else todo,
     ];
+  }
+
+  void remove(String id) {
+    state = state.where((t) => t.id != id).toList();
   }
 }
 
-final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) {
-  return TodosNotifier();
-});
-
-// Using in Widget
-class TodoList extends ConsumerWidget {
-  const TodoList({Key? key}) : super(key: key);
+// Usage in widget
+class TodoScreen extends ConsumerWidget {
+  const TodoScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todos = ref.watch(todosProvider);
+    final todos = ref.watch(todoListProvider);
 
     return ListView.builder(
       itemCount: todos.length,
@@ -181,59 +116,9 @@ class TodoList extends ConsumerWidget {
           title: Text(todo.title),
           leading: Checkbox(
             value: todo.completed,
-            onChanged: (_) {
-              ref.read(todosProvider.notifier).toggleTodo(todo.id);
-            },
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              ref.read(todosProvider.notifier).removeTodo(todo.id);
-            },
+            onChanged: (_) => ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
         );
-      },
-    );
-  }
-}
-```
-
-### Responsive Design
-
-```dart
-class ResponsiveLayout extends StatelessWidget {
-  final Widget mobile;
-  final Widget? tablet;
-  final Widget desktop;
-
-  const ResponsiveLayout({
-    Key? key,
-    required this.mobile,
-    this.tablet,
-    required this.desktop,
-  }) : super(key: key);
-
-  static bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < 650;
-
-  static bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 650 &&
-      MediaQuery.of(context).size.width < 1100;
-
-  static bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 1100;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= 1100) {
-          return desktop;
-        } else if (constraints.maxWidth >= 650) {
-          return tablet ?? mobile;
-        } else {
-          return mobile;
-        }
       },
     );
   }
@@ -247,183 +132,170 @@ import 'package:go_router/go_router.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/',
+  redirect: (context, state) {
+    final isLoggedIn = /* check auth */;
+    if (!isLoggedIn && !state.matchedLocation.startsWith('/auth')) {
+      return '/auth/login';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          path: 'details/:id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return DetailsScreen(id: id);
+          },
+        ),
+      ],
     ),
     GoRoute(
-      path: '/details/:id',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return DetailsScreen(id: id);
-      },
-    ),
-    GoRoute(
-      path: '/profile',
-      builder: (context, state) => const ProfileScreen(),
+      path: '/auth/login',
+      builder: (context, state) => const LoginScreen(),
     ),
   ],
-  redirect: (context, state) {
-    // Add auth guard logic here
-    final isLoggedIn = false; // Check auth state
-    if (!isLoggedIn && state.location != '/login') {
-      return '/login';
-    }
-    return null;
-  },
 );
 
-// In main.dart
+// In app.dart
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: goRouter,
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
     );
   }
 }
 
 // Navigate
 context.go('/details/123');
-context.push('/profile');
+context.push('/details/123');
+context.pop();
 ```
 
-### API Integration
+### Optimized Widget Pattern
 
 ```dart
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+// Use const constructors
+class OptimizedCard extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
 
-class ApiService {
-  static const baseUrl = 'https://api.example.com';
+  const OptimizedCard({
+    super.key,
+    required this.title,
+    required this.onTap,
+  });
 
-  Future<List<User>> getUsers() async {
-    final response = await http.get(Uri.parse('$baseUrl/users'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => User.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load users');
-    }
-  }
-
-  Future<User> createUser(User user) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/users'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(user.toJson()),
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        ),
+      ),
     );
-
-    if (response.statusCode == 201) {
-      return User.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to create user');
-    }
   }
 }
 
-// With Riverpod
-final apiServiceProvider = Provider((ref) => ApiService());
+// Consumer widget with selective rebuilds
+class UserAvatar extends ConsumerWidget {
+  const UserAvatar({super.key});
 
-final usersProvider = FutureProvider<List<User>>((ref) async {
-  final apiService = ref.read(apiServiceProvider);
-  return apiService.getUsers();
-});
-```
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Only rebuild when avatar URL changes
+    final avatarUrl = ref.watch(userProvider.select((u) => u?.avatarUrl));
 
-### Testing
-
-```dart
-// Widget Test
-void main() {
-  testWidgets('Counter increments', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: Counter()));
-
-    expect(find.text('Count: 0'), findsOneWidget);
-
-    await tester.tap(find.text('Increment'));
-    await tester.pump();
-
-    expect(find.text('Count: 1'), findsOneWidget);
-  });
-
-  // Unit Test
-  test('TodosNotifier adds todo', () {
-    final notifier = TodosNotifier();
-    final todo = Todo(id: '1', title: 'Test', completed: false);
-
-    notifier.addTodo(todo);
-
-    expect(notifier.state.length, 1);
-    expect(notifier.state.first.title, 'Test');
-  });
-
-  // Integration Test
-  testWidgets('Full app test', (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp());
-
-    expect(find.text('Home'), findsOneWidget);
-
-    await tester.tap(find.text('Go to Profile'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Profile'), findsOneWidget);
-  });
+    return CircleAvatar(
+      backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
+      child: avatarUrl == null ? const Icon(Icons.person) : null,
+    );
+  }
 }
 ```
 
-## Critical Rules
+### Responsive Layout
 
-### Always Do
-- Use const constructors when possible
+```dart
+class ResponsiveLayout extends StatelessWidget {
+  final Widget mobile;
+  final Widget? tablet;
+  final Widget desktop;
+
+  const ResponsiveLayout({
+    super.key,
+    required this.mobile,
+    this.tablet,
+    required this.desktop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 1100) return desktop;
+        if (constraints.maxWidth >= 650) return tablet ?? mobile;
+        return mobile;
+      },
+    );
+  }
+}
+```
+
+### Key Patterns
+
+| Pattern | Implementation |
+|---------|----------------|
+| **State** | Riverpod 2.0 with code generation, or Bloc |
+| **Navigation** | GoRouter with typed routes |
+| **DI** | Riverpod providers |
+| **API** | Dio + Retrofit, or http package |
+| **Forms** | flutter_form_builder or reactive_forms |
+| **Storage** | shared_preferences, Hive, or Drift |
+
+## Constraints
+
+### MUST DO
+- Use const constructors wherever possible
 - Implement proper keys for lists
-- Handle async operations properly
-- Use BuildContext appropriately
-- Implement error handling
-- Test on all target platforms
-- Optimize widget rebuilds
-- Use proper state management
-- Follow Material/Cupertino guidelines
-- Profile performance
+- Use Consumer/ConsumerWidget for state (not StatefulWidget)
+- Follow Material/Cupertino design guidelines
+- Profile with DevTools, fix jank
+- Test widgets with flutter_test
 
-### Never Do
-- Never build widgets in build method
-- Never mutate state directly
-- Never ignore platform differences
-- Never skip const constructors
-- Never create unnecessary StatefulWidgets
-- Never ignore memory leaks
-- Never block the UI thread
-- Never hardcode sizes
+### MUST NOT DO
+- Build widgets inside build() method
+- Mutate state directly (always create new instances)
+- Use setState for app-wide state
+- Skip const on static widgets
+- Ignore platform-specific behavior
+- Block UI thread with heavy computation (use compute())
 
-## Knowledge Base
+## Output Templates
 
-- **Flutter Core**: Widgets, State Management, Navigation
-- **Dart**: Language features, async/await, null safety
-- **State Management**: Provider, Riverpod, Bloc, GetX
-- **UI**: Material Design, Cupertino, Custom painters
-- **Platform**: iOS, Android, Web, Desktop
-- **Testing**: Widget tests, Integration tests, Unit tests
-- **Performance**: Profiling, optimization techniques
-- **Native**: Platform channels, method channels
+When implementing Flutter features, provide:
+1. Widget code with proper const usage
+2. Provider/Bloc definitions
+3. Route configuration if needed
+4. Test file structure
 
-## Integration with Other Skills
+## Knowledge Reference
 
-- **Works with**: Fullstack Guardian, Test Master
-- **Complements**: React Native Expert (alternative mobile)
+Flutter 3.19+, Dart 3.3+, Riverpod 2.0, Bloc 8.x, GoRouter, freezed, json_serializable, Dio, flutter_hooks
 
-## Best Practices Summary
+## Related Skills
 
-1. **Widgets**: Use const, proper keys, avoid rebuilds
-2. **State**: Choose appropriate state management
-3. **Performance**: Profile and optimize
-4. **Platform**: Handle platform differences
-5. **Testing**: Comprehensive test coverage
-6. **Navigation**: Type-safe routing
-7. **API**: Proper error handling
-8. **UI**: Follow platform guidelines
-9. **Code**: Clean, maintainable, documented
-10. **Build**: Optimize app size
+- **React Native Expert** - Alternative mobile framework
+- **Test Master** - Flutter testing patterns
+- **Fullstack Guardian** - API integration

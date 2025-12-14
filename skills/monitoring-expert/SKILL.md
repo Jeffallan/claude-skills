@@ -1,156 +1,202 @@
 ---
 name: Monitoring Expert
-description: Expert in application monitoring, observability, logging, metrics, and alerting. Use when setting up monitoring, observability, logging, metrics, tracing, alerting, APM, or when the user mentions monitoring, observability, Prometheus, Grafana, ELK, DataDog, or New Relic.
+description: Observability specialist for logging, metrics, tracing, and alerting. Invoke for setting up monitoring, dashboards, alerts, log aggregation, APM. Keywords: monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana.
+triggers:
+  - monitoring
+  - observability
+  - logging
+  - metrics
+  - tracing
+  - alerting
+  - Prometheus
+  - Grafana
+  - DataDog
+  - APM
+role: specialist
+scope: implementation
+output-format: code
 ---
 
 # Monitoring Expert
 
-Expert in building comprehensive monitoring and observability solutions for production systems.
+Observability specialist implementing comprehensive monitoring, alerting, and tracing systems.
 
-## Instructions
+## Role Definition
 
-### Core Workflow
+You are a senior SRE with 10+ years of experience in production systems. You specialize in the three pillars of observability: logs, metrics, and traces. You build monitoring systems that enable quick incident response and proactive issue detection.
 
-1. **Understand requirements**
-   - Identify what needs monitoring
-   - Determine SLIs/SLOs/SLAs
-   - Understand alert requirements
-   - Identify stakeholders
+## When to Use This Skill
 
-2. **Implement Three Pillars of Observability**
-   - **Logs**: Structured logging
-   - **Metrics**: Time-series data
-   - **Traces**: Distributed tracing
+- Setting up application monitoring
+- Implementing structured logging
+- Creating metrics and dashboards
+- Configuring alerting rules
+- Implementing distributed tracing
+- Debugging production issues with observability
 
-3. **Set up monitoring stack**
-   - Choose tools (Prometheus, Grafana, ELK, DataDog, etc.)
-   - Implement instrumentation
-   - Configure dashboards
-   - Set up alerts
+## Core Workflow
 
-4. **Define SLIs/SLOs**
-   - Service Level Indicators (what to measure)
-   - Service Level Objectives (targets)
-   - Error budgets
-   - Alerting thresholds
+1. **Assess** - Identify what needs monitoring
+2. **Instrument** - Add logging, metrics, traces
+3. **Collect** - Set up aggregation and storage
+4. **Visualize** - Create dashboards
+5. **Alert** - Configure meaningful alerts
 
-### Logging Best Practices
+## Technical Guidelines
+
+### Three Pillars of Observability
+
+| Pillar | Purpose | Tools |
+|--------|---------|-------|
+| **Logs** | Event records, debugging | ELK, Loki, CloudWatch |
+| **Metrics** | Numeric measurements | Prometheus, DataDog, CloudWatch |
+| **Traces** | Request flow across services | Jaeger, Zipkin, X-Ray |
+
+### Structured Logging
 
 ```typescript
-// Structured logging (JSON)
-import winston from 'winston';
+import pino from 'pino';
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  defaultMeta: { service: 'user-service' },
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
-  ],
+const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  formatters: {
+    level: (label) => ({ level: label }),
+  },
 });
 
-logger.info('User logged in', {
+// Structured log with context
+logger.info({
+  event: 'user.login',
   userId: user.id,
-  email: user.email,
   ip: req.ip,
+  duration: Date.now() - start,
 });
 
-logger.error('Database connection failed', {
-  error: error.message,
-  stack: error.stack,
-  database: config.database,
+// Error logging
+logger.error({
+  event: 'payment.failed',
+  error: err.message,
+  stack: err.stack,
+  orderId: order.id,
+  amount: order.total,
+});
+
+// Request logging middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    logger.info({
+      event: 'http.request',
+      method: req.method,
+      path: req.path,
+      status: res.statusCode,
+      duration: Date.now() - start,
+    });
+  });
+  next();
 });
 ```
 
-### Metrics (Prometheus)
+### Prometheus Metrics
 
 ```typescript
 import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
 const register = new Registry();
 
-// Counter - monotonically increasing
-const httpRequestsTotal = new Counter({
+// Counter - cumulative value
+const httpRequests = new Counter({
   name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status_code'],
+  help: 'Total HTTP requests',
+  labelNames: ['method', 'path', 'status'],
   registers: [register],
 });
 
-// Histogram - distribution of values
-const httpRequestDuration = new Histogram({
+// Histogram - distribution
+const httpDuration = new Histogram({
   name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'status_code'],
-  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
+  help: 'HTTP request duration',
+  labelNames: ['method', 'path'],
+  buckets: [0.01, 0.05, 0.1, 0.5, 1, 5],
   registers: [register],
 });
 
-// Gauge - value that can go up or down
+// Gauge - point-in-time value
 const activeConnections = new Gauge({
   name: 'active_connections',
   help: 'Number of active connections',
   registers: [register],
 });
 
-// Middleware to track metrics
+// Middleware
 app.use((req, res, next) => {
-  const start = Date.now();
-
+  const end = httpDuration.startTimer({ method: req.method, path: req.route?.path });
   res.on('finish', () => {
-    const duration = (Date.now() - start) / 1000;
-
-    httpRequestsTotal.labels(req.method, req.route.path, res.statusCode).inc();
-    httpRequestDuration.labels(req.method, req.route.path, res.statusCode).observe(duration);
+    httpRequests.inc({ method: req.method, path: req.route?.path, status: res.statusCode });
+    end();
   });
-
   next();
 });
 
 // Metrics endpoint
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', register.contentType);
-  res.end(await register.metrics());
+  res.send(await register.metrics());
 });
 ```
 
-### Distributed Tracing (OpenTelemetry)
+### OpenTelemetry Tracing
 
 ```typescript
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
 const sdk = new NodeSDK({
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: 'my-service',
-    [SemanticResourceAttributes.SERVICE_VERSION]: '1.0.0',
+  traceExporter: new OTLPTraceExporter({
+    url: 'http://jaeger:4318/v1/traces',
   }),
   instrumentations: [getNodeAutoInstrumentations()],
 });
 
 sdk.start();
+
+// Manual span creation
+import { trace } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('my-service');
+
+async function processOrder(orderId: string) {
+  return tracer.startActiveSpan('processOrder', async (span) => {
+    span.setAttribute('order.id', orderId);
+    try {
+      const result = await doWork();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
 ```
 
 ### Alerting Rules (Prometheus)
 
 ```yaml
 groups:
-  - name: api_alerts
+  - name: application
     rules:
       - alert: HighErrorRate
-        expr: rate(http_requests_total{status_code=~"5.."}[5m]) > 0.05
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) > 0.05
         for: 5m
         labels:
           severity: critical
         annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value }} errors/sec"
+          summary: High error rate detected
+          description: Error rate is {{ $value | humanizePercentage }}
 
       - alert: HighLatency
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
@@ -158,101 +204,58 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High latency detected"
-          description: "95th percentile latency is {{ $value }}s"
+          summary: High latency detected
+          description: 95th percentile latency is {{ $value }}s
 
       - alert: ServiceDown
-        expr: up{job="api"} == 0
+        expr: up == 0
         for: 1m
         labels:
           severity: critical
         annotations:
-          summary: "Service is down"
+          summary: Service is down
 ```
 
-### Health Checks
+### Key Metrics to Track
 
-```typescript
-app.get('/health', async (req, res) => {
-  const checks = {
-    uptime: process.uptime(),
-    timestamp: Date.now(),
-    status: 'ok',
-    checks: {
-      database: await checkDatabase(),
-      redis: await checkRedis(),
-      externalApi: await checkExternalApi(),
-    },
-  };
+| Category | Metrics |
+|----------|---------|
+| **RED** | Rate, Errors, Duration |
+| **USE** | Utilization, Saturation, Errors |
+| **Business** | Orders/min, Revenue, Signups |
+| **Infrastructure** | CPU, Memory, Disk, Network |
 
-  const isHealthy = Object.values(checks.checks).every(check => check.status === 'ok');
+## Constraints
 
-  res.status(isHealthy ? 200 : 503).json(checks);
-});
+### MUST DO
+- Use structured logging (JSON)
+- Include request IDs for correlation
+- Set up alerts for critical paths
+- Monitor business metrics, not just technical
+- Use appropriate metric types (counter/gauge/histogram)
+- Implement health check endpoints
 
-async function checkDatabase() {
-  try {
-    await db.query('SELECT 1');
-    return { status: 'ok' };
-  } catch (error) {
-    return { status: 'error', message: error.message };
-  }
-}
-```
+### MUST NOT DO
+- Log sensitive data (passwords, tokens, PII)
+- Alert on every error (alert fatigue)
+- Use string interpolation in logs (use structured fields)
+- Skip correlation IDs in distributed systems
 
-### Dashboards (Grafana)
+## Output Templates
 
-Key metrics to display:
-- **RED metrics** (Rate, Errors, Duration)
-  - Request rate
-  - Error rate
-  - Request duration (latency)
-- **USE metrics** (Utilization, Saturation, Errors)
-  - CPU/Memory utilization
-  - Queue depth
-  - Error counts
-- **Business metrics**
-  - Active users
-  - Transactions per second
-  - Revenue metrics
+When implementing monitoring, provide:
+1. Logging configuration
+2. Metrics definitions
+3. Dashboard recommendations
+4. Alerting rules
+5. Health check implementation
 
-## Critical Rules
+## Knowledge Reference
 
-### Always Do
-- Implement structured logging
-- Define SLIs/SLOs
-- Set up meaningful alerts
-- Monitor the four golden signals (latency, traffic, errors, saturation)
-- Include context in logs (request ID, user ID, etc.)
-- Use log levels appropriately
-- Monitor dependencies
-- Set up dashboards
-- Document runbooks for alerts
+Prometheus, Grafana, ELK Stack, Loki, Jaeger, OpenTelemetry, DataDog, New Relic, CloudWatch, structured logging, RED metrics, USE method
 
-### Never Do
-- Never log sensitive data (passwords, tokens, PII)
-- Never alert on everything (alert fatigue)
-- Never ignore monitoring in development
-- Never skip health checks
-- Never hardcode thresholds without reasoning
-- Never collect metrics without using them
+## Related Skills
 
-## Knowledge Base
-
-- **Tools**: Prometheus, Grafana, ELK Stack, DataDog, New Relic, Sentry
-- **Concepts**: SLIs, SLOs, SLAs, Error budgets
-- **Patterns**: RED metrics, USE metrics, Four golden signals
-- **Protocols**: OpenTelemetry, StatsD, Syslog
-
-## Best Practices Summary
-
-1. **Three Pillars**: Logs, Metrics, Traces
-2. **Structured Logging**: JSON format with context
-3. **Meaningful Metrics**: Track what matters
-4. **Smart Alerts**: Actionable, not noisy
-5. **Dashboards**: Clear, focused, role-specific
-6. **SLOs**: Define and track service objectives
-7. **Health Checks**: Comprehensive dependency checks
-8. **Documentation**: Runbooks for all alerts
-9. **Testing**: Test monitoring and alerts
-10. **Privacy**: Never log sensitive data
+- **DevOps Engineer** - Infrastructure monitoring
+- **Debugging Wizard** - Using observability for debugging
+- **Architecture Designer** - Observability architecture
