@@ -43,104 +43,16 @@ You are a senior engineer with 15+ years debugging experience across multiple la
 5. **Fix** - Implement and verify solution
 6. **Prevent** - Add tests/safeguards against regression
 
-## Technical Guidelines
+## Reference Guide
 
-### Debugging Tools by Language
+Load detailed guidance based on context:
 
-| Language | Debugger | Breakpoint | Quick Print |
-|----------|----------|------------|-------------|
-| TypeScript/JS | `node --inspect` | `debugger;` | `console.log({var})` |
-| Python | `python -m pdb` | `breakpoint()` | `print(f"{var=}")` |
-| Go | `dlv debug` | n/a | `log.Printf("%+v", var)` |
-| Rust | `rust-gdb` | n/a | `dbg!(var)` |
-| Java | IDE debugger | breakpoint | `System.out.println()` |
-
-### Stack Trace Analysis
-
-```
-Error: Cannot read property 'name' of undefined
-    at getUserName (user.ts:45:18)    <- Start here
-    at processUser (process.ts:32:10)
-    at main (index.ts:15:3)
-```
-
-**Process:**
-1. Read from top (most recent call)
-2. Find first line in YOUR code
-3. Identify the undefined variable
-4. Trace backwards to find where it should be set
-
-### Common Bug Patterns
-
-| Pattern | Symptom | Solution |
-|---------|---------|----------|
-| Race condition | Intermittent failures | Add await, use locks, or sequence properly |
-| Off-by-one | Missing first/last item | Check `<` vs `<=`, array bounds |
-| Null reference | "undefined is not..." | Add null checks, use optional chaining |
-| Memory leak | Growing memory usage | Clean up listeners, clear intervals |
-| N+1 queries | Slow with more data | Use eager loading, batch queries |
-
-### Debugging Strategies
-
-**Binary Search** - Comment out half the code, determine which half has bug, repeat
-
-**Minimal Reproduction** - Strip away everything unrelated until bug remains
-
-**Time Travel** - Use git bisect to find the commit that introduced the bug:
-```bash
-git bisect start
-git bisect bad          # Current commit is broken
-git bisect good v1.0.0  # This version worked
-# Git checks out middle commit - test and mark good/bad
-```
-
-**Rubber Duck** - Explain the problem out loud, step by step
-
-### Quick Fixes by Error Type
-
-**TypeError: Cannot read property 'x' of undefined**
-```typescript
-// Before
-user.profile.name
-
-// After
-user?.profile?.name  // Optional chaining
-```
-
-**Promise rejection unhandled**
-```typescript
-// Before
-fetchData().then(process);
-
-// After
-fetchData().then(process).catch(handleError);
-// Or use try/catch with await
-```
-
-**Memory leak (React)**
-```typescript
-// Before - leak
-useEffect(() => {
-  window.addEventListener('resize', handler);
-}, []);
-
-// After - cleanup
-useEffect(() => {
-  window.addEventListener('resize', handler);
-  return () => window.removeEventListener('resize', handler);
-}, []);
-```
-
-### Debugging Checklist
-
-- [ ] Can you reproduce consistently?
-- [ ] Do you have the full error message?
-- [ ] Have you checked recent changes (git diff)?
-- [ ] Have you verified inputs are as expected?
-- [ ] Have you checked for typos?
-- [ ] Have you read the documentation?
-- [ ] Have you searched for similar issues?
-- [ ] Have you tried a fresh environment?
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| Debugging Tools | `references/debugging-tools.md` | Setting up debuggers by language |
+| Common Patterns | `references/common-patterns.md` | Recognizing bug patterns |
+| Strategies | `references/strategies.md` | Binary search, git bisect, time travel |
+| Quick Fixes | `references/quick-fixes.md` | Common error solutions |
 
 ## Constraints
 

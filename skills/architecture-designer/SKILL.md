@@ -40,104 +40,17 @@ You are a principal architect with 15+ years of experience designing scalable sy
 4. **Document** - Write ADRs for key decisions
 5. **Review** - Validate with stakeholders
 
-## Technical Guidelines
+## Reference Guide
 
-### Architecture Patterns
+Load detailed guidance based on context:
 
-| Pattern | Use When | Trade-offs |
-|---------|----------|------------|
-| **Monolith** | Small team, simple domain | Simpler deployment; harder to scale parts independently |
-| **Microservices** | Large team, complex domain | Independent scaling; operational complexity |
-| **Event-Driven** | Async processing, decoupling | Loose coupling; debugging complexity |
-| **Serverless** | Variable load, pay-per-use | Auto-scaling; cold starts, vendor lock-in |
-| **CQRS** | Read/write asymmetry | Optimized queries; eventual consistency |
-
-### ADR Template
-
-```markdown
-# ADR-001: Use PostgreSQL for primary database
-
-## Status
-Accepted
-
-## Context
-We need a relational database for our e-commerce platform that handles
-complex transactions and requires strong consistency.
-
-## Decision
-Use PostgreSQL as the primary database.
-
-## Consequences
-### Positive
-- ACID compliance for transactions
-- Rich feature set (JSON, full-text search)
-- Strong community and tooling
-- Free and open source
-
-### Negative
-- Vertical scaling limits
-- Requires DB expertise for optimization
-
-## Alternatives Considered
-- MySQL: Less feature-rich for our use case
-- MongoDB: Not ideal for relational data
-```
-
-### System Design Template
-
-```markdown
-# System: Payment Processing Service
-
-## Requirements
-- Process 10,000 transactions/minute at peak
-- 99.99% availability
-- PCI DSS compliance
-- Sub-500ms response time (p95)
-
-## High-Level Architecture
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   API GW    │────▶│   Service   │────▶│  Database   │
-│  (Kong)     │     │  (Node.js)  │     │ (PostgreSQL)│
-└─────────────┘     └─────────────┘     └─────────────┘
-       │                   │
-       ▼                   ▼
-┌─────────────┐     ┌─────────────┐
-│    WAF      │     │   Queue     │
-│             │     │  (SQS)      │
-└─────────────┘     └─────────────┘
-```
-
-## Key Decisions
-1. Synchronous API for real-time payments
-2. Async queue for batch processing
-3. Multi-AZ deployment for HA
-
-## Scaling Strategy
-- Horizontal scaling of service layer
-- Read replicas for database
-- Redis cache for session data
-```
-
-### Database Selection Guide
-
-| Type | Examples | Best For |
-|------|----------|----------|
-| **Relational** | PostgreSQL, MySQL | Transactions, complex queries |
-| **Document** | MongoDB, Firestore | Flexible schemas, rapid iteration |
-| **Key-Value** | Redis, DynamoDB | Caching, sessions, high throughput |
-| **Time-Series** | TimescaleDB, InfluxDB | Metrics, IoT data |
-| **Graph** | Neo4j, Neptune | Relationships, social networks |
-
-### Non-Functional Requirements Checklist
-
-| Category | Questions |
-|----------|-----------|
-| **Scalability** | Expected load? Growth rate? Peak vs average? |
-| **Availability** | SLA target? Acceptable downtime? |
-| **Performance** | Response time targets? Throughput? |
-| **Security** | Authentication? Compliance (GDPR, PCI)? |
-| **Cost** | Budget constraints? Ops cost vs dev cost? |
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| Architecture Patterns | `references/architecture-patterns.md` | Choosing monolith vs microservices |
+| ADR Template | `references/adr-template.md` | Documenting decisions |
+| System Design | `references/system-design.md` | Full system design template |
+| Database Selection | `references/database-selection.md` | Choosing database technology |
+| NFR Checklist | `references/nfr-checklist.md` | Gathering non-functional requirements |
 
 ## Constraints
 

@@ -40,131 +40,16 @@ You are a senior security analyst with 10+ years of application security experie
 4. **Categorize** - Rate severity (Critical/High/Medium/Low)
 5. **Report** - Document findings with remediation
 
-## Technical Guidelines
+## Reference Guide
 
-### Security Review Checklist
+Load detailed guidance based on context:
 
-| Category | Check |
-|----------|-------|
-| **Authentication** | Password hashing, token validation, session management |
-| **Authorization** | Access control on all endpoints, IDOR prevention |
-| **Input Validation** | All user input validated, SQL/XSS prevention |
-| **Secrets** | No hardcoded secrets, proper env usage |
-| **Dependencies** | No known vulnerabilities, up-to-date |
-| **Configuration** | Security headers, debug mode off |
-
-### SAST Tools by Language
-
-```bash
-# JavaScript/TypeScript
-npm audit
-npx eslint --ext .js,.ts . --config eslint-plugin-security
-
-# Python
-pip install bandit safety
-bandit -r . -f json -o bandit-report.json
-safety check
-
-# Go
-go install github.com/securego/gosec/v2/cmd/gosec@latest
-gosec ./...
-
-# Multi-language
-semgrep --config=auto .
-```
-
-### Secret Scanning
-
-```bash
-# gitleaks
-gitleaks detect --source . --verbose
-
-# trufflehog
-trufflehog filesystem .
-
-# Common patterns to search
-grep -rn "api_key\|secret\|password\|token" --include="*.ts" .
-```
-
-### Common Vulnerabilities
-
-**SQL Injection:**
-```typescript
-// VULNERABLE
-const query = `SELECT * FROM users WHERE id = ${userId}`;
-
-// SECURE
-const query = 'SELECT * FROM users WHERE id = $1';
-db.query(query, [userId]);
-```
-
-**XSS:**
-```typescript
-// VULNERABLE
-element.innerHTML = userInput;
-
-// SECURE
-element.textContent = userInput;
-// Or sanitize: DOMPurify.sanitize(userInput)
-```
-
-**Path Traversal:**
-```typescript
-// VULNERABLE
-const file = path.join(uploadDir, req.query.filename);
-res.sendFile(file);
-
-// SECURE
-const filename = path.basename(req.query.filename);
-const file = path.join(uploadDir, filename);
-if (!file.startsWith(uploadDir)) throw new Error('Invalid path');
-res.sendFile(file);
-```
-
-### Security Report Template
-
-```markdown
-# Security Review Report
-
-## Executive Summary
-- **Application**: [Name]
-- **Review Date**: [Date]
-- **Risk Level**: [Critical/High/Medium/Low]
-
-## Findings Summary
-| Severity | Count |
-|----------|-------|
-| Critical | X |
-| High | X |
-| Medium | X |
-| Low | X |
-
-## Detailed Findings
-
-### [CRITICAL] SQL Injection in User Search
-**Location**: `src/api/users.ts:45`
-**Description**: User input directly concatenated into SQL query
-**Impact**: Full database access, data exfiltration
-**Proof of Concept**:
-```
-GET /api/users?search=' OR '1'='1
-```
-**Remediation**: Use parameterized queries
-**Effort**: 1 hour
-
-### [HIGH] Weak Password Requirements
-**Location**: `src/auth/validation.ts:12`
-**Description**: Only 6 character minimum
-**Impact**: Brute force attacks
-**Remediation**: Require 12+ chars with complexity
-**Effort**: 30 minutes
-
-## Recommendations
-1. Implement parameterized queries globally
-2. Add input validation middleware
-3. Enable security headers
-4. Set up dependency scanning in CI/CD
-```
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| SAST Tools | `references/sast-tools.md` | Running automated scans |
+| Vulnerability Patterns | `references/vulnerability-patterns.md` | SQL injection, XSS, manual review |
+| Secret Scanning | `references/secret-scanning.md` | Gitleaks, finding hardcoded secrets |
+| Report Template | `references/report-template.md` | Writing security report |
 
 ## Constraints
 

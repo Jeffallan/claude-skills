@@ -39,110 +39,16 @@ You are a senior full-stack engineer with 12+ years of experience. You think in 
 4. **Implement** - Build incrementally, testing as you go
 5. **Hand off** - Pass to Test Master for QA, DevOps for deployment
 
-## Technical Guidelines
+## Reference Guide
 
-### Three-Perspective Design
+Load detailed guidance based on context:
 
-For every feature, address all three layers:
-
-```markdown
-## Feature: User Profile Update
-
-### [Frontend]
-- Form with name, email, bio, avatar fields
-- Client-side validation with real-time feedback
-- Loading states during submission
-- Error/success message display
-- Optimistic UI updates
-
-### [Backend]
-- PUT /api/users/:id endpoint
-- Pydantic/Zod schema validation
-- Database transaction with rollback on error
-- Audit logging for profile changes
-- Email verification if email changes
-
-### [Security]
-- Authorization: users can only update own profile
-- Input sanitization against XSS
-- Rate limiting (10 req/min per user)
-- File upload validation for avatar (type, size)
-- CSRF protection on form submission
-```
-
-### Technical Design Document
-
-Create `specs/{feature_name}_design.md` with:
-
-```markdown
-# Feature: {Name}
-
-## Requirements (EARS Format)
-While <precondition>, when <trigger>, the system shall <response>.
-
-Example: While a user is logged in, when they click Save, the system shall
-persist the form data and display a success message.
-
-## Architecture
-- Frontend: [Components, state management]
-- Backend: [Endpoints, data models]
-- Security: [Auth, validation, protection]
-
-## Implementation Plan
-- [ ] Step 1: Create Pydantic/Zod schemas
-- [ ] Step 2: Implement API endpoint
-- [ ] Step 3: Build UI component
-- [ ] Step 4: Add error handling
-- [ ] Step 5: Write tests
-```
-
-### Security Checklist (Every Feature)
-
-| Category | Check |
-|----------|-------|
-| **Auth** | Endpoint requires authentication? |
-| **Authz** | User authorized for this action? |
-| **Input** | All input validated and sanitized? |
-| **Output** | Sensitive data excluded from response? |
-| **Rate Limit** | Endpoint rate limited? |
-| **Logging** | Security events logged? |
-
-### Common Patterns
-
-**API + Frontend Flow:**
-```
-User Action → Frontend Validation → API Call → Backend Validation
-→ Business Logic → Database → Response → UI Update
-```
-
-**Error Handling Pattern:**
-```typescript
-// Frontend
-try {
-  const result = await api.updateProfile(data);
-  showSuccess('Profile updated');
-} catch (error) {
-  if (error.status === 401) redirect('/login');
-  if (error.status === 403) showError('Not authorized');
-  if (error.status === 422) showValidationErrors(error.errors);
-  else showError('Something went wrong');
-}
-```
-
-```python
-# Backend
-@router.put("/users/{user_id}")
-async def update_user(user_id: int, data: UserUpdate, current_user: CurrentUser):
-    if current_user.id != user_id and not current_user.is_admin:
-        raise HTTPException(403, "Not authorized")
-
-    try:
-        return await user_service.update(user_id, data)
-    except UserNotFound:
-        raise HTTPException(404, "User not found")
-    except EmailTaken:
-        raise HTTPException(422, "Email already in use")
-```
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| Design Template | `references/design-template.md` | Starting feature, three-perspective design |
+| Security Checklist | `references/security-checklist.md` | Every feature - auth, authz, validation |
+| Error Handling | `references/error-handling.md` | Implementing error flows |
+| Common Patterns | `references/common-patterns.md` | CRUD, forms, API flows |
 
 ## Constraints
 

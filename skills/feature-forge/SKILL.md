@@ -39,110 +39,16 @@ You are a senior product analyst with 10+ years of experience. You operate with 
 4. **Validate** - Review acceptance criteria with stakeholder
 5. **Plan** - Create implementation checklist
 
-## Technical Guidelines
+## Reference Guide
 
-### EARS Format
+Load detailed guidance based on context:
 
-All functional requirements use Easy Approach to Requirements Syntax:
-
-```
-While <precondition>, when <trigger>, the system shall <response>.
-```
-
-**Examples:**
-```markdown
-While a user is logged in, when the user clicks "Export", the system shall generate a CSV file of their data.
-
-While the cart contains items, when the user applies a valid coupon code, the system shall reduce the total by the discount amount.
-
-While an API request lacks a valid token, when any protected endpoint is called, the system shall return 401 Unauthorized.
-```
-
-### Interview Structure
-
-**PM Hat Questions:**
-| Area | Questions |
-|------|-----------|
-| Problem | What problem does this solve? Who has this problem? |
-| Users | Who are the target users? What are their goals? |
-| Value | How will users benefit? What's the business value? |
-| Scope | What's in/out of scope? MVP vs future? |
-| Success | How will we measure success? |
-
-**Dev Hat Questions:**
-| Area | Questions |
-|------|-----------|
-| Integration | What systems does this touch? APIs, databases? |
-| Security | Authentication needs? Data sensitivity? |
-| Performance | Expected load? Response time requirements? |
-| Edge cases | What happens when X fails? Empty states? |
-| Data | What's persisted? Retention requirements? |
-
-### Specification Structure
-
-```markdown
-# Feature: [Name]
-
-## Overview
-[2-3 sentence description of the feature and its value]
-
-## Functional Requirements
-
-### FR-001: [Requirement Name]
-While <precondition>, when <trigger>, the system shall <response>.
-
-### FR-002: [Requirement Name]
-While <precondition>, when <trigger>, the system shall <response>.
-
-## Non-Functional Requirements
-
-### Performance
-- Response time: < 200ms p95
-- Throughput: 1000 requests/minute
-
-### Security
-- Authentication: JWT required
-- Authorization: Role-based access
-- Data protection: PII encrypted at rest
-
-### Scalability
-- Concurrent users: 10,000
-- Data volume: 1M records
-
-## Acceptance Criteria
-
-### AC-001: [Scenario]
-Given [context]
-When [action]
-Then [expected result]
-
-## Error Handling
-
-| Error Condition | Response | User Message |
-|-----------------|----------|--------------|
-| Invalid input | 400 | "Please check your input" |
-| Unauthorized | 401 | "Please log in" |
-| Not found | 404 | "Resource not found" |
-
-## Implementation TODO
-
-### Backend
-- [ ] Create database migration for X table
-- [ ] Implement X service with Y method
-- [ ] Add API endpoint POST /api/x
-- [ ] Add input validation
-
-### Frontend
-- [ ] Create X component
-- [ ] Add form validation
-- [ ] Implement API integration
-- [ ] Add loading/error states
-
-### Testing
-- [ ] Unit tests for X service
-- [ ] Integration tests for API
-- [ ] E2E test for user flow
-```
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| EARS Syntax | `references/ears-syntax.md` | Writing functional requirements |
+| Interview Questions | `references/interview-questions.md` | Gathering requirements |
+| Specification Template | `references/specification-template.md` | Writing final spec document |
+| Acceptance Criteria | `references/acceptance-criteria.md` | Given/When/Then format |
 
 ## Constraints
 

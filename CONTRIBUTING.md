@@ -169,6 +169,62 @@ When implementing [X], provide:
 - **Skill Name** - Brief integration note
 ```
 
+### Selective Disclosure Pattern
+
+For skills with extensive reference material, use the selective disclosure pattern to reduce initial token load:
+
+**Structure:**
+```
+skills/my-skill/
+├── SKILL.md           # Lean main file (~80-100 lines)
+└── references/        # Domain-specific reference files
+    ├── topic-a.md     # Loaded when topic A is relevant
+    ├── topic-b.md     # Loaded when topic B is relevant
+    └── topic-c.md     # Loaded when topic C is relevant
+```
+
+**Main SKILL.md includes a routing table:**
+```markdown
+## Reference Guide
+
+Load detailed guidance based on context:
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| State Management | `references/state-management.md` | Using Redux, Zustand, Context |
+| Server Components | `references/server-components.md` | Next.js App Router, RSC |
+| Testing | `references/testing.md` | Writing tests, jest, RTL |
+```
+
+**Reference File Format:**
+```markdown
+# Topic Title
+
+> Reference for: Skill Name
+> Load when: Specific trigger conditions
+
+## Section
+
+[Detailed content, code examples, tables...]
+
+## Quick Reference
+
+| Item | Description |
+|------|-------------|
+| Key  | Value       |
+```
+
+**When to Use Selective Disclosure:**
+- Skill has 5+ distinct topic areas
+- Original content exceeds 200 lines
+- Topics are contextually independent
+- Code examples are extensive
+
+**Benefits:**
+- 40-50% reduction in initial token load
+- Contextual loading of relevant information
+- Easier maintenance of domain-specific content
+
 ### Token Efficiency Guidelines
 
 1. **Use Tables** - Convert lists to tables where comparing options
@@ -177,6 +233,7 @@ When implementing [X], provide:
 4. **Remove Redundancy** - Don't repeat information across sections
 5. **Avoid Obvious Comments** - Code should be self-explanatory where possible
 6. **Link Don't Reproduce** - Reference external docs instead of copying content
+7. **Use Selective Disclosure** - Split large skills into main file + references/
 
 ### Code Examples Best Practices
 
