@@ -43,50 +43,8 @@ git checkout -b fix/your-bug-fix
 # Create skill directory
 mkdir -p skills/my-new-skill
 
-# Create SKILL.md with proper frontmatter
-cat > skills/my-new-skill/SKILL.md << 'SKILLEOF'
----
-name: My New Skill
-description: Clear description with trigger keywords. Use when working with X, Y, Z technologies or when user mentions A, B, C concepts.
----
-
-# My New Skill
-
-## Instructions
-
-### Core Workflow
-
-1. **Step 1**
-2. **Step 2**
-
-[Include comprehensive examples, best practices, and patterns]
-
-## Critical Rules
-
-### Always Do
-- ...
-
-### Never Do
-- ...
-
-## Knowledge Base
-- ...
-
-## Integration with Other Skills
-- ...
-
-## Best Practices Summary
-1. ...
-SKILLEOF
-
-# Add to package.json
-# Edit package.json and add "my-new-skill" to claudeCode.skills array
+# Create SKILL.md following the structure below
 ```
-
-**For Skill Improvements:**
-- Update the relevant SKILL.md file
-- Ensure examples are correct and tested
-- Update documentation if needed
 
 #### 4. Test Your Changes
 ```bash
@@ -102,10 +60,6 @@ cp -r skills/* ~/.claude/skills/
 ```bash
 git add .
 git commit -m "Add: My New Skill for XYZ framework"
-# or
-git commit -m "Fix: Corrected example in React Expert skill"
-# or
-git commit -m "Update: Improved NestJS authentication examples"
 ```
 
 **Commit Message Format:**
@@ -124,80 +78,202 @@ Then create a Pull Request on GitHub with:
 - Clear title describing the change
 - Description of what changed and why
 - Any relevant issue numbers (e.g., "Fixes #123")
-- Screenshots/examples if applicable
 
 ## Skill Writing Guidelines
 
-### Frontmatter Requirements
+### Frontmatter Schema
+
 ```yaml
 ---
-name: Skill Name  # Clear, descriptive name
-description: Comprehensive description with keywords. Use when [specific scenarios]. # Be specific about triggers
-allowed-tools: Read, Write, Edit  # Optional: restrict tools (e.g., Code Reviewer should be read-only)
+name: Skill Name
+description: [Role] for [Domain]. Invoke for [triggers]. Keywords: [terms].
+triggers:
+  - keyword1
+  - keyword2
+  - phrase1
+role: expert | specialist | engineer
+scope: implementation | review | design | testing
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep  # Optional: restrict tools
+output-format: code | document | report | analysis
 ---
 ```
 
-### Content Structure
-Each skill should include:
+**Description Formula:**
+```
+[Role] for [Domain]. Invoke for: [specific triggers]. Keywords: [search terms].
+```
 
-1. **Title and Introduction**
-   - Brief overview of the skill's purpose
+**Example:**
+```yaml
+description: React specialist for production-grade web applications. Invoke for component architecture, hooks patterns, state management, Server Components. Keywords: React, JSX, hooks, useState, use(), Suspense.
+```
 
-2. **Instructions Section**
-   - **Core Workflow**: Step-by-step approach
-   - Clear, actionable steps
+### Required Sections (In Order)
 
-3. **Code Examples**
-   - Practical, real-world examples
-   - Both ❌ bad and ✅ good examples where applicable
-   - Properly formatted code blocks with language tags
+```markdown
+# [Skill Name]
 
-4. **Best Practices**
-   - Framework/technology-specific best practices
-   - Common patterns and anti-patterns
+[One-sentence role definition]
 
-5. **Critical Rules**
-   - **Always Do**: Required practices
-   - **Never Do**: Things to avoid
+## Role Definition
 
-6. **Knowledge Base**
-   - Technologies covered
-   - Related tools and frameworks
+[2-3 sentences defining expert persona with years of experience and specializations]
 
-7. **Integration with Other Skills**
-   - How this skill works with others
-   - Common combinations
+## When to Use This Skill
 
-8. **Best Practices Summary**
-   - Numbered list of 8-10 key practices
+- [Bullet list of specific scenarios]
+- [When this skill should be triggered]
 
-### Writing Style
-- **Clear and Concise**: Get to the point quickly
-- **Actionable**: Provide specific guidance, not general advice
-- **Examples-Heavy**: Show, don't just tell
-- **Comprehensive**: Cover common scenarios and edge cases
-- **Professional**: Technical but accessible tone
+## Core Workflow
+
+1. **Step** - Brief description
+2. **Step** - Brief description
+3. **Step** - Brief description
+
+## Technical Guidelines
+
+[Framework-specific patterns, code examples, tables]
+
+### Subsection Title
+
+| Column | Column |
+|--------|--------|
+| Data   | Data   |
+
+```language
+// Code examples with comments
+```
+
+## Constraints
+
+### MUST DO
+- [Required practices - strong directive language]
+- [Use imperative form]
+
+### MUST NOT DO
+- [Things to avoid - strong directive language]
+- [Use imperative form]
+
+## Output Templates
+
+When implementing [X], provide:
+1. [Expected output format]
+2. [Additional deliverables]
+
+## Knowledge Reference
+
+[Comma-separated keywords only - no sentences]
+
+## Related Skills
+
+- **Skill Name** - Brief integration note
+```
+
+### Selective Disclosure Pattern
+
+For skills with extensive reference material, use the selective disclosure pattern to reduce initial token load:
+
+**Structure:**
+```
+skills/my-skill/
+├── SKILL.md           # Lean main file (~80-100 lines)
+└── references/        # Domain-specific reference files
+    ├── topic-a.md     # Loaded when topic A is relevant
+    ├── topic-b.md     # Loaded when topic B is relevant
+    └── topic-c.md     # Loaded when topic C is relevant
+```
+
+**Main SKILL.md includes a routing table:**
+```markdown
+## Reference Guide
+
+Load detailed guidance based on context:
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| State Management | `references/state-management.md` | Using Redux, Zustand, Context |
+| Server Components | `references/server-components.md` | Next.js App Router, RSC |
+| Testing | `references/testing.md` | Writing tests, jest, RTL |
+```
+
+**Reference File Format:**
+```markdown
+# Topic Title
+
+> Reference for: Skill Name
+> Load when: Specific trigger conditions
+
+## Section
+
+[Detailed content, code examples, tables...]
+
+## Quick Reference
+
+| Item | Description |
+|------|-------------|
+| Key  | Value       |
+```
+
+**When to Use Selective Disclosure:**
+- Skill has 5+ distinct topic areas
+- Original content exceeds 200 lines
+- Topics are contextually independent
+- Code examples are extensive
+
+**Benefits:**
+- 40-50% reduction in initial token load
+- Contextual loading of relevant information
+- Easier maintenance of domain-specific content
+
+### Token Efficiency Guidelines
+
+1. **Use Tables** - Convert lists to tables where comparing options
+2. **One Example Per Pattern** - One comprehensive example instead of many small ones
+3. **Keywords Only** - Knowledge Reference should be comma-separated terms, not sentences
+4. **Remove Redundancy** - Don't repeat information across sections
+5. **Avoid Obvious Comments** - Code should be self-explanatory where possible
+6. **Link Don't Reproduce** - Reference external docs instead of copying content
+7. **Use Selective Disclosure** - Split large skills into main file + references/
 
 ### Code Examples Best Practices
+
 ```typescript
-// ❌ Bad: Unclear, unsafe, or anti-pattern
+// ❌ Bad: Unclear or anti-pattern
 function badExample() {
   // Why this is bad
 }
 
-// ✅ Good: Clear, safe, follows best practices
+// ✅ Good: Clear, follows best practices
 function goodExample() {
   // Why this is good
 }
 ```
 
+**Guidelines:**
+- Include both bad and good examples for common mistakes
+- Use language tags on all code blocks
+- Keep examples practical and real-world
+- Remove unnecessary comments that state the obvious
+
+### Framework Version Requirements
+
+Keep examples current with latest stable versions:
+- **React**: 19+ (Server Components, use() hook, form actions)
+- **Python**: 3.11+ (X | None syntax, match/case)
+- **FastAPI/Pydantic**: V2 (field_validator, Annotated pattern)
+- **Django**: 5.0+ (async views, async ORM)
+- **TypeScript**: 5.x (satisfies operator, const type parameters)
+- **Node.js**: 20+ LTS
+
 ### Testing Your Skill
+
 Before submitting:
 1. **Trigger Test**: Does it activate with appropriate prompts?
-2. **Code Test**: Do all code examples work?
-3. **Completeness**: Does it cover the main use cases?
-4. **Accuracy**: Is all information correct and up-to-date?
-5. **Integration**: Does it mention related skills?
+2. **Code Test**: Do all code examples compile/run?
+3. **Completeness**: Does it cover main use cases?
+4. **Accuracy**: Is information correct and up-to-date?
+5. **Token Efficiency**: Is content concise without redundancy?
+6. **Integration**: Does it reference related skills?
 
 ## Code of Conduct
 
@@ -205,17 +281,14 @@ Before submitting:
 - Be welcoming and inclusive
 - Respect differing viewpoints
 - Give and receive constructive feedback gracefully
-- Focus on what's best for the community
 
 ### Be Collaborative
 - Help others learn and grow
 - Share knowledge generously
 - Acknowledge contributions
-- Be patient with newcomers
 
 ### Be Professional
 - Stay on topic
-- Avoid inflammatory language
 - Assume good intent
 - Keep discussions productive
 
@@ -232,4 +305,4 @@ Contributors will be recognized in:
 - Release notes for significant contributions
 - GitHub contributors page
 
-Thank you for helping make this plugin better! 🚀
+Thank you for helping make this plugin better!

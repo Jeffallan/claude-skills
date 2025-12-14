@@ -4,17 +4,27 @@ Get up and running with Fullstack Dev Skills Plugin in minutes!
 
 ## Installation (Choose One)
 
-### Local Installation (Fastest)
+### Marketplace (Recommended)
 ```bash
-cp -r ~/fullstack-dev-skills-plugin/skills/* ~/.claude/skills/
-```
-Restart Claude Code. Done! ✅
+# Add the marketplace
+/plugin marketplace add jeffallan/claude-skills
 
-### Install from GitHub (Recommended for Teams)
+# Install the plugin
+/plugin install fullstack-dev-skills@jeffallan
+
+# Restart Claude Code when prompted
+```
+
+### Install from GitHub
 ```bash
 claude plugin install https://github.com/jeffallan/claude-skills
 ```
-Replace YOUR-USERNAME with the actual GitHub username.
+
+### Local Development
+```bash
+cp -r ./skills/* ~/.claude/skills/
+```
+Restart Claude Code after copying.
 
 ## Test Your Installation
 

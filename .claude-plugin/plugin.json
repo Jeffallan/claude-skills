@@ -1,6 +1,6 @@
 {
   "name": "fullstack-dev-skills",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security. Includes 19 specialized skills: NestJS, Django, FastAPI, React, React Native, Flutter experts, plus debugging, monitoring, architecture design, code review, and security analysis.",
   "author": {
         "name": "jeffallan",
