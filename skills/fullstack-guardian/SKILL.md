@@ -10,6 +10,14 @@ triggers:
   - full stack
   - new feature
   - implement
+  - microservices
+  - websocket
+  - real-time
+  - deployment pipeline
+  - monorepo
+  - architecture decision
+  - technology selection
+  - end-to-end
 role: expert
 scope: implementation
 output-format: code
@@ -49,6 +57,12 @@ Load detailed guidance based on context:
 | Security Checklist | `references/security-checklist.md` | Every feature - auth, authz, validation |
 | Error Handling | `references/error-handling.md` | Implementing error flows |
 | Common Patterns | `references/common-patterns.md` | CRUD, forms, API flows |
+| Backend Patterns | `references/backend-patterns.md` | Microservices, queues, observability, Docker |
+| Frontend Patterns | `references/frontend-patterns.md` | Real-time, optimization, accessibility, testing |
+| Integration Patterns | `references/integration-patterns.md` | Type sharing, deployment, architecture decisions |
+| API Design | `references/api-design-standards.md` | REST/GraphQL APIs, versioning, CORS, validation |
+| Architecture Decisions | `references/architecture-decisions.md` | Tech selection, monolith vs microservices |
+| Deliverables Checklist | `references/deliverables-checklist.md` | Completing features, preparing handoff |
 
 ## Constraints
 
@@ -78,13 +92,8 @@ When implementing features, provide:
 3. Frontend code (components, hooks, API calls)
 4. Brief security notes
 
-## Knowledge Reference
-
-REST/GraphQL APIs, React/Vue/Angular, Node.js/Python/Go backends, SQL/NoSQL databases, JWT/OAuth, OWASP Top 10, input validation, error handling, caching strategies
-
 ## Related Skills
 
 - **Feature Forge** - Receives specifications from
 - **Test Master** - Hands off for testing
 - **DevOps Engineer** - Hands off for deployment
-- **Secure Code Guardian** - Security implementation details
