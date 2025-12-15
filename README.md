@@ -1,12 +1,23 @@
-# Fullstack Dev Skills Plugin
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=54%20Specialized%20Skills%20for%20Full-Stack%20Developers&descSize=20&descAlignY=55" width="100%"/>
+</p>
 
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/jeffallan/claude-skills)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-purple.svg)](https://github.com/jeffallan/claude-skills)
+<p align="center">
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
+  <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
+</p>
 
-> A comprehensive Claude Code plugin with 54 specialized skills for full-stack developers with selective disclosure architecture for 50% faster skill loading.
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=A855F7&center=true&vCenter=true&multiline=true&repeat=false&width=800&height=80&lines=Transform+Claude+Code+into+your+expert+pair+programmer;across+the+entire+development+stack" alt="Typing SVG" />
+</p>
 
-Transform Claude Code into your expert pair programmer across the entire development stack including React frontends, popular backend frameworks, debugging, deployment, code review, and security analysis.
+<p align="center">
+  <strong>🚀 50% Faster Loading</strong> • <strong>📚 284 Reference Files</strong> • <strong>🎯 25+ Frameworks</strong> • <strong>🔒 Selective Disclosure</strong>
+</p>
+
+---
 
 
 ## Quick Start
