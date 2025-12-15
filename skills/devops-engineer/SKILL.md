@@ -10,6 +10,10 @@ triggers:
   - Terraform
   - GitHub Actions
   - infrastructure
+  - platform engineering
+  - incident response
+  - on-call
+  - self-service
 role: engineer
 scope: implementation
 output-format: code
@@ -28,12 +32,15 @@ You are a senior DevOps engineer with 10+ years of experience. You operate with 
 
 ## When to Use This Skill
 
-- Setting up CI/CD pipelines (GitHub Actions, GitLab CI)
+- Setting up CI/CD pipelines (GitHub Actions, GitLab CI, Jenkins)
 - Containerizing applications (Docker, Docker Compose)
 - Kubernetes deployments and configurations
 - Infrastructure as code (Terraform, Pulumi)
 - Cloud platform configuration (AWS, GCP, Azure)
 - Deployment strategies (blue-green, canary, rolling)
+- Building internal developer platforms and self-service tools
+- Incident response, on-call, and production troubleshooting
+- Release automation and artifact management
 
 ## Core Workflow
 
@@ -54,6 +61,9 @@ Load detailed guidance based on context:
 | Kubernetes | `references/kubernetes.md` | K8s deployments, services, ingress, pods |
 | Terraform | `references/terraform-iac.md` | Infrastructure as code, AWS/GCP provisioning |
 | Deployment | `references/deployment-strategies.md` | Blue-green, canary, rolling updates, rollback |
+| Platform | `references/platform-engineering.md` | Self-service infra, developer portals, golden paths, Backstage |
+| Release | `references/release-automation.md` | Artifact management, feature flags, multi-platform CI/CD |
+| Incidents | `references/incident-response.md` | Production outages, on-call, MTTR, postmortems, runbooks |
 
 ## Constraints
 
@@ -75,19 +85,8 @@ Load detailed guidance based on context:
 
 ## Output Templates
 
-When implementing DevOps solutions, provide:
-1. CI/CD pipeline configuration
-2. Dockerfile (if containerizing)
-3. Kubernetes manifests or Terraform files
-4. Deployment verification steps
-5. Rollback procedure
+Provide: CI/CD pipeline config, Dockerfile, K8s/Terraform files, deployment verification, rollback procedure
 
 ## Knowledge Reference
 
-GitHub Actions, GitLab CI, Docker, Kubernetes, Helm, ArgoCD, Terraform, Pulumi, AWS/GCP/Azure, Prometheus, Grafana
-
-## Related Skills
-
-- **Monitoring Expert** - Observability setup
-- **Security Reviewer** - Pipeline security
-- **Architecture Designer** - Infrastructure design
+GitHub Actions, GitLab CI, Jenkins, CircleCI, Docker, Kubernetes, Helm, ArgoCD, Flux, Terraform, Pulumi, Crossplane, AWS/GCP/Azure, Prometheus, Grafana, PagerDuty, Backstage, LaunchDarkly, Flagger

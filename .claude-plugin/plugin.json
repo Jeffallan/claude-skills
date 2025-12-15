@@ -1,7 +1,7 @@
 {
   "name": "fullstack-dev-skills",
-  "version": "0.1.0",
-  "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security. Includes 19 specialized skills: NestJS, Django, FastAPI, React, React Native, Flutter experts, plus debugging, monitoring, architecture design, code review, and security analysis.",
+  "version": "0.2.0",
+  "description": "Comprehensive skill pack with 54 specialized skills for full-stack developers: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 10 backend frameworks, 6 frontend/mobile, plus infrastructure, DevOps, security, and testing. Features progressive disclosure architecture for 50% faster loading.",
   "author": {
         "name": "jeffallan",
         "email": "github@jeffallan"
@@ -15,13 +15,32 @@
     "typescript",
     "python",
     "go",
+    "rust",
+    "cpp",
+    "swift",
+    "kotlin",
+    "csharp",
+    "php",
+    "java",
+    "sql",
     "dart",
     "react",
+    "nextjs",
+    "vue",
+    "angular",
     "react-native",
     "flutter",
     "nestjs",
     "django",
     "fastapi",
+    "spring-boot",
+    "laravel",
+    "rails",
+    "dotnet",
+    "kubernetes",
+    "terraform",
+    "graphql",
+    "microservices",
     "debugging",
     "monitoring",
     "architecture",
@@ -30,6 +49,8 @@
     "testing",
     "playwright",
     "devops",
+    "sre",
     "model-invoked"
-  ]
+  ],
+  "skills": "./skills/"
 }
