@@ -169,9 +169,9 @@ When implementing [X], provide:
 - **Skill Name** - Brief integration note
 ```
 
-### Selective Disclosure Pattern
+### Progressive Disclosure Pattern
 
-For skills with extensive reference material, use the selective disclosure pattern to reduce initial token load:
+For skills with extensive reference material, use the progressive disclosure pattern to reduce initial token load:
 
 **Structure:**
 ```
@@ -214,7 +214,7 @@ Load detailed guidance based on context:
 | Key  | Value       |
 ```
 
-**When to Use Selective Disclosure:**
+**When to Use Progressive Disclosure:**
 - Skill has 5+ distinct topic areas
 - Original content exceeds 200 lines
 - Topics are contextually independent
@@ -233,7 +233,7 @@ Load detailed guidance based on context:
 4. **Remove Redundancy** - Don't repeat information across sections
 5. **Avoid Obvious Comments** - Code should be self-explanatory where possible
 6. **Link Don't Reproduce** - Reference external docs instead of copying content
-7. **Use Selective Disclosure** - Split large skills into main file + references/
+7. **Use Progressive Disclosure** - Split large skills into main file + references/
 
 ### Code Examples Best Practices
 

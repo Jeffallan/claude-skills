@@ -39,14 +39,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-12-14
 
 ### Added
-- Selective disclosure architecture for all 19 skills
+- Progressive disclosure architecture for all 19 skills
 - 91 reference files across all skills for contextual loading
 - Routing tables in each SKILL.md pointing to domain-specific references
 
 ### Changed
 - Refactored all SKILL.md files to lean format (~80-100 lines each)
 - 50% token reduction on initial skill load
-- Updated CONTRIBUTING.md with selective disclosure guidelines
+- Updated CONTRIBUTING.md with progressive disclosure guidelines
 - Rewrote README.md with architecture documentation and improved structure
 
 ## [0.0.4] - 2025-12-14

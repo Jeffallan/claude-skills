@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🚀 50% Faster Loading</strong> • <strong>📚 284 Reference Files</strong> • <strong>🎯 25+ Frameworks</strong> • <strong>🔒 Selective Disclosure</strong>
+  <strong>🚀 50% Faster Loading</strong> • <strong>📚 284 Reference Files</strong> • <strong>🎯 25+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 ---
@@ -35,7 +35,7 @@ then
 
 ## Architecture
 
-### Selective Disclosure Pattern
+### Progressive Disclosure Pattern
 
 Each skill follows this structure:
 
@@ -325,4 +325,4 @@ Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers wo
 
 ---
 
-**Built for Claude Code** | **Powered by Selective Disclosure** | **284 Reference Files** | **54 Skills** | **50% Faster**
+**Built for Claude Code** | **Powered by Progressive Disclosure** | **284 Reference Files** | **54 Skills** | **50% Faster**
