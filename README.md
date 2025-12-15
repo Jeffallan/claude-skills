@@ -1,12 +1,23 @@
-# Fullstack Dev Skills Plugin
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=54%20Specialized%20Skills%20for%20Full-Stack%20Developers&descSize=20&descAlignY=55" width="100%"/>
+</p>
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/jeffallan/claude-skills)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-purple.svg)](https://github.com/jeffallan/claude-skills)
+<p align="center">
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
+  <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
+</p>
 
-> A comprehensive Claude Code plugin with 19 specialized skills for full-stack developers with selective disclosure architecture for 50% faster skill loading.
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=A855F7&center=true&vCenter=true&multiline=true&repeat=false&width=800&height=80&lines=Transform+Claude+Code+into+your+expert+pair+programmer;across+the+entire+development+stack" alt="Typing SVG" />
+</p>
 
-Transform Claude Code into your expert pair programmer across the entire development stack including React frontends, popular backend frameworks, debugging, deployment, code review, and security analysis.
+<p align="center">
+  <strong>🚀 50% Faster Loading</strong> • <strong>📚 284 Reference Files</strong> • <strong>🎯 25+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
+</p>
+
+---
 
 
 ## Quick Start
@@ -24,7 +35,7 @@ then
 
 ## Architecture
 
-### Selective Disclosure Pattern
+### Progressive Disclosure Pattern
 
 Each skill follows this structure:
 
@@ -57,39 +68,42 @@ claude-skills/
 ├── .claude-plugin/
 │   ├── plugin.json           # Plugin metadata
 │   └── marketplace.json      # Marketplace configuration
-├── skills/                   # 19 specialized skills
+├── skills/                   # 54 specialized skills
 │   ├── react-expert/
 │   │   ├── SKILL.md
 │   │   └── references/       # 6 reference files
 │   ├── nestjs-expert/
 │   │   ├── SKILL.md
 │   │   └── references/       # 5 reference files
-│   ├── fastapi-expert/
+│   ├── python-pro/
 │   │   ├── SKILL.md
-│   │   └── references/       # 4 reference files
-│   └── ... (16 more skills)
+│   │   └── references/       # Language-specific patterns
+│   └── ... (51 more skills)
 ├── README.md
 ├── SKILLS_GUIDE.md          # Quick reference guide
 └── CONTRIBUTING.md          # Contribution guidelines
 ```
 
 **Stats:**
-- 19 skills
-- 91 reference files
+- 54 skills
+- 284 reference files
 - ~50% token reduction
-- Covers 10+ frameworks
+- Covers 25+ frameworks
 
 ## Skills Overview
 
-**19 specialized skills** across 7 categories:
+**54 specialized skills** across 10 categories:
 
-- **Backend Frameworks**: NestJS, Django, FastAPI experts
-- **Frontend & Mobile**: React, React Native, Flutter experts
-- **Testing & Quality**: Test Master, Playwright, Code Reviewer, Code Documenter
-- **DevOps & Operations**: DevOps Engineer, Monitoring Expert
-- **Architecture & Design**: Architecture Designer, Feature Forge, Spec Miner
-- **Security**: Secure Code Guardian, Security Reviewer
-- **Workflow**: Debugging Wizard, Fullstack Guardian
+- **Languages (12)**: Python Pro, TypeScript Pro, JavaScript Pro, Go Pro, Rust Engineer, SQL Pro, C++ Pro, Swift Expert, Kotlin Specialist, C# Developer, PHP Pro, Java Architect
+- **Backend Frameworks (10)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
+- **Frontend & Mobile (6)**: React Expert, Next.js Developer, Vue Expert, Angular Architect, React Native Expert, Flutter Expert
+- **Infrastructure (5)**: Kubernetes Specialist, Terraform Engineer, Postgres Pro, Cloud Architect, Database Optimizer
+- **API & Architecture (9)**: GraphQL Architect, API Designer, WebSocket Engineer, Microservices Architect, MCP Developer, Architecture Designer, Feature Forge, Spec Miner
+- **Testing & Quality (4)**: Test Master, Playwright Expert, Code Reviewer, Code Documenter
+- **DevOps & Operations (5)**: DevOps Engineer, Monitoring Expert, SRE Engineer, Chaos Engineer, CLI Developer
+- **Security (2)**: Secure Code Guardian, Security Reviewer
+- **Specialized (3)**: Legacy Modernizer, Embedded Systems, Game Developer
+- **Workflow (2)**: Debugging Wizard, Fullstack Guardian
 
 See **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** for when to use each skill, workflows, and examples.
 
@@ -145,17 +159,34 @@ Secure Code Guardian → Security Reviewer → Test Master
 ### Languages
 - TypeScript / JavaScript
 - Python
-- Dart
 - Go
+- Rust
+- C++
+- Swift
+- Kotlin
+- C#
+- PHP
+- Ruby
+- Java
+- SQL
+- Dart
 
 ### Backend
 - NestJS (TypeScript)
 - Django / Django REST Framework (Python)
 - FastAPI (Python)
 - Express (TypeScript)
+- Spring Boot (Java)
+- Laravel (PHP)
+- Ruby on Rails (Ruby)
+- .NET Core (C#)
+- GraphQL APIs
 
 ### Frontend
 - React 19 (Server Components, use() hook)
+- Next.js (App Router, Server Actions)
+- Vue 3 (Composition API, Pinia)
+- Angular (Standalone Components, Signals)
 - React Native (Expo, bare workflow)
 - Flutter (Material Design, Cupertino)
 
@@ -170,11 +201,13 @@ Secure Code Guardian → Security Reviewer → Test Master
 - MongoDB (Mongoose, Motor)
 - MySQL / MariaDB
 
-### DevOps
+### Infrastructure & DevOps
 - Docker & Docker Compose
-- Kubernetes
-- GitHub Actions / GitLab CI
-- Terraform / Pulumi
+- Kubernetes (K8s, Helm)
+- Terraform
+- AWS / Azure / GCP
+- PostgreSQL / MySQL / MongoDB
+- CI/CD (GitHub Actions, GitLab CI)
 
 ### Monitoring
 - Prometheus / Grafana
@@ -286,6 +319,10 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers working across modern development stacks.
 
+## :clap: Thanks For Your support 
+
+[![Stargazers repo roster for @Jeffallan/claude-skills](https://reporoster.com/stars/Jeffallan/claude-skills)](https://github.com/Jeffallan/claude-skills/stargazers)
+
 ---
 
-**Built for Claude Code** | **Powered by Selective Disclosure** | **91 Reference Files** | **19 Skills** | **50% Faster**
+**Built for Claude Code** | **Powered by Progressive Disclosure** | **284 Reference Files** | **54 Skills** | **50% Faster**

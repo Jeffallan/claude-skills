@@ -140,3 +140,105 @@ curl -f https://app.example.com/health
 # - Latency p99 < 500ms
 # - No memory/CPU spikes
 ```
+
+## Deployment Metrics (DORA)
+
+Track four key metrics:
+- **Deployment Frequency**: Target 10+/day
+- **Lead Time for Changes**: Target <1 hour
+- **Change Failure Rate**: Target <5%
+- **MTTR**: Target <30 minutes
+
+```yaml
+# Prometheus metrics for DORA tracking
+- record: deployment:frequency:1d
+  expr: count_over_time(deployment_completed[1d])
+
+- record: deployment:lead_time:p95
+  expr: histogram_quantile(0.95,
+    rate(commit_to_deploy_seconds_bucket[1h]))
+
+- record: deployment:failure_rate
+  expr: |
+    sum(rate(deployment_failed[1h]))
+    / sum(rate(deployment_total[1h]))
+```
+
+## Advanced Canary with Automated Analysis
+
+```yaml
+# Flagger: Automated canary with rollback
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: api
+spec:
+  provider: istio
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  progressDeadlineSeconds: 60
+  service:
+    port: 8080
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+  analysis:
+    interval: 30s
+    threshold: 5
+    maxWeight: 50
+    stepWeight: 10
+    metrics:
+      - name: error-rate
+        templateRef:
+          name: error-rate
+        thresholdRange:
+          max: 1
+      - name: latency
+        templateRef:
+          name: latency
+        thresholdRange:
+          max: 500
+    webhooks:
+      - name: acceptance-test
+        type: pre-rollout
+        url: http://test-runner/
+      - name: load-test
+        url: http://loadtester/
+        timeout: 5s
+        metadata:
+          type: bash
+          cmd: "hey -z 1m -q 10 http://api-canary:8080/"
+```
+
+## Shadow Deployment
+
+```yaml
+# Mirror traffic to shadow deployment
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api
+spec:
+  hosts:
+    - api
+  http:
+    - match:
+        - headers:
+            x-test-version:
+              exact: "v2"
+      route:
+        - destination:
+            host: api
+            subset: v2
+      mirror:
+        host: api
+        subset: v2-shadow
+      mirrorPercentage:
+        value: 100
+    - route:
+        - destination:
+            host: api
+            subset: v1
+```
