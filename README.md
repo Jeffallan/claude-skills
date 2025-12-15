@@ -308,6 +308,10 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers working across modern development stacks.
 
+## :clap: Thanks For Your support 
+
+[![Stargazers repo roster for @Jeffallan/claude-skills](https://reporoster.com/stars/Jeffallan/claude-skills)](https://github.com/Jeffallan/claude-skills/stargazers)
+
 ---
 
 **Built for Claude Code** | **Powered by Selective Disclosure** | **284 Reference Files** | **54 Skills** | **50% Faster**
