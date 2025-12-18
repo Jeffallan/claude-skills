@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**Version:** v0.2.0 (Released December 2024)
+**Version:** v0.2.0 (Released December 2025)
 
 - **54 Skills** across 8 domains
 - **284 Reference Files** with progressive disclosure architecture
@@ -318,4 +318,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: December 2024*
+*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: December 2025*
