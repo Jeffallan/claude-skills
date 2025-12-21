@@ -52,6 +52,7 @@ Load detailed guidance based on context:
 | Endpoints | `references/endpoints-routing.md` | APIRouter, dependencies, routing |
 | Authentication | `references/authentication.md` | JWT, OAuth2, get_current_user |
 | Testing | `references/testing-async.md` | pytest-asyncio, httpx, fixtures |
+| Django Migration | `references/migration-from-django.md` | Migrating from Django/DRF to FastAPI |
 
 ## Constraints
 

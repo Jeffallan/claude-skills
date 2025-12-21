@@ -59,6 +59,7 @@ Load detailed guidance based on context:
 | Hooks | `references/hooks-patterns.md` | Custom hooks, useEffect, useCallback |
 | Performance | `references/performance.md` | memo, lazy, virtualization |
 | Testing | `references/testing-react.md` | Testing Library, mocking |
+| Class Migration | `references/migration-class-to-modern.md` | Converting class components to hooks/RSC |
 
 ## Constraints
 

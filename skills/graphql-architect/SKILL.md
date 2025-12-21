@@ -52,6 +52,7 @@ Load detailed guidance based on context:
 | Federation | `references/federation.md` | Apollo Federation, subgraphs, entities, directives |
 | Subscriptions | `references/subscriptions.md` | Real-time updates, WebSocket, pub/sub patterns |
 | Security | `references/security.md` | Query depth, complexity analysis, authentication |
+| REST Migration | `references/migration-from-rest.md` | Migrating REST APIs to GraphQL |
 
 ## Constraints
 

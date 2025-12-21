@@ -53,6 +53,7 @@ Load detailed guidance based on context:
 | DTOs | `references/dtos-validation.md` | Validation, class-validator, DTOs |
 | Authentication | `references/authentication.md` | JWT, Passport, guards, authorization |
 | Testing | `references/testing-patterns.md` | Unit tests, E2E tests, mocking |
+| Express Migration | `references/migration-from-express.md` | Migrating from Express.js to NestJS |
 
 ## Constraints
 
