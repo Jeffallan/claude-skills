@@ -560,6 +560,342 @@ redis:
       size: 20Gi
 ```
 
+## Chart Testing
+
+### Helm Test Command
+
+```bash
+# Run chart tests after installation
+helm test myapp --namespace production
+
+# Run tests with logs
+helm test myapp --namespace production --logs
+
+# Run tests with timeout
+helm test myapp --namespace production --timeout 5m
+```
+
+### Chart Testing Tool (ct)
+
+```bash
+# Install chart-testing
+brew install chart-testing
+
+# Lint charts
+ct lint --config ct.yaml
+
+# Lint and install (CI/CD)
+ct lint-and-install --config ct.yaml
+
+# Test changed charts only
+ct lint-and-install --target-branch main --config ct.yaml
+```
+
+```yaml
+# ct.yaml - Chart Testing configuration
+remote: origin
+target-branch: main
+chart-dirs:
+  - charts
+chart-repos:
+  - bitnami=https://charts.bitnami.com/bitnami
+helm-extra-args: --timeout 600s
+validate-maintainers: true
+check-version-increment: true
+```
+
+### Unit Testing with helm-unittest
+
+```bash
+# Install plugin
+helm plugin install https://github.com/helm-unittest/helm-unittest
+
+# Run tests
+helm unittest ./mychart
+```
+
+```yaml
+# tests/deployment_test.yaml
+suite: deployment tests
+templates:
+  - templates/deployment.yaml
+tests:
+  - it: should create deployment with correct replicas
+    set:
+      replicaCount: 5
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 5
+
+  - it: should set resource limits
+    set:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 500m
+
+  - it: should not create HPA when autoscaling disabled
+    set:
+      autoscaling:
+        enabled: false
+    template: templates/hpa.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+```
+
+## Values Schema Validation
+
+```json
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["image", "service"],
+  "properties": {
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 1
+    },
+    "image": {
+      "type": "object",
+      "required": ["repository"],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^[a-z0-9.-/]+$"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "limits": {
+          "$ref": "#/definitions/resourceRequirements"
+        },
+        "requests": {
+          "$ref": "#/definitions/resourceRequirements"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "resourceRequirements": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "type": "string",
+          "pattern": "^[0-9]+m?$"
+        },
+        "memory": {
+          "type": "string",
+          "pattern": "^[0-9]+(Mi|Gi)$"
+        }
+      }
+    }
+  }
+}
+```
+
+## Chart Repository
+
+### Create Repository
+
+```bash
+# Package chart
+helm package mychart/ --version 1.2.0 --destination ./repo
+
+# Generate index
+helm repo index ./repo --url https://charts.example.com
+
+# Update index with new chart
+helm repo index ./repo --url https://charts.example.com --merge ./repo/index.yaml
+```
+
+### GitHub Pages Repository
+
+```yaml
+# .github/workflows/release.yaml
+name: Release Charts
+on:
+  push:
+    branches: [main]
+    paths: ['charts/**']
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+```
+
+### OCI Registry
+
+```bash
+# Login to registry
+helm registry login myregistry.io -u user -p token
+
+# Push chart to OCI registry
+helm push mychart-1.2.0.tgz oci://myregistry.io/charts
+
+# Pull from OCI
+helm pull oci://myregistry.io/charts/mychart --version 1.2.0
+
+# Install from OCI
+helm install myapp oci://myregistry.io/charts/mychart --version 1.2.0
+```
+
+## Helm Plugins
+
+```bash
+# helm-diff - preview upgrades
+helm plugin install https://github.com/databus23/helm-diff
+helm diff upgrade myapp ./mychart -f values-prod.yaml
+
+# helm-secrets - manage encrypted secrets
+helm plugin install https://github.com/jkroepke/helm-secrets
+helm secrets encrypt secrets.yaml
+helm secrets decrypt secrets.yaml.enc
+helm secrets install myapp ./mychart -f secrets.yaml.enc
+
+# helm-git - use git repos as chart sources
+helm plugin install https://github.com/aslafy-z/helm-git
+helm repo add mycharts git+https://github.com/myorg/charts@charts?ref=main
+
+# helm-s3 - S3 as chart repository
+helm plugin install https://github.com/hypnoglow/helm-s3
+helm s3 init s3://my-bucket/charts
+helm s3 push mychart-1.2.0.tgz my-s3-repo
+```
+
+## Complex Upgrade/Rollback
+
+```bash
+# Upgrade with atomic (rollback on failure)
+helm upgrade myapp ./mychart \
+  --namespace production \
+  --atomic \
+  --timeout 10m \
+  --wait
+
+# Upgrade with cleanup on failure
+helm upgrade myapp ./mychart \
+  --namespace production \
+  --cleanup-on-fail
+
+# Force resource update (recreate)
+helm upgrade myapp ./mychart \
+  --namespace production \
+  --force
+
+# Dry run before upgrade
+helm upgrade myapp ./mychart \
+  --namespace production \
+  --dry-run \
+  --debug
+
+# Compare current vs new
+helm get manifest myapp -n production > current.yaml
+helm template myapp ./mychart -f values-prod.yaml > new.yaml
+diff current.yaml new.yaml
+
+# Rollback to specific revision
+helm rollback myapp 3 --namespace production
+
+# Rollback with wait
+helm rollback myapp 3 --namespace production --wait --timeout 5m
+
+# View revision history
+helm history myapp --namespace production
+```
+
+## Library Charts
+
+```yaml
+# Chart.yaml for library chart
+apiVersion: v2
+name: mylib
+type: library
+version: 1.0.0
+```
+
+```yaml
+# templates/_deployment.tpl in library
+{{- define "mylib.deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mylib.fullname" . }}
+  labels:
+    {{- include "mylib.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "mylib.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mylib.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+{{- end }}
+```
+
+```yaml
+# Using library chart
+# Chart.yaml
+dependencies:
+  - name: mylib
+    version: "1.x.x"
+    repository: https://charts.example.com
+
+# templates/deployment.yaml
+{{- include "mylib.deployment" . }}
+```
+
 ## Best Practices
 
 1. **Versioning**: Follow semantic versioning for charts
@@ -572,3 +908,8 @@ redis:
 8. **Hooks**: Use hooks for migrations, cleanup
 9. **Dependencies**: Pin dependency versions
 10. **Schema**: Validate values with values.schema.json
+11. **Use ct** for comprehensive chart testing in CI
+12. **Use helm-diff** before production upgrades
+13. **Encrypt secrets** with helm-secrets or sealed-secrets
+14. **Use library charts** for shared patterns
+15. **Push to OCI registries** for better artifact management
