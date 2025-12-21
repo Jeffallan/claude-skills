@@ -47,6 +47,9 @@ Load detailed guidance based on context:
 | Common Issues | `references/common-issues.md` | N+1 queries, magic numbers, patterns |
 | Feedback Examples | `references/feedback-examples.md` | Writing good feedback |
 | Report Template | `references/report-template.md` | Writing final review report |
+<!-- Rows below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
+| Spec Compliance | `references/spec-compliance-review.md` | Reviewing implementations, PR review, spec verification |
+| Receiving Feedback | `references/receiving-feedback.md` | Responding to review comments, handling feedback |
 
 ## Constraints
 

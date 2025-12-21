@@ -53,6 +53,8 @@ Load detailed guidance based on context:
 | Common Patterns | `references/common-patterns.md` | Recognizing bug patterns |
 | Strategies | `references/strategies.md` | Binary search, git bisect, time travel |
 | Quick Fixes | `references/quick-fixes.md` | Common error solutions |
+<!-- Row below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
+| Systematic Debugging | `references/systematic-debugging.md` | Complex bugs, multiple failed fixes, root cause analysis |
 
 ## Constraints
 
