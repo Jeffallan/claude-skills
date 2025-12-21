@@ -32,19 +32,19 @@ Complete the foundational skill library with expanded domain coverage and enhanc
 ### New Domains
 
 #### Data Science Domain (3 skills)
-- **pandas-pro** - Advanced data manipulation and analysis
-- **spark-engineer** - Distributed data processing at scale
-- **ml-pipeline** - End-to-end machine learning workflows
+- [#73](https://github.com/Jeffallan/claude-skills/issues/73): **pandas-pro** - Advanced data manipulation and analysis
+- [#74](https://github.com/Jeffallan/claude-skills/issues/74): **spark-engineer** - Distributed data processing at scale
+- [#75](https://github.com/Jeffallan/claude-skills/issues/75): **ml-pipeline** - End-to-end machine learning workflows
 
 #### AI/LLM Domain (3 skills)
-- **prompt-engineer** - Systematic prompt design and optimization
-- **rag-architect** - Retrieval-Augmented Generation systems
-- **fine-tuning-expert** - Model customization and training
+- [#76](https://github.com/Jeffallan/claude-skills/issues/76): **prompt-engineer** - Systematic prompt design and optimization
+- [#77](https://github.com/Jeffallan/claude-skills/issues/77): **rag-architect** - Retrieval-Augmented Generation systems
+- [#78](https://github.com/Jeffallan/claude-skills/issues/78): **fine-tuning-expert** - Model customization and training
 
 #### Platform Domain (3 skills)
-- **salesforce-developer** - CRM customization and development
-- **shopify-expert** - E-commerce platform development
-- **wordpress-pro** - WordPress development and optimization
+- [#79](https://github.com/Jeffallan/claude-skills/issues/79): **salesforce-developer** - CRM customization and development
+- [#80](https://github.com/Jeffallan/claude-skills/issues/80): **shopify-expert** - E-commerce platform development
+- [#81](https://github.com/Jeffallan/claude-skills/issues/81): **wordpress-pro** - WordPress development and optimization
 
 ### Improvements
 - Complete outstanding GitHub issues:
