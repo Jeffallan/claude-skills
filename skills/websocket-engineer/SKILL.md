@@ -1,6 +1,6 @@
 ---
-name: WebSocket Engineer
-description: WebSocket specialist for real-time communication systems. Invoke for Socket.IO, WebSocket servers, bidirectional messaging, presence systems. Keywords: WebSocket, Socket.IO, real-time, pub/sub, Redis.
+name: websocket-engineer
+description: Use when building real-time communication systems with WebSockets or Socket.IO. Invoke for bidirectional messaging, horizontal scaling with Redis, presence tracking, room management. Keywords: WebSocket, Socket.IO, real-time, pub/sub, Redis.
 triggers:
   - WebSocket
   - Socket.IO

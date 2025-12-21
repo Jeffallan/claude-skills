@@ -1,6 +1,6 @@
 ---
-name: Fullstack Guardian
-description: Full-stack developer for secure, scalable features across frontend, backend, and security layers. Invoke for feature implementation, API development, UI building, cross-stack work. Keywords: fullstack, feature, implement, API, frontend, backend.
+name: fullstack-guardian
+description: Use when implementing features across frontend and backend, building APIs with UI, or creating end-to-end data flows. Invoke for feature implementation, API development, UI building, cross-stack work. Keywords: fullstack, feature, implement, API, frontend, backend.
 triggers:
   - fullstack
   - implement feature

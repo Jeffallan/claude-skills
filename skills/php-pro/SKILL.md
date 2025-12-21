@@ -1,6 +1,6 @@
 ---
-name: PHP Pro
-description: Expert PHP developer specializing in modern PHP 8.3+ with strong typing, async programming, and enterprise frameworks. Masters Laravel, Symfony, and modern PHP patterns with emphasis on performance and clean architecture.
+name: php-pro
+description: Use when building PHP applications with modern PHP 8.3+ features, Laravel, or Symfony frameworks. Invoke for strict typing, PHPStan level 9, async patterns with Swoole, PSR standards. Keywords: PHP, Laravel, Symfony, PHPStan, strict types, Eloquent.
 triggers:
   - PHP
   - Laravel

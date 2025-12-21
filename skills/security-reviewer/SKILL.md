@@ -1,6 +1,6 @@
 ---
-name: Security Reviewer
-description: Security code review specialist for identifying vulnerabilities, SAST analysis, penetration testing, and infrastructure security. Invoke for security audits, vulnerability scanning, code review, pentest, DevSecOps, cloud security. Keywords: security review, vulnerability, SAST, audit, penetration testing, infrastructure security.
+name: security-reviewer
+description: Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews. Keywords: security review, vulnerability, SAST, audit, penetration testing, cloud security.
 triggers:
   - security review
   - vulnerability scan

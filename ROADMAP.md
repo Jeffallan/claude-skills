@@ -80,17 +80,17 @@ Complete the foundational skill library with expanded domain coverage and enhanc
 Enable skills to work together more effectively through intelligent cross-referencing and contextual recommendations.
 
 ### Features
-- **Smart Skill Discovery** - Automatic detection of related skills based on context
-- **Cross-Domain Recommendations** - Suggest complementary skills from different domains
-- **Enhanced Routing Logic** - Context-aware skill selection
-- **Related Skills Integration** - Deep linking between complementary skills
-- **Skill Dependency Mapping** - Visual representation of skill relationships
+- [#64](https://github.com/Jeffallan/claude-skills/issues/64): **Smart Skill Discovery** - Automatic detection of related skills based on context
+- [#65](https://github.com/Jeffallan/claude-skills/issues/65): **Cross-Domain Recommendations** - Suggest complementary skills from different domains
+- [#66](https://github.com/Jeffallan/claude-skills/issues/66): **Enhanced Routing Logic** - Context-aware skill selection
+- [#67](https://github.com/Jeffallan/claude-skills/issues/67): **Related Skills Integration** - Deep linking between complementary skills
+- [#68](https://github.com/Jeffallan/claude-skills/issues/68): **Skill Dependency Mapping** - Visual representation of skill relationships
 
 ### Technical Improvements
-- Skill metadata enhancement
-- Improved context analysis algorithms
-- Better skill description indexing
-- Enhanced routing table intelligence
+- [#69](https://github.com/Jeffallan/claude-skills/issues/69): Skill metadata enhancement
+- [#70](https://github.com/Jeffallan/claude-skills/issues/70): Improved context analysis algorithms
+- [#71](https://github.com/Jeffallan/claude-skills/issues/71): Better skill description indexing
+- [#72](https://github.com/Jeffallan/claude-skills/issues/72): Enhanced routing table intelligence
 
 ### Success Metrics
 - 30% improvement in relevant skill suggestions

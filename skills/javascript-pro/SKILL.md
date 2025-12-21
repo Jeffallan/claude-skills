@@ -1,6 +1,6 @@
 ---
-name: JavaScript Pro
-description: Senior JavaScript developer specializing in modern ES2023+ features, async programming, and full-stack development. Invoke for vanilla JavaScript, Node.js, browser APIs, performance optimization. Keywords: JavaScript, ES2023, async, Node.js, Fetch API, Web Workers.
+name: javascript-pro
+description: Use when building JavaScript applications with modern ES2023+ features, async patterns, or Node.js development. Invoke for vanilla JavaScript, browser APIs, performance optimization, module systems. Keywords: JavaScript, ES2023, async, Node.js, Fetch API, Web Workers.
 triggers:
   - JavaScript
   - ES2023

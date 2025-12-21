@@ -1,6 +1,6 @@
 ---
-name: Laravel Specialist
-description: Laravel 10+ specialist for elegant PHP applications. Invoke for Eloquent ORM, API resources, queues, Livewire, testing. Keywords: Laravel, Eloquent, PHP 8.2+, API, queues, Livewire, Sanctum, Horizon.
+name: laravel-specialist
+description: Use when building Laravel 10+ applications requiring Eloquent ORM, API resources, or queue systems. Invoke for Laravel models, Livewire components, Sanctum authentication, Horizon queues. Keywords: Laravel, Eloquent, PHP 8.2+, API, queues, Livewire, Sanctum, Horizon.
 triggers:
   - Laravel
   - Eloquent

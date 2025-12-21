@@ -1,6 +1,6 @@
 ---
-name: Golang Pro
-description: Expert Go developer for high-performance systems, concurrent programming, and cloud-native microservices. Invoke for Go 1.21+ development, goroutines, generics, gRPC. Keywords: Go, Golang, concurrency, microservices, goroutines.
+name: golang-pro
+description: Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration. Keywords: Go, Golang, concurrency, microservices, goroutines.
 triggers:
   - Go
   - Golang

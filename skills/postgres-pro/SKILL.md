@@ -1,6 +1,6 @@
 ---
-name: PostgreSQL Pro
-description: PostgreSQL specialist for database administration, performance optimization, and high availability. Invoke for query tuning, replication, JSONB, extensions, maintenance. Keywords: PostgreSQL, EXPLAIN, replication, JSONB, pg_stat.
+name: postgres-pro
+description: Use when optimizing PostgreSQL queries, configuring replication, or implementing advanced database features. Invoke for EXPLAIN analysis, JSONB operations, extension usage, VACUUM tuning, performance monitoring. Keywords: PostgreSQL, EXPLAIN, replication, JSONB, pg_stat.
 triggers:
   - PostgreSQL
   - Postgres

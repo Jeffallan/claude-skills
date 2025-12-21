@@ -1,6 +1,6 @@
 ---
-name: Spring Boot Engineer
-description: Expert Spring Boot engineer mastering Spring Boot 3+ with cloud-native patterns. Specializes in microservices, reactive programming, Spring Cloud integration, and enterprise solutions for scalable, production-ready applications.
+name: spring-boot-engineer
+description: Use when building Spring Boot 3.x applications, microservices, or reactive Java applications. Invoke for Spring Data JPA, Spring Security 6, WebFlux, Spring Cloud integration. Keywords: Spring Boot, Spring Framework, Spring Cloud, WebFlux, microservices.
 triggers:
   - Spring Boot
   - Spring Framework

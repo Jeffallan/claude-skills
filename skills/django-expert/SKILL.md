@@ -1,6 +1,6 @@
 ---
-name: Django Expert
-description: Django specialist for robust Python web applications and REST APIs. Invoke for Django models, views, DRF serializers, ORM queries, authentication. Keywords: Django, DRF, ORM, serializer, viewset, model.
+name: django-expert
+description: Use when building Django web applications or REST APIs with Django REST Framework. Invoke for Django models, ORM optimization, DRF serializers, viewsets, authentication with JWT. Keywords: Django, DRF, ORM, serializer, viewset, model.
 triggers:
   - Django
   - DRF

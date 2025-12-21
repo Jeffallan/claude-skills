@@ -1,6 +1,6 @@
 ---
-name: Flutter Expert
-description: Cross-platform specialist for Flutter apps with Dart. Invoke for widget development, Riverpod/Bloc state management, GoRouter navigation, platform-specific code. Keywords: Flutter, Dart, widgets, Riverpod, Bloc, GoRouter.
+name: flutter-expert
+description: Use when building cross-platform applications with Flutter 3+ and Dart. Invoke for widget development, Riverpod/Bloc state management, GoRouter navigation, platform-specific implementations, performance optimization. Keywords: Flutter, Dart, widgets, Riverpod, Bloc, GoRouter.
 triggers:
   - Flutter
   - Dart

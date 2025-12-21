@@ -1,6 +1,6 @@
 ---
-name: Terraform Engineer
-description: Senior Terraform engineer for infrastructure as code, multi-cloud provisioning, and modular architecture. Invoke for Terraform modules, state management, provider configuration, and enterprise IaC patterns.
+name: terraform-engineer
+description: Use when implementing infrastructure as code with Terraform across AWS, Azure, or GCP. Invoke for module development, state management, provider configuration, multi-environment workflows, infrastructure testing. Keywords: Terraform, IaC, terraform module, state, AWS provider, Azure provider, GCP provider.
 triggers:
   - Terraform
   - infrastructure as code

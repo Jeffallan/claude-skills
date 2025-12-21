@@ -1,6 +1,6 @@
 ---
-name: Kubernetes Specialist
-description: Expert Kubernetes specialist for production-grade container orchestration. Invoke for cluster management, workload deployment, security hardening, and performance optimization. Keywords: Kubernetes, K8s, kubectl, Helm, RBAC, NetworkPolicy.
+name: kubernetes-specialist
+description: Use when deploying or managing Kubernetes workloads requiring cluster configuration, security hardening, or troubleshooting. Invoke for Helm charts, RBAC policies, NetworkPolicies, storage configuration, performance optimization. Keywords: Kubernetes, K8s, kubectl, Helm, RBAC, NetworkPolicy.
 triggers:
   - Kubernetes
   - K8s

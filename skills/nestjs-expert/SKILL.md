@@ -1,6 +1,6 @@
 ---
-name: NestJS Expert
-description: NestJS specialist for scalable Node.js server-side applications. Invoke for modules, controllers, services, DTOs, guards, interceptors, TypeORM/Prisma. Keywords: NestJS, Nest, Node.js, TypeScript backend, dependency injection.
+name: nestjs-expert
+description: Use when building NestJS applications requiring modular architecture, dependency injection, or TypeScript backend development. Invoke for modules, controllers, services, DTOs, guards, interceptors, TypeORM/Prisma. Keywords: NestJS, Nest, Node.js, TypeScript backend, dependency injection.
 triggers:
   - NestJS
   - Nest

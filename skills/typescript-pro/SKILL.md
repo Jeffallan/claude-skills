@@ -1,6 +1,6 @@
 ---
-name: TypeScript Pro
-description: Expert TypeScript developer for advanced type systems, full-stack type safety, and build optimization. Invoke for generics, type guards, utility types, tRPC, monorepos. Keywords: TypeScript, generics, type safety, tRPC, tsconfig.
+name: typescript-pro
+description: Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup. Keywords: TypeScript, generics, type safety, tRPC, tsconfig.
 triggers:
   - TypeScript
   - generics

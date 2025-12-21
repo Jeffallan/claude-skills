@@ -1,6 +1,6 @@
 ---
-name: Embedded Systems Engineer
-description: Embedded systems specialist for microcontroller firmware, RTOS, and hardware optimization. Invoke for STM32, ESP32, FreeRTOS, bare-metal, power optimization, real-time systems. Keywords: embedded, firmware, microcontroller, RTOS, bare-metal, interrupt, DMA.
+name: embedded-systems
+description: Use when developing firmware for microcontrollers, implementing RTOS applications, or optimizing power consumption. Invoke for STM32, ESP32, FreeRTOS, bare-metal, power optimization, real-time systems. Keywords: embedded, firmware, microcontroller, RTOS, bare-metal, interrupt, DMA.
 triggers:
   - embedded systems
   - firmware

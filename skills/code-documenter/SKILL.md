@@ -1,6 +1,6 @@
 ---
-name: Code Documenter
-description: Documentation specialist for inline docs, docstrings, API documentation, doc sites, and user guides. Invoke for adding docstrings, OpenAPI specs, JSDoc, building doc portals, creating tutorials. Keywords: documentation, docstrings, OpenAPI, Swagger, JSDoc, comments, tutorials, guides.
+name: code-documenter
+description: Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides. Keywords: documentation, docstrings, OpenAPI, Swagger, JSDoc, API docs, tutorials.
 triggers:
   - documentation
   - docstrings

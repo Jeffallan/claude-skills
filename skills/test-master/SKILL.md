@@ -1,6 +1,6 @@
 ---
-name: Test Master
-description: Testing expert for functional, performance, and security testing. Covers test writing, QA strategy, automation frameworks, quality metrics, and defect management.
+name: test-master
+description: Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing. Keywords: testing, QA, unit test, integration test, E2E, coverage, pytest, Jest.
 triggers:
   - test
   - testing
