@@ -16,7 +16,7 @@
 
 ```
 v0.2.0 ──────> v0.3.0 ──────> v0.4.0 ──────> v0.5.0 ──────> v0.6.0 ──────> v0.7.0 ──────> v1.0.0
-(Current)      Q1 2025       Q2 2025       Q2 2025       Q3 2025       Q3 2025       Q4 2025
+(Current)      Q1 2026       Q2 2026       Q2 2026       Q3 2026       Q3 2026       Q4 2026
 Domain         Cross-        Skill         Intelligence  Template      Workflow      Stable
 Expansion      Referencing   Composition   & Analytics   UI            Designer      Release
 ```
@@ -24,7 +24,7 @@ Expansion      Referencing   Composition   & Analytics   UI            Designer 
 ---
 
 ## v0.3.0 - Domain Expansion & Stabilization
-**Target:** Q1 2025 | **Scope:** +9 skills, stability improvements
+**Target:** Q1 2026 | **Scope:** +9 skills, stability improvements
 
 ### Goals
 Complete the foundational skill library with expanded domain coverage and enhanced reliability.
@@ -48,11 +48,22 @@ Complete the foundational skill library with expanded domain coverage and enhanc
 
 ### Improvements
 - Complete outstanding GitHub issues:
-  - Issue #3: Kubernetes advanced patterns
-  - Issue #4: Migration guides for legacy systems
+  - [#3](https://github.com/Jeffallan/claude-skills/issues/3): Kubernetes advanced patterns
+  - [#4](https://github.com/Jeffallan/claude-skills/issues/4): Migration guides for legacy systems
 - Comprehensive testing of all skill triggers
 - Validation of routing table accuracy
 - Documentation updates for new skills
+
+### Skill Enhancements
+- [#56](https://github.com/Jeffallan/claude-skills/issues/56): Add TDD Iron Laws reference to test-master skill
+- [#57](https://github.com/Jeffallan/claude-skills/issues/57): Add Testing Anti-Patterns reference to test-master skill
+- [#58](https://github.com/Jeffallan/claude-skills/issues/58): Add Systematic Debugging reference to debugging-wizard skill
+- [#59](https://github.com/Jeffallan/claude-skills/issues/59): Add Spec Compliance Review reference to code-reviewer skill
+- [#60](https://github.com/Jeffallan/claude-skills/issues/60): Add Receiving Feedback reference to code-reviewer skill
+
+### Maintenance
+- [#63](https://github.com/Jeffallan/claude-skills/issues/63): Audit all skills for CLAUDE.md conformance (Description Trap)
+- [#61](https://github.com/Jeffallan/claude-skills/issues/61): Triage research/superpowers.md for remaining integration opportunities
 
 ### Success Metrics
 - All 63 skills validated and tested
@@ -63,7 +74,7 @@ Complete the foundational skill library with expanded domain coverage and enhanc
 ---
 
 ## v0.4.0 - Enhanced Skill Cross-Referencing
-**Target:** Q2 2025 | **Scope:** Intelligence layer improvements
+**Target:** Q2 2026 | **Scope:** Intelligence layer improvements
 
 ### Goals
 Enable skills to work together more effectively through intelligent cross-referencing and contextual recommendations.
@@ -90,7 +101,7 @@ Enable skills to work together more effectively through intelligent cross-refere
 ---
 
 ## v0.5.0 - Skill Composition & Interactivity
-**Target:** Q2 2025 | **Scope:** Compositional framework
+**Target:** Q2 2026 | **Scope:** Compositional framework
 
 ### Goals
 Transform skills from standalone tools into composable building blocks that work together seamlessly.
@@ -102,6 +113,17 @@ Transform skills from standalone tools into composable building blocks that work
 - **Interactive Skills** - Decision trees and clarifying questions
 - **Conditional Logic** - Branch based on context and user input
 - **Data Persistence** - Maintain state across skill invocations
+
+### Workflow Command Enhancements
+- [#62](https://github.com/Jeffallan/claude-skills/issues/62): Generalize workflow commands for multiple documentation and ticketing systems
+- [#50](https://github.com/Jeffallan/claude-skills/issues/50): Context Persistence - Auto-store epic workflow state
+- [#51](https://github.com/Jeffallan/claude-skills/issues/51): State Validation - Prevent commands from running out of order
+- [#52](https://github.com/Jeffallan/claude-skills/issues/52): Error Recovery - Resume/rollback/retry mechanisms
+- [#53](https://github.com/Jeffallan/claude-skills/issues/53): Extract Shared Templates - Centralize checkpoint patterns
+
+### Workflow Testing Infrastructure
+- [#54](https://github.com/Jeffallan/claude-skills/issues/54): Regression Test Suite - Automated execution integrated into workflow
+- [#55](https://github.com/Jeffallan/claude-skills/issues/55): Performance & Security Testing - Systematic integration into workflow
 
 ### Example Use Cases
 ```
@@ -119,7 +141,7 @@ Transform skills from standalone tools into composable building blocks that work
 ---
 
 ## v0.6.0 - Intelligent Optimization
-**Target:** Q3 2025 | **Scope:** Analytics and optimization
+**Target:** Q3 2026 | **Scope:** Analytics and optimization
 
 ### Goals
 Provide visibility into skill performance and automatically optimize for cost and efficiency.
@@ -148,7 +170,7 @@ Provide visibility into skill performance and automatically optimize for cost an
 ---
 
 ## v0.7.0 - Prompt Template UI
-**Target:** Q3 2025 | **Scope:** Template management interface
+**Target:** Q3 2026 | **Scope:** Template management interface
 
 ### Goals
 Empower users to create, manage, and share custom prompt templates through a visual interface.
@@ -177,7 +199,7 @@ Empower users to create, manage, and share custom prompt templates through a vis
 ---
 
 ## v1.0.0 - Workflow Designer & Stable Release
-**Target:** Q4 2025 | **Scope:** Production-ready platform
+**Target:** Q4 2026 | **Scope:** Production-ready platform
 
 ### Goals
 Deliver a complete, stable, production-ready platform with visual workflow design capabilities.
@@ -318,4 +340,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: December 2025*
+*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: December 2025 (v0.2.1)*
