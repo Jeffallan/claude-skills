@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=54%20Specialized%20Skills%20for%20Full-Stack%20Developers&descSize=20&descAlignY=55" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=64%20Specialized%20Skills%20for%20Full-Stack%20Developers&descSize=20&descAlignY=55" width="100%"/>
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🚀 50% Faster Loading</strong> • <strong>📚 284 Reference Files</strong> • <strong>🎯 25+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🚀 50% Faster Loading</strong> • <strong>📚 298 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 ---
@@ -68,7 +68,7 @@ claude-skills/
 ├── .claude-plugin/
 │   ├── plugin.json           # Plugin metadata
 │   └── marketplace.json      # Marketplace configuration
-├── skills/                   # 54 specialized skills
+├── skills/                   # 64 specialized skills
 │   ├── react-expert/
 │   │   ├── SKILL.md
 │   │   └── references/       # 6 reference files
@@ -78,30 +78,32 @@ claude-skills/
 │   ├── python-pro/
 │   │   ├── SKILL.md
 │   │   └── references/       # Language-specific patterns
-│   └── ... (51 more skills)
+│   └── ... (61 more skills)
 ├── README.md
 ├── SKILLS_GUIDE.md          # Quick reference guide
 └── CONTRIBUTING.md          # Contribution guidelines
 ```
 
 **Stats:**
-- 54 skills
-- 284 reference files
+- 64 skills
+- 298 reference files
 - ~50% token reduction
-- Covers 25+ frameworks
+- Covers 30+ frameworks
 
 ## Skills Overview
 
-**54 specialized skills** across 10 categories:
+**64 specialized skills** across 12 categories:
 
 - **Languages (12)**: Python Pro, TypeScript Pro, JavaScript Pro, Go Pro, Rust Engineer, SQL Pro, C++ Pro, Swift Expert, Kotlin Specialist, C# Developer, PHP Pro, Java Architect
-- **Backend Frameworks (10)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
+- **Backend Frameworks (7)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
 - **Frontend & Mobile (6)**: React Expert, Next.js Developer, Vue Expert, Angular Architect, React Native Expert, Flutter Expert
 - **Infrastructure (5)**: Kubernetes Specialist, Terraform Engineer, Postgres Pro, Cloud Architect, Database Optimizer
-- **API & Architecture (9)**: GraphQL Architect, API Designer, WebSocket Engineer, Microservices Architect, MCP Developer, Architecture Designer, Feature Forge, Spec Miner
+- **API & Architecture (8)**: GraphQL Architect, API Designer, WebSocket Engineer, Microservices Architect, MCP Developer, Architecture Designer, Feature Forge, Spec Miner
 - **Testing & Quality (4)**: Test Master, Playwright Expert, Code Reviewer, Code Documenter
 - **DevOps & Operations (5)**: DevOps Engineer, Monitoring Expert, SRE Engineer, Chaos Engineer, CLI Developer
 - **Security (2)**: Secure Code Guardian, Security Reviewer
+- **Data & Machine Learning (6)**: Pandas Pro, Spark Engineer, ML Pipeline, Prompt Engineer, RAG Architect, Fine-Tuning Expert
+- **Platform Specialists (4)**: Salesforce Developer, Shopify Expert, WordPress Pro, Atlassian MCP
 - **Specialized (3)**: Legacy Modernizer, Embedded Systems, Game Developer
 - **Workflow (2)**: Debugging Wizard, Fullstack Guardian
 
@@ -325,4 +327,4 @@ Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers wo
 
 ---
 
-**Built for Claude Code** | **Powered by Progressive Disclosure** | **284 Reference Files** | **54 Skills** | **50% Faster**
+**Built for Claude Code** | **Powered by Progressive Disclosure** | **298 Reference Files** | **64 Skills** | **50% Faster**
