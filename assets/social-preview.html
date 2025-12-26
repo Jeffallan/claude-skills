@@ -121,6 +121,16 @@
             letter-spacing: -0.01em;
         }
 
+        /* Bottom tagline - centered and lower */
+        .bottom-tagline {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            margin-bottom: 0;
+        }
+
         /* Stats container */
         .stats {
             display: flex;
@@ -222,23 +232,22 @@
         <!-- Main content -->
         <div class="content">
             <!-- Icon -->
-            <div class="icon">⚡</div>
+            <!-- <div class="icon">⚡</div> -->
 
             <!-- Title -->
             <h1 class="title">Claude Skills</h1>
 
             <!-- Subtitle -->
-            <h2 class="subtitle">64 Specialized Skills for Full-Stack Developers</h2>
+            <h2 class="subtitle">64 Specialized Skills and 8 workflows for Full-Stack Developers</h2>
 
             <!-- Tagline -->
             <p class="tagline">Transform Claude Code into your expert pair programmer</p>
-
             <!-- Stats -->
             <div class="stats">
                 <div class="stat">
                     <div class="stat-content">
                         <span class="stat-icon">🚀</span>
-                        <span>50% Faster Loading</span>
+                        <span>8 Workflows</span>
                     </div>
                 </div>
                 <div class="stat">
@@ -253,14 +262,11 @@
                         <span>30+ Frameworks</span>
                     </div>
                 </div>
-                <div class="stat">
-                    <div class="stat-content">
-                        <span class="stat-icon">📖</span>
-                        <span>Progressive Disclosure</span>
-                    </div>
-                </div>
             </div>
         </div>
+
+        <!-- Centered tagline at bottom -->
+        <p class="tagline bottom-tagline">Built with ❤️ for Full-Stack Devs</p>
 
         <!-- Bottom accent -->
         <div class="bottom-accent"></div>
