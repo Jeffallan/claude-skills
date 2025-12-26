@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.3.0-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -32,6 +32,8 @@ then
 ```bash
 /plugin install fullstack-dev-skills@jeffallan
 ```
+
+> **Note:** The [Project Workflow Commands](#project-workflow-commands) require an Atlassian MCP server for Jira and Confluence integration. See the **[Atlassian MCP Setup Guide](docs/ATLASSIAN_MCP_SETUP.md)** for configuration instructions.
 
 ## Architecture
 
@@ -79,6 +81,15 @@ claude-skills/
 │   │   ├── SKILL.md
 │   │   └── references/       # Language-specific patterns
 │   └── ... (61 more skills)
+├── commands/                 # 8 project workflow commands
+│   └── project/
+│       ├── discovery/        # Research & validation
+│       ├── planning/         # Epic & implementation planning
+│       ├── execution/        # Ticket implementation
+│       └── retrospectives/   # Reports & completion
+├── docs/
+│   ├── WORKFLOW_COMMANDS.md  # Workflow documentation
+│   └── ATLASSIAN_MCP_SETUP.md # MCP server setup guide
 ├── README.md
 ├── SKILLS_GUIDE.md          # Quick reference guide
 └── CONTRIBUTING.md          # Contribution guidelines
@@ -155,6 +166,21 @@ Debugging Wizard → Framework Expert → Test Master → Code Reviewer
 ```
 Secure Code Guardian → Security Reviewer → Test Master
 ```
+
+## Project Workflow Commands
+
+Manage your entire development lifecycle with **8 project workflow commands** organized into 4 phases:
+
+| Phase | Commands | Purpose |
+|-------|----------|---------|
+| **Discovery** | `create-epic-discovery`, `synthesize-discovery` | Research and validate requirements |
+| **Planning** | `create-epic-plan`, `create-implementation-plan` | Analyze codebase and create execution plans |
+| **Execution** | `execute-ticket`, `complete-ticket` | Implement and complete individual tickets |
+| **Retrospectives** | `complete-epic`, `complete-sprint` | Generate reports and close work items |
+
+Commands integrate with **Jira** (ticket management) and **Confluence** (documentation publishing).
+
+See **[docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md)** for detailed workflow diagrams, command reference, and integration guides.
 
 ## Tech Stack Coverage
 
@@ -255,6 +281,8 @@ cp -r ./skills/* ~/.claude/skills/
 ## Documentation
 
 - **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** - Quick reference for when to use each skill
+- **[docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md)** - Project workflow commands guide
+- **[docs/ATLASSIAN_MCP_SETUP.md](docs/ATLASSIAN_MCP_SETUP.md)** - Atlassian MCP server setup
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing
 - **skills/*/SKILL.md** - Individual skill documentation
 - **skills/*/references/** - Deep-dive reference materials
