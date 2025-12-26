@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "fullstack-dev-skills",
       "source": "./",
       "description": "64 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 10 backend frameworks, 6 frontend/mobile, plus infrastructure, DevOps, security, and testing skills. Includes 8 project workflow commands for epic planning, discovery, execution, and retrospectives.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "jeffallan",
         "email": "github@jeffallan"
