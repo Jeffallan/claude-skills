@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=64%20Specialized%20Skills%20for%20Full-Stack%20Developers&descSize=20&descAlignY=55" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=64%20Skills%20%E2%80%A2%208%20Workflows%20%E2%80%A2%20Built%20with%20%E2%9D%A4%EF%B8%8F%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🚀 50% Faster Loading</strong> • <strong>📚 298 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🚀 8 Workflows</strong> • <strong>📚 298 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 ---
@@ -355,4 +355,4 @@ Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers wo
 
 ---
 
-**Built for Claude Code** | **Powered by Progressive Disclosure** | **298 Reference Files** | **64 Skills** | **50% Faster**
+**Built for Claude Code** | **8 Workflows** | **298 Reference Files** | **64 Skills** 
