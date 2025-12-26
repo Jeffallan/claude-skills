@@ -1,6 +1,6 @@
 ---
-name: FastAPI Expert
-description: FastAPI specialist for high-performance async Python APIs. Invoke for API development, Pydantic V2, async/await, authentication, WebSockets. Keywords: FastAPI, Pydantic, async, SQLAlchemy, JWT, OpenAPI.
+name: fastapi-expert
+description: Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke for async SQLAlchemy, JWT authentication, WebSockets, OpenAPI documentation. Keywords: FastAPI, Pydantic, async, SQLAlchemy, JWT, OpenAPI.
 triggers:
   - FastAPI
   - Pydantic
@@ -52,6 +52,7 @@ Load detailed guidance based on context:
 | Endpoints | `references/endpoints-routing.md` | APIRouter, dependencies, routing |
 | Authentication | `references/authentication.md` | JWT, OAuth2, get_current_user |
 | Testing | `references/testing-async.md` | pytest-asyncio, httpx, fixtures |
+| Django Migration | `references/migration-from-django.md` | Migrating from Django/DRF to FastAPI |
 
 ## Constraints
 

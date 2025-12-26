@@ -1,6 +1,6 @@
 ---
-name: Chaos Engineer
-description: Expert chaos engineer specializing in controlled failure injection, resilience testing, and building antifragile systems. Invoke for chaos experiments, game days, blast radius control, and continuous resilience improvement.
+name: chaos-engineer
+description: Use when designing chaos experiments, implementing failure injection frameworks, or conducting game day exercises. Invoke for chaos experiments, resilience testing, blast radius control, game days, antifragile systems.
 triggers:
   - chaos engineering
   - resilience testing

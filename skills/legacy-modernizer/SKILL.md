@@ -1,6 +1,6 @@
 ---
-name: Legacy Modernizer
-description: Expert legacy system modernizer specializing in incremental migration strategies and risk-free modernization. Masters strangler fig pattern, refactoring, technology updates, and business continuity while transforming legacy systems into modern architectures.
+name: legacy-modernizer
+description: Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades. Keywords: legacy modernization, strangler fig, incremental migration, technical debt, system migration.
 triggers:
   - legacy modernization
   - strangler fig

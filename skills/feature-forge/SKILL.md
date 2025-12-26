@@ -1,6 +1,6 @@
 ---
-name: Feature Forge
-description: Requirements specialist for gathering specifications through structured workshops. Invoke for feature definition, requirements gathering, user stories, EARS format specs. Keywords: requirements, specifications, user stories, EARS, feature planning.
+name: feature-forge
+description: Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs. Keywords: requirements, specifications, user stories, EARS, feature planning.
 triggers:
   - requirements
   - specification

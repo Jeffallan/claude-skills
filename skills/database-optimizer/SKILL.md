@@ -1,6 +1,6 @@
 ---
-name: Database Optimizer
-description: Expert database optimizer specializing in query optimization, performance tuning, and scalability across PostgreSQL, MySQL, and other database systems. Invoke for slow queries, execution plans, indexing strategies, and system-level optimizations.
+name: database-optimizer
+description: Use when investigating slow queries, analyzing execution plans, or optimizing database performance. Invoke for index design, query rewrites, configuration tuning, partitioning strategies, lock contention resolution. Keywords: database optimization, slow query, EXPLAIN ANALYZE, index optimization, query performance.
 triggers:
   - database optimization
   - slow query

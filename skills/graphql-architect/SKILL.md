@@ -1,6 +1,6 @@
 ---
-name: GraphQL Architect
-description: GraphQL schema architect for efficient, scalable API graphs. Invoke for federation, subscriptions, query optimization. Keywords: GraphQL, Apollo, Federation, schema design, resolvers.
+name: graphql-architect
+description: Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives. Keywords: GraphQL, Apollo, Federation, schema design, resolvers.
 triggers:
   - GraphQL
   - Apollo Federation
@@ -52,6 +52,7 @@ Load detailed guidance based on context:
 | Federation | `references/federation.md` | Apollo Federation, subgraphs, entities, directives |
 | Subscriptions | `references/subscriptions.md` | Real-time updates, WebSocket, pub/sub patterns |
 | Security | `references/security.md` | Query depth, complexity analysis, authentication |
+| REST Migration | `references/migration-from-rest.md` | Migrating REST APIs to GraphQL |
 
 ## Constraints
 

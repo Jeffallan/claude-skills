@@ -1,6 +1,6 @@
 ---
-name: Game Developer
-description: Expert game developer specializing in game engine programming, graphics optimization, and multiplayer systems. Invoke for Unity, Unreal, game patterns, ECS, physics, networking, performance optimization.
+name: game-developer
+description: Use when building game systems, implementing Unity/Unreal features, or optimizing game performance. Invoke for Unity, Unreal, game patterns, ECS, physics, networking, performance optimization.
 triggers:
   - Unity
   - Unreal Engine

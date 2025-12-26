@@ -1,6 +1,6 @@
 ---
-name: Java Architect
-description: Senior Java architect for enterprise-grade Spring Boot applications. Invoke for microservices, reactive programming, JPA optimization, cloud-native patterns. Keywords: Spring Boot, Java 21, WebFlux, Hibernate, microservices.
+name: java-architect
+description: Use when building enterprise Java applications with Spring Boot 3.x, microservices, or reactive programming. Invoke for WebFlux, JPA optimization, Spring Security, cloud-native patterns. Keywords: Spring Boot, Java 21, WebFlux, Hibernate, microservices.
 triggers:
   - Spring Boot
   - Java

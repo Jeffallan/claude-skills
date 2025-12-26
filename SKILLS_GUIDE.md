@@ -67,6 +67,20 @@
 - **Secure Code Guardian**: Writing secure code, preventing vulnerabilities
 - **Security Reviewer**: Security code review, SAST analysis, penetration testing
 
+### Data & Machine Learning
+- **Pandas Pro**: DataFrame manipulation, data cleaning, aggregation, time series
+- **Spark Engineer**: Apache Spark, PySpark, distributed data processing, Spark SQL
+- **ML Pipeline**: ML pipelines, MLflow, Kubeflow, feature stores, experiment tracking
+- **Prompt Engineer**: LLM prompt design, chain-of-thought, few-shot learning, evaluation
+- **RAG Architect**: RAG systems, vector databases, embeddings, semantic search
+- **Fine-Tuning Expert**: LLM fine-tuning, LoRA, QLoRA, PEFT, model optimization
+
+### Platform Specialists
+- **Salesforce Developer**: Apex, Lightning Web Components, SOQL, governor limits
+- **Shopify Expert**: Liquid templating, Storefront API, Shopify apps, checkout extensions
+- **WordPress Pro**: WordPress themes, plugins, Gutenberg blocks, WooCommerce
+- **Atlassian MCP**: Jira/Confluence integration via MCP, JQL, CQL queries
+
 ### Specialized
 - **Legacy Modernizer**: Legacy code modernization, migration strategies
 - **Embedded Systems**: Embedded development, IoT, firmware, real-time systems
@@ -150,6 +164,20 @@
 - **Microservices** → Microservices Architect
 - **MCP Integration** → MCP Developer
 
+### Data & Machine Learning
+- **DataFrame Operations** → Pandas Pro
+- **Big Data Processing** → Spark Engineer
+- **ML Training Pipelines** → ML Pipeline
+- **LLM Prompts** → Prompt Engineer
+- **RAG Systems** → RAG Architect
+- **Model Fine-Tuning** → Fine-Tuning Expert
+
+### Platform Development
+- **Salesforce CRM** → Salesforce Developer
+- **Shopify E-commerce** → Shopify Expert
+- **WordPress Sites** → WordPress Pro
+- **Jira/Confluence** → Atlassian MCP
+
 ### Testing
 - **E2E Browser Tests** → Playwright Expert
 - **All Other Testing** → Test Master
@@ -197,6 +225,18 @@ Common combinations for maximum effectiveness:
 
 ### Embedded/IoT
 - Embedded Systems + Rust Engineer / C++ Pro + Security Reviewer
+
+### Data & ML Pipeline
+- Pandas Pro + Spark Engineer + ML Pipeline + Monitoring Expert
+
+### AI/LLM Development
+- Prompt Engineer + RAG Architect + Fine-Tuning Expert + Python Pro
+
+### E-commerce Platform
+- Shopify Expert + React Expert + API Designer + DevOps Engineer
+
+### CRM Development
+- Salesforce Developer + API Designer + Security Reviewer + Test Master
 
 ### Enterprise Java
 - Java Architect + Spring Boot Engineer + Microservices Architect + DevOps Engineer
@@ -264,3 +304,17 @@ Common combinations for maximum effectiveness:
 - "Set up SRE practices and SLOs" → SRE Engineer + Monitoring Expert
 - "Design MCP server for tool integration" → MCP Developer
 - "Embedded firmware for IoT device" → Embedded Systems + Rust Engineer
+
+### Data & ML
+- "Clean and transform CSV data with pandas" → Pandas Pro
+- "Build a PySpark ETL pipeline" → Spark Engineer
+- "Set up MLflow experiment tracking" → ML Pipeline
+- "Design prompts for classification task" → Prompt Engineer
+- "Build a RAG system with Pinecone" → RAG Architect
+- "Fine-tune Llama 2 with LoRA" → Fine-Tuning Expert
+
+### Platform Development
+- "Build Lightning Web Component for Salesforce" → Salesforce Developer
+- "Create custom Shopify checkout extension" → Shopify Expert
+- "Develop WordPress plugin with Gutenberg blocks" → WordPress Pro
+- "Query Jira issues via MCP server" → Atlassian MCP

@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=54%20Specialized%20Skills%20for%20Full-Stack%20Developers&descSize=20&descAlignY=55" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=64%20Skills%20%E2%80%A2%208%20Workflows%20%E2%80%A2%20Built%20with%20%E2%9D%A4%EF%B8%8F%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.3.0-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🚀 50% Faster Loading</strong> • <strong>📚 284 Reference Files</strong> • <strong>🎯 25+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🚀 8 Workflows</strong> • <strong>📚 298 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 ---
@@ -32,6 +32,8 @@ then
 ```bash
 /plugin install fullstack-dev-skills@jeffallan
 ```
+
+> **Note:** The [Project Workflow Commands](#project-workflow-commands) require an Atlassian MCP server for Jira and Confluence integration. See the **[Atlassian MCP Setup Guide](docs/ATLASSIAN_MCP_SETUP.md)** for configuration instructions.
 
 ## Architecture
 
@@ -68,7 +70,7 @@ claude-skills/
 ├── .claude-plugin/
 │   ├── plugin.json           # Plugin metadata
 │   └── marketplace.json      # Marketplace configuration
-├── skills/                   # 54 specialized skills
+├── skills/                   # 64 specialized skills
 │   ├── react-expert/
 │   │   ├── SKILL.md
 │   │   └── references/       # 6 reference files
@@ -78,30 +80,41 @@ claude-skills/
 │   ├── python-pro/
 │   │   ├── SKILL.md
 │   │   └── references/       # Language-specific patterns
-│   └── ... (51 more skills)
+│   └── ... (61 more skills)
+├── commands/                 # 8 project workflow commands
+│   └── project/
+│       ├── discovery/        # Research & validation
+│       ├── planning/         # Epic & implementation planning
+│       ├── execution/        # Ticket implementation
+│       └── retrospectives/   # Reports & completion
+├── docs/
+│   ├── WORKFLOW_COMMANDS.md  # Workflow documentation
+│   └── ATLASSIAN_MCP_SETUP.md # MCP server setup guide
 ├── README.md
 ├── SKILLS_GUIDE.md          # Quick reference guide
 └── CONTRIBUTING.md          # Contribution guidelines
 ```
 
 **Stats:**
-- 54 skills
-- 284 reference files
+- 64 skills
+- 298 reference files
 - ~50% token reduction
-- Covers 25+ frameworks
+- Covers 30+ frameworks
 
 ## Skills Overview
 
-**54 specialized skills** across 10 categories:
+**64 specialized skills** across 12 categories:
 
 - **Languages (12)**: Python Pro, TypeScript Pro, JavaScript Pro, Go Pro, Rust Engineer, SQL Pro, C++ Pro, Swift Expert, Kotlin Specialist, C# Developer, PHP Pro, Java Architect
-- **Backend Frameworks (10)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
+- **Backend Frameworks (7)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
 - **Frontend & Mobile (6)**: React Expert, Next.js Developer, Vue Expert, Angular Architect, React Native Expert, Flutter Expert
 - **Infrastructure (5)**: Kubernetes Specialist, Terraform Engineer, Postgres Pro, Cloud Architect, Database Optimizer
-- **API & Architecture (9)**: GraphQL Architect, API Designer, WebSocket Engineer, Microservices Architect, MCP Developer, Architecture Designer, Feature Forge, Spec Miner
+- **API & Architecture (8)**: GraphQL Architect, API Designer, WebSocket Engineer, Microservices Architect, MCP Developer, Architecture Designer, Feature Forge, Spec Miner
 - **Testing & Quality (4)**: Test Master, Playwright Expert, Code Reviewer, Code Documenter
 - **DevOps & Operations (5)**: DevOps Engineer, Monitoring Expert, SRE Engineer, Chaos Engineer, CLI Developer
 - **Security (2)**: Secure Code Guardian, Security Reviewer
+- **Data & Machine Learning (6)**: Pandas Pro, Spark Engineer, ML Pipeline, Prompt Engineer, RAG Architect, Fine-Tuning Expert
+- **Platform Specialists (4)**: Salesforce Developer, Shopify Expert, WordPress Pro, Atlassian MCP
 - **Specialized (3)**: Legacy Modernizer, Embedded Systems, Game Developer
 - **Workflow (2)**: Debugging Wizard, Fullstack Guardian
 
@@ -153,6 +166,21 @@ Debugging Wizard → Framework Expert → Test Master → Code Reviewer
 ```
 Secure Code Guardian → Security Reviewer → Test Master
 ```
+
+## Project Workflow Commands
+
+Manage your entire development lifecycle with **8 project workflow commands** organized into 4 phases:
+
+| Phase | Commands | Purpose |
+|-------|----------|---------|
+| **Discovery** | `create-epic-discovery`, `synthesize-discovery` | Research and validate requirements |
+| **Planning** | `create-epic-plan`, `create-implementation-plan` | Analyze codebase and create execution plans |
+| **Execution** | `execute-ticket`, `complete-ticket` | Implement and complete individual tickets |
+| **Retrospectives** | `complete-epic`, `complete-sprint` | Generate reports and close work items |
+
+Commands integrate with **Jira** (ticket management) and **Confluence** (documentation publishing).
+
+See **[docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md)** for detailed workflow diagrams, command reference, and integration guides.
 
 ## Tech Stack Coverage
 
@@ -253,6 +281,8 @@ cp -r ./skills/* ~/.claude/skills/
 ## Documentation
 
 - **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** - Quick reference for when to use each skill
+- **[docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md)** - Project workflow commands guide
+- **[docs/ATLASSIAN_MCP_SETUP.md](docs/ATLASSIAN_MCP_SETUP.md)** - Atlassian MCP server setup
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing
 - **skills/*/SKILL.md** - Individual skill documentation
 - **skills/*/references/** - Deep-dive reference materials
@@ -325,4 +355,4 @@ Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers wo
 
 ---
 
-**Built for Claude Code** | **Powered by Progressive Disclosure** | **284 Reference Files** | **54 Skills** | **50% Faster**
+**Built for Claude Code** | **8 Workflows** | **298 Reference Files** | **64 Skills** 

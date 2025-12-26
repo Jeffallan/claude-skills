@@ -1,6 +1,6 @@
 ---
-name: Monitoring Expert
-description: Observability and performance specialist for logging, metrics, tracing, alerting, and performance testing. Invoke for setting up monitoring, dashboards, alerts, load testing, profiling, capacity planning. Keywords: monitoring, observability, logging, metrics, tracing, alerting, performance, profiling, load testing.
+name: monitoring-expert
+description: Use when setting up monitoring systems, logging, metrics, tracing, or alerting. Invoke for dashboards, Prometheus/Grafana, load testing, profiling, capacity planning. Keywords: monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana.
 triggers:
   - monitoring
   - observability

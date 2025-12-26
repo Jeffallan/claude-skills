@@ -1,6 +1,6 @@
 ---
-name: Rails Expert
-description: Rails 7+ specialist for elegant web applications. Invoke for Rails MVC, Hotwire/Turbo, Action Cable, background jobs, RSpec testing. Keywords: Rails, Ruby on Rails, Hotwire, Turbo, Stimulus, Active Record.
+name: rails-expert
+description: Use when building Rails 7+ web applications with Hotwire, real-time features, or background job processing. Invoke for Active Record optimization, Turbo Frames/Streams, Action Cable, Sidekiq. Keywords: Rails, Ruby on Rails, Hotwire, Turbo, Stimulus, Active Record.
 triggers:
   - Rails
   - Ruby on Rails

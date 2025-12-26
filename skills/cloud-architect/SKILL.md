@@ -1,6 +1,6 @@
 ---
-name: Cloud Architect
-description: Multi-cloud architect specializing in AWS, Azure, and GCP. Invoke for cloud migration, cost optimization, Well-Architected Framework, serverless, disaster recovery, landing zones. Keywords: AWS, Azure, GCP, multi-cloud, cloud migration, cost optimization.
+name: cloud-architect
+description: Use when designing cloud architectures, planning migrations, or optimizing multi-cloud deployments. Invoke for Well-Architected Framework, cost optimization, disaster recovery, landing zones, security architecture, serverless design. Keywords: AWS, Azure, GCP, multi-cloud, cloud migration, cost optimization.
 triggers:
   - AWS
   - Azure

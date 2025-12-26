@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-12-26
+
+### Added
+- **8 project workflow commands** organized into 4 phases:
+  - **Discovery:** `create-epic-discovery`, `synthesize-discovery` - Research and validate requirements
+  - **Planning:** `create-epic-plan`, `create-implementation-plan` - Analyze codebase and create execution plans
+  - **Execution:** `execute-ticket`, `complete-ticket` - Implement and complete individual tickets
+  - **Retrospectives:** `complete-epic`, `complete-sprint` - Generate reports and close work items
+- New `commands/project/` directory structure with organized subfolders
+- Comprehensive workflow documentation (`docs/WORKFLOW_COMMANDS.md`) with mermaid diagrams
+- Atlassian MCP server setup guide (`docs/ATLASSIAN_MCP_SETUP.md`)
+- Jira integration for ticket management (read tickets, update status, transitions)
+- Confluence integration for document publishing across all workflow phases
+- Mandatory checkpoint system with user approval gates at each phase
+- 10 new skills bringing total to 64:
+  - salesforce-developer, shopify-expert, wordpress-pro, atlassian-mcp
+  - pandas-pro, spark-engineer, ml-pipeline, prompt-engineer, rag-architect, fine-tuning-expert
+
+### Changed
+- Updated `plugin.json` and `marketplace.json` with `commands` field
+- Added project management keywords (jira, confluence, epic-planning, sprint, discovery, retrospectives)
+- Updated README with project workflow commands section and updated project structure
+- Total skills: 54 → 64 (19% increase)
+- Total reference files: 284 → 298
+
 ## [0.2.0] - 2025-12-14
 
 ### Added
@@ -91,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.3.0]: https://github.com/jeffallan/claude-skills/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/jeffallan/claude-skills/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/jeffallan/claude-skills/compare/v0.0.4...v0.1.0
 [0.0.4]: https://github.com/jeffallan/claude-skills/compare/v0.0.3...v0.0.4

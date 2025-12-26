@@ -1,0 +1,101 @@
+name: New Skill
+description: Create a new skill for the claude-skills project
+title: "[SKILL] "
+labels: ["enhancement",]
+body:
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill Name
+      description: Use lowercase with hyphens (e.g., pandas-pro, rag-architect)
+      placeholder: skill-name
+    validations:
+      required: true
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Skill Domain
+      description: Which domain does this skill belong to?
+      options:
+        - Backend
+        - Frontend
+        - DevOps
+        - Mobile
+        - Data
+        - Security
+        - Product
+        - Business
+        - Data Science
+        - AI/LLM
+        - Platform
+    validations:
+      required: true
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: Overview
+      description: Brief description of the skill's purpose and target audience
+      placeholder: "Expert [role] for [domain]. Target audience: [who uses this skill]."
+    validations:
+      required: true
+
+  - type: input
+    id: trigger_conditions
+    attributes:
+      label: Trigger Conditions
+      description: When should this skill be invoked? (for "Use when..." format)
+      placeholder: "building X applications, working with Y, or implementing Z"
+    validations:
+      required: true
+
+  - type: input
+    id: keywords
+    attributes:
+      label: Keywords
+      description: Comma-separated search terms for skill discovery
+      placeholder: "keyword1, keyword2, keyword3"
+    validations:
+      required: true
+
+  - type: input
+    id: overlapping_skills
+    attributes:
+      label: Overlapping Skills to Check
+      description: Existing skills that might have overlap (comma-separated)
+      placeholder: "python-pro, data-scientist"
+    validations:
+      required: true
+
+  - type: input
+    id: core_topics
+    attributes:
+      label: Core Topics for Reference Files
+      description: Main topics to cover in reference files (comma-separated)
+      placeholder: "topic1, topic2, topic3"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## Implementation Details (per CLAUDE.md)
+        1. Check existing skills for overlap
+        2. Create `skills/{skill-name}/SKILL.md` (~80-100 lines):
+           - Frontmatter: name, description (trigger-only!), triggers, role, scope, output-format
+           - Core sections: Role Definition, When to Use, Core Workflow, Constraints (MUST DO/MUST NOT DO), Routing Table
+        3. Create reference files in `skills/{skill-name}/references/` (100-600 lines each)
+        4. Update SKILLS_GUIDE.md with new skill entry
+
+        ## Acceptance Criteria
+        - [ ] No overlap with existing skills verified
+        - [ ] SKILL.md ~80-100 lines with all required sections
+        - [ ] Description is TRIGGER-ONLY format: "Use when [conditions]" (NO process steps!)
+        - [ ] Frontmatter complete: name, description, triggers, role, scope, output-format
+        - [ ] Routing table links to reference files
+        - [ ] Reference files 100-600 lines with complete code examples
+        - [ ] MUST DO / MUST NOT DO constraints defined
+        - [ ] Related skills cross-referenced
+        - [ ] Added to SKILLS_GUIDE.md

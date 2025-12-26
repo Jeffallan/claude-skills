@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "fullstack-dev-skills",
       "source": "./",
-      "description": "54 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 10 backend frameworks, 6 frontend/mobile, plus infrastructure, DevOps, security, and testing skills with progressive disclosure architecture",
-      "version": "0.2.0",
+      "description": "64 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 10 backend frameworks, 6 frontend/mobile, plus infrastructure, DevOps, security, and testing skills. Includes 8 project workflow commands for epic planning, discovery, execution, and retrospectives.",
+      "version": "0.3.0",
       "author": {
         "name": "jeffallan",
         "email": "github@jeffallan"
@@ -62,7 +62,14 @@
         "playwright",
         "devops",
         "sre",
-        "model-invoked"
+        "model-invoked",
+        "project-management",
+        "epic-planning",
+        "jira",
+        "confluence",
+        "sprint",
+        "discovery",
+        "retrospectives"
       ],
       "category": "development",
       "tags": [
@@ -73,7 +80,8 @@
         "testing",
         "workflows"
       ],
-      "skills": "./skills/"
+      "skills": "./skills/",
+      "commands": "./commands/"
     }
   ]
 }

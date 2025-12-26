@@ -1,6 +1,6 @@
 ---
-name: DevOps Engineer
-description: DevOps specialist for CI/CD, infrastructure as code, and deployment automation. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps. Keywords: DevOps, CI/CD, Docker, Kubernetes, Terraform, GitHub Actions.
+name: devops-engineer
+description: Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps. Keywords: DevOps, CI/CD, Docker, Kubernetes, Terraform, GitHub Actions.
 triggers:
   - DevOps
   - CI/CD

@@ -1,6 +1,6 @@
 ---
-name: Rust Engineer
-description: Senior Rust engineer specializing in systems programming, memory safety, and zero-cost abstractions. Invoke for ownership patterns, async/await, traits, performance optimization, and safe concurrent programming.
+name: rust-engineer
+description: Use when building Rust applications requiring memory safety, systems programming, or zero-cost abstractions. Invoke for ownership patterns, lifetimes, traits, async/await with tokio. Keywords: Rust, ownership, borrowing, async, memory safety.
 triggers:
   - Rust
   - Cargo

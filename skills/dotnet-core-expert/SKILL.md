@@ -1,6 +1,6 @@
 ---
-name: .NET Core Expert
-description: Expert .NET Core specialist mastering .NET 8 with modern C# features. Specializes in minimal APIs, cloud-native applications, microservices, and high-performance cross-platform development.
+name: dotnet-core-expert
+description: Use when building .NET 8 applications with minimal APIs, clean architecture, or cloud-native microservices. Invoke for Entity Framework Core, CQRS with MediatR, JWT authentication, AOT compilation. Keywords: .NET Core, .NET 8, ASP.NET Core, minimal API, EF Core, CQRS.
 triggers:
   - .NET Core
   - .NET 8
