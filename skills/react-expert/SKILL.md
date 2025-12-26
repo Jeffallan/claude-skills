@@ -1,6 +1,6 @@
 ---
-name: React Expert
-description: React specialist for production-grade web applications. Invoke for component architecture, hooks, state management, Server Components, performance. Keywords: React, JSX, hooks, useState, useEffect, use(), Suspense, RSC.
+name: react-expert
+description: Use when building React 18+ applications requiring component architecture, hooks patterns, or state management. Invoke for Server Components, performance optimization, Suspense boundaries, React 19 features. Keywords: React, JSX, hooks, useState, useEffect, use(), Suspense, RSC.
 triggers:
   - React
   - JSX
@@ -59,6 +59,7 @@ Load detailed guidance based on context:
 | Hooks | `references/hooks-patterns.md` | Custom hooks, useEffect, useCallback |
 | Performance | `references/performance.md` | memo, lazy, virtualization |
 | Testing | `references/testing-react.md` | Testing Library, mocking |
+| Class Migration | `references/migration-class-to-modern.md` | Converting class components to hooks/RSC |
 
 ## Constraints
 

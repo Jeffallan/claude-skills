@@ -1,0 +1,54 @@
+name: Claude Issue
+description: Issue template for Claude to file issues in this project
+title: "[CLAUDE] "
+labels: []
+body:
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue Type
+      description: What type of issue is this?
+      options:
+        - enhancement
+        - bug
+        - maintenance
+        - documentation
+        - refactor
+    validations:
+      required: true
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: Overview
+      description: What does this issue address?
+      placeholder: |
+        Brief description of the problem or feature.
+
+        Context: Why is this needed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation_plan
+    attributes:
+      label: Implementation Plan
+      description: Step-by-step approach to complete this issue
+      placeholder: |
+        1. First step
+        2. Second step
+        3. Third step
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Checklist for completion
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: true

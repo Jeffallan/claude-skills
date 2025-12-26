@@ -1,6 +1,6 @@
 ---
-name: Next.js Developer
-description: Expert Next.js 14+ developer mastering App Router, server components, server actions, and full-stack features. Specializes in performance optimization, SEO, and production deployment.
+name: nextjs-developer
+description: Use when building Next.js 14+ applications with App Router, server components, or server actions. Invoke for full-stack features, performance optimization, SEO implementation, production deployment. Keywords: Next.js, App Router, Server Components, Server Actions, Vercel, SSR, SSG.
 triggers:
   - Next.js
   - Next.js 14

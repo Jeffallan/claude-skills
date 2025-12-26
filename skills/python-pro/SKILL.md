@@ -1,6 +1,6 @@
 ---
-name: Python Pro
-description: Expert Python developer specializing in modern Python 3.11+ with deep expertise in type safety, async programming, testing, and production-grade code. Invoke for Pythonic patterns, type hints, pytest, async/await, dataclasses.
+name: python-pro
+description: Use when building Python 3.11+ applications requiring type safety, async programming, or production-grade patterns. Invoke for type hints, pytest, async/await, dataclasses, mypy configuration. Keywords: Python, typing, async, pytest, dataclasses.
 triggers:
   - Python development
   - type hints

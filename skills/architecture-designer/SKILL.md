@@ -1,6 +1,6 @@
 ---
-name: Architecture Designer
-description: Software architect for system design, patterns, and architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning. Keywords: architecture, system design, patterns, microservices, scalability.
+name: architecture-designer
+description: Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning. Keywords: architecture, system design, patterns, microservices, scalability.
 triggers:
   - architecture
   - system design

@@ -1,6 +1,6 @@
 ---
-name: Kotlin Specialist
-description: Expert Kotlin developer specializing in coroutines, multiplatform development, and modern Kotlin patterns. Invoke for Android apps, KMP projects, Ktor servers, DSL design. Keywords: Kotlin, coroutines, Flow, multiplatform, Compose, Ktor.
+name: kotlin-specialist
+description: Use when building Kotlin applications requiring coroutines, multiplatform development, or Android with Compose. Invoke for Flow API, KMP projects, Ktor servers, DSL design, sealed classes. Keywords: Kotlin, coroutines, Flow, multiplatform, Compose, Ktor.
 triggers:
   - Kotlin
   - coroutines

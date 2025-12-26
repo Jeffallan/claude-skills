@@ -1,6 +1,6 @@
 ---
-name: C# Developer
-description: Expert C# developer specializing in modern .NET development, ASP.NET Core, and cloud-native applications. Invoke for .NET APIs, Blazor, EF Core, async patterns, performance optimization. Keywords: C#, .NET, ASP.NET Core, Blazor, Entity Framework.
+name: csharp-developer
+description: Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Invoke for Entity Framework Core, minimal APIs, async patterns, CQRS with MediatR. Keywords: C#, .NET, ASP.NET Core, Blazor, Entity Framework.
 triggers:
   - C#
   - .NET

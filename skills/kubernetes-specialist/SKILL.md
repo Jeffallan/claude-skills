@@ -1,6 +1,6 @@
 ---
-name: Kubernetes Specialist
-description: Expert Kubernetes specialist for production-grade container orchestration. Invoke for cluster management, workload deployment, security hardening, and performance optimization. Keywords: Kubernetes, K8s, kubectl, Helm, RBAC, NetworkPolicy.
+name: kubernetes-specialist
+description: Use when deploying or managing Kubernetes workloads requiring cluster configuration, security hardening, or troubleshooting. Invoke for Helm charts, RBAC policies, NetworkPolicies, storage configuration, performance optimization. Keywords: Kubernetes, K8s, kubectl, Helm, RBAC, NetworkPolicy.
 triggers:
   - Kubernetes
   - K8s
@@ -12,6 +12,19 @@ triggers:
   - NetworkPolicy
   - Ingress
   - StatefulSet
+  - Operator
+  - CRD
+  - CustomResourceDefinition
+  - ArgoCD
+  - Flux
+  - GitOps
+  - Istio
+  - Linkerd
+  - service mesh
+  - multi-cluster
+  - cost optimization
+  - VPA
+  - spot instances
 role: specialist
 scope: infrastructure
 output-format: manifests
@@ -53,8 +66,13 @@ Load detailed guidance based on context:
 | Networking | `references/networking.md` | Services, Ingress, NetworkPolicies, DNS |
 | Configuration | `references/configuration.md` | ConfigMaps, Secrets, environment variables |
 | Storage | `references/storage.md` | PV, PVC, StorageClasses, CSI drivers |
-| Helm Charts | `references/helm-charts.md` | Chart structure, values, templates, hooks |
+| Helm Charts | `references/helm-charts.md` | Chart structure, values, templates, hooks, testing, repositories |
 | Troubleshooting | `references/troubleshooting.md` | kubectl debug, logs, events, common issues |
+| Custom Operators | `references/custom-operators.md` | CRD, Operator SDK, controller-runtime, reconciliation |
+| Service Mesh | `references/service-mesh.md` | Istio, Linkerd, traffic management, mTLS, canary |
+| GitOps | `references/gitops.md` | ArgoCD, Flux, progressive delivery, sealed secrets |
+| Cost Optimization | `references/cost-optimization.md` | VPA, HPA tuning, spot instances, quotas, right-sizing |
+| Multi-Cluster | `references/multi-cluster.md` | Cluster API, federation, cross-cluster networking, DR |
 
 ## Constraints
 

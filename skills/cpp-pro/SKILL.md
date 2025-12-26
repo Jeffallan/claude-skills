@@ -1,6 +1,6 @@
 ---
-name: C++ Pro
-description: Expert C++ developer specializing in modern C++20/23, systems programming, and high-performance computing. Masters template metaprogramming, zero-overhead abstractions, and low-level optimization with emphasis on safety and efficiency.
+name: cpp-pro
+description: Use when building C++ applications requiring modern C++20/23 features, template metaprogramming, or high-performance systems. Invoke for concepts, ranges, coroutines, SIMD optimization, memory management. Keywords: C++, C++20, C++23, templates, performance, systems programming.
 triggers:
   - C++
   - C++20
