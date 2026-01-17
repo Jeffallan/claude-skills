@@ -1,7 +1,7 @@
 # Nuxt 3
 
 > Reference for: Vue Expert
-> Load when: Nuxt 3, SSR, file-based routing, useFetch, server routes
+> Load when: Nuxt 3, SSR, file-based routing, useFetch, server routes, Fastify, hydration, custom SSR
 
 ## Project Structure
 
@@ -439,8 +439,25 @@ export default defineNuxtConfig({
     typeCheck: true
   },
 
+  // Vite is the default bundler in Nuxt 3
+  // Note: webpack is deprecated - use Vite for all new projects
+  vite: {
+    optimizeDeps: {
+      include: ['vue', 'vue-router', 'pinia']
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor': ['vue', 'pinia']
+          }
+        }
+      }
+    }
+  },
+
   nitro: {
-    preset: 'vercel' // or 'node-server', 'cloudflare', etc.
+    preset: 'vercel' // or 'node-server', 'cloudflare', 'bun', etc.
   }
 })
 ```
@@ -472,6 +489,168 @@ useSeoMeta({
 </script>
 ```
 
+## Custom SSR with Fastify (Non-Nuxt)
+
+For custom Vue 3 SSR without Nuxt, using Fastify as the server:
+
+```typescript
+// server.ts
+import Fastify from 'fastify'
+import { createSSRApp } from 'vue'
+import { renderToString } from 'vue/server-renderer'
+import App from './App.vue'
+
+const fastify = Fastify({ logger: true })
+
+fastify.get('*', async (request, reply) => {
+  const app = createSSRApp(App)
+
+  // Server-side data fetching
+  const initialState = await fetchInitialData(request.url)
+
+  const html = await renderToString(app)
+
+  reply.type('text/html').send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Vue SSR</title>
+        <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}</script>
+      </head>
+      <body>
+        <div id="app">${html}</div>
+        <script type="module" src="/src/entry-client.ts"></script>
+      </body>
+    </html>
+  `)
+})
+
+fastify.listen({ port: 3000 })
+```
+
+```typescript
+// entry-client.ts
+import { createApp } from 'vue'
+import App from './App.vue'
+
+const app = createApp(App)
+
+// Hydrate with server state
+if (window.__INITIAL_STATE__) {
+  app.provide('initialState', window.__INITIAL_STATE__)
+}
+
+app.mount('#app')
+```
+
+```typescript
+// vite.config.ts for SSR
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    ssr: true,
+    rollupOptions: {
+      input: {
+        server: './server.ts',
+        client: './src/entry-client.ts'
+      }
+    }
+  }
+})
+```
+
+## Hydration Patterns
+
+### Lazy Hydration with ClientOnly
+
+```vue
+<script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
+
+// Heavy component loaded only on client
+const HeavyChart = defineAsyncComponent(() =>
+  import('./components/HeavyChart.vue')
+)
+</script>
+
+<template>
+  <ClientOnly>
+    <HeavyChart />
+    <template #fallback>
+      <div class="chart-skeleton">Loading chart...</div>
+    </template>
+  </ClientOnly>
+</template>
+```
+
+### Hydration Mismatch Prevention
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+// Avoid hydration mismatch for client-only values
+const currentTime = ref<string | null>(null)
+const windowWidth = ref<number | null>(null)
+
+onMounted(() => {
+  // These values differ between server and client
+  currentTime.value = new Date().toLocaleTimeString()
+  windowWidth.value = window.innerWidth
+})
+</script>
+
+<template>
+  <div>
+    <!-- Use v-if to prevent mismatch -->
+    <span v-if="currentTime">{{ currentTime }}</span>
+    <span v-else>--:--:--</span>
+
+    <!-- Or use ClientOnly -->
+    <ClientOnly>
+      <span>Width: {{ windowWidth }}px</span>
+    </ClientOnly>
+  </div>
+</template>
+```
+
+### Progressive Hydration
+
+```vue
+<script setup lang="ts">
+// Use nuxt-delay-hydration for non-critical content
+definePageMeta({
+  // Delay hydration until visible or idle
+  hydration: 'when-visible' // or 'on-idle'
+})
+</script>
+
+<template>
+  <div>
+    <!-- Critical content hydrates immediately -->
+    <header>Navigation</header>
+
+    <!-- Non-critical content can wait -->
+    <LazyBelowFoldContent />
+  </div>
+</template>
+```
+
+```typescript
+// nuxt.config.ts - Configure delay hydration
+export default defineNuxtConfig({
+  modules: ['nuxt-delay-hydration'],
+
+  delayHydration: {
+    mode: 'init', // or 'mount'
+    debug: process.env.NODE_ENV === 'development'
+  }
+})
+```
+
 ## Quick Reference
 
 | Pattern | Use Case |
@@ -487,3 +666,7 @@ useSeoMeta({
 | `useHead()` | Dynamic meta tags |
 | Server routes | `/server/api/*.ts` |
 | Auto-imports | Components, composables, utils |
+| `<ClientOnly>` | Client-only rendering, prevent hydration mismatch |
+| `renderToString()` | Custom SSR with Fastify/Express |
+| `vite: {}` | Vite configuration in nuxt.config.ts |
+| `nuxt-delay-hydration` | Progressive hydration for performance |
