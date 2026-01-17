@@ -28,7 +28,8 @@
 ### Frontend & Mobile
 - **React Expert**: Building React web applications
 - **Next.js Developer**: Next.js App Router, Server Components, Server Actions
-- **Vue Expert**: Vue 3 applications with Composition API and Pinia
+- **Vue Expert**: Vue 3 applications with Composition API and Pinia (TypeScript)
+- **Vue Expert (JS)**: Vue 3 applications with JavaScript only (JSDoc typing)
 - **Angular Architect**: Angular applications with standalone components
 - **React Native Expert**: Building cross-platform mobile apps (React Native)
 - **Flutter Expert**: Building cross-platform apps with Flutter
@@ -146,7 +147,8 @@
 ### Frontend Framework
 - **React Web** → React Expert
 - **React SSR/SSG** → Next.js Developer
-- **Vue Apps** → Vue Expert
+- **Vue Apps (TypeScript)** → Vue Expert
+- **Vue Apps (JavaScript)** → Vue Expert (JS)
 - **Angular Apps** → Angular Architect
 - **Mobile (JavaScript)** → React Native Expert
 - **Mobile (Dart)** → Flutter Expert

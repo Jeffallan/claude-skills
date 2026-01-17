@@ -42,9 +42,11 @@ flowchart TB
         CED["/project:discovery:create-epic-discovery"]
         MR["[Manual Research]<br/>Interviews, Spikes, Analysis"]
         SD["/project:discovery:synthesize-discovery"]
+        AS["/project:discovery:approve-synthesis"]
 
         CED -->|"Discovery Document"| MR
         MR -->|"Research Findings"| SD
+        SD -->|"Synthesis Document"| AS
     end
 
     subgraph Planning["Planning Phase"]
@@ -85,7 +87,8 @@ flowchart TB
 | Phase | Input | Command | Output |
 |-------|-------|---------|--------|
 | Discovery | Epic Key | `create-epic-discovery` | Discovery Document |
-| Discovery | Discovery Doc + Research | `synthesize-discovery` | Synthesis Doc + Tickets |
+| Discovery | Discovery Doc + Research | `synthesize-discovery` | Synthesis Doc + Proposed Tickets |
+| Discovery | Synthesis Doc URL | `approve-synthesis` | Jira Tickets |
 | Planning | Epic Key | `create-epic-plan` | Overview Document |
 | Planning | Overview Doc URL | `create-implementation-plan` | Implementation Plan + Updated Tickets |
 | Execution | Ticket Key | `execute-ticket` | Implemented Code |
@@ -129,10 +132,20 @@ flowchart LR
         FS["Fetch Sources"]
         CA["Cross-Analyze"]
         GR["Generate Recommendations"]
-        TC["Create Tickets"]
+        PT["Propose Tickets"]
         PS["Publish Synthesis"]
 
-        FS --> CA --> GR --> TC --> PS
+        FS --> CA --> GR --> PT --> PS
+    end
+
+    subgraph Approve["approve-synthesis"]
+        direction TB
+        RS["Read Synthesis"]
+        RD["Resolve Decisions"]
+        MT["Modify Tickets"]
+        CT["Create in Jira"]
+
+        RS --> RD --> MT --> CT
     end
 
     subgraph Outputs
@@ -147,7 +160,8 @@ flowchart LR
     DD --> ManualWork
     ManualWork --> Synthesize
     Synthesize --> SD
-    Synthesize --> NT
+    SD --> Approve
+    Approve --> NT
 ```
 
 ### create-epic-discovery
@@ -183,7 +197,7 @@ flowchart LR
 
 **Command:** `/project:discovery:synthesize-discovery <source-url> [source-url...] [--target=<epic-key>]`
 
-**Purpose:** Synthesizes findings from discovery documents and research into actionable implementation tickets.
+**Purpose:** Synthesizes findings from discovery documents and research into a synthesis document with proposed tickets.
 
 **Arguments:**
 - `<source-url>` - One or more Confluence document URLs (discovery docs, research findings, spike reports)
@@ -194,8 +208,9 @@ flowchart LR
 2. Consolidates and cross-analyzes findings
 3. Validates/invalidates hypotheses
 4. Generates feature recommendations
-5. Creates tickets in target implementation epics
-6. Publishes synthesis document
+5. Identifies blocking decisions that must be resolved
+6. Creates proposed tickets (not yet in Jira)
+7. Publishes synthesis document with machine-readable ticket data
 
 **Output Sections:**
 - Synthesis Overview
@@ -203,10 +218,48 @@ flowchart LR
 - Consolidated Findings (Validated/Invalidated Hypotheses, Answered Questions)
 - Remaining Unknowns
 - Recommendations by Epic
+- Blocking Decisions (decisions that block ticket creation)
 - Decision Log
 - Source Cross-Reference
+- Proposed Tickets Data (JSON for `approve-synthesis`)
 
 **Publish Location:** `/Epics/Discovery/{Discovery_Epic_Key}/Synthesis/`
+
+**Next Step:** Run `/approve-synthesis <synthesis-url>` to resolve decisions and create tickets.
+
+---
+
+### approve-synthesis
+
+**Command:** `/project:discovery:approve-synthesis <synthesis-url>`
+
+**Purpose:** Reviews synthesis document, resolves blocking decisions, and creates approved tickets in Jira.
+
+**Arguments:**
+- `<synthesis-url>` - URL of the synthesis document from `synthesize-discovery`
+
+**Process:**
+1. Fetches synthesis document and extracts proposed tickets JSON
+2. Checks for unresolved blocking decisions
+3. Presents decisions for resolution (blocks until all resolved)
+4. Allows add/remove/modify of proposed tickets
+5. Creates approved tickets in Jira
+6. Updates synthesis document status to "Approved"
+
+**Blocking Decisions:**
+- Decisions are identified during synthesis as issues that affect ticket scope
+- All blocking decisions MUST be resolved before tickets can be created
+- User selects resolution option (A, B, C, etc.) for each decision
+- Resolutions are recorded in the synthesis document
+
+**Ticket Operations:**
+- **Add:** Create new tickets not in the original proposal
+- **Remove:** Exclude tickets from Jira creation
+- **Modify:** Update title, description, story points, priority
+
+**Output:**
+- Created Jira tickets linked to target epic(s)
+- Updated synthesis document with approval status and ticket links
 
 ---
 
@@ -628,7 +681,8 @@ Quick reference table for all workflow commands:
 | Command | Arguments | Description | Output |
 |---------|-----------|-------------|--------|
 | `create-epic-discovery` | `<epic-key>` | Creates discovery document for research epics | Discovery Document (Confluence) |
-| `synthesize-discovery` | `<doc-urls> [--target=<epic>]` | Synthesizes findings into tickets | Synthesis Doc + Jira Tickets |
+| `synthesize-discovery` | `<doc-urls> [--target=<epic>]` | Synthesizes findings into proposed tickets | Synthesis Doc + Proposed Tickets |
+| `approve-synthesis` | `<synthesis-url>` | Resolves decisions, creates tickets in Jira | Jira Tickets |
 | `create-epic-plan` | `<epic-key>` | Creates overview document with codebase analysis | Overview Document (Confluence) |
 | `create-implementation-plan` | `<overview-doc-url>` | Creates execution plan with parallel waves | Implementation Plan + Updated Tickets |
 | `execute-ticket` | `<ticket-key>` | Implements individual ticket | Code Changes + Tests |
@@ -737,7 +791,8 @@ What would you like to do? [A/B/C]
 | Command | Checkpoints |
 |---------|-------------|
 | `create-epic-discovery` | Epic confirmation, Document review before publish |
-| `synthesize-discovery` | Sources confirmation, Synthesis review, Ticket creation approval |
+| `synthesize-discovery` | Sources confirmation, Synthesis review before publish |
+| `approve-synthesis` | Decision resolution, Ticket modifications, Ticket creation approval |
 | `create-epic-plan` | Epic confirmation, Document review before publish |
 | `create-implementation-plan` | Document confirmation, Ticket changes, Plan preview, Overview updates |
 | `execute-ticket` | Ticket selection, Deviation approval, Completion review |
@@ -771,7 +826,7 @@ create-epic-plan -> create-implementation-plan -> [execute-ticket + complete-tic
 
 For epics requiring research:
 ```
-create-epic-discovery -> [research] -> synthesize-discovery -> create-epic-plan -> create-implementation-plan -> [execute-ticket + complete-ticket] x N -> complete-epic
+create-epic-discovery -> [research] -> synthesize-discovery -> approve-synthesis -> create-epic-plan -> create-implementation-plan -> [execute-ticket + complete-ticket] x N -> complete-epic
 ```
 
 ### Sprint Completion Flow
@@ -790,6 +845,7 @@ At end of sprint:
 Always capture and provide document URLs when outputting command results. Downstream commands depend on these URLs:
 
 - `create-epic-discovery` outputs `{Discovery_Document}` for `synthesize-discovery`
+- `synthesize-discovery` outputs `{Synthesis_Document}` for `approve-synthesis`
 - `create-epic-plan` outputs `{Overview_Document}` for `create-implementation-plan`
 - `create-implementation-plan` outputs `{Implementation_Plan}` referenced in tickets
 

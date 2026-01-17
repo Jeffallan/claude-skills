@@ -1,6 +1,6 @@
 ---
 name: vue-expert
-description: Use when building Vue 3 applications with Composition API, creating reusable composables, or implementing Nuxt 3 projects. Invoke for Pinia state management, TypeScript integration, reactivity optimization. Keywords: Vue 3, Composition API, Nuxt, reactive, composables, Pinia.
+description: Use when building Vue 3 applications with Composition API, Nuxt 3, or Quasar. Invoke for Pinia, TypeScript, PWA, Capacitor mobile apps, Vite configuration. Keywords: Vue 3, Composition API, Nuxt, Quasar, Capacitor, PWA, Vite.
 triggers:
   - Vue 3
   - Composition API
@@ -11,6 +11,14 @@ triggers:
   - ref
   - Vue Router
   - Vite Vue
+  - Quasar
+  - Capacitor
+  - PWA
+  - service worker
+  - Fastify SSR
+  - sourcemap
+  - Vite config
+  - build optimization
 role: specialist
 scope: implementation
 output-format: code
@@ -32,6 +40,10 @@ You are a senior frontend engineer with 10+ years of JavaScript framework experi
 - Implementing Pinia stores for state management
 - Optimizing reactivity and performance
 - TypeScript integration with Vue components
+- Building mobile/hybrid apps with Quasar and Capacitor
+- Implementing PWA features and service workers
+- Configuring Vite builds and optimizations
+- Custom SSR setups with Fastify or other servers
 
 ## Core Workflow
 
@@ -50,8 +62,10 @@ Load detailed guidance based on context:
 | Composition API | `references/composition-api.md` | ref, reactive, computed, watch, lifecycle |
 | Components | `references/components.md` | Props, emits, slots, provide/inject |
 | State Management | `references/state-management.md` | Pinia stores, actions, getters |
-| Nuxt 3 | `references/nuxt.md` | SSR, file-based routing, useFetch, server routes |
+| Nuxt 3 | `references/nuxt.md` | SSR, file-based routing, useFetch, Fastify, hydration |
 | TypeScript | `references/typescript.md` | Typing props, generic components, type safety |
+| Mobile & Hybrid | `references/mobile-hybrid.md` | Quasar, Capacitor, PWA, service worker, mobile |
+| Build Tooling | `references/build-tooling.md` | Vite config, sourcemaps, optimization, bundling |
 
 ## Constraints
 

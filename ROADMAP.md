@@ -2,11 +2,12 @@
 
 ## Current Status
 
-**Version:** v0.2.0 (Released December 2025)
+**Version:** v0.3.2 (Released January 2026)
 
-- **54 Skills** across 8 domains
-- **284 Reference Files** with progressive disclosure architecture
-- **25+ Frameworks** and technologies covered
+- **65 Skills** across 12 domains
+- **301 Reference Files** with progressive disclosure architecture
+- **30+ Frameworks** and technologies covered
+- **9 Project Workflow Commands** for epic planning, discovery, execution, and retrospectives
 - **50% Token Reduction** through selective disclosure architecture
 - Skills organized by domain: Backend, Frontend, DevOps, Mobile, Data, Security, Product, and Business
 
@@ -15,8 +16,8 @@
 ## Development Timeline
 
 ```
-v0.2.0 ──────> v0.3.0 ──────> v0.4.0 ──────> v0.5.0 ──────> v0.6.0 ──────> v0.7.0 ──────> v1.0.0
-(Current)      Q1 2026       Q2 2026       Q2 2026       Q3 2026       Q3 2026       Q4 2026
+v0.3.2 ──────> v0.4.0 ──────> v0.5.0 ──────> v0.6.0 ──────> v0.7.0 ──────> v1.0.0
+(Current)      Q1 2026       Q2 2026       Q3 2026       Q3 2026       Q4 2026
 Domain         Cross-        Skill         Intelligence  Template      Workflow      Stable
 Expansion      Referencing   Composition   & Analytics   UI            Designer      Release
 ```
@@ -340,4 +341,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: December 2025 (v0.2.1)*
+*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: January 2026 (v0.3.2)*

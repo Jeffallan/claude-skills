@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-01-16
+
+### Added
+- New `/reality-check` command for surfacing Claude's hidden assumptions (#88)
+  - Two-phase interactive flow (Surface & Select, Adjust Tiers)
+  - Assumption classification by Type (stated/inferred/assumed/uncertain)
+  - Confidence tiers (ESTABLISHED/WORKING/OPEN)
+  - `--list` and `--check` flags for quick access
+  - Reality file storage in ~/.claude/reality-check/
+  - Introduced hybrid command pattern (COMMAND.md + references/) for complex commands
+- New `/approve-synthesis` command for reviewing and approving synthesis documents (#87)
+  - Reviews proposed tickets from synthesis
+  - Resolves blocking decisions before ticket creation
+  - Allows add/remove/modify of tickets before Jira creation
+  - Creates approved tickets in Jira
+- New `vue-expert-js` skill for JavaScript-only Vue development (#86)
+  - JSDoc typing patterns for Vue components
+  - Runtime prop validation
+
+### Changed
+- Split `/synthesize-discovery` workflow into two commands (#87)
+  - `/synthesize-discovery` now creates synthesis document with proposed tickets
+  - `/approve-synthesis` handles decision resolution and Jira ticket creation
+- Enhanced `vue-expert` skill with mobile and build tooling (#86)
+  - Quasar framework patterns for mobile-first development
+  - Capacitor native plugin integration
+  - PWA service workers and offline strategies
+  - Vite build configuration and optimization
+  - Updated Nuxt reference with Custom SSR + Fastify patterns
+- Total skills: 64 → 65
+- Total reference files: 298 → 301
+- Total project commands: 8 → 9
+
 ## [0.3.1] - 2025-12-26
 
 ### Changed
@@ -122,6 +155,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.3.2]: https://github.com/jeffallan/claude-skills/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/jeffallan/claude-skills/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/jeffallan/claude-skills/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/jeffallan/claude-skills/compare/v0.1.0...v0.2.0
