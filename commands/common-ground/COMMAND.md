@@ -3,7 +3,7 @@ description: Surface and validate Claude's hidden assumptions about the project 
 argument-hint: [--list] [--check]
 ---
 
-# Reality Check
+# Common Ground
 
 **Arguments:** $ARGUMENTS
 
@@ -34,7 +34,7 @@ Load detailed guidance based on context:
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
 | Assumption Types & Tiers | `references/assumption-classification.md` | Classifying assumptions, determining type or tier |
-| File Management | `references/file-management.md` | Storage operations, project ID, reality file format |
+| File Management | `references/file-management.md` | Storage operations, project ID, ground file format |
 
 ---
 
@@ -64,7 +64,7 @@ When no flags provided, execute the two-phase interactive flow.
 1. **Analyze current context** to identify assumptions:
    - Scan configuration files (tsconfig.json, package.json, .eslintrc, etc.)
    - Review recent conversation context
-   - Check existing reality file for tracked assumptions
+   - Check existing ground file for tracked assumptions
 
 2. **Classify each assumption** by type and proposed tier:
    - See `references/assumption-classification.md` for classification rules
@@ -111,15 +111,15 @@ When no flags provided, execute the two-phase interactive flow.
    - Demotions: ESTABLISHED -> WORKING -> OPEN
    - New additions: User specifies via "Other" with format: `assumption text [tier] [type]`
 
-4. **Write reality file:**
-   - Save to `~/.claude/reality-check/{project_id}/reality.md`
-   - Update `reality.index.json` for machine-readable access
+4. **Write ground file:**
+   - Save to `~/.claude/common-ground/{project_id}/ground.md`
+   - Update `ground.index.json` for machine-readable access
    - See `references/file-management.md` for file formats
 
 ### Output
 
 ```
-## Reality Check Complete
+## Common Ground Complete
 
 **Project:** {project_name}
 **Tracked Assumptions:** {count}
@@ -129,10 +129,10 @@ When no flags provided, execute the two-phase interactive flow.
 - WORKING: {count} (medium confidence)
 - OPEN: {count} (needs validation)
 
-**Reality file saved to:** ~/.claude/reality-check/{project_id}/reality.md
+**Ground file saved to:** ~/.claude/common-ground/{project_id}/ground.md
 
-Run `/reality-check --list` to view all assumptions.
-Run `/reality-check --check` for quick validation.
+Run `/common-ground --list` to view all assumptions.
+Run `/common-ground --check` for quick validation.
 ```
 
 ---
@@ -141,12 +141,12 @@ Run `/reality-check --check` for quick validation.
 
 Read-only display of all tracked assumptions.
 
-1. **Load reality file** from `~/.claude/reality-check/{project_id}/reality.md`
+1. **Load ground file** from `~/.claude/common-ground/{project_id}/ground.md`
 
 2. **Display assumptions** grouped by tier:
 
 ```
-## Reality Check: All Assumptions
+## Common Ground: All Assumptions
 
 **Project:** {project_name}
 **Last Updated:** {timestamp}
@@ -164,14 +164,14 @@ Read-only display of all tracked assumptions.
 2. ...
 
 ---
-(Read-only view. Run `/reality-check` to modify.)
+(Read-only view. Run `/common-ground` to modify.)
 ```
 
 3. **Handle missing file:**
-   If no reality file exists:
+   If no ground file exists:
    ```
-   No reality file found for this project.
-   Run `/reality-check` to surface and track assumptions.
+   No ground file found for this project.
+   Run `/common-ground` to surface and track assumptions.
    ```
 
 ---
@@ -180,7 +180,7 @@ Read-only display of all tracked assumptions.
 
 Quick validation of existing assumptions.
 
-1. **Load reality file** from `~/.claude/reality-check/{project_id}/reality.md`
+1. **Load ground file** from `~/.claude/common-ground/{project_id}/ground.md`
 
 2. **Present summary via AskUserQuestion:**
 
@@ -200,7 +200,7 @@ Quick validation of existing assumptions.
    - **Need full review:** Run full default flow
 
 4. **Handle missing file:**
-   If no reality file exists, redirect to default flow:
+   If no ground file exists, redirect to default flow:
    ```
    No existing assumptions to check. Starting fresh...
    ```
@@ -214,11 +214,11 @@ Quick validation of existing assumptions.
 - Always identify project before file operations
 - Use AskUserQuestion for all interactive selections
 - Preserve assumption type (audit trail) - users cannot change type
-- Write both human-readable (reality.md) and machine-readable (reality.index.json) files
+- Write both human-readable (ground.md) and machine-readable (ground.index.json) files
 - Include timestamps for tracking staleness
 
 ### MUST NOT DO
 - Assume context without surfacing assumptions
 - Allow type changes (stated/inferred/assumed/uncertain)
 - Proceed without user confirmation on tier changes
-- Overwrite reality file without preserving history
+- Overwrite ground file without preserving history
