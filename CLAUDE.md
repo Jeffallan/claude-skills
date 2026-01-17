@@ -111,6 +111,108 @@ output-format: code|document|report|architecture
 
 ---
 
+## Release Checklist
+
+When releasing a new version, update all version numbers and counts consistently.
+
+### 1. Update Version Numbers
+
+| File | Location |
+|------|----------|
+| `.claude-plugin/plugin.json` | `"version": "X.Y.Z"` |
+| `.claude-plugin/marketplace.json` | `"version": "X.Y.Z"` (appears twice: metadata and plugins) |
+| `README.md` | Badge URL: `version-X.Y.Z-blue.svg` |
+| `ROADMAP.md` | Current status section: `**Version:** vX.Y.Z` |
+| `ROADMAP.md` | Last updated footer |
+
+### 2. Update Counts
+
+Verify actual counts match documentation:
+
+```bash
+# Count skills (subtract 1 for parent directory)
+find skills/ -maxdepth 1 -type d | wc -l
+
+# Count reference files
+find skills/ -path "*/references/*.md" | wc -l
+
+# Count project workflow commands
+find commands/project -name "*.md" | wc -l
+```
+
+**Files to update with new counts:**
+
+| File | What to Update |
+|------|----------------|
+| `.claude-plugin/plugin.json` | Description: "X specialized skills" |
+| `.claude-plugin/marketplace.json` | Description: "X specialized skills", "Y commands" |
+| `README.md` | Header image (skills/workflows), badge stats, project structure comments, stats section, footer |
+| `ROADMAP.md` | Current status: skills, reference files, frameworks, commands |
+| `QUICKSTART.md` | "X skills covering" section |
+| `assets/social-preview.html` | Subtitle, stats spans (skills, workflows, reference files) |
+
+### 3. Update CHANGELOG.md
+
+Add new version entry at the top following Keep a Changelog format:
+
+```markdown
+## [X.Y.Z] - YYYY-MM-DD
+
+### Added
+- New features, skills, commands
+
+### Changed
+- Modified functionality, updated skills
+
+### Fixed
+- Bug fixes
+```
+
+Add version comparison link at bottom:
+```markdown
+[X.Y.Z]: https://github.com/jeffallan/claude-skills/compare/vPREVIOUS...vX.Y.Z
+```
+
+### 4. Update Documentation for New/Modified Content
+
+**For new skills:**
+- Add to `SKILLS_GUIDE.md` in appropriate category
+- Add to decision trees if applicable
+- Verify skill count in all locations above
+
+**For new commands:**
+- Add to `docs/WORKFLOW_COMMANDS.md`
+- Add to `README.md` Project Workflow Commands table
+- Update command count in all locations above
+
+**For modified skills/commands:**
+- Update any cross-references
+- Update SKILLS_GUIDE.md if triggers changed
+
+### 5. Generate Social Preview
+
+After all updates, regenerate the social preview image:
+
+```bash
+node ./assets/capture-screenshot.js
+```
+
+This creates `assets/social-preview.png` from `assets/social-preview.html`.
+
+### 6. Final Verification
+
+Run parallel searches to verify consistency:
+
+```bash
+# Check no old version references remain (except historical changelog)
+grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
+
+# Verify counts match
+grep -r "XX skills" --include="*.md" --include="*.json" --include="*.html"
+```
+
+---
+
 ## Attribution
 
 Behavioral patterns and process discipline adapted from:

@@ -1,5 +1,5 @@
 ---
-description: Synthesize discovery findings into actionable implementation tickets
+description: Synthesize discovery findings into a consolidated analysis document with proposed tickets
 argument-hint: <source-url> [source-url...] [--target=<epic-key>]
 ---
 
@@ -40,7 +40,7 @@ Parse the arguments to extract:
          ↓
 /synthesize-discovery <doc-urls...>  → Synthesis Document (YOU ARE HERE)
          ↓
-Creates tickets in target implementation epics
+/approve-synthesis <synthesis-url>  → Creates Jira Tickets
          ↓
 /create-implementation-plan <overview-doc>  → Implementation planning continues
 ```
@@ -234,6 +234,20 @@ Decisions that need to be made before implementation:
 |----------|---------|----------------|-----------|-------|----------|
 | [decision] | A, B, C | B | [why] | [who] | [when] |
 
+### 6a. Blocking Decisions
+
+**Status:** [Pending Resolution / All Resolved]
+
+Decisions that MUST be resolved before tickets can be created:
+
+| ID | Decision | Options | Status | Resolution | Resolved By | Date |
+|----|----------|---------|--------|------------|-------------|------|
+| D1 | [decision question] | A, B, C | Pending | - | - | - |
+
+**Impact:** Tickets [T1, T3, T5] are blocked until all decisions are resolved.
+
+*Note: Use `/approve-synthesis` to resolve these decisions and create tickets.*
+
 ### 7. Source Cross-Reference
 
 Map findings back to sources:
@@ -246,6 +260,55 @@ Map findings back to sources:
 ### 8. Appendix: Full Findings Inventory
 
 Complete list of all findings extracted from sources with full detail.
+
+### 9. Proposed Tickets Data
+
+**Status:** Pending Approval
+**Last Updated:** [timestamp]
+
+<!-- PROPOSED_TICKETS_START -->
+```json
+{
+  "version": "1.0",
+  "synthesis_url": "[this document URL]",
+  "discovery_epic": "[Discovery Epic Key]",
+  "blocking_decisions": [
+    {
+      "id": "D1",
+      "question": "[decision question]",
+      "options": ["A", "B", "C"],
+      "status": "pending",
+      "resolution": null,
+      "blocks_tickets": ["T1", "T3"]
+    }
+  ],
+  "proposed_tickets": [
+    {
+      "id": "T1",
+      "title": "[Ticket title]",
+      "type": "Story",
+      "target_epic": "CC-62",
+      "priority": "High",
+      "story_points": 5,
+      "dependencies": [],
+      "blocked_by_decisions": ["D1"],
+      "based_on_findings": ["F1", "F2"],
+      "description": "[Full ticket description]",
+      "acceptance_criteria": [
+        "Criterion 1",
+        "Criterion 2"
+      ],
+      "notes_from_discovery": "[Relevant insights]"
+    }
+  ],
+  "approval_status": "pending",
+  "approved_by": null,
+  "approved_date": null
+}
+```
+<!-- PROPOSED_TICKETS_END -->
+
+*This section is machine-readable and used by `/approve-synthesis` command.*
 
 ---
 
@@ -264,13 +327,14 @@ Summary:
 - Sources Analyzed: [count]
 - Findings Extracted: [count]
 - Hypotheses Validated: [count] / Invalidated: [count]
-- Recommended Tickets: [count]
+- Proposed Tickets: [count]
+- Blocking Decisions: [count] pending
 - Target Epics: [list]
 
-Ready to proceed? (Yes / No / Modify)
+Ready to publish synthesis document? (Yes / No / Modify)
 ```
 
-- **Yes** → Continue to ticket creation
+- **Yes** → Publish synthesis document to Confluence
 - **No** → Ask what changes are needed
 - **Modify** → User provides feedback, regenerate
 
@@ -278,86 +342,7 @@ Ready to proceed? (Yes / No / Modify)
 
 ---
 
-## Phase 5: Ticket Creation
-
-**MANDATORY CHECKPOINT - Ticket Creation Approval:**
-
-Before creating any tickets, present the full list:
-
-```
-## Proposed Tickets from Discovery Synthesis
-
-### Epic: {Epic_Key_1}
-
-| # | Title | Type | Points | Priority |
-|---|-------|------|--------|----------|
-| 1 | [title] | Story | 5 | High |
-| 2 | [title] | Task | 3 | Med |
-
-### Epic: {Epic_Key_2}
-
-| # | Title | Type | Points | Priority |
-|---|-------|------|--------|----------|
-| 1 | [title] | Spike | 2 | High |
-
-Total: [count] tickets across [count] epics
-
-Create these tickets? (Yes / No / Modify)
-```
-
-- **Yes** → Create all tickets
-- **No** → Skip ticket creation, just publish synthesis document
-- **Modify** → User adjusts list, re-confirm
-
-**DO NOT CREATE TICKETS** without explicit approval.
-
-### Ticket Creation Process
-
-For each approved ticket:
-
-1. **Create ticket in Jira** under the target epic
-2. **Set ticket fields:**
-   - Summary: [Title]
-   - Type: Story/Task/Bug/Spike
-   - Epic Link: {Target_Epic}
-   - Story Points: [estimated]
-   - Priority: [from synthesis]
-   - Labels: `from-discovery`, `{Discovery_Epic_Key}`
-
-3. **Populate description using template:**
-
-```markdown
-## Source
-- Discovery Epic: [{Discovery_Epic_Key}]({url})
-- Synthesis Document: [{Synthesis_Doc}]({url})
-- Based on Findings: [F1, F2, ...]
-
-## Context
-[Why this ticket was created based on discovery findings]
-
-## Summary
-[What this ticket accomplishes]
-
-## Acceptance Criteria
-- [ ] [Criterion derived from findings]
-- [ ] [Criterion derived from findings]
-
-## Notes from Discovery
-- [Relevant insights that inform implementation]
-- [Constraints or considerations discovered]
-
----
-*This ticket was generated from discovery synthesis. See source documents for full context.*
-```
-
-4. **Link tickets:**
-   - Link to discovery epic as "discovered by"
-   - Link dependencies between tickets
-   - Link to any relevant existing tickets
-
----
-
-## Phase 6: Publish & Output
+## Phase 5: Publish & Output
 
 1. **Publish synthesis document** to Confluence:
    - Location: `/epics/Discovery/{Discovery_Epic_Key}/Synthesis/`
@@ -367,7 +352,7 @@ For each approved ticket:
 
 3. **Update target epic(s)** with:
    - Link to synthesis document
-   - Summary of tickets created
+   - Summary of proposed tickets (not created yet)
 
 ---
 
@@ -391,31 +376,25 @@ For each approved ticket:
 - Invalidated Hypotheses: [count]
 - Remaining Unknowns: [count]
 
-### Tickets Created
+### Proposed Tickets Summary
 
-#### {Epic_Key_1}: {Epic_Title}
-| Key | Title | Type | Points |
-|-----|-------|------|--------|
-| CC-XXX | [title] | Story | 5 |
-| CC-XXX | [title] | Task | 3 |
+**Total Proposed:** [count] tickets, [sum] story points
+**Blocking Decisions:** [count] pending
 
-#### {Epic_Key_2}: {Epic_Title}
-| Key | Title | Type | Points |
-|-----|-------|------|--------|
-| CC-XXX | [title] | Spike | 2 |
+#### By Epic:
+- {Epic_Key_1}: [count] tickets ([sum] points)
+- {Epic_Key_2}: [count] tickets ([sum] points)
 
-**Total:** [count] tickets, [sum] story points
-
-### Decisions Pending
-1. [Decision needing resolution]
-2. [Decision needing resolution]
+### Blocking Decisions
+1. [D1: Decision needing resolution]
+2. [D2: Decision needing resolution]
 
 ### Next Steps
-1. Resolve pending decisions listed above
-2. Review and refine created tickets
-3. Run implementation planning:
+1. Review the synthesis document
+2. Resolve blocking decisions
+3. Run ticket approval:
 
-/create-implementation-plan {Target_Epic_Overview_Doc}
+/approve-synthesis {Synthesis_Document_URL}
 ```
 
 ---
@@ -427,7 +406,6 @@ For each approved ticket:
 | Source URL not accessible | List failed URLs, ask for alternatives |
 | No target epic specified or found | Ask user to specify target epic(s) |
 | Conflicting findings across sources | Document conflicts, ask user to resolve |
-| Jira ticket creation fails | Log error, continue with remaining tickets |
 | Confluence publish fails | Provide document content for manual publishing |
 
 ---
@@ -440,7 +418,7 @@ For each approved ticket:
 - **Pattern Recognition:** Identify themes and patterns across sources
 - **Cross-Reference:** Map findings to their sources
 
-**During ticket creation:**
+**During document creation:**
 
 - **Validation:** Verify target epics exist and are accessible
-- **Dependency Mapping:** Ensure ticket dependencies are correctly ordered
+- **Decision Identification:** Flag decisions that will block ticket creation
