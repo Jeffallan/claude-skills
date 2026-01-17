@@ -47,12 +47,12 @@ Try these commands to verify skills are working:
 ## First Steps
 
 ### 1. Understand What You Have
-19 skills covering:
-- 6 Development Workflow Skills
-- 6 Framework Experts (NestJS, Django, FastAPI, React, React Native, Flutter)
-- 4 Engineering Workflow Skills (Debugging, Monitoring, Architecture, Code Review)
-- 2 Security Skills
-- 1 Testing Skill (Playwright)
+65 skills covering:
+- 12 Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
+- 10 Backend Framework Experts (NestJS, Django, FastAPI, Spring Boot, Laravel, Rails, .NET Core, etc.)
+- 7 Frontend & Mobile Experts (React, Next.js, Vue, Angular, React Native, Flutter)
+- 9 Project Workflow Commands (discovery, planning, execution, retrospectives)
+- Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
 ### 2. Common Use Cases
 

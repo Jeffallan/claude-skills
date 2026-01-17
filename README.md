@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=64%20Skills%20%E2%80%A2%208%20Workflows%20%E2%80%A2%20Built%20with%20%E2%9D%A4%EF%B8%8F%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=65%20Skills%20%E2%80%A2%209%20Workflows%20%E2%80%A2%20Built%20with%20%E2%9D%A4%EF%B8%8F%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.3.0-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.3.2-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🚀 8 Workflows</strong> • <strong>📚 298 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🚀 9 Workflows</strong> • <strong>📚 301 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 ---
@@ -70,7 +70,7 @@ claude-skills/
 ├── .claude-plugin/
 │   ├── plugin.json           # Plugin metadata
 │   └── marketplace.json      # Marketplace configuration
-├── skills/                   # 64 specialized skills
+├── skills/                   # 65 specialized skills
 │   ├── react-expert/
 │   │   ├── SKILL.md
 │   │   └── references/       # 6 reference files
@@ -80,8 +80,8 @@ claude-skills/
 │   ├── python-pro/
 │   │   ├── SKILL.md
 │   │   └── references/       # Language-specific patterns
-│   └── ... (61 more skills)
-├── commands/                 # 8 project workflow commands
+│   └── ... (62 more skills)
+├── commands/                 # 9 project workflow commands
 │   └── project/
 │       ├── discovery/        # Research & validation
 │       ├── planning/         # Epic & implementation planning
@@ -96,14 +96,14 @@ claude-skills/
 ```
 
 **Stats:**
-- 64 skills
-- 298 reference files
+- 65 skills
+- 301 reference files
 - ~50% token reduction
 - Covers 30+ frameworks
 
 ## Skills Overview
 
-**64 specialized skills** across 12 categories:
+**65 specialized skills** across 12 categories:
 
 - **Languages (12)**: Python Pro, TypeScript Pro, JavaScript Pro, Go Pro, Rust Engineer, SQL Pro, C++ Pro, Swift Expert, Kotlin Specialist, C# Developer, PHP Pro, Java Architect
 - **Backend Frameworks (7)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
@@ -169,11 +169,11 @@ Secure Code Guardian → Security Reviewer → Test Master
 
 ## Project Workflow Commands
 
-Manage your entire development lifecycle with **8 project workflow commands** organized into 4 phases:
+Manage your entire development lifecycle with **9 project workflow commands** organized into 4 phases:
 
 | Phase | Commands | Purpose |
 |-------|----------|---------|
-| **Discovery** | `create-epic-discovery`, `synthesize-discovery` | Research and validate requirements |
+| **Discovery** | `create-epic-discovery`, `synthesize-discovery`, `approve-synthesis` | Research, synthesize, and approve requirements |
 | **Planning** | `create-epic-plan`, `create-implementation-plan` | Analyze codebase and create execution plans |
 | **Execution** | `execute-ticket`, `complete-ticket` | Implement and complete individual tickets |
 | **Retrospectives** | `complete-epic`, `complete-sprint` | Generate reports and close work items |
@@ -355,4 +355,4 @@ Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers wo
 
 ---
 
-**Built for Claude Code** | **8 Workflows** | **298 Reference Files** | **64 Skills** 
+**Built for Claude Code** | **9 Workflows** | **301 Reference Files** | **65 Skills** 
