@@ -1,6 +1,6 @@
 # Assumption Classification
 
-> Reference for: Reality Check
+> Reference for: Common Ground
 > Load when: Classifying assumptions, determining type or tier
 
 ---

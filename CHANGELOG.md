@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.2] - 2026-01-16
 
 ### Added
-- New `/reality-check` command for surfacing Claude's hidden assumptions (#88)
+- New `/common-ground` command for surfacing Claude's hidden assumptions (#88)
   - Two-phase interactive flow (Surface & Select, Adjust Tiers)
   - Assumption classification by Type (stated/inferred/assumed/uncertain)
   - Confidence tiers (ESTABLISHED/WORKING/OPEN)
   - `--list` and `--check` flags for quick access
-  - Reality file storage in ~/.claude/reality-check/
+  - Ground file storage in ~/.claude/common-ground/
   - Introduced hybrid command pattern (COMMAND.md + references/) for complex commands
 - New `/approve-synthesis` command for reviewing and approving synthesis documents (#87)
   - Reviews proposed tickets from synthesis
