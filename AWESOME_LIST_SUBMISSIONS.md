@@ -9,13 +9,26 @@
 | List | Link | Star Requirement | Status | Submission |
 |------|------|------------------|--------|------------|
 | travisvn | [github.com/travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | Soft (filters trivial repos) | [ ] Pending | Collection |
+| ComposioHQ | [github.com/ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) | None | [ ] Pending | Development & Code Tools (collection) + Collaboration & Project Management (workflows) |
 | VoltAgent | [github.com/VoltAgent/awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | None | [ ] Pending | Development & Testing (collection) + Context Engineering (common-ground) |
 | BehiSecc | [github.com/BehiSecc/awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | None | [ ] Pending | Development & Code Tools (collection) + Collaboration & Project Management (workflows) |
 | karanb192 | [github.com/karanb192/awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills) | None (affects display rating only) | [ ] Pending | 13 inline skills filling "Community-needed" gaps |
 | Microck | [github.com/Microck/ordinary-claude-skills](https://github.com/Microck/ordinary-claude-skills) | None | [x] Skip | Low ROI |
 | Chat2AnyLLM | [github.com/Chat2AnyLLM/awesome-claude-skills](https://github.com/Chat2AnyLLM/awesome-claude-skills) | — | [x] Done | Already listed |
 
-**Total:** 18 entries across 4 PRs
+**Total:** 20 entries across 5 PRs
+
+---
+
+## Submission Strategy
+
+**Recommended order:**
+
+1. **travisvn first** (5.3k stars) — highest visibility, use merged PR as social proof for others
+2. **ComposioHQ** (1.2k stars) — good visibility, active maintenance
+3. **BehiSecc** (4k stars) — high visibility
+4. **VoltAgent** (3.3k stars) — dual-category approach
+5. **karanb192** (41 stars) — fills community gaps, lower priority
 
 ---
 
@@ -61,7 +74,51 @@ A comprehensive collection of 65 specialized Claude Code skills designed for ful
 
 ---
 
-## 2. VoltAgent/awesome-claude-skills
+## 2. ComposioHQ/awesome-claude-skills
+
+**Stars:** 1.2k | **Categories:** Development & Code Tools, Collaboration & Project Management
+
+### Commit Message
+```
+Add claude-skills collection and workflow commands
+```
+
+### Entry 1: Development & Code Tools
+
+```markdown
+**claude-skills** – 65 full-stack development skills with progressive disclosure architecture covering React, NestJS, Python, DevOps, and 30+ frameworks. **By @jeffallan**
+```
+
+### Entry 2: Collaboration & Project Management
+
+```markdown
+**claude-skills** – 9 project workflow commands (discovery, planning, execution, retrospectives) with Jira/Confluence integration. **By @jeffallan**
+```
+
+### PR Description
+
+```markdown
+## Add jeffallan/claude-skills
+
+Adding claude-skills to two categories:
+
+### Development & Code Tools
+65 specialized full-stack development skills with progressive disclosure architecture (50% token reduction). Covers React, NestJS, Python, DevOps, testing, security, and 30+ frameworks.
+
+### Collaboration & Project Management
+9 project workflow commands integrated with Jira and Confluence:
+- **Discovery:** create-epic-discovery, synthesize-discovery
+- **Planning:** create-epic-plan, create-implementation-plan
+- **Execution:** execute-ticket, complete-ticket
+- **Retrospectives:** complete-epic, complete-sprint
+
+**Repository:** https://github.com/jeffallan/claude-skills
+**License:** MIT
+```
+
+---
+
+## 3. VoltAgent/awesome-claude-skills
 
 **Stars:** 3.3k | **Categories:** Development and Testing, Context Engineering
 
@@ -105,7 +162,7 @@ The `common-ground` command surfaces and validates Claude's hidden assumptions a
 
 ---
 
-## 3. BehiSecc/awesome-claude-skills
+## 4. BehiSecc/awesome-claude-skills
 
 **Stars:** 4k | **Categories:** Development & Code Tools, Collaboration & Project Management
 
@@ -149,9 +206,11 @@ Adding claude-skills to two categories:
 
 ---
 
-## 4. karanb192/awesome-claude-skills
+## 5. karanb192/awesome-claude-skills
 
 **Stars:** 41 | **Strategy:** Fill "Community-needed" gaps with inline skills
+
+> **Note:** `code-documenter` appears in both Documentation & Automation and Writing & Research categories. This is intentional — it fills "Community-needed" gaps in both sections.
 
 ### Commit Message
 ```
@@ -304,10 +363,11 @@ All skills include:
 - [ ] Review each list's latest README for format changes
 
 ### PRs to Create
-- [ ] travisvn/awesome-claude-skills (1 entry)
-- [ ] VoltAgent/awesome-claude-skills (2 entries)
-- [ ] BehiSecc/awesome-claude-skills (2 entries)
-- [ ] karanb192/awesome-claude-skills (13 entries)
+- [ ] 1. travisvn/awesome-claude-skills (1 entry) — submit first for social proof
+- [ ] 2. ComposioHQ/awesome-claude-skills (2 entries)
+- [ ] 3. VoltAgent/awesome-claude-skills (2 entries)
+- [ ] 4. BehiSecc/awesome-claude-skills (2 entries)
+- [ ] 5. karanb192/awesome-claude-skills (13 entries)
 
 ### Post-submission
 - [ ] Track PR status
