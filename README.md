@@ -17,6 +17,10 @@
   <strong>🎯 65 Skills</strong> • <strong>🚀 9 Workflows</strong> • <strong>🧠 Context Engineering</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
+<p align="center">
+  <a href="https://github.com/Chat2AnyLLM/awesome-claude-skills/blob/main/FULL-SKILLS.md"><img src="https://img.shields.io/github/stars/Chat2AnyLLM/awesome-claude-skills?style=for-the-badge&label=awesome-claude-skills&color=brightgreen&logo=awesomelists&logoColor=white" alt="Awesome Claude Skills"/></a>
+</p>
+
 ---
 
 
