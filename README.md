@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.3.2-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.0-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🚀 9 Workflows</strong> • <strong>📚 301 Reference Files</strong> • <strong>🎯 30+ Frameworks</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🎯 65 Skills</strong> • <strong>🚀 9 Workflows</strong> • <strong>🧠 Context Engineering</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 ---
@@ -32,6 +32,8 @@ then
 ```bash
 /plugin install fullstack-dev-skills@jeffallan
 ```
+
+> **New:** Use `/common-ground` to surface and validate Claude's assumptions about your project before starting work. Add `--graph` to visualize the reasoning structure as a mermaid diagram.
 
 > **Note:** The [Project Workflow Commands](#project-workflow-commands) require an Atlassian MCP server for Jira and Confluence integration. See the **[Atlassian MCP Setup Guide](docs/ATLASSIAN_MCP_SETUP.md)** for configuration instructions.
 
@@ -81,13 +83,17 @@ claude-skills/
 │   │   ├── SKILL.md
 │   │   └── references/       # Language-specific patterns
 │   └── ... (62 more skills)
-├── commands/                 # 9 project workflow commands
-│   └── project/
+├── commands/
+│   ├── common-ground/        # Context engineering command
+│   │   ├── COMMAND.md
+│   │   └── references/
+│   └── project/              # 9 project workflow commands
 │       ├── discovery/        # Research & validation
 │       ├── planning/         # Epic & implementation planning
 │       ├── execution/        # Ticket implementation
 │       └── retrospectives/   # Reports & completion
 ├── docs/
+│   ├── COMMON_GROUND.md      # Context engineering guide
 │   ├── WORKFLOW_COMMANDS.md  # Workflow documentation
 │   └── ATLASSIAN_MCP_SETUP.md # MCP server setup guide
 ├── README.md
@@ -97,7 +103,7 @@ claude-skills/
 
 **Stats:**
 - 65 skills
-- 301 reference files
+- 304 reference files
 - ~50% token reduction
 - Covers 30+ frameworks
 
@@ -166,6 +172,53 @@ Debugging Wizard → Framework Expert → Test Master → Code Reviewer
 ```
 Secure Code Guardian → Security Reviewer → Test Master
 ```
+
+## Context Engineering
+
+### `/common-ground` — Surface Claude's Hidden Assumptions
+
+Claude operates on assumptions about your project—tech stack, coding standards, architecture decisions. This command makes them explicit before they cause misaligned work.
+
+```bash
+/common-ground              # Surface & validate assumptions interactively
+/common-ground --list       # View all tracked assumptions
+/common-ground --check      # Quick validation of existing assumptions
+/common-ground --graph      # Visualize reasoning structure as mermaid diagram
+```
+
+**How it works:**
+
+1. Claude analyzes your codebase (config files, code patterns, conversation context)
+2. Surfaces assumptions with confidence tiers:
+   - **ESTABLISHED** — High confidence, treat as premises
+   - **WORKING** — Medium confidence, use but flag if contradicted
+   - **OPEN** — Low confidence, ask before assuming
+3. You validate, adjust weights, or reject assumptions
+4. Claude remembers and respects your decisions across sessions
+
+**Example output:**
+
+```
+ESTABLISHED: TypeScript strict mode enabled [inferred from tsconfig.json]
+WORKING: Prefer functional components over classes [inferred from codebase patterns]
+OPEN: Server-side rendering required? [uncertain - needs clarification]
+```
+
+### `--graph` — Visualize Reasoning Structure
+
+The `--graph` flag generates a mermaid diagram showing the decision tree behind Claude's reasoning—not just what it assumes, but *why*.
+
+```mermaid
+flowchart TD
+    ROOT[Task: Build auth system] --> D1{MVP or Production?}
+    D1 -->|"0.8 [inferred]"| P1[Production-grade]
+    D1 -->|"0.2 [alternative]"| P2[MVP]
+    P1 --> D2{Stateless?}
+    D2 -->|"0.7 [assumed]"| S1[JWT + refresh]
+    D2 -->|"0.3 [uncertain]"| S2[Redis sessions]
+```
+
+Node colors indicate confidence: green (chosen), yellow (decision point), orange (uncertain), gray (alternative not taken).
 
 ## Project Workflow Commands
 
@@ -281,6 +334,7 @@ cp -r ./skills/* ~/.claude/skills/
 ## Documentation
 
 - **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** - Quick reference for when to use each skill
+- **[docs/COMMON_GROUND.md](docs/COMMON_GROUND.md)** - Context engineering with `/common-ground`
 - **[docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md)** - Project workflow commands guide
 - **[docs/ATLASSIAN_MCP_SETUP.md](docs/ATLASSIAN_MCP_SETUP.md)** - Atlassian MCP server setup
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing
@@ -347,7 +401,13 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Author
 
-Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers working across modern development stacks.
+Built by **[jeffallan](https://jeffallan.github.io)** [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/in/jeff-smolinski/)
+
+**Principal Consultant** at **[Synergetic Solutions](https://synergetic.solutions)** [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/company/synergetic-holdings)
+
+Fullstack engineering, security compliance, and technical due diligence for teams leveraging AI.
+
+**Need help operationalizing AI workflows?** [Let's talk](https://synergetic.solutions/#contact)
 
 ## :clap: Thanks For Your support 
 
@@ -355,4 +415,4 @@ Created by [jeffallan](https://github.com/jeffallan) for full-stack engineers wo
 
 ---
 
-**Built for Claude Code** | **9 Workflows** | **301 Reference Files** | **65 Skills** 
+**Built for Claude Code** | **9 Workflows** | **304 Reference Files** | **65 Skills** 

@@ -114,7 +114,7 @@ When no flags provided, execute the two-phase interactive flow.
    - New additions: User specifies via "Other" with format: `assumption text [tier] [type]`
 
 4. **Write ground file:**
-   - Save to `~/.claude/common-ground/{project_id}/ground.md`
+   - Save to `~/.claude/common-ground/{project_id}/COMMON-GROUND.md`
    - Update `ground.index.json` for machine-readable access
    - See `references/file-management.md` for file formats
 
@@ -131,7 +131,7 @@ When no flags provided, execute the two-phase interactive flow.
 - WORKING: {count} (medium confidence)
 - OPEN: {count} (needs validation)
 
-**Ground file saved to:** ~/.claude/common-ground/{project_id}/ground.md
+**Ground file saved to:** ~/.claude/common-ground/{project_id}/COMMON-GROUND.md
 
 Run `/common-ground --list` to view all assumptions.
 Run `/common-ground --check` for quick validation.
@@ -143,7 +143,7 @@ Run `/common-ground --check` for quick validation.
 
 Read-only display of all tracked assumptions.
 
-1. **Load ground file** from `~/.claude/common-ground/{project_id}/ground.md`
+1. **Load ground file** from `~/.claude/common-ground/{project_id}/COMMON-GROUND.md`
 
 2. **Display assumptions** grouped by tier:
 
@@ -182,7 +182,7 @@ Read-only display of all tracked assumptions.
 
 Quick validation of existing assumptions.
 
-1. **Load ground file** from `~/.claude/common-ground/{project_id}/ground.md`
+1. **Load ground file** from `~/.claude/common-ground/{project_id}/COMMON-GROUND.md`
 
 2. **Present summary via AskUserQuestion:**
 
@@ -233,12 +233,12 @@ Make the shape of Claude's reasoning visible:
 3. **Generate mermaid diagram** following conventions in `references/reasoning-graph.md`
 
 4. **Output files:**
-   - Update `ground.md` with embedded `## Reasoning Graph` section
+   - Update `COMMON-GROUND.md` with embedded `## Reasoning Graph` section
    - Optionally create standalone `REASONING.mermaid` in project root
 
 ### Output Format
 
-The reasoning graph is embedded in `ground.md`:
+The reasoning graph is embedded in `COMMON-GROUND.md`:
 
 ```markdown
 ## Reasoning Graph
@@ -279,7 +279,7 @@ After each significant interaction, regenerate the graph showing updated state.
 - Major Decisions: {count}
 - Open Questions: {count} nodes with uncertain status
 
-**Graph embedded in:** ~/.claude/common-ground/{project_id}/ground.md
+**Graph embedded in:** ~/.claude/common-ground/{project_id}/COMMON-GROUND.md
 
 Run `/common-ground --list` to view assumptions.
 Run `/common-ground --graph` to regenerate after changes.
@@ -295,7 +295,7 @@ See `references/reasoning-graph.md` for detailed mermaid conventions and node st
 - Always identify project before file operations
 - Use AskUserQuestion for all interactive selections
 - Preserve assumption type (audit trail) - users cannot change type
-- Write both human-readable (ground.md) and machine-readable (ground.index.json) files
+- Write both human-readable (COMMON-GROUND.md) and machine-readable (ground.index.json) files
 - Include timestamps for tracking staleness
 - When using --graph, show decision points that led to assumptions
 - Preserve alternative branches in graph (grayed out) for context

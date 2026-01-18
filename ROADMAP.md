@@ -2,10 +2,10 @@
 
 ## Current Status
 
-**Version:** v0.3.2 (Released January 2026)
+**Version:** v0.4.0 (Released January 2026)
 
 - **65 Skills** across 12 domains
-- **301 Reference Files** with progressive disclosure architecture
+- **304 Reference Files** with progressive disclosure architecture
 - **30+ Frameworks** and technologies covered
 - **9 Project Workflow Commands** for epic planning, discovery, execution, and retrospectives
 - **50% Token Reduction** through selective disclosure architecture
@@ -341,4 +341,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: January 2026 (v0.3.2)*
+*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: January 2026 (v0.4.0)*

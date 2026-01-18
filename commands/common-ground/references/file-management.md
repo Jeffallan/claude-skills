@@ -13,7 +13,7 @@ Ground files are stored in the user's Claude home directory:
 ~/.claude/common-ground/
 ├── index.md                              # Global registry of all projects
 └── {project-id}/
-    ├── ground.md                         # Human-readable assumptions
+    ├── COMMON-GROUND.md                         # Human-readable assumptions
     ├── ground.index.json                 # Machine-readable index
     └── archive/
         └── {timestamp}-{reason}.md       # Archived versions (future)
@@ -87,9 +87,9 @@ Last Updated: {timestamp}
 
 ---
 
-## Ground File (ground.md)
+## Ground File (COMMON-GROUND.md)
 
-Located at: `~/.claude/common-ground/{project_id}/ground.md`
+Located at: `~/.claude/common-ground/{project_id}/COMMON-GROUND.md`
 
 ### Template
 
@@ -225,7 +225,7 @@ Located at: `~/.claude/common-ground/{project_id}/ground.index.json`
 
 1. Check if `~/.claude/common-ground/` exists, create if not
 2. Create `{project_id}/` directory
-3. Write `ground.md` from template
+3. Write `COMMON-GROUND.md` from template
 4. Write `ground.index.json` with empty assumptions
 5. Update global `index.md`
 
@@ -234,7 +234,7 @@ Located at: `~/.claude/common-ground/{project_id}/ground.index.json`
 1. Read `ground.index.json`
 2. Apply changes (add/promote/demote)
 3. Update `last_updated` timestamp
-4. Regenerate `ground.md` from index.json
+4. Regenerate `COMMON-GROUND.md` from index.json
 5. Update global `index.md` counts
 
 ### Read Ground File
@@ -247,7 +247,7 @@ Located at: `~/.claude/common-ground/{project_id}/ground.index.json`
 
 ## Writing Best Practices
 
-### Human-Readable (ground.md)
+### Human-Readable (COMMON-GROUND.md)
 
 - Use consistent markdown formatting
 - Include horizontal rules between tiers
@@ -264,9 +264,9 @@ Located at: `~/.claude/common-ground/{project_id}/ground.index.json`
 ### Sync Rules
 
 - `ground.index.json` is source of truth
-- `ground.md` is generated from index.json
+- `COMMON-GROUND.md` is generated from index.json
 - Always update both on any change
-- Never manually edit ground.md (regenerate instead)
+- Never manually edit COMMON-GROUND.md (regenerate instead)
 
 ---
 
@@ -275,6 +275,6 @@ Located at: `~/.claude/common-ground/{project_id}/ground.index.json`
 | Scenario | Action |
 |----------|--------|
 | No home directory access | Warn user, suggest alternate path |
-| Corrupted index.json | Backup and regenerate from ground.md |
+| Corrupted index.json | Backup and regenerate from COMMON-GROUND.md |
 | Missing project directory | Create fresh on next run |
 | Permission denied | Report error with path |

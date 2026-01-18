@@ -10,7 +10,7 @@
 The reasoning graph makes Claude's decision-making structure visible—not just the assumptions (premises), but the decision tree that led to the current approach.
 
 **Two complementary artifacts:**
-- `ground.md` = the premises (what we're assuming)
+- `COMMON-GROUND.md` = the premises (what we're assuming)
 - Reasoning graph = the structure (how decisions connect)
 
 ---
@@ -233,7 +233,7 @@ flowchart TD
 
 ---
 
-## Embedding in ground.md
+## Embedding in COMMON-GROUND.md
 
 Add the graph as a section in the ground file:
 
@@ -268,7 +268,7 @@ flowchart TD
 
 ### Option 1: Embedded (Default)
 
-Add `## Reasoning Graph` section to `ground.md`
+Add `## Reasoning Graph` section to `COMMON-GROUND.md`
 
 **Pros:** Single file, travels with assumptions
 **Cons:** Larger file
@@ -282,7 +282,7 @@ Create `REASONING.mermaid` in project root
 
 ### Option 3: Both
 
-Embed in `ground.md` AND create standalone file
+Embed in `COMMON-GROUND.md` AND create standalone file
 
 **When:** User explicitly requests standalone file
 

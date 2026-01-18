@@ -46,7 +46,7 @@ Add claude-skills collection and workflow commands
 ### Entry 1: Agent Skills
 
 ```markdown
-[claude-skills](https://github.com/jeffallan/claude-skills) by [jeffallan](https://github.com/jeffallan) - 65 specialized full-stack development skills with progressive disclosure architecture, covering React, NestJS, Python, DevOps, and 30+ frameworks. Features 301 reference files for deep-dive documentation.
+[claude-skills](https://github.com/jeffallan/claude-skills) by [jeffallan](https://github.com/jeffallan) - 65 specialized full-stack development skills with progressive disclosure architecture, covering React, NestJS, Python, DevOps, and 30+ frameworks. Features 304 reference files for deep-dive documentation.
 ```
 
 ### Entry 2: Workflows & Knowledge Guides
@@ -97,7 +97,7 @@ Add skill: jeffallan/claude-skills
 ### Entry
 
 ```markdown
-- **[claude-skills](https://github.com/jeffallan/claude-skills)** - 65 specialized full-stack development skills with progressive disclosure architecture, 301 reference files, and Jira/Confluence workflow integration.
+- **[claude-skills](https://github.com/jeffallan/claude-skills)** - 65 specialized full-stack development skills with progressive disclosure architecture, 304 reference files, and Jira/Confluence workflow integration.
 ```
 
 ### PR Description
@@ -107,7 +107,7 @@ Add skill: jeffallan/claude-skills
 
 **Repository:** https://github.com/jeffallan/claude-skills
 
-A comprehensive collection of 65 specialized Claude Code skills designed for full-stack developers. Features progressive disclosure architecture (50% token reduction), 301 reference files for deep-dive documentation, and 9 project workflow commands with Jira/Confluence integration.
+A comprehensive collection of 65 specialized Claude Code skills designed for full-stack developers. Features progressive disclosure architecture (50% token reduction), 304 reference files for deep-dive documentation, and 9 project workflow commands with Jira/Confluence integration.
 
 **Coverage:**
 - Languages: Python, TypeScript, JavaScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL
