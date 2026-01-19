@@ -1,6 +1,6 @@
 ---
 name: django-expert
-description: Use when building Django web applications or REST APIs with Django REST Framework. Invoke for Django models, ORM optimization, DRF serializers, viewsets, authentication with JWT. Keywords: Django, DRF, ORM, serializer, viewset, model.
+description: Use when building Django web applications or REST APIs with Django REST Framework. Invoke for Django models, ORM optimization, DRF serializers, viewsets, authentication with JWT.
 triggers:
   - Django
   - DRF

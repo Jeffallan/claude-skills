@@ -1,6 +1,6 @@
 ---
 name: legacy-modernizer
-description: Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades. Keywords: legacy modernization, strangler fig, incremental migration, technical debt, system migration.
+description: Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades.
 triggers:
   - legacy modernization
   - strangler fig

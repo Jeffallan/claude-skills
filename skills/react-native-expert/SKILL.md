@@ -1,6 +1,6 @@
 ---
 name: react-native-expert
-description: Use when building cross-platform mobile applications with React Native or Expo. Invoke for navigation patterns, platform-specific code, native modules, FlatList optimization. Keywords: React Native, Expo, mobile, iOS, Android, navigation.
+description: Use when building cross-platform mobile applications with React Native or Expo. Invoke for navigation patterns, platform-specific code, native modules, FlatList optimization.
 triggers:
   - React Native
   - Expo

@@ -6,18 +6,41 @@
 
 ## Summary
 
+### Tier 1: Claude-Specific Lists (Highest Priority)
+
 | List | Link | Stars | Status | Submission |
 |------|------|-------|--------|------------|
-| hesreallyhim | [github.com/hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | 20.9k | [ ] Pending | Agent Skills (collection) + Workflows (commands) |
-| travisvn | [github.com/travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | 5.3k | [ ] Pending | Collection |
-| ComposioHQ | [github.com/ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) | 1.2k | [ ] Pending | Development & Code Tools (collection) + Collaboration & Project Management (workflows) |
-| VoltAgent | [github.com/VoltAgent/awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | 3.3k | [ ] Pending | Development & Testing (collection) + Context Engineering (common-ground) |
-| BehiSecc | [github.com/BehiSecc/awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 4k | [ ] Pending | Development & Code Tools (collection) + Collaboration & Project Management (workflows) |
-| karanb192 | [github.com/karanb192/awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills) | 41 | [ ] Pending | 13 inline skills filling "Community-needed" gaps |
-| Microck | [github.com/Microck/ordinary-claude-skills](https://github.com/Microck/ordinary-claude-skills) | 103 | [x] Skip | Low ROI |
-| Chat2AnyLLM | [github.com/Chat2AnyLLM/awesome-claude-skills](https://github.com/Chat2AnyLLM/awesome-claude-skills) | — | [x] Done | Already listed |
+| hesreallyhim | [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | 20.9k | [Issue #519](https://github.com/hesreallyhim/awesome-claude-code/issues/519) | Agent Skills (collection) + Workflows (commands) |
+| travisvn | [awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | 5.3k | [x] Skip | User preference |
+| BehiSecc | [awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 4k | [PR #32](https://github.com/BehiSecc/awesome-claude-skills/pull/32) | Development & Code Tools + Collaboration & PM |
+| VoltAgent | [awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | 3.3k | [PR #37](https://github.com/VoltAgent/awesome-claude-skills/pull/37) | Development & Testing + Context Engineering |
+| jqueryscript | [awesome-claude-code](https://github.com/jqueryscript/awesome-claude-code) | — | [PR #16](https://github.com/jqueryscript/awesome-claude-code/pull/16) | Skills/Plugins category |
+| ComposioHQ | [awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) | 1.2k | [PR #66](https://github.com/ComposioHQ/awesome-claude-skills/pull/66) | Development & Code Tools + Collaboration & PM |
+| alvinunreal | [awesome-claude](https://github.com/alvinunreal/awesome-claude) | — | [x] Skip | Community Curated Lists only - no plugins section |
+| karanb192 | [awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills) | 41 | [PR #2](https://github.com/karanb192/awesome-claude-skills/pull/2) | 13 inline skills filling "Community-needed" gaps |
+| Microck | [ordinary-claude-skills](https://github.com/Microck/ordinary-claude-skills) | 103 | [x] Skip | Low ROI |
+| Chat2AnyLLM | [awesome-claude-skills](https://github.com/Chat2AnyLLM/awesome-claude-skills) | — | [x] Done | Already listed |
 
-**Total:** 22 entries across 6 PRs
+### Tier 2: AI Developer Tools Lists (Broader Reach)
+
+| List | Link | Stars | Status | Submission |
+|------|------|-------|--------|------------|
+| sourcegraph | [awesome-code-ai](https://github.com/sourcegraph/awesome-code-ai) | High | [ ] Pending | Claude Code plugins/extensions |
+| jamesmurdza | [awesome-ai-devtools](https://github.com/jamesmurdza/awesome-ai-devtools) | High | [ ] Pending | AI coding assistants |
+| ai-for-developers | [awesome-ai-coding-tools](https://github.com/ai-for-developers/awesome-ai-coding-tools) | Med | [ ] Pending | AI code tools |
+| ColinEberhardt | [awesome-ai-developer-tools](https://github.com/ColinEberhardt/awesome-ai-developer-tools) | Med | [ ] Pending | Mature AI dev tools |
+| furudo-erika | [awesome-ai-coding-tools](https://github.com/furudo-erika/awesome-ai-coding-tools) | Med | [ ] Pending | AI coding tools |
+| e2b-dev | [awesome-ai-agents](https://github.com/e2b-dev/awesome-ai-agents) | High | [ ] Pending | AI agents |
+
+### Tier 3: General LLM Lists (Widest Reach)
+
+| List | Link | Stars | Status | Submission |
+|------|------|-------|--------|------------|
+| Shubhamsaboo | [awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) | High | [ ] Pending | LLM apps with AI agents |
+| mahseema | [awesome-ai-tools](https://github.com/mahseema/awesome-ai-tools) | High | [ ] Pending | AI dev tools section |
+| tensorchord | [Awesome-LLMOps](https://github.com/tensorchord/Awesome-LLMOps) | High | [ ] Pending | LLMOps tools |
+
+**Total:** 22 entries across 8 Tier 1 PRs + 9 additional Tier 2/3 PRs
 
 ---
 
@@ -408,22 +431,138 @@ All skills include:
 
 ---
 
+## 7. jqueryscript/awesome-claude-code
+
+**Stars:** — | **Category:** Skills / Plugins
+
+### Commit Message
+```
+Add skill: jeffallan/claude-skills
+```
+
+### Entry
+
+```markdown
+- [claude-skills](https://github.com/jeffallan/claude-skills) - 65 specialized full-stack development skills with progressive disclosure architecture, 304 reference files, and project workflow commands with Jira/Confluence integration.
+```
+
+### PR Description
+
+```markdown
+## Add jeffallan/claude-skills
+
+**Repository:** https://github.com/jeffallan/claude-skills
+
+A comprehensive Claude Code plugin with 65 specialized skills for full-stack development. Features progressive disclosure architecture (50% token reduction) and 9 project workflow commands with Jira/Confluence integration.
+
+**Coverage:**
+- Languages: Python, TypeScript, JavaScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL
+- Backend: NestJS, Django, FastAPI, Spring Boot, Laravel, Rails, .NET Core
+- Frontend: React 19, Next.js, Vue 3, Angular, React Native, Flutter
+- Infrastructure: Kubernetes, Terraform, PostgreSQL, Docker, AWS/Azure/GCP
+
+**License:** MIT
+```
+
+---
+
+## 8. alvinunreal/awesome-claude
+
+**Stars:** — | **Category:** Tools / Developer Tools
+
+### Commit Message
+```
+Add tool: jeffallan/claude-skills
+```
+
+### Entry
+
+```markdown
+- [claude-skills](https://github.com/jeffallan/claude-skills) - Claude Code plugin with 65 specialized full-stack development skills, progressive disclosure architecture, and project workflow integration.
+```
+
+### PR Description
+
+```markdown
+## Add jeffallan/claude-skills
+
+**Repository:** https://github.com/jeffallan/claude-skills
+**Category:** Tools / Developer Tools
+
+A comprehensive Claude Code plugin providing 65 specialized skills for full-stack development with progressive disclosure architecture. Covers 30+ frameworks including React, Django, Kubernetes, and more.
+
+**Key Features:**
+- 65 specialized skills with 304 reference files
+- Progressive disclosure (50% token reduction)
+- 9 project workflow commands (discovery → retrospectives)
+- Jira/Confluence integration via Atlassian MCP
+
+**License:** MIT
+```
+
+---
+
+## Tier 2/3 Submission Templates
+
+> These lists have broader audiences. Use a more general description that doesn't assume Claude Code knowledge.
+
+### Generic Template for AI Dev Tools Lists
+
+```markdown
+## Add claude-skills
+
+**Repository:** https://github.com/jeffallan/claude-skills
+**Category:** [Appropriate category for the list]
+
+### Description
+claude-skills is a plugin for Claude Code (Anthropic's CLI coding assistant) that provides 65 specialized AI personas for software development. Each skill is an expert in a specific domain that activates based on task context.
+
+### Key Features
+- **65 specialized skills** covering full-stack development, DevOps, security, and data engineering
+- **Progressive disclosure architecture** - hierarchical knowledge loading reduces token usage by 50%
+- **30+ framework coverage** - React, Django, FastAPI, Kubernetes, Terraform, PostgreSQL, etc.
+- **Project workflow integration** - End-to-end development lifecycle with Jira/Confluence
+
+### Why Include This
+Represents a significant advancement in AI-assisted development tooling, providing domain expertise with an architecture optimized for both quality and efficiency.
+
+**License:** MIT
+```
+
+---
+
 ## Submission Checklist
 
 ### Pre-submission
 - [ ] Verify all skill paths exist in repo
 - [ ] Check current GitHub star count
 - [ ] Review each list's latest README for format changes
+- [ ] Fork target repo and verify entry format matches existing entries
 
-### PRs to Create
-- [ ] 1. hesreallyhim/awesome-claude-code (2 entries)
+### Tier 1 PRs to Create (Claude-specific)
+- [x] 1. hesreallyhim/awesome-claude-code (submitted via issue per their guidelines)
 - [ ] 2. travisvn/awesome-claude-skills (1 entry)
-- [ ] 3. ComposioHQ/awesome-claude-skills (2 entries)
+- [ ] 3. BehiSecc/awesome-claude-skills (2 entries)
 - [ ] 4. VoltAgent/awesome-claude-skills (2 entries)
-- [ ] 5. BehiSecc/awesome-claude-skills (2 entries)
-- [ ] 6. karanb192/awesome-claude-skills (13 entries)
+- [ ] 5. jqueryscript/awesome-claude-code (1 entry)
+- [ ] 6. ComposioHQ/awesome-claude-skills (2 entries)
+- [ ] 7. alvinunreal/awesome-claude (1 entry)
+- [ ] 8. karanb192/awesome-claude-skills (13 entries)
+
+### Tier 2 PRs to Create (AI Dev Tools)
+- [ ] 9. sourcegraph/awesome-code-ai
+- [ ] 10. jamesmurdza/awesome-ai-devtools
+- [ ] 11. ai-for-developers/awesome-ai-coding-tools
+- [ ] 12. ColinEberhardt/awesome-ai-developer-tools
+- [ ] 13. furudo-erika/awesome-ai-coding-tools
+- [ ] 14. e2b-dev/awesome-ai-agents
+
+### Tier 3 PRs to Create (General LLM)
+- [ ] 15. Shubhamsaboo/awesome-llm-apps
+- [ ] 16. mahseema/awesome-ai-tools
+- [ ] 17. tensorchord/Awesome-LLMOps
 
 ### Post-submission
-- [ ] Track PR status
-- [ ] Respond to maintainer feedback
-- [ ] Update this document with PR links
+- [ ] Track PR status in Summary tables above
+- [ ] Respond to maintainer feedback within 24-48 hours
+- [ ] Update Status column with PR links when merged

@@ -1,6 +1,6 @@
 ---
 name: fullstack-guardian
-description: Use when implementing features across frontend and backend, building APIs with UI, or creating end-to-end data flows. Invoke for feature implementation, API development, UI building, cross-stack work. Keywords: fullstack, feature, implement, API, frontend, backend.
+description: Use when implementing features across frontend and backend, building APIs with UI, or creating end-to-end data flows. Invoke for feature implementation, API development, UI building, cross-stack work.
 triggers:
   - fullstack
   - implement feature

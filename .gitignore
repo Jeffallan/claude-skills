@@ -31,3 +31,6 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Awesome list submission workspace
+submits/

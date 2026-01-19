@@ -1,6 +1,6 @@
 ---
 name: angular-architect
-description: Use when building Angular 17+ applications with standalone components or signals. Invoke for enterprise apps, RxJS patterns, NgRx state management, performance optimization, advanced routing. Keywords: Angular, standalone components, signals, RxJS, NgRx, OnPush.
+description: Use when building Angular 17+ applications with standalone components or signals. Invoke for enterprise apps, RxJS patterns, NgRx state management, performance optimization, advanced routing.
 triggers:
   - Angular
   - Angular 17

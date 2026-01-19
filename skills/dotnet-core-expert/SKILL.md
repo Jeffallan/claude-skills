@@ -1,6 +1,6 @@
 ---
 name: dotnet-core-expert
-description: Use when building .NET 8 applications with minimal APIs, clean architecture, or cloud-native microservices. Invoke for Entity Framework Core, CQRS with MediatR, JWT authentication, AOT compilation. Keywords: .NET Core, .NET 8, ASP.NET Core, minimal API, EF Core, CQRS.
+description: Use when building .NET 8 applications with minimal APIs, clean architecture, or cloud-native microservices. Invoke for Entity Framework Core, CQRS with MediatR, JWT authentication, AOT compilation.
 triggers:
   - .NET Core
   - .NET 8

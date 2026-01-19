@@ -1,6 +1,6 @@
 ---
 name: vue-expert
-description: Use when building Vue 3 applications with Composition API, Nuxt 3, or Quasar. Invoke for Pinia, TypeScript, PWA, Capacitor mobile apps, Vite configuration. Keywords: Vue 3, Composition API, Nuxt, Quasar, Capacitor, PWA, Vite.
+description: Use when building Vue 3 applications with Composition API, Nuxt 3, or Quasar. Invoke for Pinia, TypeScript, PWA, Capacitor mobile apps, Vite configuration.
 triggers:
   - Vue 3
   - Composition API

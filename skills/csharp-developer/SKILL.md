@@ -1,6 +1,6 @@
 ---
 name: csharp-developer
-description: Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Invoke for Entity Framework Core, minimal APIs, async patterns, CQRS with MediatR. Keywords: C#, .NET, ASP.NET Core, Blazor, Entity Framework.
+description: Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Invoke for Entity Framework Core, minimal APIs, async patterns, CQRS with MediatR.
 triggers:
   - C#
   - .NET

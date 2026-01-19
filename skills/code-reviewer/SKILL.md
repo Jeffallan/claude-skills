@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions. Keywords: code review, PR review, quality, refactoring, best practices.
+description: Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions.
 triggers:
   - code review
   - PR review

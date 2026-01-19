@@ -1,6 +1,6 @@
 ---
 name: swift-expert
-description: Use when building iOS/macOS applications with Swift 5.9+, SwiftUI, or async/await concurrency. Invoke for protocol-oriented programming, SwiftUI state management, actors, server-side Swift. Keywords: Swift, SwiftUI, iOS, macOS, async, Combine, UIKit.
+description: Use when building iOS/macOS applications with Swift 5.9+, SwiftUI, or async/await concurrency. Invoke for protocol-oriented programming, SwiftUI state management, actors, server-side Swift.
 triggers:
   - Swift
   - SwiftUI

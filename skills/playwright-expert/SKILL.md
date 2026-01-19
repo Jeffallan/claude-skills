@@ -1,6 +1,6 @@
 ---
 name: playwright-expert
-description: Use when writing E2E tests with Playwright, setting up test infrastructure, or debugging flaky browser tests. Invoke for browser automation, E2E tests, Page Object Model, test flakiness, visual testing. Keywords: Playwright, E2E, browser testing, automation, Page Object.
+description: Use when writing E2E tests with Playwright, setting up test infrastructure, or debugging flaky browser tests. Invoke for browser automation, E2E tests, Page Object Model, test flakiness, visual testing.
 triggers:
   - Playwright
   - E2E test

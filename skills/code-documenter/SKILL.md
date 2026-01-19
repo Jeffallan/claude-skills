@@ -1,6 +1,6 @@
 ---
 name: code-documenter
-description: Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides. Keywords: documentation, docstrings, OpenAPI, Swagger, JSDoc, API docs, tutorials.
+description: Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides.
 triggers:
   - documentation
   - docstrings

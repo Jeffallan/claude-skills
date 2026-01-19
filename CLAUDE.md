@@ -199,7 +199,57 @@ node ./assets/capture-screenshot.js
 
 This creates `assets/social-preview.png` from `assets/social-preview.html`.
 
-### 6. Final Verification
+### 6. Validate Skills Integrity
+
+**Critical:** Run these checks to prevent broken skills from being released.
+
+```bash
+# Validate YAML frontmatter in all SKILL.md files
+python3 -c "
+import yaml, os
+errors = []
+for skill in sorted(os.listdir('skills')):
+    path = f'skills/{skill}/SKILL.md'
+    if os.path.isfile(path):
+        with open(path) as f:
+            content = f.read()
+        if content.startswith('---'):
+            parts = content.split('---', 2)
+            if len(parts) >= 3:
+                try:
+                    yaml.safe_load(parts[1])
+                except yaml.YAMLError as e:
+                    errors.append(f'{skill}: {e}')
+if errors:
+    print('YAML ERRORS:')
+    for e in errors: print(f'  - {e}')
+    exit(1)
+print('All YAML valid')
+"
+
+# Verify all skills have references directory
+for skill in skills/*/; do
+  if [ ! -d "${skill}references" ]; then
+    echo "ERROR: Missing references directory: $skill"
+    exit 1
+  fi
+done && echo "All skills have references directories"
+
+# Count reference files per skill (should be 5 each)
+for skill in skills/*/; do
+  count=$(ls "${skill}references/"*.md 2>/dev/null | wc -l)
+  if [ "$count" -lt 1 ]; then
+    echo "WARNING: $skill has no reference files"
+  fi
+done
+```
+
+**Common YAML issues to avoid:**
+- Unquoted colons in description (e.g., `Keywords:` causes parsing errors)
+- Special characters that need escaping
+- Missing required frontmatter fields
+
+### 7. Final Verification
 
 Run parallel searches to verify consistency:
 

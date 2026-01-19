@@ -1,6 +1,6 @@
 ---
 name: golang-pro
-description: Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration. Keywords: Go, Golang, concurrency, microservices, goroutines.
+description: Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration.
 triggers:
   - Go
   - Golang
