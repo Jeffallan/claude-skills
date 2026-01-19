@@ -10,14 +10,14 @@
 
 | List | Link | Stars | Status | Submission |
 |------|------|-------|--------|------------|
-| hesreallyhim | [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | 20.9k | [ ] Pending | Agent Skills (collection) + Workflows (commands) |
-| travisvn | [awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | 5.3k | [ ] Pending | Collection |
-| BehiSecc | [awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 4k | [ ] Pending | Development & Code Tools + Collaboration & PM |
-| VoltAgent | [awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | 3.3k | [ ] Pending | Development & Testing + Context Engineering |
-| jqueryscript | [awesome-claude-code](https://github.com/jqueryscript/awesome-claude-code) | — | [ ] Pending | Skills/Plugins category |
-| ComposioHQ | [awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) | 1.2k | [ ] Pending | Development & Code Tools + Collaboration & PM |
-| alvinunreal | [awesome-claude](https://github.com/alvinunreal/awesome-claude) | — | [ ] Pending | Tools/Plugins section |
-| karanb192 | [awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills) | 41 | [ ] Pending | 13 inline skills filling "Community-needed" gaps |
+| hesreallyhim | [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | 20.9k | [Issue #519](https://github.com/hesreallyhim/awesome-claude-code/issues/519) | Agent Skills (collection) + Workflows (commands) |
+| travisvn | [awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | 5.3k | [x] Skip | User preference |
+| BehiSecc | [awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 4k | [PR #32](https://github.com/BehiSecc/awesome-claude-skills/pull/32) | Development & Code Tools + Collaboration & PM |
+| VoltAgent | [awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | 3.3k | [PR #37](https://github.com/VoltAgent/awesome-claude-skills/pull/37) | Development & Testing + Context Engineering |
+| jqueryscript | [awesome-claude-code](https://github.com/jqueryscript/awesome-claude-code) | — | [PR #16](https://github.com/jqueryscript/awesome-claude-code/pull/16) | Skills/Plugins category |
+| ComposioHQ | [awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) | 1.2k | [PR #66](https://github.com/ComposioHQ/awesome-claude-skills/pull/66) | Development & Code Tools + Collaboration & PM |
+| alvinunreal | [awesome-claude](https://github.com/alvinunreal/awesome-claude) | — | [x] Skip | Community Curated Lists only - no plugins section |
+| karanb192 | [awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills) | 41 | [PR #2](https://github.com/karanb192/awesome-claude-skills/pull/2) | 13 inline skills filling "Community-needed" gaps |
 | Microck | [ordinary-claude-skills](https://github.com/Microck/ordinary-claude-skills) | 103 | [x] Skip | Low ROI |
 | Chat2AnyLLM | [awesome-claude-skills](https://github.com/Chat2AnyLLM/awesome-claude-skills) | — | [x] Done | Already listed |
 
@@ -540,7 +540,7 @@ Represents a significant advancement in AI-assisted development tooling, providi
 - [ ] Fork target repo and verify entry format matches existing entries
 
 ### Tier 1 PRs to Create (Claude-specific)
-- [ ] 1. hesreallyhim/awesome-claude-code (2 entries)
+- [x] 1. hesreallyhim/awesome-claude-code (submitted via issue per their guidelines)
 - [ ] 2. travisvn/awesome-claude-skills (1 entry)
 - [ ] 3. BehiSecc/awesome-claude-skills (2 entries)
 - [ ] 4. VoltAgent/awesome-claude-skills (2 entries)
