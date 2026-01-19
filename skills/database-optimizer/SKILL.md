@@ -1,6 +1,6 @@
 ---
 name: database-optimizer
-description: Use when investigating slow queries, analyzing execution plans, or optimizing database performance. Invoke for index design, query rewrites, configuration tuning, partitioning strategies, lock contention resolution. Keywords: database optimization, slow query, EXPLAIN ANALYZE, index optimization, query performance.
+description: Use when investigating slow queries, analyzing execution plans, or optimizing database performance. Invoke for index design, query rewrites, configuration tuning, partitioning strategies, lock contention resolution.
 triggers:
   - database optimization
   - slow query

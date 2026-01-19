@@ -1,6 +1,6 @@
 ---
 name: kotlin-specialist
-description: Use when building Kotlin applications requiring coroutines, multiplatform development, or Android with Compose. Invoke for Flow API, KMP projects, Ktor servers, DSL design, sealed classes. Keywords: Kotlin, coroutines, Flow, multiplatform, Compose, Ktor.
+description: Use when building Kotlin applications requiring coroutines, multiplatform development, or Android with Compose. Invoke for Flow API, KMP projects, Ktor servers, DSL design, sealed classes.
 triggers:
   - Kotlin
   - coroutines

@@ -1,6 +1,6 @@
 ---
 name: spring-boot-engineer
-description: Use when building Spring Boot 3.x applications, microservices, or reactive Java applications. Invoke for Spring Data JPA, Spring Security 6, WebFlux, Spring Cloud integration. Keywords: Spring Boot, Spring Framework, Spring Cloud, WebFlux, microservices.
+description: Use when building Spring Boot 3.x applications, microservices, or reactive Java applications. Invoke for Spring Data JPA, Spring Security 6, WebFlux, Spring Cloud integration.
 triggers:
   - Spring Boot
   - Spring Framework

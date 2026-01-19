@@ -1,6 +1,6 @@
 ---
 name: architecture-designer
-description: Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning. Keywords: architecture, system design, patterns, microservices, scalability.
+description: Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning.
 triggers:
   - architecture
   - system design

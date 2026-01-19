@@ -1,6 +1,6 @@
 ---
 name: debugging-wizard
-description: Use when investigating errors, analyzing stack traces, or finding root causes of unexpected behavior. Invoke for error investigation, troubleshooting, log analysis, root cause analysis. Keywords: debug, error, bug, traceback, exception, breakpoint.
+description: Use when investigating errors, analyzing stack traces, or finding root causes of unexpected behavior. Invoke for error investigation, troubleshooting, log analysis, root cause analysis.
 triggers:
   - debug
   - error

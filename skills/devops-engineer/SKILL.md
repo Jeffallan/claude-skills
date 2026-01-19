@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-description: Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps. Keywords: DevOps, CI/CD, Docker, Kubernetes, Terraform, GitHub Actions.
+description: Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps.
 triggers:
   - DevOps
   - CI/CD

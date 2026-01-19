@@ -1,6 +1,6 @@
 ---
 name: rust-engineer
-description: Use when building Rust applications requiring memory safety, systems programming, or zero-cost abstractions. Invoke for ownership patterns, lifetimes, traits, async/await with tokio. Keywords: Rust, ownership, borrowing, async, memory safety.
+description: Use when building Rust applications requiring memory safety, systems programming, or zero-cost abstractions. Invoke for ownership patterns, lifetimes, traits, async/await with tokio.
 triggers:
   - Rust
   - Cargo

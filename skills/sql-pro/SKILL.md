@@ -1,6 +1,6 @@
 ---
 name: sql-pro
-description: Use when optimizing SQL queries, designing database schemas, or tuning database performance. Invoke for complex queries, window functions, CTEs, indexing strategies, query plan analysis. Keywords: SQL, PostgreSQL, MySQL, optimization, EXPLAIN, indexing.
+description: Use when optimizing SQL queries, designing database schemas, or tuning database performance. Invoke for complex queries, window functions, CTEs, indexing strategies, query plan analysis.
 triggers:
   - SQL optimization
   - query performance

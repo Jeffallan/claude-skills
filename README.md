@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.0-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.1-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -107,7 +107,7 @@ claude-skills/
 
 **Stats:**
 - 65 skills
-- 304 reference files
+- 351 reference files
 - ~50% token reduction
 - Covers 30+ frameworks
 
@@ -419,4 +419,4 @@ Fullstack engineering, security compliance, and technical due diligence for team
 
 ---
 
-**Built for Claude Code** | **9 Workflows** | **304 Reference Files** | **65 Skills** 
+**Built for Claude Code** | **9 Workflows** | **351 Reference Files** | **65 Skills** 

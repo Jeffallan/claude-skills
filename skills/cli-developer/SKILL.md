@@ -1,6 +1,6 @@
 ---
 name: cli-developer
-description: Use when building CLI tools, implementing argument parsing, or adding interactive prompts. Invoke for CLI design, argument parsing, interactive prompts, progress indicators, shell completions. Keywords: CLI, terminal, command-line, commander, click, cobra.
+description: Use when building CLI tools, implementing argument parsing, or adding interactive prompts. Invoke for CLI design, argument parsing, interactive prompts, progress indicators, shell completions.
 triggers:
   - CLI
   - command-line

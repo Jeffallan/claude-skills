@@ -1,6 +1,6 @@
 ---
 name: api-designer
-description: Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards. Keywords: API design, REST, OpenAPI, GraphQL, API architecture.
+description: Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards.
 triggers:
   - API design
   - REST API

@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-01-19
+
+### Added
+- 50 new reference files for 10 skills:
+  - atlassian-mcp (5 files): MCP server setup, Jira queries, Confluence operations, authentication, workflows
+  - fine-tuning-expert (5 files): LoRA/PEFT, dataset preparation, hyperparameters, evaluation, deployment
+  - ml-pipeline (5 files): Feature engineering, training pipelines, experiment tracking, orchestration, validation
+  - pandas-pro (5 files): DataFrame operations, data cleaning, aggregation, merging, performance
+  - prompt-engineer (5 files): Prompt patterns, optimization, evaluation frameworks, structured outputs, system prompts
+  - rag-architect (5 files): Vector databases, embedding models, chunking strategies, retrieval optimization, evaluation
+  - salesforce-developer (5 files): Apex development, LWC, SOQL/SOSL, integrations, deployment
+  - shopify-expert (5 files): Liquid templating, Storefront API, app development, checkout, performance
+  - spark-engineer (5 files): Spark SQL/DataFrames, RDD operations, partitioning, performance tuning, streaming
+  - wordpress-pro (5 files): Theme development, plugin architecture, Gutenberg blocks, hooks/filters, security
+- Release checklist validation step in CLAUDE.md for YAML and reference integrity checks
+
+### Fixed
+- YAML parsing errors in 53 skills caused by unescaped `Keywords:` pattern in descriptions (fixes #93)
+- Missing reference files for 10 skills that had routing tables but no actual reference files (fixes #92)
+
+### Changed
+- Total reference files: 304 → 351
+- Skill descriptions now follow trigger-only format consistently
+
 ## [0.4.0] - 2026-01-18
 
 ### Added
