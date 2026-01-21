@@ -19,6 +19,7 @@
 
 <p align="center">
   <a href="https://github.com/Chat2AnyLLM/awesome-claude-skills/blob/main/FULL-SKILLS.md"><img src="https://img.shields.io/github/stars/Chat2AnyLLM/awesome-claude-skills?style=for-the-badge&label=awesome-claude-skills&color=brightgreen&logo=awesomelists&logoColor=white" alt="Awesome Claude Skills"/></a>
+  <a href="https://github.com/BehiSecc/awesome-claude-skills"><img src="https://img.shields.io/github/stars/BehiSecc/awesome-claude-skills?style=for-the-badge&label=awesome-claude-skills&color=brightgreen&logo=awesomelists&logoColor=white" alt="Awesome Claude Skills (BehiSecc)"/></a>
 </p>
 
 ---

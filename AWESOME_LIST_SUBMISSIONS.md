@@ -12,7 +12,7 @@
 |------|------|-------|--------|------------|
 | hesreallyhim | [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | 20.9k | [Issue #519](https://github.com/hesreallyhim/awesome-claude-code/issues/519) | Agent Skills (collection) + Workflows (commands) |
 | travisvn | [awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | 5.3k | [x] Skip | User preference |
-| BehiSecc | [awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 4k | [PR #32](https://github.com/BehiSecc/awesome-claude-skills/pull/32) | Development & Code Tools + Collaboration & PM |
+| BehiSecc | [awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 4k | [x] Merged | Development & Code Tools + Collaboration & PM |
 | VoltAgent | [awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | 3.3k | [PR #37](https://github.com/VoltAgent/awesome-claude-skills/pull/37) | Development & Testing + Context Engineering |
 | jqueryscript | [awesome-claude-code](https://github.com/jqueryscript/awesome-claude-code) | — | [PR #16](https://github.com/jqueryscript/awesome-claude-code/pull/16) | Skills/Plugins category |
 | ComposioHQ | [awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) | 1.2k | [PR #66](https://github.com/ComposioHQ/awesome-claude-skills/pull/66) | Development & Code Tools + Collaboration & PM |
@@ -542,7 +542,7 @@ Represents a significant advancement in AI-assisted development tooling, providi
 ### Tier 1 PRs to Create (Claude-specific)
 - [x] 1. hesreallyhim/awesome-claude-code (submitted via issue per their guidelines)
 - [ ] 2. travisvn/awesome-claude-skills (1 entry)
-- [ ] 3. BehiSecc/awesome-claude-skills (2 entries)
+- [x] 3. BehiSecc/awesome-claude-skills (2 entries)
 - [ ] 4. VoltAgent/awesome-claude-skills (2 entries)
 - [ ] 5. jqueryscript/awesome-claude-code (1 entry)
 - [ ] 6. ComposioHQ/awesome-claude-skills (2 entries)
