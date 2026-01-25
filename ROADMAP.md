@@ -5,7 +5,7 @@
 **Version:** v0.4.1 (Released January 2026)
 
 - **65 Skills** across 12 domains
-- **351 Reference Files** with progressive disclosure architecture
+- **355 Reference Files** with progressive disclosure architecture
 - **30+ Frameworks** and technologies covered
 - **9 Project Workflow Commands** for epic planning, discovery, execution, and retrospectives
 - **50% Token Reduction** through selective disclosure architecture

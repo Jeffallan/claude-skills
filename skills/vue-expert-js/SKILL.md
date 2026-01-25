@@ -46,6 +46,10 @@ Load detailed guidance based on context:
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
 | JSDoc Typing | `references/jsdoc-typing.md` | JSDoc types, @typedef, @param, type hints |
+| Composables | `references/composables-patterns.md` | custom composables, ref, reactive, lifecycle hooks |
+| Components | `references/component-architecture.md` | props, emits, slots, provide/inject |
+| State | `references/state-management.md` | Pinia, stores, reactive state |
+| Testing | `references/testing-patterns.md` | Vitest, component testing, mocking |
 
 **For shared Vue concepts, defer to vue-expert:**
 - `vue-expert/references/composition-api.md` - Core reactivity patterns

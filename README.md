@@ -108,7 +108,7 @@ claude-skills/
 
 **Stats:**
 - 65 skills
-- 351 reference files
+- 355 reference files
 - ~50% token reduction
 - Covers 30+ frameworks
 
@@ -427,4 +427,4 @@ Fullstack engineering, security compliance, and technical due diligence for team
 
 ---
 
-**Built for Claude Code** | **9 Workflows** | **351 Reference Files** | **65 Skills** 
+**Built for Claude Code** | **9 Workflows** | **355 Reference Files** | **65 Skills** 
