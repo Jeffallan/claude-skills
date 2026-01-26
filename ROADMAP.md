@@ -2,12 +2,12 @@
 
 ## Current Status
 
-**Version:** v0.4.1 (Released January 2026)
+**Version:** v<!-- VERSION -->0.4.1<!-- /VERSION --> (Released January 2026)
 
-- **65 Skills** across 12 domains
-- **355 Reference Files** with progressive disclosure architecture
+- **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills** across 12 domains
+- **<!-- REFERENCE_COUNT -->355<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
 - **30+ Frameworks** and technologies covered
-- **9 Project Workflow Commands** for epic planning, discovery, execution, and retrospectives
+- **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Project Workflow Commands** for epic planning, discovery, execution, and retrospectives
 - **50% Token Reduction** through selective disclosure architecture
 - Skills organized by domain: Backend, Frontend, DevOps, Mobile, Data, Security, Product, and Business
 

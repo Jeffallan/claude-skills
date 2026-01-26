@@ -8,6 +8,12 @@ This script:
 3. Updates version.json with computed counts
 4. Updates all documentation files with version and counts
 
+Uses HTML comment markers for markdown/HTML files:
+    <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT -->
+    <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT -->
+    <!-- REFERENCE_COUNT -->355<!-- /REFERENCE_COUNT -->
+    <!-- VERSION -->0.4.1<!-- /VERSION -->
+
 Usage:
     python scripts/update-docs.py           # Update all files
     python scripts/update-docs.py --check   # Check if files are in sync (no changes)
@@ -43,6 +49,14 @@ FILES_TO_UPDATE = {
     "assets/social-preview.html": "html",
 }
 
+# Marker names for each count type
+MARKERS = {
+    "skillCount": "SKILL_COUNT",
+    "workflowCount": "WORKFLOW_COUNT",
+    "referenceFileCount": "REFERENCE_COUNT",
+    "version": "VERSION",
+}
+
 
 # =============================================================================
 # Count Functions
@@ -76,51 +90,27 @@ def count_workflows(base_path: Path) -> int:
 
 
 # =============================================================================
-# Update Functions
+# Marker-Based Replacement (for markdown/HTML)
 # =============================================================================
 
-def update_json_file(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
-    """Update JSON files (plugin.json, marketplace.json)."""
-    if not file_path.exists():
-        print(f"  Skipping {file_path} (not found)")
-        return False
+def replace_marker(content: str, marker: str, value: str) -> str:
+    """Replace content between <!-- MARKER -->...<!-- /MARKER --> tags.
 
-    content = file_path.read_text()
-    original = content
+    Args:
+        content: The file content
+        marker: The marker name (e.g., "SKILL_COUNT")
+        value: The new value to insert
 
-    # Update version
-    content = re.sub(
-        r'"version":\s*"[^"]*"',
-        f'"version": "{version}"',
-        content
-    )
-
-    # Update skill count in description
-    content = re.sub(
-        r'(\d+)\s+specialized\s+skills',
-        f'{counts["skillCount"]} specialized skills',
-        content
-    )
-
-    # Update workflow count in description
-    content = re.sub(
-        r'(\d+)\s+project\s+workflow\s+commands',
-        f'{counts["workflowCount"]} project workflow commands',
-        content
-    )
-
-    if content != original:
-        if dry_run:
-            print(f"  Would update {file_path}")
-        else:
-            file_path.write_text(content)
-            print(f"  Updated {file_path}")
-        return True
-    return False
+    Returns:
+        Updated content with marker value replaced
+    """
+    pattern = rf'(<!--\s*{marker}\s*-->).*?(<!--\s*/{marker}\s*-->)'
+    replacement = rf'\g<1>{value}\g<2>'
+    return re.sub(pattern, replacement, content, flags=re.DOTALL)
 
 
 def update_markdown_file(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
-    """Update Markdown files (README.md, QUICKSTART.md, ROADMAP.md)."""
+    """Update Markdown files using marker-based replacement."""
     if not file_path.exists():
         print(f"  Skipping {file_path} (not found)")
         return False
@@ -128,55 +118,16 @@ def update_markdown_file(file_path: Path, version: str, counts: dict, dry_run: b
     content = file_path.read_text()
     original = content
 
-    # Update version badge (e.g., version-0.4.1-blue.svg)
+    # Replace markers for each count type
+    content = replace_marker(content, MARKERS["skillCount"], str(counts["skillCount"]))
+    content = replace_marker(content, MARKERS["workflowCount"], str(counts["workflowCount"]))
+    content = replace_marker(content, MARKERS["referenceFileCount"], str(counts["referenceFileCount"]))
+    content = replace_marker(content, MARKERS["version"], version)
+
+    # Also update version badge URL (no marker needed - URL pattern is unique)
     content = re.sub(
         r'version-[\d.]+-blue\.svg',
         f'version-{version}-blue.svg',
-        content
-    )
-
-    # Update "**Version:** vX.Y.Z" pattern
-    content = re.sub(
-        r'\*\*Version:\*\*\s*v[\d.]+',
-        f'**Version:** v{version}',
-        content
-    )
-
-    # Update skill counts (various patterns)
-    # "65 Skills" or "65 skills"
-    content = re.sub(
-        r'(\d+)\s+[Ss]kills',
-        f'{counts["skillCount"]} Skills',
-        content
-    )
-
-    # "65 specialized skills"
-    content = re.sub(
-        r'(\d+)\s+specialized\s+skills',
-        f'{counts["skillCount"]} specialized skills',
-        content
-    )
-
-    # Update workflow counts
-    # "9 Workflows" or "9 workflows"
-    content = re.sub(
-        r'(\d+)\s+[Ww]orkflows',
-        f'{counts["workflowCount"]} Workflows',
-        content
-    )
-
-    # "9 project workflow commands"
-    content = re.sub(
-        r'(\d+)\s+project\s+workflow\s+commands',
-        f'{counts["workflowCount"]} project workflow commands',
-        content
-    )
-
-    # Update reference file counts
-    # "355 Reference Files" or "355 reference files"
-    content = re.sub(
-        r'(\d+)\s+[Rr]eference\s+[Ff]iles',
-        f'{counts["referenceFileCount"]} Reference Files',
         content
     )
 
@@ -191,7 +142,7 @@ def update_markdown_file(file_path: Path, version: str, counts: dict, dry_run: b
 
 
 def update_html_file(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
-    """Update HTML files (social-preview.html)."""
+    """Update HTML files using marker-based replacement."""
     if not file_path.exists():
         print(f"  Skipping {file_path} (not found)")
         return False
@@ -199,22 +150,59 @@ def update_html_file(file_path: Path, version: str, counts: dict, dry_run: bool)
     content = file_path.read_text()
     original = content
 
-    # Update counts in spans or text
+    # Replace markers for each count type
+    content = replace_marker(content, MARKERS["skillCount"], str(counts["skillCount"]))
+    content = replace_marker(content, MARKERS["workflowCount"], str(counts["workflowCount"]))
+    content = replace_marker(content, MARKERS["referenceFileCount"], str(counts["referenceFileCount"]))
+    content = replace_marker(content, MARKERS["version"], version)
+
+    if content != original:
+        if dry_run:
+            print(f"  Would update {file_path}")
+        else:
+            file_path.write_text(content)
+            print(f"  Updated {file_path}")
+        return True
+    return False
+
+
+# =============================================================================
+# JSON File Updates (anchored patterns - no HTML comments in JSON)
+# =============================================================================
+
+def update_json_file(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
+    """Update JSON files using anchored regex patterns.
+
+    JSON files can't use HTML comments, so we use patterns anchored to
+    specific JSON keys/contexts.
+    """
+    if not file_path.exists():
+        print(f"  Skipping {file_path} (not found)")
+        return False
+
+    content = file_path.read_text()
+    original = content
+
+    # Update version in "version": "X.Y.Z" pattern
     content = re.sub(
-        r'>(\d+)\s+[Ss]kills<',
-        f'>{counts["skillCount"]} Skills<',
+        r'"version":\s*"[^"]*"',
+        f'"version": "{version}"',
         content
     )
 
+    # Update skill count in descriptions (anchored to "description":)
+    # Pattern: "65 specialized skills" within description strings
     content = re.sub(
-        r'>(\d+)\s+[Ww]orkflows<',
-        f'>{counts["workflowCount"]} Workflows<',
+        r'("description":\s*"[^"]*?)(\d+)\s+specialized\s+skills',
+        rf'\g<1>{counts["skillCount"]} specialized skills',
         content
     )
 
+    # Update workflow count in descriptions
+    # Pattern: "9 project workflow commands" within description strings
     content = re.sub(
-        r'>(\d+)\s+[Rr]eference\s+[Ff]iles<',
-        f'>{counts["referenceFileCount"]} Reference Files<',
+        r'("description":\s*"[^"]*?)(\d+)\s+project\s+workflow\s+commands',
+        rf'\g<1>{counts["workflowCount"]} project workflow commands',
         content
     )
 
