@@ -108,45 +108,42 @@ Reference files follow the [Agent Skills specification](https://agentskills.io/s
 
 ## Release Checklist
 
-When releasing a new version, update all version numbers and counts consistently.
+When releasing a new version, follow these steps.
 
-### 1. Update Version Numbers
+### 1. Update Version and Counts
 
-| File | Location |
-|------|----------|
-| `.claude-plugin/plugin.json` | `"version": "X.Y.Z"` |
-| `.claude-plugin/marketplace.json` | `"version": "X.Y.Z"` (appears twice: metadata and plugins) |
-| `README.md` | Badge URL: `version-X.Y.Z-blue.svg` |
-| `ROADMAP.md` | Current status section: `**Version:** vX.Y.Z` |
-| `ROADMAP.md` | Last updated footer |
+Version and counts are managed through `version.json`:
 
-### 2. Update Counts
-
-Verify actual counts match documentation:
-
-```bash
-# Count skills (subtract 1 for parent directory)
-find skills/ -maxdepth 1 -type d | wc -l
-
-# Count reference files
-find skills/ -path "*/references/*.md" | wc -l
-
-# Count project workflow commands
-find commands/project -name "*.md" | wc -l
+```json
+{
+  "version": "0.4.1",
+  "skillCount": 65,
+  "workflowCount": 9,
+  "referenceFileCount": 355
+}
 ```
 
-**Files to update with new counts:**
+**To release a new version:**
 
-| File | What to Update |
-|------|----------------|
-| `.claude-plugin/plugin.json` | Description: "X specialized skills" |
-| `.claude-plugin/marketplace.json` | Description: "X specialized skills", "Y commands" |
-| `README.md` | Header image (skills/workflows), badge stats, project structure comments, stats section, footer |
-| `ROADMAP.md` | Current status: skills, reference files, frameworks, commands |
-| `QUICKSTART.md` | "X skills covering" section |
-| `assets/social-preview.html` | Subtitle, stats spans (skills, workflows, reference files) |
+1. Update the `version` field in `version.json`
+2. Run the update script:
 
-### 3. Update CHANGELOG.md
+```bash
+python scripts/update-docs.py
+```
+
+The script will:
+- Compute counts from the filesystem (skills, references, workflows)
+- Update `version.json` with computed counts
+- Update all documentation files (README.md, plugin.json, etc.)
+
+**Options:**
+```bash
+python scripts/update-docs.py --check    # Verify files are in sync (CI use)
+python scripts/update-docs.py --dry-run  # Preview changes without writing
+```
+
+### 2. Update CHANGELOG.md
 
 Add new version entry at the top following Keep a Changelog format:
 
@@ -168,23 +165,23 @@ Add version comparison link at bottom:
 [X.Y.Z]: https://github.com/jeffallan/claude-skills/compare/vPREVIOUS...vX.Y.Z
 ```
 
-### 4. Update Documentation for New/Modified Content
+### 3. Update Documentation for New/Modified Content
 
 **For new skills:**
 - Add to `SKILLS_GUIDE.md` in appropriate category
 - Add to decision trees if applicable
-- Verify skill count in all locations above
+- Run `python scripts/update-docs.py` to update counts
 
 **For new commands:**
 - Add to `docs/WORKFLOW_COMMANDS.md`
 - Add to `README.md` Project Workflow Commands table
-- Update command count in all locations above
+- Run `python scripts/update-docs.py` to update counts
 
 **For modified skills/commands:**
 - Update any cross-references
 - Update SKILLS_GUIDE.md if triggers changed
 
-### 5. Generate Social Preview
+### 4. Generate Social Preview
 
 After all updates, regenerate the social preview image:
 
@@ -194,7 +191,7 @@ node ./assets/capture-screenshot.js
 
 This creates `assets/social-preview.png` from `assets/social-preview.html`.
 
-### 6. Validate Skills Integrity
+### 5. Validate Skills Integrity
 
 **Critical:** Run validation before release to prevent broken skills from being published.
 
@@ -220,7 +217,7 @@ python scripts/validate-skills.py --help             # Full usage
 
 **Exit codes:** 0 = success (warnings OK), 1 = errors found
 
-### 7. Final Verification
+### 6. Final Verification
 
 After running validation, manually verify:
 
