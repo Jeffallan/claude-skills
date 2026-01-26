@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <strong>🎯 65 Skills</strong> • <strong>🚀 9 Workflows</strong> • <strong>🧠 Context Engineering</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🎯 <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills</strong> • <strong>🚀 <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows</strong> • <strong>🧠 Context Engineering</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 <p align="center">
@@ -107,14 +107,14 @@ claude-skills/
 ```
 
 **Stats:**
-- 65 skills
-- 355 reference files
+- <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> skills
+- <!-- REFERENCE_COUNT -->355<!-- /REFERENCE_COUNT --> reference files
 - ~50% token reduction
 - Covers 30+ frameworks
 
 ## Skills Overview
 
-**65 specialized skills** across 12 categories:
+**<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> specialized skills** across 12 categories:
 
 - **Languages (12)**: Python Pro, TypeScript Pro, JavaScript Pro, Go Pro, Rust Engineer, SQL Pro, C++ Pro, Swift Expert, Kotlin Specialist, C# Developer, PHP Pro, Java Architect
 - **Backend Frameworks (7)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
@@ -227,7 +227,7 @@ Node colors indicate confidence: green (chosen), yellow (decision point), orange
 
 ## Project Workflow Commands
 
-Manage your entire development lifecycle with **9 project workflow commands** organized into 4 phases:
+Manage your entire development lifecycle with **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> project workflow commands** organized into 4 phases:
 
 | Phase | Commands | Purpose |
 |-------|----------|---------|
@@ -427,4 +427,4 @@ Fullstack engineering, security compliance, and technical due diligence for team
 
 ---
 
-**Built for Claude Code** | **9 Workflows** | **355 Reference Files** | **65 Skills** 
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->355<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills** 

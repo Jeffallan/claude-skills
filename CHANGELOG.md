@@ -8,14 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- 4 new reference files for vue-expert-js skill:
+- 4 new reference files for vue-expert-js skill (closes #97):
   - composables-patterns.md: Custom composables, ref/reactive patterns, lifecycle hooks
   - component-architecture.md: Props, emits, slots, provide/inject, dynamic components
   - state-management.md: Pinia setup, store patterns, reactive state
   - testing-patterns.md: Vitest/Vue Test Utils, component mounting, mocking
+- `version.json` for centralized version and count management
+- `scripts/update-docs.py` for automated documentation updates with marker-based replacement
+- `scripts/validate-skills.py` for skill YAML and reference file validation
+- HTML comment markers in documentation files for explicit count replacement (fixes #99)
 
 ### Changed
 - Total reference files: 351 → 355
+- `update-docs.py` now uses `<!-- MARKER -->...<!-- /MARKER -->` tags instead of broad regex patterns
+- Documentation files (README.md, QUICKSTART.md, ROADMAP.md, social-preview.html) updated with markers
+
+### Fixed
+- Pattern matching in `update-docs.py` no longer incorrectly matches inline comments like `# 6 reference files` in project structure trees (fixes #99)
 
 ## [0.4.1] - 2026-01-19
 
