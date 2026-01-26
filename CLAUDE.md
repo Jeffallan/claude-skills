@@ -6,6 +6,8 @@
 
 ## Skill Authorship Standards
 
+Skills follow the [Agent Skills specification](https://agentskills.io/specification). This section covers project-specific conventions that go beyond the base spec.
+
 ### The Description Trap
 
 **Critical:** Skill descriptions must be TRIGGER-ONLY. Never summarize the workflow or process.
@@ -52,18 +54,11 @@ output-format: code|document|report|architecture
 
 ### Reference File Standards
 
-**Header format:**
-```markdown
-# [Reference Title]
-
-> Reference for: [Parent Skill Name]
-> Load when: [specific trigger phrases, keywords, scenarios]
-
----
-```
+Reference files follow the [Agent Skills specification](https://agentskills.io/specification). No specific headers are required.
 
 **Guidelines:**
 - 100-600 lines per reference file
+- Keep files focused on a single topic
 - Complete, working code examples with TypeScript types
 - Cross-reference related skills where relevant
 - Include "when to use" and "when not to use" guidance
@@ -201,64 +196,37 @@ This creates `assets/social-preview.png` from `assets/social-preview.html`.
 
 ### 6. Validate Skills Integrity
 
-**Critical:** Run these checks to prevent broken skills from being released.
+**Critical:** Run validation before release to prevent broken skills from being published.
 
 ```bash
-# Validate YAML frontmatter in all SKILL.md files
-python3 -c "
-import yaml, os
-errors = []
-for skill in sorted(os.listdir('skills')):
-    path = f'skills/{skill}/SKILL.md'
-    if os.path.isfile(path):
-        with open(path) as f:
-            content = f.read()
-        if content.startswith('---'):
-            parts = content.split('---', 2)
-            if len(parts) >= 3:
-                try:
-                    yaml.safe_load(parts[1])
-                except yaml.YAMLError as e:
-                    errors.append(f'{skill}: {e}')
-if errors:
-    print('YAML ERRORS:')
-    for e in errors: print(f'  - {e}')
-    exit(1)
-print('All YAML valid')
-"
-
-# Verify all skills have references directory
-for skill in skills/*/; do
-  if [ ! -d "${skill}references" ]; then
-    echo "ERROR: Missing references directory: $skill"
-    exit 1
-  fi
-done && echo "All skills have references directories"
-
-# Count reference files per skill (should be 5 each)
-for skill in skills/*/; do
-  count=$(ls "${skill}references/"*.md 2>/dev/null | wc -l)
-  if [ "$count" -lt 1 ]; then
-    echo "WARNING: $skill has no reference files"
-  fi
-done
+python scripts/validate-skills.py
 ```
 
-**Common YAML issues to avoid:**
-- Unquoted colons in description (e.g., `Keywords:` causes parsing errors)
-- Special characters that need escaping
-- Missing required frontmatter fields
+The script validates:
+- **YAML frontmatter** - Parsing, required fields (name, description, triggers), format
+- **Name format** - Letters, numbers, hyphens only
+- **Description** - Max 1024 chars, starts with "Use when"
+- **References** - Directory exists, has files, proper headers
+- **Count consistency** - Skills/reference counts match across documentation
+
+**Options:**
+```bash
+python scripts/validate-skills.py --check yaml       # YAML checks only
+python scripts/validate-skills.py --check references # Reference checks only
+python scripts/validate-skills.py --skill react-expert  # Single skill
+python scripts/validate-skills.py --format json      # JSON output for CI
+python scripts/validate-skills.py --help             # Full usage
+```
+
+**Exit codes:** 0 = success (warnings OK), 1 = errors found
 
 ### 7. Final Verification
 
-Run parallel searches to verify consistency:
+After running validation, manually verify:
 
 ```bash
 # Check no old version references remain (except historical changelog)
 grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
-
-# Verify counts match
-grep -r "XX skills" --include="*.md" --include="*.json" --include="*.html"
 ```
 
 ---
