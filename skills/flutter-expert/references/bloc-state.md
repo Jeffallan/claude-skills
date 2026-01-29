@@ -1,8 +1,5 @@
 # Bloc State Management
 
-> Reference for: Flutter Expert
-> Load when: Bloc, Cubit, event-driven state, complex business logic
-
 ## When to Use Bloc
 
 Use **Bloc/Cubit** when you need:

@@ -23,9 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reusable GitHub Actions validation workflow `.github/workflows/validate.yml` (closes #105)
 - CI workflow `.github/workflows/ci.yml` triggering on PRs and pushes to main (closes #105)
 - CI status badge in README
+- Bloc state management reference for flutter-expert skill (#117)
 
 ### Changed
-- Total reference files: 351 → 355
+- Total reference files: 351 → 356
+- Clarified `npx add-skill` installation and slash command limitations in README (#96)
 - `update-docs.py` now uses `<!-- MARKER -->...<!-- /MARKER -->` tags instead of broad regex patterns
 - Documentation files (README.md, QUICKSTART.md, ROADMAP.md, social-preview.html) updated with markers
 - feature-forge interview flow rewritten to alternate between structured `AskUserQuestions` and open-ended elicitation
@@ -36,6 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Pattern matching in `update-docs.py` no longer incorrectly matches inline comments like `# 6 reference files` in project structure trees (fixes #99)
+- Missing version comparison link for v0.4.1 in CHANGELOG (#116)
+
+### Contributors
+- @thomassamoul — feat: add bloc state management to flutter expert (#117)
+- @Coopyrightdmin — fix: add missing version link for v0.4.1 (#116)
+- @Chidwan3578 — docs: clarify npx add-skill installation (#96)
 
 ## [0.4.1] - 2026-01-19
 
