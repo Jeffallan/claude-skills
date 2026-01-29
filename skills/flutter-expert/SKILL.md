@@ -46,6 +46,7 @@ Load detailed guidance based on context:
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
 | Riverpod | `references/riverpod-state.md` | State management, providers, notifiers |
+| Bloc | `references/bloc-state.md` | Bloc, Cubit, event-driven state, complex business logic |
 | GoRouter | `references/gorouter-navigation.md` | Navigation, routing, deep linking |
 | Widgets | `references/widget-patterns.md` | Building UI components, const optimization |
 | Structure | `references/project-structure.md` | Setting up project, architecture |
