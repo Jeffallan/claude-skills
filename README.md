@@ -427,6 +427,10 @@ Fullstack engineering, security compliance, and technical due diligence for team
 
 [![Stargazers repo roster for @Jeffallan/claude-skills](https://reporoster.com/stars/Jeffallan/claude-skills)](https://github.com/Jeffallan/claude-skills/stargazers)
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Jeffallan/claude-skills&type=date&legend=top-left)](https://www.star-history.com/#Jeffallan/claude-skills&type=date&legend=top-left)
+
 ---
 
 **Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->355<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills** 
