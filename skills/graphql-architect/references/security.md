@@ -1,8 +1,5 @@
 # GraphQL Security
 
-> Reference for: GraphQL Architect
-> Load when: Query depth limiting, complexity analysis, authentication
-
 ## Query Depth Limiting
 
 ```typescript

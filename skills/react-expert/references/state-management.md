@@ -1,8 +1,5 @@
 # State Management
 
-> Reference for: React Expert
-> Load when: State management, Context, Zustand, Redux
-
 ## Local State (useState)
 
 ```tsx

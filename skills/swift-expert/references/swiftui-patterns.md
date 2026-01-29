@@ -1,8 +1,5 @@
 # SwiftUI Patterns
 
-> Reference for: Swift Expert
-> Load when: Building SwiftUI views, state management, custom modifiers
-
 ## State Management
 
 ```swift

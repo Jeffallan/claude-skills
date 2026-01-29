@@ -1,8 +1,5 @@
 # Index Strategies
 
-> Reference for: Database Optimizer
-> Load when: Designing indexes, covering indexes, index maintenance
-
 ## Index Selection Methodology
 
 ### Identify Index Candidates

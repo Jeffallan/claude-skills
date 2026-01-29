@@ -1,8 +1,5 @@
 # OWASP Top 10 Prevention
 
-> Reference for: Secure Code Guardian
-> Load when: Security best practices, vulnerability prevention
-
 ## OWASP Top 10 Quick Reference
 
 | # | Vulnerability | Prevention |

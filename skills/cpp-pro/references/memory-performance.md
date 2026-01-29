@@ -1,8 +1,5 @@
 # Memory Management & Performance
 
-> Reference for: C++ Pro
-> Load when: Custom allocators, SIMD, cache optimization, move semantics, memory pools
-
 ## Smart Pointers
 
 ```cpp

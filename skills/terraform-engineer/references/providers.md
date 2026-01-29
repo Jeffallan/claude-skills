@@ -1,8 +1,5 @@
 # Terraform Provider Configuration
 
-> Reference for: Terraform Engineer
-> Load when: Configuring AWS, Azure, GCP providers, authentication patterns
-
 ## AWS Provider
 
 **Basic Configuration**

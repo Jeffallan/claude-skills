@@ -1,8 +1,5 @@
 # Power Optimization
 
-> Reference for: Embedded Systems Engineer
-> Load when: Low-power design, battery life, sleep modes, power consumption
-
 ## Sleep Mode Strategy
 
 ```c

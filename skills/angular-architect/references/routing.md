@@ -1,8 +1,5 @@
 # Angular Routing
 
-> Reference for: Angular Architect
-> Load when: Router config, guards, lazy loading, resolvers, route parameters
-
 ## Routes Configuration
 
 ```typescript

@@ -1,8 +1,5 @@
 # Monitoring and Analysis
 
-> Reference for: Database Optimizer
-> Load when: Performance metrics, diagnostics, troubleshooting
-
 ## PostgreSQL Monitoring
 
 ### Essential Extensions

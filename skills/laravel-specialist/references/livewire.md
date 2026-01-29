@@ -1,8 +1,5 @@
 # Livewire Components
 
-> Reference for: Laravel Specialist
-> Load when: Building reactive interfaces, real-time UI, form handling
-
 ## Component Patterns
 
 ```php

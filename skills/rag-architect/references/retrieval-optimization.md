@@ -1,8 +1,5 @@
 # Retrieval Optimization
 
-> Reference for: RAG Architect
-> Load when: Hybrid search, reranking, query expansion, HyDE, metadata filtering, improving retrieval quality
-
 ---
 
 ## Optimization Techniques Overview

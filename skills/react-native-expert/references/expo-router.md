@@ -1,8 +1,5 @@
 # Expo Router
 
-> Reference for: React Native Expert
-> Load when: Navigation, routing, tabs, stacks
-
 ## Project Structure
 
 ```

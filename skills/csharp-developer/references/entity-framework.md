@@ -1,8 +1,5 @@
 # Entity Framework Core Patterns
 
-> Reference for: C# Developer
-> Load when: Database operations, EF Core, migrations, query optimization
-
 ## DbContext Setup
 
 ```csharp

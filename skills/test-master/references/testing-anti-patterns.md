@@ -1,8 +1,5 @@
 # Testing Anti-Patterns
 
-> Reference for: Test Master
-> Load when: test review, mock issues, test quality problems
-
 ---
 
 ## Core Principle

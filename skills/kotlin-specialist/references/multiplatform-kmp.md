@@ -1,8 +1,5 @@
 # Kotlin Multiplatform (KMP)
 
-> Reference for: Kotlin Specialist
-> Load when: Shared code, expect/actual, platform setup, multiplatform architecture
-
 ## Project Structure
 
 ```

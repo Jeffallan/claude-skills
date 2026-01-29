@@ -1,8 +1,5 @@
 # Architecture Decision Guide
 
-> Reference for: Fullstack Guardian
-> Load when: Making technology choices, designing system architecture
-
 ## Technology Selection Matrix
 
 ### Backend Framework Selection

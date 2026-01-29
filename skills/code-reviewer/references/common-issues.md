@@ -1,8 +1,5 @@
 # Common Issues
 
-> Reference for: Code Reviewer
-> Load when: Identifying code problems
-
 ## N+1 Query Problem
 
 ```typescript

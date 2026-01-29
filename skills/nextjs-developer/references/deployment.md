@@ -1,8 +1,5 @@
 # Deployment & Production
 
-> Reference for: Next.js Developer
-> Load when: Vercel deployment, self-hosting, Docker, production optimization
-
 ## Vercel Deployment (Recommended)
 
 ### Quick Deploy

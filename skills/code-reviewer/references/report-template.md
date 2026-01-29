@@ -1,8 +1,5 @@
 # Report Template
 
-> Reference for: Code Reviewer
-> Load when: Writing final review report
-
 ## Full Review Report Template
 
 ```markdown

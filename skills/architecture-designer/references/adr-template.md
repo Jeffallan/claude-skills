@@ -1,8 +1,5 @@
 # ADR Template
 
-> Reference for: Architecture Designer
-> Load when: Documenting architectural decisions
-
 ## ADR Format
 
 ```markdown

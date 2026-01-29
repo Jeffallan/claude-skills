@@ -1,8 +1,5 @@
 # Utility Types
 
-> Reference for: TypeScript Pro
-> Load when: Partial, Pick, Omit, Record, custom utilities
-
 ## Built-in Utility Types
 
 ```typescript

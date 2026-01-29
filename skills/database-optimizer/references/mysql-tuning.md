@@ -1,8 +1,5 @@
 # MySQL Tuning
 
-> Reference for: Database Optimizer
-> Load when: MySQL-specific optimizations, InnoDB tuning
-
 ## InnoDB Memory Configuration
 
 ### Buffer Pool

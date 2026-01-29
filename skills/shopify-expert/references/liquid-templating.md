@@ -1,8 +1,5 @@
 # Liquid Templating
 
-> Reference for: Shopify Expert
-> Load when: Theme development, template customization, section schemas, Liquid syntax
-
 ---
 
 ## When to Use

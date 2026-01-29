@@ -3,10 +3,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.1-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.2-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
+  <a href="https://github.com/jeffallan/claude-skills/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/jeffallan/claude-skills/ci.yml?branch=main&style=for-the-badge&label=CI" alt="CI"/></a>
 </p>
 
 <p align="center">
@@ -14,7 +15,7 @@
 </p>
 
 <p align="center">
-  <strong>🎯 65 Skills</strong> • <strong>🚀 9 Workflows</strong> • <strong>🧠 Context Engineering</strong> • <strong>📖 Progressive Disclosure</strong>
+  <strong>🎯 <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills</strong> • <strong>🚀 <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows</strong> • <strong>🧠 Context Engineering</strong> • <strong>📖 Progressive Disclosure</strong>
 </p>
 
 <p align="center">
@@ -107,14 +108,14 @@ claude-skills/
 ```
 
 **Stats:**
-- 65 skills
-- 351 reference files
+- <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> skills
+- <!-- REFERENCE_COUNT -->356<!-- /REFERENCE_COUNT --> reference files
 - ~50% token reduction
 - Covers 30+ frameworks
 
 ## Skills Overview
 
-**65 specialized skills** across 12 categories:
+**<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> specialized skills** across 12 categories:
 
 - **Languages (12)**: Python Pro, TypeScript Pro, JavaScript Pro, Go Pro, Rust Engineer, SQL Pro, C++ Pro, Swift Expert, Kotlin Specialist, C# Developer, PHP Pro, Java Architect
 - **Backend Frameworks (7)**: NestJS Expert, Django Expert, FastAPI Expert, Spring Boot Engineer, Laravel Specialist, Rails Expert, .NET Core Expert
@@ -227,7 +228,7 @@ Node colors indicate confidence: green (chosen), yellow (decision point), orange
 
 ## Project Workflow Commands
 
-Manage your entire development lifecycle with **9 project workflow commands** organized into 4 phases:
+Manage your entire development lifecycle with **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> project workflow commands** organized into 4 phases:
 
 | Phase | Commands | Purpose |
 |-------|----------|---------|
@@ -312,13 +313,15 @@ then
 ```bash
 /plugin install fullstack-dev-skills@jeffallan
 ```
-### Option 1a: Installing Skills via `npx add-skill`
+### Option 2: Installing Skills via `npx add-skill`
 
 You can install standard Claude skills using the `add-skill` CLI:
 
 ```bash
 npx add-skill <skill-name>
+```
 
+Please note this method will not install slash commands.
 
 ### Option 2: Local Development
 
@@ -425,6 +428,10 @@ Fullstack engineering, security compliance, and technical due diligence for team
 
 [![Stargazers repo roster for @Jeffallan/claude-skills](https://reporoster.com/stars/Jeffallan/claude-skills)](https://github.com/Jeffallan/claude-skills/stargazers)
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Jeffallan/claude-skills&type=date&legend=top-left)](https://www.star-history.com/#Jeffallan/claude-skills&type=date&legend=top-left)
+
 ---
 
-**Built for Claude Code** | **9 Workflows** | **351 Reference Files** | **65 Skills** 
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->356<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills** 

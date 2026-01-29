@@ -1,8 +1,5 @@
 # Non-Functional Requirements Checklist
 
-> Reference for: Architecture Designer
-> Load when: Gathering system requirements
-
 ## NFR Categories
 
 ### Scalability

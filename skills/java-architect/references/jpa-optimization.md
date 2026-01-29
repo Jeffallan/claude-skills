@@ -1,8 +1,5 @@
 # JPA Optimization
 
-> Reference for: Java Architect
-> Load when: JPA, Hibernate, database queries, performance tuning
-
 ## Optimized Entity Design
 
 ```java

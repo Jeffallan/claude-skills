@@ -1,8 +1,5 @@
 # Prometheus Metrics
 
-> Reference for: Monitoring Expert
-> Load when: Setting up metrics, Prometheus
-
 ## Metric Types
 
 ```typescript

@@ -1,8 +1,5 @@
 # Cloud Native - Spring Cloud
 
-> Reference for: Spring Boot Engineer
-> Load when: Microservices, service discovery, configuration, API gateway, resilience patterns
-
 ## Spring Cloud Config Server
 
 ```java

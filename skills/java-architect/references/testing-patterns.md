@@ -1,8 +1,5 @@
 # Testing Patterns
 
-> Reference for: Java Architect
-> Load when: Testing, JUnit 5, Mockito, TestContainers, integration tests
-
 ## Unit Testing with JUnit 5
 
 ```java

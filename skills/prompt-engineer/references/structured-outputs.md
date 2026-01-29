@@ -1,8 +1,5 @@
 # Structured Outputs
 
-> Reference for: Prompt Engineer
-> Load when: JSON mode, function calling, schema design, or extracting structured data
-
 ---
 
 ## Structured Output Methods

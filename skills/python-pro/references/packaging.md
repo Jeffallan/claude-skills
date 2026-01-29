@@ -1,8 +1,5 @@
 # Python Packaging and Project Setup
 
-> Reference for: Python Pro
-> Load when: poetry, pip, pyproject.toml, package distribution, virtual environments
-
 ## Project Structure
 
 ```

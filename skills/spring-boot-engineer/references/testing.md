@@ -1,8 +1,5 @@
 # Testing - Spring Boot Test
 
-> Reference for: Spring Boot Engineer
-> Load when: Writing tests, @SpringBootTest, MockMvc, Testcontainers, test slices
-
 ## Unit Testing with JUnit 5
 
 ```java

@@ -1,8 +1,5 @@
 # Authentication
 
-> Reference for: Django Expert
-> Load when: JWT, permissions, authentication, SimpleJWT
-
 ## SimpleJWT Setup
 
 ```python

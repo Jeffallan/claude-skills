@@ -1,8 +1,5 @@
 # Deployment Strategies
 
-> Reference for: DevOps Engineer
-> Load when: Deployment strategy, rollback, blue-green, canary releases
-
 ## Strategy Comparison
 
 | Strategy | Use When | Rollback | Risk |

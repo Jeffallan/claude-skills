@@ -1,8 +1,5 @@
 # Prompt Patterns
 
-> Reference for: Prompt Engineer
-> Load when: Zero-shot, few-shot, chain-of-thought, ReAct, or selecting prompting strategies
-
 ---
 
 ## Pattern Selection Guide

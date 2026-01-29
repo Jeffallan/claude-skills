@@ -1,8 +1,5 @@
 # Feedback Examples
 
-> Reference for: Code Reviewer
-> Load when: Writing review feedback
-
 ## Good vs Bad Feedback
 
 ### Be Specific, Not Vague

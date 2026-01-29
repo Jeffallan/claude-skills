@@ -1,8 +1,5 @@
 # NgRx State Management
 
-> Reference for: Angular Architect
-> Load when: Store, effects, selectors, entity adapter, state management
-
 ## Store Setup
 
 ```typescript

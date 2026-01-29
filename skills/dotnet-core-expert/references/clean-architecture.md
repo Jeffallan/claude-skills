@@ -1,8 +1,5 @@
 # Clean Architecture with CQRS
 
-> Reference for: .NET Core Expert
-> Load when: CQRS, MediatR, clean architecture, layers, domain-driven design
-
 ## Project Structure
 
 ```

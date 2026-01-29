@@ -1,8 +1,5 @@
 # Server Actions
 
-> Reference for: Next.js Developer
-> Load when: Form handling, mutations, data revalidation
-
 ## Basic Server Action
 
 ```tsx

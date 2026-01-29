@@ -1,8 +1,5 @@
 # Testing Django
 
-> Reference for: Django Expert
-> Load when: Writing tests, APITestCase, fixtures
-
 ## APITestCase
 
 ```python

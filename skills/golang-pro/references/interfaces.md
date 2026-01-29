@@ -1,8 +1,5 @@
 # Interface Design and Composition
 
-> Reference for: Golang Pro
-> Load when: Interface design, io.Reader/Writer, composition patterns
-
 ## Small, Focused Interfaces
 
 ```go

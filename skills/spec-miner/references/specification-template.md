@@ -1,8 +1,5 @@
 # Specification Template
 
-> Reference for: Spec Miner
-> Load when: Writing final specification document
-
 ## Full Template
 
 ```markdown

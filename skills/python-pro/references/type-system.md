@@ -1,8 +1,5 @@
 # Type System Mastery
 
-> Reference for: Python Pro
-> Load when: Type hints, mypy configuration, generics, Protocol definitions
-
 ## Basic Type Annotations
 
 ```python

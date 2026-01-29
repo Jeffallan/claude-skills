@@ -1,8 +1,5 @@
 # Platform Handling
 
-> Reference for: React Native Expert
-> Load when: Platform-specific code, iOS/Android, SafeArea
-
 ## Platform.select
 
 ```typescript

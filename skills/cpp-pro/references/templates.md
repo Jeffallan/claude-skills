@@ -1,8 +1,5 @@
 # Template Metaprogramming
 
-> Reference for: C++ Pro
-> Load when: Variadic templates, SFINAE, type traits, CRTP, compile-time programming
-
 ## Variadic Templates
 
 ```cpp

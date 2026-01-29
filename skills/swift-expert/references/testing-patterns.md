@@ -1,8 +1,5 @@
 # Testing Patterns
 
-> Reference for: Swift Expert
-> Load when: XCTest, async testing, mocking, test strategies
-
 ## XCTest Basics
 
 ```swift

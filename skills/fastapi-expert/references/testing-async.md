@@ -1,8 +1,5 @@
 # Async Testing
 
-> Reference for: FastAPI Expert
-> Load when: Writing tests, pytest-asyncio, httpx
-
 ## Test Setup
 
 ```python

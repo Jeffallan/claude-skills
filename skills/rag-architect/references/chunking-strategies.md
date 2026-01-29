@@ -1,8 +1,5 @@
 # Chunking Strategies
 
-> Reference for: RAG Architect
-> Load when: Document splitting, overlap configuration, semantic chunking, preprocessing pipelines
-
 ---
 
 ## Strategy Comparison Matrix

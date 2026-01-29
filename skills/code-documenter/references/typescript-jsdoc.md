@@ -1,8 +1,5 @@
 # TypeScript JSDoc
 
-> Reference for: Code Documenter
-> Load when: Documenting TypeScript/JavaScript code
-
 ## Function Documentation
 
 ```typescript

@@ -1,8 +1,5 @@
 # Background Jobs with Sidekiq
 
-> Reference for: Rails Expert
-> Load when: Sidekiq, background processing, job design, queues
-
 ## Sidekiq Setup
 
 ```ruby

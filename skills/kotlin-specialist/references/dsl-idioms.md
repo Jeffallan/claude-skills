@@ -1,8 +1,5 @@
 # DSL & Kotlin Idioms
 
-> Reference for: Kotlin Specialist
-> Load when: Type-safe builders, DSL design, scope functions, delegates, extension functions
-
 ## Type-Safe Builders
 
 ```kotlin

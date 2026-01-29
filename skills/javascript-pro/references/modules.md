@@ -1,8 +1,5 @@
 # Module Systems
 
-> Reference for: JavaScript Pro
-> Load when: Working with ESM, CommonJS, dynamic imports, package.json exports
-
 ## ES Modules (ESM)
 
 ```javascript

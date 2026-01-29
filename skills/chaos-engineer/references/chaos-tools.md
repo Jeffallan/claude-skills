@@ -1,8 +1,5 @@
 # Chaos Engineering Tools & Automation
 
-> Reference for: Chaos Engineer
-> Load when: Tool selection, automation, CI/CD integration, chaos platforms
-
 ## Chaos Monkey (Netflix)
 
 ```python

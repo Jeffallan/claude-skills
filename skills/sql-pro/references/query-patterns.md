@@ -1,8 +1,5 @@
 # Query Patterns
 
-> Reference for: SQL Pro
-> Load when: JOINs, CTEs, subqueries, recursive queries
-
 ## Common Table Expressions (CTEs)
 
 ```sql

@@ -1,8 +1,5 @@
 # Error Budget Policy
 
-> Reference for: SRE Engineer
-> Load when: Managing error budgets, burn rates, release policies
-
 ## Error Budget Fundamentals
 
 Error budget = 1 - SLO target. It represents acceptable unreliability.

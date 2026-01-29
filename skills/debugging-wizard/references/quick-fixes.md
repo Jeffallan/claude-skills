@@ -1,8 +1,5 @@
 # Quick Fixes
 
-> Reference for: Debugging Wizard
-> Load when: Fixing common errors
-
 ## TypeError: Cannot read property 'x' of undefined
 
 ```typescript

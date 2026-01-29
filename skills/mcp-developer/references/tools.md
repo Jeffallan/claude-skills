@@ -1,8 +1,5 @@
 # MCP Tools Reference
 
-> Reference for: MCP Developer
-> Load when: Implementing tool functions, defining schemas, handling execution
-
 ## Tool Definition
 
 Tools are functions that AI assistants can invoke to perform actions or retrieve data.

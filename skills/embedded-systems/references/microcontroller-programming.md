@@ -1,8 +1,5 @@
 # Microcontroller Programming
 
-> Reference for: Embedded Systems Engineer
-> Load when: Bare-metal, registers, peripherals, GPIO, timers, interrupts
-
 ## GPIO Configuration (STM32)
 
 ```c

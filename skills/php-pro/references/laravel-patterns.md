@@ -1,8 +1,5 @@
 # Laravel Patterns
 
-> Reference for: PHP Pro
-> Load when: Laravel development, repositories, services, resources, jobs
-
 ## Service Layer Pattern
 
 ```php

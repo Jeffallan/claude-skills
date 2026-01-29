@@ -1,8 +1,5 @@
 # Reactive WebFlux
 
-> Reference for: Java Architect
-> Load when: Reactive programming, WebFlux, Project Reactor, R2DBC
-
 ## WebFlux Controller
 
 ```java

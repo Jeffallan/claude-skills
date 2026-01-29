@@ -1,8 +1,5 @@
 # Database Selection
 
-> Reference for: Architecture Designer
-> Load when: Choosing database technology
-
 ## Database Types
 
 | Type | Examples | Best For |

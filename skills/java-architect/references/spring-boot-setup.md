@@ -1,8 +1,5 @@
 # Spring Boot Setup
 
-> Reference for: Java Architect
-> Load when: Project setup, configuration, application structure
-
 ## Project Structure (Clean Architecture)
 
 ```

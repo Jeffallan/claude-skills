@@ -1,8 +1,5 @@
 # Go CLI Development
 
-> Reference for: CLI Developer
-> Load when: Building Go CLIs, cobra, viper, bubbletea
-
 ## Cobra (Recommended)
 
 Powerful CLI framework used by kubectl, hugo, docker.

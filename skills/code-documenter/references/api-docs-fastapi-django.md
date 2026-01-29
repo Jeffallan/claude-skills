@@ -1,8 +1,5 @@
 # API Documentation: FastAPI & Django
 
-> Reference for: Code Documenter
-> Load when: Documenting Python API frameworks
-
 ## FastAPI (Auto-generates from types)
 
 FastAPI automatically generates OpenAPI documentation from type hints and docstrings.

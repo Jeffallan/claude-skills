@@ -1,8 +1,5 @@
 # Minimal APIs
 
-> Reference for: .NET Core Expert
-> Load when: Creating endpoints, routing, middleware, HTTP handlers
-
 ## Basic Endpoint Patterns
 
 ```csharp

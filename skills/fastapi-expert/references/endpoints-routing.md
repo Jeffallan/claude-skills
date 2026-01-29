@@ -1,8 +1,5 @@
 # Endpoints & Routing
 
-> Reference for: FastAPI Expert
-> Load when: Creating endpoints, APIRouter, dependency injection
-
 ## Router Setup
 
 ```python

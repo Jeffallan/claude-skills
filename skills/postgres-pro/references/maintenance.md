@@ -1,8 +1,5 @@
 # Database Maintenance
 
-> Reference for: PostgreSQL Pro
-> Load when: VACUUM, ANALYZE, pg_stat views, monitoring, bloat
-
 ## VACUUM Fundamentals
 
 ### Why VACUUM is Critical

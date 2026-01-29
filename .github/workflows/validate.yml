@@ -1,0 +1,27 @@
+name: Validate Skills
+
+on:
+  workflow_call:
+
+jobs:
+  validate:
+    name: Validate Skills & Docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Validate skills
+        run: python scripts/validate-skills.py
+
+      - name: Check docs in sync
+        run: python scripts/update-docs.py --check

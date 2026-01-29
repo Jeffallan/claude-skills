@@ -1,8 +1,5 @@
 # GoRouter Navigation
 
-> Reference for: Flutter Expert
-> Load when: Navigation, routing, GoRouter, deep linking
-
 ## Basic Setup
 
 ```dart

@@ -1,8 +1,5 @@
 # Spark SQL and DataFrame API
 
-> Reference for: Spark Engineer
-> Load when: DataFrame API, Spark SQL, schemas, joins, aggregations, window functions, column operations
-
 ---
 
 ## When to Use DataFrames vs RDDs

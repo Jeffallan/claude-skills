@@ -1,8 +1,5 @@
 # Hooks & Filters
 
-> Reference for: WordPress Pro
-> Load when: Actions, filters, custom hooks, priorities, hook system
-
 ---
 
 ## WordPress Hook System

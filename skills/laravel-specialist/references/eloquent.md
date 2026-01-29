@@ -1,8 +1,5 @@
 # Eloquent ORM
 
-> Reference for: Laravel Specialist
-> Load when: Working with models, relationships, scopes, query optimization
-
 ## Model Patterns
 
 ```php

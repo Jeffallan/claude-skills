@@ -1,8 +1,5 @@
 # Streaming Patterns
 
-> Reference for: Spark Engineer
-> Load when: Structured Streaming, watermarks, stateful operations, sinks, event-time processing, streaming joins, windowed aggregations
-
 ---
 
 ## Structured Streaming Overview

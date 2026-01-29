@@ -1,8 +1,5 @@
 # Embedding Models
 
-> Reference for: RAG Architect
-> Load when: Selecting embeddings, fine-tuning, dimension trade-offs, comparing embedding providers
-
 ---
 
 ## Model Comparison Matrix

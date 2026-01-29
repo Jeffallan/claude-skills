@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: Flutter Expert
-> Load when: Performance, optimization, profiling, jank
-
 ## Profiling Commands
 
 ```bash

@@ -1,8 +1,5 @@
 # Analysis Process
 
-> Reference for: Spec Miner
-> Load when: Starting code analysis, exploring codebase structure
-
 ## Step 1: Project Structure
 
 ```bash

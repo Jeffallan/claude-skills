@@ -1,8 +1,5 @@
 # Project Structure
 
-> Reference for: React Native Expert
-> Load when: Setting up project, architecture, organization
-
 ## Expo Router Structure
 
 ```

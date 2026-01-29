@@ -1,8 +1,5 @@
 # Authentication Patterns
 
-> Reference for: Atlassian MCP Expert
-> Load when: OAuth 2.0, API tokens, PAT, permission scopes, credential management
-
 ---
 
 ## Authentication Methods Overview

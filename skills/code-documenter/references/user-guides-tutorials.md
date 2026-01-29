@@ -1,8 +1,5 @@
 # User Guides & Tutorials
 
-> Reference for: Code Documenter
-> Load when: Creating getting started guides, tutorials, troubleshooting docs, end-user documentation
-
 ## Tutorial Structure
 
 ### Progressive Learning Path

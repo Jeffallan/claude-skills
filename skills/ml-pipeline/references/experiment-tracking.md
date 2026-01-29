@@ -1,8 +1,5 @@
 # Experiment Tracking
 
-> Reference for: ML Pipeline Expert
-> Load when: MLflow, Weights & Biases, experiment logging, model registry
-
 ---
 
 ## Overview
@@ -120,7 +117,6 @@ class MLflowTracker:
 
         return model_info.model_uri
 
-
 # Usage example
 def train_with_mlflow(
     model,
@@ -209,7 +205,6 @@ def log_pytorch_model(
     )
 
     return model_info.model_uri
-
 
 def load_pytorch_model(model_uri: str, device: str = "cpu") -> torch.nn.Module:
     """Load PyTorch model from MLflow."""
@@ -414,7 +409,6 @@ class WandbTracker:
         """Finish the run."""
         wandb.finish(exit_code=exit_code)
 
-
 # Usage with PyTorch
 def train_with_wandb(
     model: torch.nn.Module,
@@ -503,7 +497,6 @@ sweep_config = {
     },
 }
 
-
 def sweep_train():
     """Training function for sweep."""
     with wandb.init() as run:
@@ -530,7 +523,6 @@ def sweep_train():
                 "val/loss": val_loss,
                 "epoch": epoch,
             })
-
 
 # Run sweep
 sweep_id = wandb.sweep(sweep_config, project="my-project")
@@ -567,7 +559,6 @@ class Experiment:
 
     def to_dict(self) -> dict:
         return asdict(self)
-
 
 class SimpleTracker:
     """Lightweight file-based experiment tracker."""
@@ -746,7 +737,6 @@ def compare_runs(
         data.append(row)
 
     return pd.DataFrame(data)
-
 
 def plot_metric_comparison(
     runs_df: pd.DataFrame,

@@ -1,8 +1,5 @@
 # Three-Perspective Design
 
-> Reference for: Fullstack Guardian
-> Load when: Starting feature implementation
-
 ## Design Template
 
 For every feature, address all three layers:

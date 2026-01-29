@@ -1,8 +1,5 @@
 # Data Fetching & Caching
 
-> Reference for: Next.js Developer
-> Load when: fetch API, caching strategies, ISR, revalidation
-
 ## Extended fetch API
 
 Next.js extends the native fetch with caching and revalidation options:

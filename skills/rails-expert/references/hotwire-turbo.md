@@ -1,8 +1,5 @@
 # Hotwire & Turbo
 
-> Reference for: Rails Expert
-> Load when: Implementing Turbo Frames, Turbo Streams, Stimulus controllers
-
 ## Turbo Drive
 
 Turbo Drive automatically converts link clicks and form submissions into AJAX requests:

@@ -1,8 +1,5 @@
 # CLI UX Patterns
 
-> Reference for: CLI Developer
-> Load when: Progress bars, spinners, colors, help text, error messages
-
 ## Progress Indicators
 
 ### When to Use What

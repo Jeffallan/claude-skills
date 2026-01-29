@@ -1,8 +1,5 @@
 # Controllers & Routing
 
-> Reference for: NestJS Expert
-> Load when: Creating controllers, routing, Swagger documentation
-
 ## Controller with Swagger
 
 ```typescript

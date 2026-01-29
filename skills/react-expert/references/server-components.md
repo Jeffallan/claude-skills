@@ -1,8 +1,5 @@
 # Server Components
 
-> Reference for: React Expert
-> Load when: Server Components, RSC, streaming, Next.js App Router
-
 ## Server vs Client Components
 
 ```tsx

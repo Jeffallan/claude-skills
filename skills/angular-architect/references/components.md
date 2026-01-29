@@ -1,8 +1,5 @@
 # Standalone Components & Signals
 
-> Reference for: Angular Architect
-> Load when: Creating components, using signals, input/output, content projection
-
 ## Standalone Component Pattern
 
 ```typescript

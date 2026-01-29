@@ -1,8 +1,5 @@
 # Test Reports
 
-> Reference for: Test Master
-> Load when: Creating test reports, documenting findings
-
 ## Test Report Template
 
 ```markdown

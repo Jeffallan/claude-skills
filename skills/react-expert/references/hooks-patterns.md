@@ -1,8 +1,5 @@
 # Hooks Patterns
 
-> Reference for: React Expert
-> Load when: Custom hooks, useEffect, useCallback, useMemo
-
 ## Custom Hook Pattern
 
 ```tsx

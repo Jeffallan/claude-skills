@@ -1,8 +1,5 @@
 # Pipeline Orchestration
 
-> Reference for: ML Pipeline Expert
-> Load when: Kubeflow Pipelines, Airflow, Prefect, DAG design, workflow automation
-
 ---
 
 ## Overview
@@ -56,7 +53,6 @@ def load_data(
     output_dataset.metadata["num_rows"] = len(df)
     output_dataset.metadata["num_features"] = len(df.columns) - 1
 
-
 @dsl.component(
     base_image="python:3.11-slim",
     packages_to_install=["pandas", "scikit-learn"],
@@ -94,7 +90,6 @@ def preprocess_data(
     test_df["target"] = y_test.values
     test_df.to_parquet(test_dataset.path)
 
-
 @dsl.component(
     base_image="python:3.11-slim",
     packages_to_install=["pandas", "scikit-learn", "joblib"],
@@ -124,7 +119,6 @@ def train_model(
     joblib.dump(model, model_artifact.path)
     model_artifact.metadata["n_estimators"] = n_estimators
     model_artifact.metadata["max_depth"] = max_depth
-
 
 @dsl.component(
     base_image="python:3.11-slim",
@@ -164,7 +158,6 @@ def evaluate_model(
     Outputs = namedtuple("Outputs", ["passed", "accuracy"])
     return Outputs(passed, accuracy)
 
-
 @dsl.component(
     base_image="python:3.11-slim",
     packages_to_install=["google-cloud-storage"],
@@ -188,7 +181,6 @@ def deploy_model(
     blob.upload_from_filename(model_artifact.path)
 
     return f"gs://{bucket_name}/{model_path}"
-
 
 @dsl.pipeline(
     name="ml-training-pipeline",
@@ -229,7 +221,6 @@ def ml_pipeline(
             endpoint=endpoint,
         )
 
-
 # Compile pipeline
 if __name__ == "__main__":
     compiler.Compiler().compile(
@@ -264,7 +255,6 @@ def run_pipeline(
     )
 
     return run.run_id
-
 
 def schedule_pipeline(
     pipeline_file: str,
@@ -316,7 +306,6 @@ default_args = {
     "execution_timeout": timedelta(hours=2),
 }
 
-
 def load_data(**context):
     """Load data from source."""
     import pandas as pd
@@ -332,7 +321,6 @@ def load_data(**context):
     context["ti"].xcom_push(key="num_rows", value=len(df))
 
     return output_path
-
 
 def preprocess_data(**context):
     """Preprocess and split data."""
@@ -369,7 +357,6 @@ def preprocess_data(**context):
     context["ti"].xcom_push(key="train_path", value=train_path)
     context["ti"].xcom_push(key="test_path", value=test_path)
 
-
 def train_model(**context):
     """Train ML model."""
     import pandas as pd
@@ -394,7 +381,6 @@ def train_model(**context):
     joblib.dump(model, model_path)
 
     context["ti"].xcom_push(key="model_path", value=model_path)
-
 
 def evaluate_model(**context):
     """Evaluate model and return metrics."""
@@ -423,7 +409,6 @@ def evaluate_model(**context):
 
     return metrics
 
-
 def check_metrics_threshold(**context):
     """Branch based on model performance."""
     metrics = context["ti"].xcom_pull(key="metrics", task_ids="evaluate_model")
@@ -432,7 +417,6 @@ def check_metrics_threshold(**context):
     if metrics["accuracy"] >= threshold:
         return "deploy_model"
     return "skip_deployment"
-
 
 def deploy_model(**context):
     """Deploy model to production."""
@@ -450,7 +434,6 @@ def deploy_model(**context):
         "metrics": metrics,
         "deployed_at": datetime.utcnow().isoformat(),
     }
-
 
 with DAG(
     dag_id="ml_training_pipeline",
@@ -540,7 +523,6 @@ def load_data(data_path: str) -> pd.DataFrame:
 
     return df
 
-
 @task(retries=2)
 def preprocess_data(
     df: pd.DataFrame,
@@ -573,7 +555,6 @@ def preprocess_data(
 
     return train_df, test_df
 
-
 @task
 def train_model(
     train_df: pd.DataFrame,
@@ -600,7 +581,6 @@ def train_model(
     logger.info("Training complete")
 
     return model
-
 
 @task
 def evaluate_model(model, test_df: pd.DataFrame) -> dict:
@@ -652,7 +632,6 @@ def evaluate_model(model, test_df: pd.DataFrame) -> dict:
 
     return metrics
 
-
 @task
 def deploy_model(model, metrics: dict, threshold: float) -> bool:
     """Deploy model if metrics pass threshold."""
@@ -673,7 +652,6 @@ def deploy_model(model, metrics: dict, threshold: float) -> bool:
     logger.info(f"Model deployed to {model_path}")
 
     return True
-
 
 @flow(
     name="ml-training-pipeline",
@@ -706,7 +684,6 @@ def ml_training_flow(
         "metrics": metrics,
         "deployed": deployed,
     }
-
 
 # Deployment configuration
 if __name__ == "__main__":
@@ -746,13 +723,11 @@ def process_partition(partition_id: int, data_path: str) -> dict:
     # Process partition
     return {"partition_id": partition_id, "records_processed": 1000}
 
-
 @task
 def aggregate_results(results: List[dict]) -> dict:
     """Aggregate parallel processing results."""
     total_records = sum(r["records_processed"] for r in results)
     return {"total_records": total_records}
-
 
 @flow
 def parallel_processing_flow(data_path: str, num_partitions: int = 4):
@@ -781,19 +756,16 @@ def check_data_quality(df) -> bool:
     null_ratio = df.isnull().sum().sum() / df.size
     return null_ratio < 0.1
 
-
 @task
 def handle_poor_quality(df):
     """Handle data that fails quality checks."""
     # Impute, clean, or alert
     pass
 
-
 @task
 def process_good_quality(df):
     """Process data that passes quality checks."""
     pass
-
 
 @flow
 def conditional_flow(data_path: str):
@@ -823,19 +795,16 @@ def risky_operation():
         raise ValueError("Random failure")
     return "success"
 
-
 @task
 def fallback_operation():
     """Fallback when primary fails."""
     return "fallback_result"
-
 
 @task
 def send_alert(error: Exception):
     """Send alert on failure."""
     # Send to Slack, PagerDuty, etc.
     pass
-
 
 @flow
 def resilient_flow():

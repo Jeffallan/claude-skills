@@ -1,8 +1,5 @@
 # Structured Logging
 
-> Reference for: Monitoring Expert
-> Load when: Setting up logging, JSON logs
-
 ## Pino (Node.js)
 
 ```typescript

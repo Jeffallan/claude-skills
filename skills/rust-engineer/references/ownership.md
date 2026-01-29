@@ -1,8 +1,5 @@
 # Ownership, Borrowing, and Lifetimes
 
-> Reference for: Rust Engineer
-> Load when: Working with ownership, lifetimes, smart pointers, borrowing
-
 ## Ownership Patterns
 
 ```rust

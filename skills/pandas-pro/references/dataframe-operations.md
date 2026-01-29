@@ -1,8 +1,5 @@
 # DataFrame Operations
 
-> Reference for: Pandas Pro
-> Load when: Indexing, selection, filtering, sorting, or basic DataFrame manipulation
-
 ---
 
 ## Overview

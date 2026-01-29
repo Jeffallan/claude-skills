@@ -1,8 +1,5 @@
 # Terraform State Management
 
-> Reference for: Terraform Engineer
-> Load when: Configuring backends, state locking, workspaces, migrations
-
 ## Remote Backend - S3 (AWS)
 
 **Backend Configuration**

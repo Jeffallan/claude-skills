@@ -1,8 +1,5 @@
 # Kubernetes Chaos Engineering
 
-> Reference for: Chaos Engineer
-> Load when: K8s chaos, Litmus experiments, pod failures, node chaos
-
 ## Litmus Chaos - ChaosEngine
 
 ```yaml

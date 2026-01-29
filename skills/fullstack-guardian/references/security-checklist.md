@@ -1,8 +1,5 @@
 # Security Checklist
 
-> Reference for: Fullstack Guardian
-> Load when: Implementing any feature
-
 ## Per-Feature Security Checklist
 
 | Category | Check | Action |

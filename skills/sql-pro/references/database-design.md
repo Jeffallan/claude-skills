@@ -1,8 +1,5 @@
 # Database Design
 
-> Reference for: SQL Pro
-> Load when: Normalization, keys, constraints, schema design, relationships
-
 ## Normalization Levels
 
 ```sql

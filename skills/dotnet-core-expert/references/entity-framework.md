@@ -1,8 +1,5 @@
 # Entity Framework Core
 
-> Reference for: .NET Core Expert
-> Load when: DbContext, migrations, relationships, query optimization
-
 ## DbContext Configuration
 
 ```csharp

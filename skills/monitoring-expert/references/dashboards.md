@@ -1,8 +1,5 @@
 # Dashboards
 
-> Reference for: Monitoring Expert
-> Load when: Creating dashboards, Grafana, visualization
-
 ## RED Method (Request-focused)
 
 ```

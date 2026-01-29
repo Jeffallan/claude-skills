@@ -1,8 +1,5 @@
 # Helm Charts
 
-> Reference for: Kubernetes Specialist
-> Load when: Chart structure, values, templates, hooks
-
 ## Chart Structure
 
 ```

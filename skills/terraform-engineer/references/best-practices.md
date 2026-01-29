@@ -1,8 +1,5 @@
 # Terraform Best Practices
 
-> Reference for: Terraform Engineer
-> Load when: DRY patterns, naming conventions, security, cost optimization
-
 ## DRY Principles
 
 **Use Modules for Reusability**

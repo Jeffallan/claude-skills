@@ -1,8 +1,5 @@
 # PostgreSQL Tuning
 
-> Reference for: Database Optimizer
-> Load when: PostgreSQL-specific optimizations, configuration tuning
-
 ## Memory Configuration
 
 ### Shared Buffers

@@ -1,8 +1,5 @@
 # Security - Spring Security 6
 
-> Reference for: Spring Boot Engineer
-> Load when: Implementing authentication, authorization, OAuth2, JWT, method security
-
 ## Security Configuration
 
 ```java

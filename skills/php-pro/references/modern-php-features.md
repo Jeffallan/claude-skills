@@ -1,8 +1,5 @@
 # Modern PHP 8.3+ Features
 
-> Reference for: PHP Pro
-> Load when: Using PHP 8.3 features, strict typing, enums, readonly, attributes
-
 ## Strict Types & Type Declarations
 
 ```php

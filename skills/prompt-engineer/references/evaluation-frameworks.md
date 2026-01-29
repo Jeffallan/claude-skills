@@ -1,8 +1,5 @@
 # Evaluation Frameworks
 
-> Reference for: Prompt Engineer
-> Load when: Metrics, test suites, automated evaluation, or measuring prompt quality
-
 ---
 
 ## Evaluation Hierarchy

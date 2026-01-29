@@ -1,8 +1,5 @@
 # Security Headers
 
-> Reference for: Secure Code Guardian
-> Load when: Security headers, rate limiting, Helmet
-
 ## Helmet (Express)
 
 ```typescript

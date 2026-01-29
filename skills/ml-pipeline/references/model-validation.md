@@ -1,8 +1,5 @@
 # Model Validation
 
-> Reference for: ML Pipeline Expert
-> Load when: Evaluation strategies, validation workflows, A/B testing, shadow deployment
-
 ---
 
 ## Overview
@@ -61,7 +58,6 @@ class ClassificationMetrics:
             "pr_auc": self.pr_auc,
         }
 
-
 @dataclass
 class RegressionMetrics:
     """Regression model metrics."""
@@ -79,7 +75,6 @@ class RegressionMetrics:
             "r2": self.r2,
             "mape": self.mape,
         }
-
 
 class ModelEvaluator:
     """Comprehensive model evaluation."""
@@ -304,7 +299,6 @@ class ComparisonResult:
     confidence_interval: tuple[float, float]
     test_used: str
 
-
 class ModelComparator:
     """Statistical comparison of model performance."""
 
@@ -446,7 +440,6 @@ class Experiment:
     minimum_sample_size: int
     status: str = "active"
 
-
 class ABTestRouter:
     """Route traffic between control and treatment."""
 
@@ -471,7 +464,6 @@ class ABTestRouter:
         if variant == "treatment":
             return self.experiment.treatment_model
         return self.experiment.control_model
-
 
 class ABTestAnalyzer:
     """Analyze A/B test results."""
@@ -621,7 +613,6 @@ class PredictionComparison:
     agreement: bool
     features: Optional[dict] = None
 
-
 class ShadowDeployment:
     """Shadow deployment for model validation."""
 
@@ -745,7 +736,6 @@ class ValidationStatus(Enum):
     FAILED = "failed"
     WARNING = "warning"
 
-
 @dataclass
 class ValidationResult:
     """Result of a validation check."""
@@ -753,7 +743,6 @@ class ValidationResult:
     status: ValidationStatus
     message: str
     details: Optional[dict] = None
-
 
 class ModelValidator:
     """Complete model validation workflow."""

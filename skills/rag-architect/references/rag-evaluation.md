@@ -1,8 +1,5 @@
 # RAG Evaluation
 
-> Reference for: RAG Architect
-> Load when: Measuring retrieval quality, evaluation frameworks, debugging RAG pipelines, RAGAS, TruLens
-
 ---
 
 ## Evaluation Framework Overview

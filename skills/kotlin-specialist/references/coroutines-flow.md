@@ -1,8 +1,5 @@
 # Coroutines & Flow API
 
-> Reference for: Kotlin Specialist
-> Load when: Async operations, structured concurrency, Flow streams, StateFlow/SharedFlow
-
 ## Structured Concurrency
 
 ```kotlin

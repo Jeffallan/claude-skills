@@ -1,8 +1,5 @@
 # Django to FastAPI Migration Guide
 
-> Reference for: FastAPI Expert
-> Load when: Django migration, Django to FastAPI, porting Django app, converting DRF, migrating REST framework, Django REST Framework to FastAPI
-
 ---
 
 ## When to Use This Guide

@@ -1,8 +1,5 @@
 # OpenTelemetry Tracing
 
-> Reference for: Monitoring Expert
-> Load when: Distributed tracing, spans
-
 ## Node.js Setup
 
 ```typescript

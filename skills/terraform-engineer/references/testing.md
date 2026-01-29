@@ -1,8 +1,5 @@
 # Terraform Testing Strategies
 
-> Reference for: Terraform Engineer
-> Load when: Testing infrastructure, terraform plan, terratest, policy as code
-
 ## Terraform Plan Validation
 
 **Basic Plan Workflow**

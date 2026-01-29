@@ -1,8 +1,5 @@
 # Common Workflows
 
-> Reference for: Atlassian MCP Expert
-> Load when: Issue triage, documentation sync, sprint automation, end-to-end patterns
-
 ---
 
 ## Issue Triage Workflow

@@ -1,8 +1,5 @@
 # Python SDK Implementation
 
-> Reference for: MCP Developer
-> Load when: Building Python MCP servers or clients
-
 ## Installation
 
 ```bash

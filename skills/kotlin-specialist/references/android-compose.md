@@ -1,8 +1,5 @@
 # Android & Jetpack Compose
 
-> Reference for: Kotlin Specialist
-> Load when: Android development, Jetpack Compose UI, ViewModel, Material3, navigation
-
 ## Compose Basics
 
 ```kotlin

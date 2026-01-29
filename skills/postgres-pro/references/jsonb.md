@@ -1,8 +1,5 @@
 # JSONB Operations
 
-> Reference for: PostgreSQL Pro
-> Load when: JSONB storage, operators, indexing, queries
-
 ## JSONB vs JSON
 
 ```sql

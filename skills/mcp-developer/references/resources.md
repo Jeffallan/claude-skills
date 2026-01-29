@@ -1,8 +1,5 @@
 # MCP Resources Reference
 
-> Reference for: MCP Developer
-> Load when: Implementing resource providers, URI schemes, content types
-
 ## Resource Basics
 
 Resources represent data or content that can be read by AI assistants. They use URI schemes to identify content.

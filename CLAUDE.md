@@ -6,6 +6,8 @@
 
 ## Skill Authorship Standards
 
+Skills follow the [Agent Skills specification](https://agentskills.io/specification). This section covers project-specific conventions that go beyond the base spec.
+
 ### The Description Trap
 
 **Critical:** Skill descriptions must be TRIGGER-ONLY. Never summarize the workflow or process.
@@ -52,18 +54,11 @@ output-format: code|document|report|architecture
 
 ### Reference File Standards
 
-**Header format:**
-```markdown
-# [Reference Title]
-
-> Reference for: [Parent Skill Name]
-> Load when: [specific trigger phrases, keywords, scenarios]
-
----
-```
+Reference files follow the [Agent Skills specification](https://agentskills.io/specification). No specific headers are required.
 
 **Guidelines:**
 - 100-600 lines per reference file
+- Keep files focused on a single topic
 - Complete, working code examples with TypeScript types
 - Cross-reference related skills where relevant
 - Include "when to use" and "when not to use" guidance
@@ -113,45 +108,42 @@ output-format: code|document|report|architecture
 
 ## Release Checklist
 
-When releasing a new version, update all version numbers and counts consistently.
+When releasing a new version, follow these steps.
 
-### 1. Update Version Numbers
+### 1. Update Version and Counts
 
-| File | Location |
-|------|----------|
-| `.claude-plugin/plugin.json` | `"version": "X.Y.Z"` |
-| `.claude-plugin/marketplace.json` | `"version": "X.Y.Z"` (appears twice: metadata and plugins) |
-| `README.md` | Badge URL: `version-X.Y.Z-blue.svg` |
-| `ROADMAP.md` | Current status section: `**Version:** vX.Y.Z` |
-| `ROADMAP.md` | Last updated footer |
+Version and counts are managed through `version.json`:
 
-### 2. Update Counts
-
-Verify actual counts match documentation:
-
-```bash
-# Count skills (subtract 1 for parent directory)
-find skills/ -maxdepth 1 -type d | wc -l
-
-# Count reference files
-find skills/ -path "*/references/*.md" | wc -l
-
-# Count project workflow commands
-find commands/project -name "*.md" | wc -l
+```json
+{
+  "version": "0.4.2",
+  "skillCount": 65,
+  "workflowCount": 9,
+  "referenceFileCount": 355
+}
 ```
 
-**Files to update with new counts:**
+**To release a new version:**
 
-| File | What to Update |
-|------|----------------|
-| `.claude-plugin/plugin.json` | Description: "X specialized skills" |
-| `.claude-plugin/marketplace.json` | Description: "X specialized skills", "Y commands" |
-| `README.md` | Header image (skills/workflows), badge stats, project structure comments, stats section, footer |
-| `ROADMAP.md` | Current status: skills, reference files, frameworks, commands |
-| `QUICKSTART.md` | "X skills covering" section |
-| `assets/social-preview.html` | Subtitle, stats spans (skills, workflows, reference files) |
+1. Update the `version` field in `version.json`
+2. Run the update script:
 
-### 3. Update CHANGELOG.md
+```bash
+python scripts/update-docs.py
+```
+
+The script will:
+- Compute counts from the filesystem (skills, references, workflows)
+- Update `version.json` with computed counts
+- Update all documentation files (README.md, plugin.json, etc.)
+
+**Options:**
+```bash
+python scripts/update-docs.py --check    # Verify files are in sync (CI use)
+python scripts/update-docs.py --dry-run  # Preview changes without writing
+```
+
+### 2. Update CHANGELOG.md
 
 Add new version entry at the top following Keep a Changelog format:
 
@@ -173,23 +165,23 @@ Add version comparison link at bottom:
 [X.Y.Z]: https://github.com/jeffallan/claude-skills/compare/vPREVIOUS...vX.Y.Z
 ```
 
-### 4. Update Documentation for New/Modified Content
+### 3. Update Documentation for New/Modified Content
 
 **For new skills:**
 - Add to `SKILLS_GUIDE.md` in appropriate category
 - Add to decision trees if applicable
-- Verify skill count in all locations above
+- Run `python scripts/update-docs.py` to update counts
 
 **For new commands:**
 - Add to `docs/WORKFLOW_COMMANDS.md`
 - Add to `README.md` Project Workflow Commands table
-- Update command count in all locations above
+- Run `python scripts/update-docs.py` to update counts
 
 **For modified skills/commands:**
 - Update any cross-references
 - Update SKILLS_GUIDE.md if triggers changed
 
-### 5. Generate Social Preview
+### 4. Generate Social Preview
 
 After all updates, regenerate the social preview image:
 
@@ -199,66 +191,39 @@ node ./assets/capture-screenshot.js
 
 This creates `assets/social-preview.png` from `assets/social-preview.html`.
 
-### 6. Validate Skills Integrity
+### 5. Validate Skills Integrity
 
-**Critical:** Run these checks to prevent broken skills from being released.
+**Critical:** Run validation before release to prevent broken skills from being published.
 
 ```bash
-# Validate YAML frontmatter in all SKILL.md files
-python3 -c "
-import yaml, os
-errors = []
-for skill in sorted(os.listdir('skills')):
-    path = f'skills/{skill}/SKILL.md'
-    if os.path.isfile(path):
-        with open(path) as f:
-            content = f.read()
-        if content.startswith('---'):
-            parts = content.split('---', 2)
-            if len(parts) >= 3:
-                try:
-                    yaml.safe_load(parts[1])
-                except yaml.YAMLError as e:
-                    errors.append(f'{skill}: {e}')
-if errors:
-    print('YAML ERRORS:')
-    for e in errors: print(f'  - {e}')
-    exit(1)
-print('All YAML valid')
-"
-
-# Verify all skills have references directory
-for skill in skills/*/; do
-  if [ ! -d "${skill}references" ]; then
-    echo "ERROR: Missing references directory: $skill"
-    exit 1
-  fi
-done && echo "All skills have references directories"
-
-# Count reference files per skill (should be 5 each)
-for skill in skills/*/; do
-  count=$(ls "${skill}references/"*.md 2>/dev/null | wc -l)
-  if [ "$count" -lt 1 ]; then
-    echo "WARNING: $skill has no reference files"
-  fi
-done
+python scripts/validate-skills.py
 ```
 
-**Common YAML issues to avoid:**
-- Unquoted colons in description (e.g., `Keywords:` causes parsing errors)
-- Special characters that need escaping
-- Missing required frontmatter fields
+The script validates:
+- **YAML frontmatter** - Parsing, required fields (name, description, triggers), format
+- **Name format** - Letters, numbers, hyphens only
+- **Description** - Max 1024 chars, starts with "Use when"
+- **References** - Directory exists, has files, proper headers
+- **Count consistency** - Skills/reference counts match across documentation
 
-### 7. Final Verification
+**Options:**
+```bash
+python scripts/validate-skills.py --check yaml       # YAML checks only
+python scripts/validate-skills.py --check references # Reference checks only
+python scripts/validate-skills.py --skill react-expert  # Single skill
+python scripts/validate-skills.py --format json      # JSON output for CI
+python scripts/validate-skills.py --help             # Full usage
+```
 
-Run parallel searches to verify consistency:
+**Exit codes:** 0 = success (warnings OK), 1 = errors found
+
+### 6. Final Verification
+
+After running validation, manually verify:
 
 ```bash
 # Check no old version references remain (except historical changelog)
 grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
-
-# Verify counts match
-grep -r "XX skills" --include="*.md" --include="*.json" --include="*.html"
 ```
 
 ---

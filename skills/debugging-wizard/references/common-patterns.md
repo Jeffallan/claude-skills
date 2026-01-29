@@ -1,8 +1,5 @@
 # Common Bug Patterns
 
-> Reference for: Debugging Wizard
-> Load when: Identifying bug type
-
 ## Pattern Recognition
 
 | Pattern | Symptom | Likely Cause |

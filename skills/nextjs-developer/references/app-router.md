@@ -1,8 +1,5 @@
 # App Router Architecture
 
-> Reference for: Next.js Developer
-> Load when: File-based routing, layouts, templates, route organization
-
 ## File-Based Routing
 
 ```

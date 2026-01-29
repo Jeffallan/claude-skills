@@ -1,8 +1,5 @@
 # EARS Syntax
 
-> Reference for: Feature Forge
-> Load when: Writing functional requirements
-
 ## EARS Format
 
 Easy Approach to Requirements Syntax for clear, unambiguous requirements.

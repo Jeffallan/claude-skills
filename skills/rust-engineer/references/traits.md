@@ -1,8 +1,5 @@
 # Traits, Generics, and Type System
 
-> Reference for: Rust Engineer
-> Load when: Designing traits, generics, associated types, derive macros
-
 ## Basic Trait Definition
 
 ```rust

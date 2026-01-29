@@ -1,8 +1,5 @@
 # Queue System
 
-> Reference for: Laravel Specialist
-> Load when: Working with jobs, queues, workers, Horizon, background processing
-
 ## Job Patterns
 
 ```php

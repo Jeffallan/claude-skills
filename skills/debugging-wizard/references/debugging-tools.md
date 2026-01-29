@@ -1,8 +1,5 @@
 # Debugging Tools
 
-> Reference for: Debugging Wizard
-> Load when: Setting up debugging environment
-
 ## Debuggers by Language
 
 | Language | Debugger | Start Command |

@@ -1,8 +1,5 @@
 # Automation Frameworks
 
-> Reference for: Test Master
-> Load when: Framework design, automation patterns, scaling, maintenance strategies
-
 ## Advanced Framework Patterns
 
 ### Screenplay Pattern

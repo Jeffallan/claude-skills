@@ -1,8 +1,5 @@
 # ViewSets & Views
 
-> Reference for: Django Expert
-> Load when: Creating viewsets, views, DRF endpoints
-
 ## ModelViewSet
 
 ```python

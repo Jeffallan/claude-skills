@@ -1,8 +1,5 @@
 # GraphQL Subscriptions
 
-> Reference for: GraphQL Architect
-> Load when: Real-time updates, WebSocket, pub/sub patterns
-
 ## Basic Subscription Setup
 
 ```typescript

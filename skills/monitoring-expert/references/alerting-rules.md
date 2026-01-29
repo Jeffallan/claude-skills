@@ -1,8 +1,5 @@
 # Alerting Rules
 
-> Reference for: Monitoring Expert
-> Load when: Creating alerts, Prometheus alerting
-
 ## Prometheus Alert Rules
 
 ```yaml

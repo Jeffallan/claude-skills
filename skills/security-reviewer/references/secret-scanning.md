@@ -1,8 +1,5 @@
 # Secret Scanning
 
-> Reference for: Security Reviewer
-> Load when: Scanning for hardcoded secrets
-
 ## Gitleaks
 
 ```bash

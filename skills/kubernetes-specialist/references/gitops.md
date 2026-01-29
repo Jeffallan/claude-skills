@@ -1,8 +1,5 @@
 # GitOps
 
-> Reference for: Kubernetes Specialist
-> Load when: ArgoCD, Flux, GitOps, continuous delivery, progressive delivery, Flagger, sealed secrets, SOPS
-
 ---
 
 ## GitOps Principles

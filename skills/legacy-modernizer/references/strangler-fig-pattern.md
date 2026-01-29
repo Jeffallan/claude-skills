@@ -1,8 +1,5 @@
 # Strangler Fig Pattern
 
-> Reference for: Legacy Modernizer
-> Load when: Incremental replacement, facade layer, routing between old and new
-
 ## Pattern Overview
 
 The strangler fig pattern gradually replaces legacy systems by incrementally building new functionality around the old system, eventually "strangling" it out of existence.

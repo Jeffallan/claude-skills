@@ -1,8 +1,5 @@
 # GraphQL Resolvers
 
-> Reference for: GraphQL Architect
-> Load when: Resolver patterns, context, DataLoader, N+1 prevention
-
 ## Basic Resolver Pattern
 
 ```typescript

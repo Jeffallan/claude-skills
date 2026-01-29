@@ -1,8 +1,5 @@
 # Chaos Experiment Design
 
-> Reference for: Chaos Engineer
-> Load when: Designing experiments, hypothesis formulation, blast radius planning
-
 ## Experiment Template
 
 ```yaml

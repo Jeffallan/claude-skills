@@ -1,8 +1,5 @@
 # Authentication
 
-> Reference for: Secure Code Guardian
-> Load when: Password hashing, JWT, auth implementation
-
 ## Password Hashing
 
 ```typescript

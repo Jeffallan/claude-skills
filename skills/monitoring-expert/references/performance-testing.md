@@ -1,8 +1,5 @@
 # Performance Testing
 
-> Reference for: Monitoring Expert
-> Load when: Load testing, stress testing, performance benchmarks
-
 ## Load Testing with k6
 
 ```javascript

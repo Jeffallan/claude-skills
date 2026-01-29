@@ -1,8 +1,5 @@
 # Testing with Pytest
 
-> Reference for: Python Pro
-> Load when: pytest, fixtures, mocking, test coverage, parametrize
-
 ## Basic Pytest Structure
 
 ```python

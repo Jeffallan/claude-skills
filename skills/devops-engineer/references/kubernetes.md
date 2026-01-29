@@ -1,8 +1,5 @@
 # Kubernetes Manifests
 
-> Reference for: DevOps Engineer
-> Load when: K8s deployments, services, ingress, pods, configurations
-
 ## Complete Deployment Stack
 
 ```yaml

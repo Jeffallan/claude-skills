@@ -1,8 +1,5 @@
 # Concurrency Patterns
 
-> Reference for: Golang Pro
-> Load when: Goroutines, channels, select, concurrency patterns
-
 ## Goroutine Lifecycle Management
 
 ```go

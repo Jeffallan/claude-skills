@@ -1,8 +1,5 @@
 # Services & Dependency Injection
 
-> Reference for: NestJS Expert
-> Load when: Creating services, dependency injection, providers
-
 ## Service Pattern
 
 ```typescript

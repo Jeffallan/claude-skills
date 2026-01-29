@@ -1,8 +1,5 @@
 # MCP Protocol Specification
 
-> Reference for: MCP Developer
-> Load when: Protocol compliance, message types, lifecycle management
-
 ## Protocol Overview
 
 MCP is built on JSON-RPC 2.0 and enables bidirectional communication between clients (like Claude Desktop) and servers that provide resources, tools, and prompts.

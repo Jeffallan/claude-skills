@@ -1,8 +1,5 @@
 # Blazor Patterns
 
-> Reference for: C# Developer
-> Load when: Building Blazor apps, components, state management, interop
-
 ## Component Basics
 
 ```razor

@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: Game Developer
-> Load when: Performance profiling, optimization, FPS targets, memory management
-
 ## Profiling First
 
 ```csharp

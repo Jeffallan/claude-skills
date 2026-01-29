@@ -1,8 +1,5 @@
 # Deployment and Optimization for Fine-Tuned Models
 
-> Reference for: Fine-Tuning Expert
-> Load when: Model merging, quantization, serving, inference optimization, production deployment
-
 ---
 
 ## Overview

@@ -1,8 +1,5 @@
 # REST to GraphQL Migration Guide
 
-> Reference for: GraphQL Architect
-> Load when: REST to GraphQL, API migration, converting REST API, GraphQL adoption, modernizing REST endpoints, BFF pattern
-
 ---
 
 ## When to Use This Guide

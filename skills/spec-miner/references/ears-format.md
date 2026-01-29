@@ -1,8 +1,5 @@
 # EARS Format
 
-> Reference for: Spec Miner
-> Load when: Writing observed requirements, documenting behaviors
-
 ## EARS Syntax
 
 Easy Approach to Requirements Syntax for clear, unambiguous requirements.

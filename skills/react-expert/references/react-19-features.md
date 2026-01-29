@@ -1,8 +1,5 @@
 # React 19 Features
 
-> Reference for: React Expert
-> Load when: React 19, use() hook, useActionState, form actions
-
 ## use() Hook
 
 ```tsx

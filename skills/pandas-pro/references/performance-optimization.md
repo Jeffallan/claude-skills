@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: Pandas Pro
-> Load when: Memory usage issues, slow operations, large datasets, vectorization, or chunked processing
-
 ---
 
 ## Overview

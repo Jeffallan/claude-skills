@@ -1,8 +1,5 @@
 # PostgreSQL Replication
 
-> Reference for: PostgreSQL Pro
-> Load when: Streaming replication, logical replication, failover, HA
-
 ## Streaming Replication (Physical)
 
 ### Primary Server Setup

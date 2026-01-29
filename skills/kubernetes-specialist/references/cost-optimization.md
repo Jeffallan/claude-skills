@@ -1,8 +1,5 @@
 # Cost Optimization
 
-> Reference for: Kubernetes Specialist
-> Load when: cost optimization, resource right-sizing, VPA, spot instances, autoscaling tuning, quotas, resource management
-
 ---
 
 ## Resource Right-Sizing

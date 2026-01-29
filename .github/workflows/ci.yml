@@ -1,0 +1,12 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yml

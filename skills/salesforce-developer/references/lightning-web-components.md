@@ -1,8 +1,5 @@
 # Lightning Web Components
 
-> Reference for: Salesforce Developer
-> Load when: LWC framework, component design, events, wire service
-
 ---
 
 ## Component Structure

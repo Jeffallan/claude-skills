@@ -1,8 +1,5 @@
 # Window Functions
 
-> Reference for: SQL Pro
-> Load when: ROW_NUMBER, RANK, LAG/LEAD, analytics, running totals
-
 ## Ranking Functions
 
 ```sql

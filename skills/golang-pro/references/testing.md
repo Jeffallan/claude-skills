@@ -1,8 +1,5 @@
 # Testing and Benchmarking
 
-> Reference for: Golang Pro
-> Load when: Table-driven tests, benchmarks, fuzzing, test patterns
-
 ## Table-Driven Tests
 
 ```go

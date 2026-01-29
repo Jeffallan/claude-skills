@@ -1,8 +1,5 @@
 # Training Pipelines
 
-> Reference for: ML Pipeline Expert
-> Load when: Training orchestration, distributed training, hyperparameter tuning, resource management
-
 ---
 
 ## Overview
@@ -67,7 +64,6 @@ class TrainingConfig:
     @classmethod
     def from_dict(cls, d: dict) -> "TrainingConfig":
         return cls(**d)
-
 
 class Trainer:
     """Production-grade PyTorch trainer."""
@@ -322,12 +318,10 @@ def setup_distributed() -> tuple[int, int, int]:
 
     return rank, local_rank, world_size
 
-
 def cleanup_distributed() -> None:
     """Cleanup distributed training."""
     if dist.is_initialized():
         dist.destroy_process_group()
-
 
 class DistributedTrainer(Trainer):
     """Trainer with DDP support."""
@@ -365,7 +359,6 @@ class DistributedTrainer(Trainer):
         """Only log on rank 0."""
         if self.rank == 0:
             super()._log_metrics(metrics)
-
 
 def create_distributed_dataloader(
     dataset: Dataset,
@@ -471,7 +464,6 @@ def create_objective(
 
     return objective
 
-
 def run_hyperparameter_search(
     train_dataset: Dataset,
     eval_dataset: Dataset,
@@ -560,7 +552,6 @@ def train_fn(config: dict) -> None:
             checkpoint=Checkpoint.from_directory(trainer.checkpoint_dir),
         )
 
-
 def run_ray_tune(num_samples: int = 50) -> tune.ResultGrid:
     """Run hyperparameter search with Ray Tune."""
 
@@ -626,7 +617,6 @@ def gpu_memory_manager():
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
 
-
 def get_gpu_memory_usage() -> dict:
     """Get current GPU memory statistics."""
     if not torch.cuda.is_available():
@@ -637,7 +627,6 @@ def get_gpu_memory_usage() -> dict:
         "reserved": torch.cuda.memory_reserved() / 1e9,
         "max_allocated": torch.cuda.max_memory_allocated() / 1e9,
     }
-
 
 class GradientCheckpointing:
     """Enable gradient checkpointing for memory efficiency."""

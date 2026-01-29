@@ -1,8 +1,5 @@
 # Hyperparameter Tuning for LLM Fine-Tuning
 
-> Reference for: Fine-Tuning Expert
-> Load when: Learning rates, batch sizes, schedulers, training configuration, optimization
-
 ---
 
 ## Overview
@@ -340,7 +337,6 @@ class FineTuningConfig:
     eval_steps: int = 100
     save_steps: int = 100
     logging_steps: int = 10
-
 
 def create_training_args(
     config: FineTuningConfig,

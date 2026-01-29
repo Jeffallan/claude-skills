@@ -1,8 +1,5 @@
 # Mobile & Hybrid Apps
 
-> Reference for: Vue Expert
-> Load when: Quasar, Capacitor, PWA, service worker, mobile, hybrid app, offline
-
 ---
 
 ## Quasar Framework

@@ -1,8 +1,5 @@
 # API Development
 
-> Reference for: Rails Expert
-> Load when: API-only mode, serialization, authentication, versioning
-
 ## API-Only Rails Application
 
 ```ruby

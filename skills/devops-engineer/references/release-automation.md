@@ -1,8 +1,5 @@
 # Release Automation
 
-> Reference for: DevOps Engineer
-> Load when: Release orchestration, artifact management, feature flags, progressive delivery, multi-platform CI/CD
-
 ## Artifact Management
 
 ### Container Registry Lifecycle

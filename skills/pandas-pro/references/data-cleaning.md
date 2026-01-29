@@ -1,8 +1,5 @@
 # Data Cleaning
 
-> Reference for: Pandas Pro
-> Load when: Missing values, duplicates, type conversion, data validation, or data quality issues
-
 ---
 
 ## Overview

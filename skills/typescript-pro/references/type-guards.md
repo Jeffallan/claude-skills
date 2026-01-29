@@ -1,8 +1,5 @@
 # Type Guards and Narrowing
 
-> Reference for: TypeScript Pro
-> Load when: Type narrowing, discriminated unions, assertion functions
-
 ## Type Predicates
 
 ```typescript

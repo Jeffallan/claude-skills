@@ -1,8 +1,5 @@
 # Kubernetes Troubleshooting
 
-> Reference for: Kubernetes Specialist
-> Load when: kubectl debug, logs, events, common issues
-
 ## Essential kubectl Commands
 
 ### Pod Inspection

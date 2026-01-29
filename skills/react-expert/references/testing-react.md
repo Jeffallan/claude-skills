@@ -1,8 +1,5 @@
 # Testing React
 
-> Reference for: React Expert
-> Load when: Testing, React Testing Library, Jest, Vitest
-
 ## Basic Component Test
 
 ```tsx

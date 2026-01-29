@@ -1,8 +1,5 @@
 # App Development
 
-> Reference for: Shopify Expert
-> Load when: Building Shopify apps, OAuth, webhooks, Admin API, embedded apps
-
 ---
 
 ## When to Use

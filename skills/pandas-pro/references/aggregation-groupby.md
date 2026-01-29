@@ -1,8 +1,5 @@
 # Aggregation and GroupBy
 
-> Reference for: Pandas Pro
-> Load when: GroupBy operations, pivot tables, crosstab, aggregation functions, or summarizing data
-
 ---
 
 ## Overview

@@ -1,8 +1,5 @@
 # Integration Testing
 
-> Reference for: Test Master
-> Load when: API testing, Supertest, database testing
-
 ## API Testing (Supertest)
 
 ```typescript

@@ -1,8 +1,5 @@
 # Models & ORM
 
-> Reference for: Django Expert
-> Load when: Creating models, ORM queries, optimization
-
 ## Model Design
 
 ```python

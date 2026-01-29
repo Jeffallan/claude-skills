@@ -1,8 +1,5 @@
 # Modern JavaScript Syntax (ES2023+)
 
-> Reference for: JavaScript Pro
-> Load when: Using ES2023+ features, optional chaining, private fields, pattern matching
-
 ## Optional Chaining and Nullish Coalescing
 
 ```javascript

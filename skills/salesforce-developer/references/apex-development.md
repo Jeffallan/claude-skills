@@ -1,8 +1,5 @@
 # Apex Development
 
-> Reference for: Salesforce Developer
-> Load when: Classes, triggers, async patterns, batch processing
-
 ---
 
 ## Apex Class Structure

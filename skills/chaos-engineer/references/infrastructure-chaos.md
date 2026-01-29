@@ -1,8 +1,5 @@
 # Infrastructure Chaos Engineering
 
-> Reference for: Chaos Engineer
-> Load when: Server failures, network chaos, zone outages, infrastructure testing
-
 ## Network Latency Injection
 
 ```python

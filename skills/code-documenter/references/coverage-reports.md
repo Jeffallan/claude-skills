@@ -1,8 +1,5 @@
 # Coverage Reports
 
-> Reference for: Code Documenter
-> Load when: Generating documentation reports
-
 ## Documentation Coverage Report Template
 
 ```markdown

@@ -1,8 +1,5 @@
 # Incident Management and Chaos Engineering
 
-> Reference for: SRE Engineer
-> Load when: Managing incidents, postmortems, chaos experiments
-
 ## Incident Response Framework
 
 Structured approach to incident management.
