@@ -312,13 +312,15 @@ then
 ```bash
 /plugin install fullstack-dev-skills@jeffallan
 ```
-### Option 1a: Installing Skills via `npx add-skill`
+### Option 2: Installing Skills via `npx add-skill`
 
 You can install standard Claude skills using the `add-skill` CLI:
 
 ```bash
 npx add-skill <skill-name>
+```
 
+Please note this method will not install slash commands.
 
 ### Option 2: Local Development
 
