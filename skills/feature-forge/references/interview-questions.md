@@ -53,44 +53,101 @@ For a "User Export" feature:
 - Need progress indicator for large exports?
 ```
 
+## Tool Usage: AskUserQuestions
+
+Use `AskUserQuestions` when questions have a finite set of likely answers. Use open-ended follow-up when answers are unbounded.
+
+### When to Use Structured Options
+
+| Question Pattern | Example | Options Style |
+|-----------------|---------|---------------|
+| Priority/ranking | "Is this must-have or nice-to-have?" | Single select: Must-have, Should-have, Nice-to-have |
+| Format selection | "What export format?" | Multi-select: CSV, JSON, Excel, PDF |
+| Scope decisions | "MVP or full version?" | Single select: MVP, Full, Phased |
+| Yes/No with nuance | "Auth required?" | Single select: Public, Authenticated, Role-based |
+
+### When to Use Open-Ended
+
+- "Describe the user journey in your own words"
+- "What problem does this solve?"
+- "Walk me through the workflow"
+
+### Example: Structured Elicitation
+
+For a "User Export" feature, batch related choices:
+
+**Question 1** (header: "Export scope"):
+"What data should users be able to export?"
+Options: "Own data only", "Team data", "Organization-wide", multi-select enabled
+
+**Question 2** (header: "Format"):
+"Which export formats should be supported?"
+Options: "CSV", "JSON", "Excel (.xlsx)", "PDF", multi-select enabled
+
+**Question 3** (header: "Priority"):
+"How critical is this feature?"
+Options: "Must-have (blocking)", "Should-have (important)", "Nice-to-have (future)"
+
+---
+
 ## Interview Flow
 
-### Phase 1: Discovery (5-10 min)
-```markdown
+### Phase 1: Discovery
+Use open-ended questions to understand the problem space:
 1. "Tell me about this feature in your own words"
 2. "What problem are we solving?"
-3. "Who will use this and how often?"
-4. "What does success look like?"
+
+Then use `AskUserQuestions` to narrow down:
+- Target users (single select from identified personas)
+- Usage frequency (Daily, Weekly, Monthly, Rarely)
+- Priority (Must-have, Should-have, Nice-to-have)
+
+### Phase 2: Details
+Use `AskUserQuestions` for scope and constraint decisions:
+- Scope: MVP vs Full vs Phased (single select)
+- Key capabilities (multi-select from discovered items)
+
+Then open-ended: "Walk me through the user journey"
+
+### Phase 3: Edge Cases
+Use `AskUserQuestions` for technical trade-offs:
+- Error handling approach (Retry, Fail fast, Queue, Notify)
+- Data limits (multi-select thresholds)
+
+Then open-ended: "What happens when [X] fails?"
+
+### Phase 4: Validation
+Present spec summary, then use `AskUserQuestions`:
+- "Does this capture your requirements?" (Yes / Needs changes / Major gaps)
+- Per-requirement priority confirmation if needed
+
+## Multi-Agent Pre-Discovery
+
+For features spanning multiple domains, launch Task subagents with relevant skills **before** starting the interview. This front-loads technical context so the interview focuses on decisions rather than exploration.
+
+### Pattern: Parallel Skill-Invoked Discovery
+
+```
+User request: "I need a feature that does X"
+
+Before interview, launch subagents in parallel:
+- Task(subagent_type="general-purpose"): Invoke architecture-designer skill to assess system impact
+- Task(subagent_type="general-purpose"): Invoke security-reviewer skill to identify auth/data concerns
+- Task(subagent_type="Explore"): Search codebase for existing patterns related to the feature
+
+Collect subagent findings → Use them to inform interview questions
 ```
 
-### Phase 2: Details (10-15 min)
-```markdown
-1. "Walk me through the user journey"
-2. "What are the must-haves vs nice-to-haves?"
-3. "Any constraints - time, budget, technical?"
-4. "Are there existing similar features we should match?"
-```
+This ensures the Feature Forge interview starts with concrete technical context rather than assumptions.
 
-### Phase 3: Edge Cases (5-10 min)
-```markdown
-1. "What happens when [X fails]?"
-2. "What if there's no data?"
-3. "What about very large datasets?"
-4. "Any special permissions needed?"
-```
-
-### Phase 4: Validation (5 min)
-```markdown
-1. "Let me summarize what I heard..."
-2. "Anything I missed?"
-3. "Any questions for me?"
-```
+---
 
 ## Quick Reference
 
-| Phase | Focus | Time |
+| Phase | Focus | Tool |
 |-------|-------|------|
-| Discovery | Problem, users, value | 5-10 min |
-| Details | Journey, scope, constraints | 10-15 min |
-| Edge Cases | Failures, limits, security | 5-10 min |
-| Validation | Summary, gaps | 5 min |
+| Pre-Discovery | Technical context | Task subagents with skills |
+| Discovery | Problem, users, value | Open-ended → AskUserQuestions |
+| Details | Journey, scope, constraints | AskUserQuestions → Open-ended |
+| Edge Cases | Failures, limits, security | AskUserQuestions → Open-ended |
+| Validation | Summary, gaps | AskUserQuestions |
