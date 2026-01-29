@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**Version:** v<!-- VERSION -->0.4.1<!-- /VERSION --> (Released January 2026)
+**Version:** v<!-- VERSION -->0.4.2<!-- /VERSION --> (Released January 2026)
 
 - **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills** across 12 domains
 - **<!-- REFERENCE_COUNT -->355<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
@@ -341,4 +341,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: January 2026 (v0.4.1)*
+*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: January 2026 (v0.4.2)*

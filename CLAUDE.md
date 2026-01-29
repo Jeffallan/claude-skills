@@ -116,7 +116,7 @@ Version and counts are managed through `version.json`:
 
 ```json
 {
-  "version": "0.4.1",
+  "version": "0.4.2",
   "skillCount": 65,
   "workflowCount": 9,
   "referenceFileCount": 355
