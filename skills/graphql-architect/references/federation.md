@@ -1,8 +1,5 @@
 # Apollo Federation
 
-> Reference for: GraphQL Architect
-> Load when: Apollo Federation, subgraphs, entities, directives
-
 ## Subgraph Setup
 
 ```typescript

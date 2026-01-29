@@ -1,8 +1,5 @@
 # XSS & CSRF Prevention
 
-> Reference for: Secure Code Guardian
-> Load when: Preventing XSS, CSRF protection
-
 ## XSS Prevention
 
 ### Output Encoding

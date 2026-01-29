@@ -1,8 +1,5 @@
 # Authentication & Authorization
 
-> Reference for: .NET Core Expert
-> Load when: JWT, Identity, authentication, authorization, security
-
 ## JWT Authentication Setup
 
 ```csharp

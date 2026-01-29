@@ -1,8 +1,5 @@
 # Kubernetes Workloads
 
-> Reference for: Kubernetes Specialist
-> Load when: Deployments, StatefulSets, DaemonSets, Jobs, CronJobs
-
 ## Deployment Pattern
 
 ```yaml

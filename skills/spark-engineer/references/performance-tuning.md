@@ -1,8 +1,5 @@
 # Performance Tuning
 
-> Reference for: Spark Engineer
-> Load when: Configuration, memory tuning, shuffle optimization, skew handling, GC tuning, Spark UI analysis, bottleneck identification
-
 ---
 
 ## Cluster Sizing

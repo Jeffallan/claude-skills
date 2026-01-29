@@ -1,8 +1,5 @@
 # Async Programming in Rust
 
-> Reference for: Rust Engineer
-> Load when: async/await, tokio, futures, streams, concurrency patterns
-
 ## Basic Async/Await
 
 ```rust

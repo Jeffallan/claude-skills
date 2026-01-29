@@ -1,8 +1,5 @@
 # Testing Patterns
 
-> Reference for: Vue Expert (JavaScript)
-> Load when: Vitest, Vue Test Utils, component testing, mocking composables, integration tests
-
 ---
 
 ## Setup

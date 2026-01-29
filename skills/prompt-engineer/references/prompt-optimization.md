@@ -1,8 +1,5 @@
 # Prompt Optimization
 
-> Reference for: Prompt Engineer
-> Load when: Iterative refinement, A/B testing, token reduction, or improving prompt performance
-
 ---
 
 ## The Optimization Loop

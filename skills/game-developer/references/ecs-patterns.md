@@ -1,8 +1,5 @@
 # ECS Architecture and Game Patterns
 
-> Reference for: Game Developer
-> Load when: Entity Component System, game design patterns, architecture
-
 ## Entity Component System (ECS)
 
 ```csharp

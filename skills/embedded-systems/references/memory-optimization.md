@@ -1,8 +1,5 @@
 # Memory Optimization
 
-> Reference for: Embedded Systems Engineer
-> Load when: Code size, RAM usage, flash management, memory constraints
-
 ## Code Size Optimization
 
 ```c

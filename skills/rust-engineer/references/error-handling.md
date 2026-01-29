@@ -1,8 +1,5 @@
 # Error Handling in Rust
 
-> Reference for: Rust Engineer
-> Load when: Handling errors, Result, Option, custom error types, thiserror
-
 ## Result and Option Basics
 
 ```rust

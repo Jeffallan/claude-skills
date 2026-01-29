@@ -1,8 +1,5 @@
 # GraphQL Schema Design
 
-> Reference for: GraphQL Architect
-> Load when: Creating types, interfaces, unions, enums, input types
-
 ## Object Types
 
 ```graphql

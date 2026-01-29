@@ -1,8 +1,5 @@
 # Concurrency and Parallel Programming
 
-> Reference for: C++ Pro
-> Load when: Atomics, lock-free structures, thread pools, parallel algorithms, coroutines
-
 ## Atomics and Memory Ordering
 
 ```cpp

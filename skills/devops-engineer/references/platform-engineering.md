@@ -1,8 +1,5 @@
 # Platform Engineering
 
-> Reference for: DevOps Engineer
-> Load when: Internal developer platforms, self-service infrastructure, developer portals, service catalogs, golden paths
-
 ## Platform Principles
 
 - **Self-service first**: Reduce manual work to <10%

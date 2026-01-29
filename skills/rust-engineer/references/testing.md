@@ -1,8 +1,5 @@
 # Testing in Rust
 
-> Reference for: Rust Engineer
-> Load when: Unit tests, integration tests, property testing, benchmarks
-
 ## Unit Tests
 
 ```rust

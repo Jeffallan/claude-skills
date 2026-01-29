@@ -1,8 +1,5 @@
 # Authentication
 
-> Reference for: FastAPI Expert
-> Load when: JWT, OAuth2, authentication, authorization
-
 ## OAuth2 Password Flow
 
 ```python

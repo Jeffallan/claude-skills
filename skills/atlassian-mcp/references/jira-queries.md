@@ -1,8 +1,5 @@
 # Jira Queries and Operations
 
-> Reference for: Atlassian MCP Expert
-> Load when: JQL syntax, issue CRUD, sprints, boards, backlog management
-
 ---
 
 ## JQL Fundamentals

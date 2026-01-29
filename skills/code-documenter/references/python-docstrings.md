@@ -1,8 +1,5 @@
 # Python Docstrings
 
-> Reference for: Code Documenter
-> Load when: Documenting Python code
-
 ## Google Style (Recommended)
 
 ```python

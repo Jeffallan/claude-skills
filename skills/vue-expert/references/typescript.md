@@ -1,8 +1,5 @@
 # TypeScript with Vue 3
 
-> Reference for: Vue Expert
-> Load when: TypeScript integration, typing props, generic components
-
 ## Component Props Typing
 
 ```vue

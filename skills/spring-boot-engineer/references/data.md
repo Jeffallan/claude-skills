@@ -1,8 +1,5 @@
 # Data Access - Spring Data JPA
 
-> Reference for: Spring Boot Engineer
-> Load when: Creating entities, repositories, transactions, database operations
-
 ## JPA Entity Pattern
 
 ```java

@@ -1,8 +1,5 @@
 # Frontend Patterns
 
-> Reference for: Fullstack Guardian
-> Load when: Building UI components, optimizing frontend, real-time features, or accessibility
-
 ## TypeScript Configuration
 
 ### Strict Setup

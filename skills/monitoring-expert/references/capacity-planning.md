@@ -1,8 +1,5 @@
 # Capacity Planning
 
-> Reference for: Monitoring Expert
-> Load when: Capacity planning, scaling, resource forecasting
-
 ## Growth Projection
 
 ### Linear Projection

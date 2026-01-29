@@ -1,8 +1,5 @@
 # Communication Protocols
 
-> Reference for: Embedded Systems Engineer
-> Load when: I2C, SPI, UART, CAN, protocol implementation
-
 ## I2C Master Implementation
 
 ```c

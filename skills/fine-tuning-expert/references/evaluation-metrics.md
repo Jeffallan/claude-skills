@@ -1,8 +1,5 @@
 # Evaluation Metrics for Fine-Tuned Models
 
-> Reference for: Fine-Tuning Expert
-> Load when: Benchmarking, metrics, model comparison, evaluation frameworks, testing
-
 ---
 
 ## Overview

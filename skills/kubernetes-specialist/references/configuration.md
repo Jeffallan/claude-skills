@@ -1,8 +1,5 @@
 # Kubernetes Configuration Management
 
-> Reference for: Kubernetes Specialist
-> Load when: ConfigMaps, Secrets, environment variables
-
 ## ConfigMap Patterns
 
 ### Basic ConfigMap

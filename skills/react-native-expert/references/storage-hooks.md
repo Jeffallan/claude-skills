@@ -1,8 +1,5 @@
 # Storage & Hooks
 
-> Reference for: React Native Expert
-> Load when: AsyncStorage, MMKV, persistent state
-
 ## AsyncStorage
 
 ```typescript

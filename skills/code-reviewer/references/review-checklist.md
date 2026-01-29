@@ -1,8 +1,5 @@
 # Review Checklist
 
-> Reference for: Code Reviewer
-> Load when: Starting a code review
-
 ## Comprehensive Review Checklist
 
 | Category | Key Questions |

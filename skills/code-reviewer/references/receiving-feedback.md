@@ -1,8 +1,5 @@
 # Receiving Feedback
 
-> Reference for: Code Reviewer
-> Load when: responding to review comments, handling feedback, review response
-
 ---
 
 ## Core Mindset

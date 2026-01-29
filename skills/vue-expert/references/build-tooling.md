@@ -1,8 +1,5 @@
 # Build Tooling & Vite
 
-> Reference for: Vue Expert
-> Load when: Vite config, build optimization, sourcemaps, bundling, tree shaking, chunk splitting
-
 ---
 
 ## Vite Configuration for Vue

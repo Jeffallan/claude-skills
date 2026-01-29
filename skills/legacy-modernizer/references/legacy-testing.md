@@ -1,8 +1,5 @@
 # Legacy Testing Strategies
 
-> Reference for: Legacy Modernizer
-> Load when: Characterization tests, golden master, approval testing, safety nets
-
 ## Characterization Tests
 
 Tests that document current behavior (even if buggy) before refactoring.

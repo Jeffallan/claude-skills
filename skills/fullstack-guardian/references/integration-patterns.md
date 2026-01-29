@@ -1,8 +1,5 @@
 # Integration Patterns
 
-> Reference for: Fullstack Guardian
-> Load when: Cross-stack integration, deployment, type sharing, or architecture decisions
-
 ## Type Safety Across Stack
 
 ### Shared Type Definitions

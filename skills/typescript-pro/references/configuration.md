@@ -1,8 +1,5 @@
 # TypeScript Configuration
 
-> Reference for: TypeScript Pro
-> Load when: tsconfig options, strict mode, project references
-
 ## Strict Mode Configuration
 
 ```json

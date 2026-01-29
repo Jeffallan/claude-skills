@@ -1,8 +1,5 @@
 # Input Validation
 
-> Reference for: Secure Code Guardian
-> Load when: Validating input, preventing injection
-
 ## Zod Validation
 
 ```typescript

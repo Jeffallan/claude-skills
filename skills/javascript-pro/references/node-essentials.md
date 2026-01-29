@@ -1,8 +1,5 @@
 # Node.js Essentials
 
-> Reference for: JavaScript Pro
-> Load when: Working with Node.js APIs, streams, file system, process, worker threads
-
 ## File System (fs/promises)
 
 ```javascript

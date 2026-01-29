@@ -1,8 +1,5 @@
 # RxJS Patterns
 
-> Reference for: Angular Architect
-> Load when: Observables, operators, subjects, error handling, testing
-
 ## Essential Operators
 
 ```typescript

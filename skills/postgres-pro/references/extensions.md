@@ -1,8 +1,5 @@
 # PostgreSQL Extensions
 
-> Reference for: PostgreSQL Pro
-> Load when: PostGIS, pg_trgm, pgvector, uuid-ossp, pg_stat_statements
-
 ## Extension Management
 
 ```sql

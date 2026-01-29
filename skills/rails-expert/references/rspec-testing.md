@@ -1,8 +1,5 @@
 # RSpec Testing
 
-> Reference for: Rails Expert
-> Load when: Writing specs, testing, RSpec, FactoryBot, test coverage
-
 ## RSpec Setup
 
 ```ruby

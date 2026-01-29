@@ -1,8 +1,5 @@
 # Integration Patterns
 
-> Reference for: Salesforce Developer
-> Load when: REST/SOAP APIs, platform events, external services
-
 ---
 
 ## REST API Integration

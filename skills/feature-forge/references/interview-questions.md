@@ -1,8 +1,5 @@
 # Interview Questions
 
-> Reference for: Feature Forge
-> Load when: Gathering requirements
-
 ## PM Hat Questions
 
 Focus on user value and business goals.

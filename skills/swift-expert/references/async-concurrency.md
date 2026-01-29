@@ -1,8 +1,5 @@
 # Async/Await Concurrency
 
-> Reference for: Swift Expert
-> Load when: async/await, actors, structured concurrency, Task management
-
 ## Async/Await Basics
 
 ```swift

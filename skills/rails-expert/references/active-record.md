@@ -1,8 +1,5 @@
 # Active Record Patterns
 
-> Reference for: Rails Expert
-> Load when: Models, associations, queries, migrations, performance
-
 ## Model Associations
 
 ```ruby

@@ -1,8 +1,5 @@
 # Confluence Operations
 
-> Reference for: Atlassian MCP Expert
-> Load when: CQL search, page creation, spaces, comments, content management
-
 ---
 
 ## CQL Fundamentals

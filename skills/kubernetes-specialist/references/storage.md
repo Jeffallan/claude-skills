@@ -1,8 +1,5 @@
 # Kubernetes Storage
 
-> Reference for: Kubernetes Specialist
-> Load when: PV, PVC, StorageClasses, CSI drivers
-
 ## StorageClass Definitions
 
 ### AWS EBS (gp3)

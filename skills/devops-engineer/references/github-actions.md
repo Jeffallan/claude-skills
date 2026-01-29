@@ -1,8 +1,5 @@
 # GitHub Actions Pipelines
 
-> Reference for: DevOps Engineer
-> Load when: Setting up CI/CD, GitHub workflows, pipelines
-
 ## Complete CI/CD Pipeline
 
 ```yaml

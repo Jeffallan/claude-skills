@@ -1,8 +1,5 @@
 # Unreal Engine C++ Development
 
-> Reference for: Game Developer
-> Load when: Unreal C++, Blueprints, Actor components, UE5 features
-
 ## Actor Component Pattern
 
 ```cpp

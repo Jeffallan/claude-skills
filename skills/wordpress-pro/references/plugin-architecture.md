@@ -1,8 +1,5 @@
 # Plugin Architecture
 
-> Reference for: WordPress Pro
-> Load when: Structure, activation, settings API, updates, plugin development
-
 ---
 
 ## Plugin Structure

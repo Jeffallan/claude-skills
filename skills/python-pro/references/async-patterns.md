@@ -1,8 +1,5 @@
 # Async Programming Patterns
 
-> Reference for: Python Pro
-> Load when: async/await, asyncio, concurrent operations, task groups
-
 ## Basic Async/Await
 
 ```python

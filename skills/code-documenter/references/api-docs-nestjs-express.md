@@ -1,8 +1,5 @@
 # API Documentation: NestJS & Express
 
-> Reference for: Code Documenter
-> Load when: Documenting Node.js API frameworks
-
 ## NestJS (@nestjs/swagger)
 
 NestJS requires explicit decorators for OpenAPI documentation.

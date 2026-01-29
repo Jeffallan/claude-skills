@@ -1,8 +1,5 @@
 # JSDoc Typing for Vue
 
-> Reference for: Vue Expert (JavaScript)
-> Load when: JSDoc types, @typedef, @param, Vue without TypeScript, type hints
-
 ---
 
 ## Basic JSDoc with Vue

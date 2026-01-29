@@ -1,8 +1,5 @@
 # Specification Template
 
-> Reference for: Feature Forge
-> Load when: Writing final specification
-
 ## Full Template
 
 ```markdown

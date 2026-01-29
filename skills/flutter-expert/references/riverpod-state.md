@@ -1,8 +1,5 @@
 # Riverpod State Management
 
-> Reference for: Flutter Expert
-> Load when: State management, Riverpod, providers, notifiers
-
 ## Provider Types
 
 ```dart

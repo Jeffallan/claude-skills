@@ -1,8 +1,5 @@
 # QA Methodology
 
-> Reference for: Test Master
-> Load when: Test strategy, manual testing, quality advocacy, continuous testing, defect management
-
 ## Manual Testing Types
 
 ### Exploratory Testing

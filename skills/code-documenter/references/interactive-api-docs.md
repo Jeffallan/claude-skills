@@ -1,8 +1,5 @@
 # Interactive API Documentation
 
-> Reference for: Code Documenter
-> Load when: Building API portals, interactive consoles, multi-protocol APIs, SDK docs
-
 ## OpenAPI 3.1 Advanced Features
 
 ### Reusable Components

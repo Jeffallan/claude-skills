@@ -1,8 +1,5 @@
 # Modern C# Patterns
 
-> Reference for: C# Developer
-> Load when: Using C# 12 features, records, pattern matching, nullable types
-
 ## File-Scoped Namespaces and Primary Constructors
 
 ```csharp

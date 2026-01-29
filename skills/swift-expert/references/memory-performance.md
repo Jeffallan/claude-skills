@@ -1,8 +1,5 @@
 # Memory & Performance
 
-> Reference for: Swift Expert
-> Load when: Memory management, ARC, performance optimization, profiling
-
 ## Automatic Reference Counting (ARC)
 
 ```swift

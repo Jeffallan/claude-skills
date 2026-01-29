@@ -1,8 +1,5 @@
 # Unity Development Patterns
 
-> Reference for: Game Developer
-> Load when: Unity C#, MonoBehaviour, Scriptable Objects, Unity-specific features
-
 ## MonoBehaviour Best Practices
 
 ```csharp

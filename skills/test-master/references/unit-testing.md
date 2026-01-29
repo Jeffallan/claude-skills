@@ -1,8 +1,5 @@
 # Unit Testing
 
-> Reference for: Test Master
-> Load when: Writing unit tests, Jest, Vitest, pytest
-
 ## Jest/Vitest Pattern
 
 ```typescript

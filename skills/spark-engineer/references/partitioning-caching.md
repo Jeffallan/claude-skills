@@ -1,8 +1,5 @@
 # Partitioning and Caching
 
-> Reference for: Spark Engineer
-> Load when: Data partitioning, persistence levels, broadcast variables, cache strategies, partition tuning, memory optimization
-
 ---
 
 ## Partitioning Fundamentals

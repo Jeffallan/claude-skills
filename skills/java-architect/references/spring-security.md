@@ -1,8 +1,5 @@
 # Spring Security
 
-> Reference for: Java Architect
-> Load when: Authentication, authorization, OAuth2, JWT, security
-
 ## Security Configuration
 
 ```java

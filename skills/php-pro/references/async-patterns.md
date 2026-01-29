@@ -1,8 +1,5 @@
 # Async PHP Patterns
 
-> Reference for: PHP Pro
-> Load when: Swoole, ReactPHP, async, fibers, concurrency, streams
-
 ## Swoole HTTP Server
 
 ```php

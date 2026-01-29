@@ -1,8 +1,5 @@
 # Incident Response
 
-> Reference for: DevOps Engineer
-> Load when: Production incidents, outages, on-call, MTTR, postmortems, runbooks, chaos engineering
-
 ## Response Metrics
 
 - **MTTD** (Mean Time to Detect): Target < 5 minutes

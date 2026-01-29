@@ -1,8 +1,5 @@
 # Analysis Checklist
 
-> Reference for: Spec Miner
-> Load when: Ensuring thorough analysis, final review
-
 ## Comprehensive Checklist
 
 | Area | What to Find | Glob/Grep Patterns |

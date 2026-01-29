@@ -1,8 +1,5 @@
 # Deployment and DevOps
 
-> Reference for: Salesforce Developer
-> Load when: Salesforce DX, CI/CD, scratch orgs, metadata API
-
 ---
 
 ## Salesforce DX Project Setup

@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: React Expert
-> Load when: Performance, memo, lazy loading, optimization
-
 ## React.memo
 
 ```tsx

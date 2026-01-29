@@ -1,8 +1,5 @@
 # Components
 
-> Reference for: Vue Expert
-> Load when: Props, emits, slots, provide/inject, teleport
-
 ## Props with TypeScript
 
 ```vue

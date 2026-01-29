@@ -1,8 +1,5 @@
 # Web Layer - Controllers & REST APIs
 
-> Reference for: Spring Boot Engineer
-> Load when: Creating controllers, REST endpoints, validation, exception handling
-
 ## REST Controller Pattern
 
 ```java

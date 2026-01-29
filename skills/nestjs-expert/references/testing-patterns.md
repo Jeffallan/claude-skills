@@ -1,8 +1,5 @@
 # Testing Patterns
 
-> Reference for: NestJS Expert
-> Load when: Writing tests, Jest, mocking, E2E testing
-
 ## Unit Test Setup
 
 ```typescript

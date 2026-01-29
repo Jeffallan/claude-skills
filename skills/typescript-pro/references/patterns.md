@@ -1,8 +1,5 @@
 # TypeScript Patterns
 
-> Reference for: TypeScript Pro
-> Load when: Builder pattern, factory pattern, type-safe APIs
-
 ## Builder Pattern
 
 ```typescript

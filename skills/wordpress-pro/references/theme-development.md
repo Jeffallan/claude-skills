@@ -1,8 +1,5 @@
 # Theme Development
 
-> Reference for: WordPress Pro
-> Load when: Templates, hierarchy, child themes, FSE, block themes, theme.json
-
 ---
 
 ## Template Hierarchy

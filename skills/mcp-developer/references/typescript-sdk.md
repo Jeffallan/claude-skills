@@ -1,8 +1,5 @@
 # TypeScript SDK Implementation
 
-> Reference for: MCP Developer
-> Load when: Building Node.js MCP servers or clients
-
 ## Installation
 
 ```bash

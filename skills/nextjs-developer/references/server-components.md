@@ -1,8 +1,5 @@
 # React Server Components
 
-> Reference for: Next.js Developer
-> Load when: RSC patterns, client/server boundaries, streaming
-
 ## Server Components (Default)
 
 ```tsx

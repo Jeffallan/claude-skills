@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: C# Developer
-> Load when: Performance tuning, memory optimization, async patterns, Span<T>
-
 ## Span<T> and Memory<T>
 
 ```csharp

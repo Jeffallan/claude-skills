@@ -1,8 +1,5 @@
 # API Mocking
 
-> Reference for: Playwright Expert
-> Load when: Mocking API responses, route interception
-
 ## Basic Route Mocking
 
 ```typescript

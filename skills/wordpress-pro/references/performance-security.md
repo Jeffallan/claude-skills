@@ -1,8 +1,5 @@
 # Performance & Security
 
-> Reference for: WordPress Pro
-> Load when: Caching, optimization, hardening, backups, security audit
-
 ---
 
 ## Performance Optimization

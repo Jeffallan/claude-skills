@@ -1,8 +1,5 @@
 # Python CLI Development
 
-> Reference for: CLI Developer
-> Load when: Building Python CLIs, click, typer, argparse, rich
-
 ## Typer (Recommended - Modern)
 
 FastAPI-style CLI framework with automatic help generation.

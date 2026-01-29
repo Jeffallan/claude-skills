@@ -1,8 +1,5 @@
 # Database Dialect Differences
 
-> Reference for: SQL Pro
-> Load when: PostgreSQL vs MySQL vs SQL Server vs Oracle specifics
-
 ## Auto-Incrementing Primary Keys
 
 ```sql

@@ -1,8 +1,5 @@
 # Error Handling Patterns
 
-> Reference for: Fullstack Guardian
-> Load when: Implementing error handling
-
 ## Frontend Error Handling
 
 ```typescript

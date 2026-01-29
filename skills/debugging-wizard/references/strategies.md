@@ -1,8 +1,5 @@
 # Debugging Strategies
 
-> Reference for: Debugging Wizard
-> Load when: Planning debug approach
-
 ## Binary Search
 
 Divide and conquer to find the bug location.

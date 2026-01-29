@@ -1,8 +1,5 @@
 # Deliverables Checklist
 
-> Reference for: Fullstack Guardian
-> Load when: Completing features, preparing for handoff
-
 ## Code Deliverables
 
 ### Backend Files

@@ -1,8 +1,5 @@
 # Multi-Cluster Management
 
-> Reference for: Kubernetes Specialist
-> Load when: multi-cluster, federation, Cluster API, cross-cluster networking, disaster recovery, cluster management
-
 ---
 
 ## Cluster API

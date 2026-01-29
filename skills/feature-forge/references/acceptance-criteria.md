@@ -1,8 +1,5 @@
 # Acceptance Criteria
 
-> Reference for: Feature Forge
-> Load when: Writing testable acceptance criteria
-
 ## Given-When-Then Format
 
 ```markdown

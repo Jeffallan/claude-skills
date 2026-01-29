@@ -1,8 +1,5 @@
 # DTOs & Validation
 
-> Reference for: NestJS Expert
-> Load when: Creating DTOs, validation, class-validator
-
 ## DTO Patterns
 
 ```typescript

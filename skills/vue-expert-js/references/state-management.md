@@ -1,8 +1,5 @@
 # State Management
 
-> Reference for: Vue Expert (JavaScript)
-> Load when: Pinia, stores, reactive state, getters, actions, store composition
-
 ---
 
 ## Setup

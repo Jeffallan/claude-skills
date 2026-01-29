@@ -1,8 +1,5 @@
 # Automation and Toil Reduction
 
-> Reference for: SRE Engineer
-> Load when: Reducing toil, building automation, improving efficiency
-
 ## Toil Definition
 
 Toil is manual, repetitive, automatable work that scales linearly with service growth.

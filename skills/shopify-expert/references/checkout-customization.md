@@ -1,8 +1,5 @@
 # Checkout Customization
 
-> Reference for: Shopify Expert
-> Load when: Checkout UI extensions, Shopify Functions, post-purchase, checkout branding
-
 ---
 
 ## When to Use

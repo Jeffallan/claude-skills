@@ -1,8 +1,5 @@
 # RTOS Patterns
 
-> Reference for: Embedded Systems Engineer
-> Load when: FreeRTOS, task scheduling, synchronization, RTOS implementation
-
 ## Task Creation and Management
 
 ```c

@@ -1,8 +1,5 @@
 # Angular Testing
 
-> Reference for: Angular Architect
-> Load when: TestBed, component testing, service testing, RxJS testing
-
 ## Component Testing
 
 ```typescript

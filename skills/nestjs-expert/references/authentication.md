@@ -1,8 +1,5 @@
 # Authentication & Guards
 
-> Reference for: NestJS Expert
-> Load when: JWT authentication, Passport, guards, authorization
-
 ## JWT Strategy
 
 ```typescript

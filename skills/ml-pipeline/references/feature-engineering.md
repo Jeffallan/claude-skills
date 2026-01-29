@@ -1,8 +1,5 @@
 # Feature Engineering
 
-> Reference for: ML Pipeline Expert
-> Load when: Feature pipelines, transformations, feature stores, Feast, data validation
-
 ---
 
 ## Overview
@@ -62,7 +59,6 @@ def create_feature_pipeline(
     )
 
     return preprocessor
-
 
 # Usage with versioning
 def save_pipeline(pipeline: ColumnTransformer, version: str, path: str) -> str:
@@ -128,7 +124,6 @@ class DateFeatureExtractor(BaseEstimator, TransformerMixin):
 
     def get_feature_names_out(self, input_features=None):
         return [f"{self.date_column}_{f}" for f in self.features]
-
 
 class TargetEncoder(BaseEstimator, TransformerMixin):
     """Target encoding for high-cardinality categorical features."""
@@ -258,7 +253,6 @@ class FeatureService:
         """Materialize features to online store."""
         self.store.materialize(start_date=start_date, end_date=end_date)
 
-
 # Usage
 feature_service = FeatureService()
 
@@ -343,7 +337,6 @@ def create_feature_expectations(context: gx.DataContext) -> ExpectationSuite:
     )
 
     return suite
-
 
 def validate_features(
     df: pd.DataFrame,
@@ -487,7 +480,6 @@ class FeatureTransformer(Protocol):
 
     @abstractmethod
     def transform(self, X: pd.DataFrame) -> pd.DataFrame: ...
-
 
 class FeaturePipeline:
     """Production feature pipeline with validation and monitoring."""

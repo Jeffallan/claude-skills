@@ -1,8 +1,5 @@
 # Node.js CLI Development
 
-> Reference for: CLI Developer
-> Load when: Building Node.js CLIs, commander, yargs, inquirer
-
 ## Commander.js (Recommended)
 
 Modern, elegant CLI framework with TypeScript support.

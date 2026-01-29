@@ -1,8 +1,5 @@
 # Testing
 
-> Reference for: Laravel Specialist
-> Load when: Writing tests, using factories, mocking, test coverage
-
 ## Feature Tests
 
 ```php

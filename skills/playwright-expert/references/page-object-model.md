@@ -1,8 +1,5 @@
 # Page Object Model
 
-> Reference for: Playwright Expert
-> Load when: POM patterns, test organization
-
 ## Basic Page Object
 
 ```typescript

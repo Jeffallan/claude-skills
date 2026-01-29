@@ -1,8 +1,5 @@
 # Composables Patterns
 
-> Reference for: Vue Expert (JavaScript)
-> Load when: custom composables, ref vs reactive, lifecycle hooks, shared state, async composables
-
 ---
 
 ## Basic Composable Structure

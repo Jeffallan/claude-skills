@@ -1,8 +1,5 @@
 # Symfony Patterns
 
-> Reference for: PHP Pro
-> Load when: Symfony development, dependency injection, events, commands
-
 ## Dependency Injection
 
 ```php

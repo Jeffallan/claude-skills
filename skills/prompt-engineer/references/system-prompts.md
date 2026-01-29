@@ -1,8 +1,5 @@
 # System Prompts
 
-> Reference for: Prompt Engineer
-> Load when: Persona design, guardrails, context management, or system message design
-
 ---
 
 ## System Prompt Architecture

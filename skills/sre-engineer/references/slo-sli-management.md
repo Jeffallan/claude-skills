@@ -1,8 +1,5 @@
 # SLO/SLI Management
 
-> Reference for: SRE Engineer
-> Load when: Defining SLOs, measuring SLIs, setting reliability targets
-
 ## SLI Definition Patterns
 
 Service Level Indicators are quantitative measurements of service behavior.

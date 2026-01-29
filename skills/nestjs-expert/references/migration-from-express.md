@@ -1,8 +1,5 @@
 # Express to NestJS Migration Guide
 
-> Reference for: NestJS Expert
-> Load when: Express migration, Express to NestJS, converting Express app, porting Node.js API, migrating from Express, rewriting Express application
-
 ---
 
 ## When to Use This Guide

@@ -1,8 +1,5 @@
 # CLI Design Patterns
 
-> Reference for: CLI Developer
-> Load when: Planning command structure, subcommands, flags, architecture
-
 ## Command Hierarchy
 
 ```

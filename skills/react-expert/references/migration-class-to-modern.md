@@ -1,8 +1,5 @@
 # Class to Modern React Migration Guide
 
-> Reference for: React Expert
-> Load when: class component migration, converting class to hooks, modernizing React, legacy React, refactoring class components, lifecycle to hooks
-
 ---
 
 ## When to Use This Guide

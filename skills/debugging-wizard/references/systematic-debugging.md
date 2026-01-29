@@ -1,8 +1,5 @@
 # Systematic Debugging
 
-> Reference for: Debugging Wizard
-> Load when: complex bugs, multiple failed fixes, root cause analysis
-
 ---
 
 ## Core Principle

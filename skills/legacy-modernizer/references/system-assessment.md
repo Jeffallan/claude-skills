@@ -1,8 +1,5 @@
 # System Assessment
 
-> Reference for: Legacy Modernizer
-> Load when: Code analysis, dependency mapping, risk evaluation, planning modernization
-
 ## Codebase Analysis Checklist
 
 ```python

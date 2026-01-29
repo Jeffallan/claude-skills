@@ -1,8 +1,5 @@
 # Project Structure and Module Management
 
-> Reference for: Golang Pro
-> Load when: Project layout, go.mod, internal packages, module organization
-
 ## Standard Project Layout
 
 ```

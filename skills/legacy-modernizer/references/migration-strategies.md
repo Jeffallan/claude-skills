@@ -1,8 +1,5 @@
 # Migration Strategies
 
-> Reference for: Legacy Modernizer
-> Load when: Database, UI, API, framework migrations, technology upgrades
-
 ## Database Migration Strategy
 
 ### Dual-Write Pattern

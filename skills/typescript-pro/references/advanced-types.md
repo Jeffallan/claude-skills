@@ -1,8 +1,5 @@
 # Advanced Types
 
-> Reference for: TypeScript Pro
-> Load when: Generics, conditional types, mapped types, template literals
-
 ## Generic Constraints
 
 ```typescript

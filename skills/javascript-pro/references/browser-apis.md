@@ -1,8 +1,5 @@
 # Browser APIs
 
-> Reference for: JavaScript Pro
-> Load when: Working with Fetch, Web Workers, Storage, IntersectionObserver, Service Workers
-
 ## Fetch API
 
 ```javascript

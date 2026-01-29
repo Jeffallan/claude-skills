@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: PostgreSQL Pro
-> Load when: EXPLAIN ANALYZE, query tuning, indexes, statistics
-
 ## EXPLAIN ANALYZE Fundamentals
 
 ```sql

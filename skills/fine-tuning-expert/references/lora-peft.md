@@ -1,8 +1,5 @@
 # LoRA and Parameter-Efficient Fine-Tuning
 
-> Reference for: Fine-Tuning Expert
-> Load when: Parameter-efficient fine-tuning, adapters, LoRA, QLoRA, adapter merging
-
 ---
 
 ## Overview

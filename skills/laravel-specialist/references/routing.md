@@ -1,8 +1,5 @@
 # Routing & API Resources
 
-> Reference for: Laravel Specialist
-> Load when: Setting up routes, controllers, middleware, API resources
-
 ## Route Patterns
 
 ```php

@@ -1,8 +1,5 @@
 # Refactoring Patterns
 
-> Reference for: Legacy Modernizer
-> Load when: Extract service, branch by abstraction, adapters, facades
-
 ## Branch by Abstraction
 
 Enables large refactorings to happen incrementally without breaking existing code.

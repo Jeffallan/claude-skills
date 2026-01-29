@@ -1,8 +1,5 @@
 # Gutenberg Blocks
 
-> Reference for: WordPress Pro
-> Load when: Block dev, patterns, FSE, dynamic blocks, block editor, custom blocks
-
 ---
 
 ## Block Development Overview

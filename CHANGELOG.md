@@ -17,11 +17,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/update-docs.py` for automated documentation updates with marker-based replacement
 - `scripts/validate-skills.py` for skill YAML and reference file validation
 - HTML comment markers in documentation files for explicit count replacement (fixes #99)
+- `AskUserQuestions` tool integration in feature-forge skill for structured elicitation during discovery, interview, and validation phases (closes #102)
+- Multi-agent pre-discovery pattern in feature-forge for launching parallel Task subagents with domain-specific skills before the specification workshop (closes #102)
+- `discovery-for-feature-forge.md` example prompt for multi-agent discovery workflow
+- Reusable GitHub Actions validation workflow `.github/workflows/validate.yml` (closes #105)
+- CI workflow `.github/workflows/ci.yml` triggering on PRs and pushes to main (closes #105)
+- CI status badge in README
 
 ### Changed
 - Total reference files: 351 → 355
 - `update-docs.py` now uses `<!-- MARKER -->...<!-- /MARKER -->` tags instead of broad regex patterns
 - Documentation files (README.md, QUICKSTART.md, ROADMAP.md, social-preview.html) updated with markers
+- feature-forge interview flow rewritten to alternate between structured `AskUserQuestions` and open-ended elicitation
+- feature-forge constraints updated to require `AskUserQuestions` for structured choices
+- Minor README tidying
+- Non-standard headers (`Reference for:`, `Load when:`) removed from 337 reference files (closes #104)
+- `non-standard-headers` validation promoted from warning to error in `validate-skills.py`
 
 ### Fixed
 - Pattern matching in `update-docs.py` no longer incorrectly matches inline comments like `# 6 reference files` in project structure trees (fixes #99)

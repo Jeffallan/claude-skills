@@ -551,8 +551,8 @@ class NonStandardHeadersChecker(BaseChecker):
                 issues.append(ValidationIssue(
                     skill=skill_name,
                     check=self.name,
-                    severity=Severity.WARNING,
-                    message=f"Has non-standard headers ({', '.join(headers_found)}) - consider removing",
+                    severity=Severity.ERROR,
+                    message=f"Has non-standard headers ({', '.join(headers_found)}) - must be removed",
                     file=str(ref_file),
                 ))
 

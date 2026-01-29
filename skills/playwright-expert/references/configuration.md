@@ -1,8 +1,5 @@
 # Configuration
 
-> Reference for: Playwright Expert
-> Load when: playwright.config.ts setup
-
 ## Full Configuration
 
 ```typescript

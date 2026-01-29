@@ -1,8 +1,5 @@
 # Monitoring and Alerting
 
-> Reference for: SRE Engineer
-> Load when: Setting up monitoring, designing alerts, creating dashboards
-
 ## Golden Signals Monitoring
 
 Monitor the four golden signals for every service.

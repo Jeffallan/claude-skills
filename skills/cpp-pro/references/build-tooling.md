@@ -1,8 +1,5 @@
 # Build Systems and Tooling
 
-> Reference for: C++ Pro
-> Load when: CMake, sanitizers, static analysis, testing frameworks, CI/CD
-
 ## Modern CMake
 
 ```cmake

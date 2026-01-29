@@ -1,8 +1,5 @@
 # Standard Library Mastery
 
-> Reference for: Python Pro
-> Load when: pathlib, dataclasses, functools, itertools, collections
-
 ## Pathlib for File Operations
 
 ```python

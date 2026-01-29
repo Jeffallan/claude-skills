@@ -1,8 +1,5 @@
 # State Management with Pinia
 
-> Reference for: Vue Expert
-> Load when: Pinia stores, actions, getters, state management
-
 ## Basic Store Setup
 
 ```typescript

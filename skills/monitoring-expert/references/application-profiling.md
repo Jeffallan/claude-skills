@@ -1,8 +1,5 @@
 # Application Profiling
 
-> Reference for: Monitoring Expert
-> Load when: Profiling, performance optimization, bottlenecks
-
 ## Node.js Profiling
 
 ### CPU Profiling with clinic.js

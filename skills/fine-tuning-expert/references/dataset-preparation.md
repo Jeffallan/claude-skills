@@ -1,8 +1,5 @@
 # Dataset Preparation for Fine-Tuning
 
-> Reference for: Fine-Tuning Expert
-> Load when: Training data formatting, quality checks, dataset creation, data validation
-
 ---
 
 ## Overview

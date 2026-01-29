@@ -1,8 +1,5 @@
 # Infrastructure Security
 
-> Reference for: Security Reviewer
-> Load when: DevSecOps, infrastructure hardening, cloud security, compliance automation
-
 ## DevSecOps Integration
 
 ### CI/CD Security Pipeline

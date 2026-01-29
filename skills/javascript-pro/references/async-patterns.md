@@ -1,8 +1,5 @@
 # Asynchronous Patterns
 
-> Reference for: JavaScript Pro
-> Load when: Working with Promises, async/await, error handling, concurrency
-
 ## Promise Patterns
 
 ```javascript

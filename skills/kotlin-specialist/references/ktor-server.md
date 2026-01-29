@@ -1,8 +1,5 @@
 # Ktor Server
 
-> Reference for: Kotlin Specialist
-> Load when: Server-side Kotlin, REST APIs, routing, plugins, authentication, serialization
-
 ## Application Setup
 
 ```kotlin

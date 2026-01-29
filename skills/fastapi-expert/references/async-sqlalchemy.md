@@ -1,8 +1,5 @@
 # Async SQLAlchemy
 
-> Reference for: FastAPI Expert
-> Load when: Database setup, async operations, SQLAlchemy models
-
 ## Engine & Session Setup
 
 ```python
@@ -44,7 +41,6 @@ class User(Base):
 
     # Relationships
     posts: Mapped[list["Post"]] = relationship(back_populates="author", lazy="selectin")
-
 
 class Post(Base):
     __tablename__ = "posts"

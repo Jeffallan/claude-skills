@@ -1,8 +1,5 @@
 # MCP Server Setup
 
-> Reference for: Atlassian MCP Expert
-> Load when: Installation, choosing servers, configuration, IDE integration
-
 ---
 
 ## Server Options Overview

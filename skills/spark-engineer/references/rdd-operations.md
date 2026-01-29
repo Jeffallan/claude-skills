@@ -1,8 +1,5 @@
 # RDD Operations
 
-> Reference for: Spark Engineer
-> Load when: Transformations, actions, pair RDDs, custom partitioners, low-level data manipulation, unstructured data processing
-
 ---
 
 ## When to Use RDDs

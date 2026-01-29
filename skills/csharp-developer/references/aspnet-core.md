@@ -1,8 +1,5 @@
 # ASP.NET Core Patterns
 
-> Reference for: C# Developer
-> Load when: Building APIs, middleware, routing, dependency injection
-
 ## Minimal API Setup
 
 ```csharp

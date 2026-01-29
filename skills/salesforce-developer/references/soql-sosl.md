@@ -1,8 +1,5 @@
 # SOQL and SOSL
 
-> Reference for: Salesforce Developer
-> Load when: Query optimization, relationships, governor limits
-
 ---
 
 ## SOQL Fundamentals

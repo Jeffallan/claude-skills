@@ -1,8 +1,5 @@
 # Query Optimization
 
-> Reference for: Database Optimizer
-> Load when: Analyzing slow queries, execution plans, query rewrites
-
 ## Execution Plan Analysis
 
 ### PostgreSQL EXPLAIN ANALYZE

@@ -1,8 +1,5 @@
 # Storefront API
 
-> Reference for: Shopify Expert
-> Load when: Headless commerce, Hydrogen, custom frontends, GraphQL queries
-
 ---
 
 ## When to Use

@@ -1,8 +1,5 @@
 # Testing & Quality Assurance
 
-> Reference for: PHP Pro
-> Load when: PHPUnit, testing, PHPStan, Psalm, code quality, mocking
-
 ## PHPUnit with Strict Types
 
 ```php

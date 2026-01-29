@@ -1,8 +1,5 @@
 # Terraform Infrastructure as Code
 
-> Reference for: DevOps Engineer
-> Load when: Infrastructure as code, AWS/GCP provisioning, Terraform modules
-
 ## AWS ECS Fargate Setup
 
 ```hcl

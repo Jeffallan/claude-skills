@@ -1,8 +1,5 @@
 # Terraform Module Patterns
 
-> Reference for: Terraform Engineer
-> Load when: Creating modules, defining inputs/outputs, versioning
-
 ## Module Structure
 
 ```

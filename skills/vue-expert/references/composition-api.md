@@ -1,8 +1,5 @@
 # Composition API
 
-> Reference for: Vue Expert
-> Load when: Using ref, reactive, computed, watch, lifecycle hooks
-
 ## Script Setup Syntax
 
 ```vue

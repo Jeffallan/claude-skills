@@ -1,8 +1,5 @@
 # Security Report Template
 
-> Reference for: Security Reviewer
-> Load when: Writing security review report
-
 ## Full Report Template
 
 ```markdown

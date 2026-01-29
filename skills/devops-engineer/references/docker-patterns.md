@@ -1,8 +1,5 @@
 # Docker Patterns
 
-> Reference for: DevOps Engineer
-> Load when: Containerizing applications, writing Dockerfiles, Docker security
-
 ## Multi-stage Dockerfile (Node.js)
 
 ```dockerfile

@@ -1,8 +1,5 @@
 # Pydantic V2 Schemas
 
-> Reference for: FastAPI Expert
-> Load when: Creating schemas, validation, Pydantic models
-
 ## Schema Patterns
 
 ```python

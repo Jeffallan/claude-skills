@@ -1,8 +1,5 @@
 # Spec Compliance Review
 
-> Reference for: Code Reviewer
-> Load when: reviewing implementations, PR review, spec verification
-
 ---
 
 ## Two-Stage Review Architecture

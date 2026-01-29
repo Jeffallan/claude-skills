@@ -1,8 +1,5 @@
 # System Design Template
 
-> Reference for: Architecture Designer
-> Load when: Designing new systems
-
 ## Design Template
 
 ```markdown

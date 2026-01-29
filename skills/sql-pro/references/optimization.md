@@ -1,8 +1,5 @@
 # Query Optimization
 
-> Reference for: SQL Pro
-> Load when: EXPLAIN plans, indexes, statistics, performance tuning
-
 ## EXPLAIN Plan Analysis
 
 ```sql

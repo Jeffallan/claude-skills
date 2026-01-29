@@ -1,8 +1,5 @@
 # Architecture Patterns
 
-> Reference for: Architecture Designer
-> Load when: Choosing architecture approach
-
 ## Pattern Comparison
 
 | Pattern | Best For | Team Size | Trade-offs |

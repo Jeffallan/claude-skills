@@ -1,8 +1,5 @@
 # Vector Databases
 
-> Reference for: RAG Architect
-> Load when: Comparing Pinecone, Weaviate, Chroma, pgvector, Qdrant for production RAG systems
-
 ---
 
 ## Database Comparison Matrix

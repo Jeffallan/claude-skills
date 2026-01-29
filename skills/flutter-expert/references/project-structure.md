@@ -1,8 +1,5 @@
 # Project Structure
 
-> Reference for: Flutter Expert
-> Load when: Setting up project, architecture, organization
-
 ## Feature-Based Structure
 
 ```

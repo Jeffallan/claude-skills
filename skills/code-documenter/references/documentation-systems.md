@@ -1,8 +1,5 @@
 # Documentation Systems & Infrastructure
 
-> Reference for: Code Documenter
-> Load when: Building documentation sites, static generators, multi-version docs, search systems
-
 ## Static Site Generators
 
 ### Docusaurus (Meta)

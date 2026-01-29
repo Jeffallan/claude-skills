@@ -1,8 +1,5 @@
 # Component Architecture
 
-> Reference for: Vue Expert (JavaScript)
-> Load when: props, emits, slots, provide inject, dynamic components, v-model
-
 ---
 
 ## Props

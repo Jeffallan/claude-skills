@@ -1,8 +1,5 @@
 # Service Mesh
 
-> Reference for: Kubernetes Specialist
-> Load when: Istio, Linkerd, service mesh, traffic management, mTLS, sidecar proxy, canary deployment, traffic mirroring
-
 ---
 
 ## Istio Installation

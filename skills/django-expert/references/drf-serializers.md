@@ -1,8 +1,5 @@
 # DRF Serializers
 
-> Reference for: Django Expert
-> Load when: Creating serializers, validation, DRF
-
 ## ModelSerializer
 
 ```python

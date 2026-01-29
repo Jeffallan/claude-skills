@@ -1,8 +1,5 @@
 # API Design Standards
 
-> Reference for: Fullstack Guardian
-> Load when: Designing or implementing REST/GraphQL APIs
-
 ## RESTful API Conventions
 
 ### URL Structure

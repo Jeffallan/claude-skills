@@ -1,8 +1,5 @@
 # Widget Patterns
 
-> Reference for: Flutter Expert
-> Load when: Building widgets, UI components, const optimization
-
 ## Optimized Widget Pattern
 
 ```dart

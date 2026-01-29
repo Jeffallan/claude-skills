@@ -1,8 +1,5 @@
 # Merging and Joining
 
-> Reference for: Pandas Pro
-> Load when: Merge, join, concat, combine DataFrames, or handle relational data
-
 ---
 
 ## Overview

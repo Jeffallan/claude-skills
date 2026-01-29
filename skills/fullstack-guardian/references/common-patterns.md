@@ -1,8 +1,5 @@
 # Common Patterns
 
-> Reference for: Fullstack Guardian
-> Load when: Implementing standard features
-
 ## API + Frontend Flow
 
 ```

@@ -1,8 +1,5 @@
 # List Optimization
 
-> Reference for: React Native Expert
-> Load when: FlatList, performance, memo, lists
-
 ## Optimized FlatList
 
 ```typescript

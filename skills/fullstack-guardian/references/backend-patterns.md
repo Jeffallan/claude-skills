@@ -1,8 +1,5 @@
 # Backend Patterns
 
-> Reference for: Fullstack Guardian
-> Load when: Building backend services, microservices, message queues, or optimization
-
 ## Microservices Architecture
 
 ### Circuit Breaker Pattern

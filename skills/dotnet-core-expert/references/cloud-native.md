@@ -1,8 +1,5 @@
 # Cloud-Native Patterns
 
-> Reference for: .NET Core Expert
-> Load when: Docker, Kubernetes, health checks, configuration, observability
-
 ## Dockerfile Optimization
 
 ```dockerfile

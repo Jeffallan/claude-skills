@@ -1,8 +1,5 @@
 # Game Day Planning & Execution
 
-> Reference for: Chaos Engineer
-> Load when: Game day planning, organizational resilience, team drills
-
 ## Game Day Planning Template
 
 ```yaml

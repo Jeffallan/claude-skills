@@ -1,8 +1,5 @@
 # Custom Operators
 
-> Reference for: Kubernetes Specialist
-> Load when: CRD, CustomResourceDefinition, Operator SDK, controller-runtime, reconciliation, custom controllers
-
 ---
 
 ## CustomResourceDefinition (CRD)

@@ -1,8 +1,5 @@
 # Performance Optimization
 
-> Reference for: Shopify Expert
-> Load when: Theme speed, asset optimization, caching, Core Web Vitals, load time
-
 ---
 
 ## When to Use

@@ -1,8 +1,5 @@
 # Modern C++20/23 Features
 
-> Reference for: C++ Pro
-> Load when: Using C++20/23 features, concepts, ranges, coroutines, modules
-
 ## Concepts and Constraints
 
 ```cpp

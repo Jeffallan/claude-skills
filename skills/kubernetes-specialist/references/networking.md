@@ -1,8 +1,5 @@
 # Kubernetes Networking
 
-> Reference for: Kubernetes Specialist
-> Load when: Services, Ingress, NetworkPolicies, DNS
-
 ## Service Types
 
 ### ClusterIP (Default)

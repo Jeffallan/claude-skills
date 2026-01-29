@@ -1,8 +1,5 @@
 # Nuxt 3
 
-> Reference for: Vue Expert
-> Load when: Nuxt 3, SSR, file-based routing, useFetch, server routes, Fastify, hydration, custom SSR
-
 ## Project Structure
 
 ```

@@ -1,8 +1,5 @@
 # Multiplayer Networking
 
-> Reference for: Game Developer
-> Load when: Multiplayer, networking, client-server, lag compensation, state sync
-
 ## Client-Server Architecture
 
 ```csharp

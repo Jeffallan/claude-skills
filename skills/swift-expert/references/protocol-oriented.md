@@ -1,8 +1,5 @@
 # Protocol-Oriented Programming
 
-> Reference for: Swift Expert
-> Load when: Protocol design, generics, associated types, type erasure
-
 ## Protocol Basics
 
 ```swift

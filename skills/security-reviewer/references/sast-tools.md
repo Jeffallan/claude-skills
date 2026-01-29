@@ -1,8 +1,5 @@
 # SAST Tools
 
-> Reference for: Security Reviewer
-> Load when: Running automated security scans
-
 ## JavaScript/TypeScript
 
 ```bash
