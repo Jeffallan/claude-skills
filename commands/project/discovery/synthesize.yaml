@@ -1,0 +1,24 @@
+command: "discovery:synthesize"
+phase: discovery
+path: commands/project/discovery/synthesize-discovery.md
+description: docs/workflow/discovery-synthesize.md
+inputs:
+  - name: source-urls
+    type: list[url]
+    required: true
+    description: One or more Confluence document URLs to synthesize (discovery docs, research findings, spike reports)
+  - name: target
+    type: string
+    required: false
+    description: Target implementation epic key (e.g., --target=CC-62). Auto-detected from sources if omitted.
+outputs:
+  - name: synthesis-document
+    type: url
+    path: "/epics/Discovery/{discovery-epic-key}/Synthesis/"
+    description: Published Confluence synthesis document with consolidated findings and proposed tickets
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "<source-url> [source-url...] [--target=<epic-key>]"
+repeat: false

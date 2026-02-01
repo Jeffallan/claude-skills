@@ -1,0 +1,18 @@
+command: "intake:create-system-description"
+phase: intake
+path: commands/intake/create-system-description.md
+description: docs/workflow/intake-create-system-description.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze (defaults to project root)
+outputs:
+  - name: system-description
+    type: file
+    path: "docs/system-description.md"
+    description: SOC2-style living document covering architecture, API surface, security patterns, and external dependencies
+requires: []
+status: planned
+argument-hint: "[directory]"
+repeat: false

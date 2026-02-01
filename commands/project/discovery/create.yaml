@@ -1,0 +1,20 @@
+command: "discovery:create"
+phase: discovery
+path: commands/project/discovery/create-epic-discovery.md
+description: docs/workflow/discovery-create.md
+inputs:
+  - name: epic-key
+    type: string
+    required: true
+    description: Jira epic key for the discovery epic (e.g., CC-60)
+outputs:
+  - name: discovery-document
+    type: url
+    path: "/epics/Discovery/{epic-key}/"
+    description: Published Confluence discovery document with research questions, hypotheses, and research plan
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "<epic-key>"
+repeat: false

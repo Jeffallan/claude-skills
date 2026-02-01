@@ -1,0 +1,17 @@
+command: "intake:document-codebase"
+phase: intake
+path: commands/intake/document-codebase.md
+description: docs/workflow/intake-document-codebase.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to scan (defaults to project root)
+outputs:
+  - name: documentation-report
+    type: report
+    description: Summary of documentation added (functions, classes, modules documented)
+requires: []
+status: planned
+argument-hint: "[directory]"
+repeat: false
