@@ -13,8 +13,11 @@ import yaml from 'js-yaml';
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const DOCS_DIR = path.resolve(import.meta.dirname, '..', 'src', 'content', 'docs');
+const PUBLIC_DIR = path.resolve(import.meta.dirname, '..', 'public');
 
 const GITHUB_BLOB = 'https://github.com/jeffallan/claude-skills/blob/main';
+
+const pageManifest = []; // { siteUrl, title, description, category, contentFile }
 
 // ─── Domain label mapping ───────────────────────────────────────────
 const DOMAIN_LABELS = {
@@ -42,19 +45,19 @@ const ROLE_BADGES = {
 
 // ─── Core docs mapping (source relative to ROOT → dest relative to DOCS_DIR)
 const CORE_DOCS = [
-  { src: 'QUICKSTART.md', dest: 'getting-started.md', title: 'Getting Started' },
-  { src: 'SKILLS_GUIDE.md', dest: 'skills-guide.md', title: 'Skills Guide' },
-  { src: 'CONTRIBUTING.md', dest: 'contributing.md', title: 'Contributing' },
-  { src: 'CHANGELOG.md', dest: 'changelog.md', title: 'Changelog' },
-  { src: 'ROADMAP.md', dest: 'roadmap.md', title: 'Roadmap' },
+  { src: 'QUICKSTART.md', dest: 'getting-started.md', title: 'Getting Started', description: 'Installation and first steps', category: 'docs' },
+  { src: 'SKILLS_GUIDE.md', dest: 'skills-guide.md', title: 'Skills Guide', description: 'Decision trees and skill combinations for choosing the right skill', category: 'docs' },
+  { src: 'CONTRIBUTING.md', dest: 'contributing.md', title: 'Contributing', description: 'How to contribute new skills and improve existing ones', category: 'project' },
+  { src: 'CHANGELOG.md', dest: 'changelog.md', title: 'Changelog', description: 'Version history and release notes', category: 'project' },
+  { src: 'ROADMAP.md', dest: 'roadmap.md', title: 'Roadmap', description: 'Planned features and future direction', category: 'project' },
 ];
 
 // ─── Guide docs mapping ─────────────────────────────────────────────
 const GUIDE_DOCS = [
-  { src: 'docs/WORKFLOW_COMMANDS.md', dest: 'guides/workflow-commands.md', title: 'Workflow Commands' },
-  { src: 'docs/COMMON_GROUND.md', dest: 'guides/common-ground.md', title: 'Common Ground' },
-  { src: 'docs/ATLASSIAN_MCP_SETUP.md', dest: 'guides/atlassian-mcp-setup.md', title: 'Atlassian MCP Setup' },
-  { src: 'docs/local_skill_development.md', dest: 'guides/local-development.md', title: 'Local Development' },
+  { src: 'docs/WORKFLOW_COMMANDS.md', dest: 'guides/workflow-commands.md', title: 'Workflow Commands', description: 'Project workflow commands for managing development lifecycle' },
+  { src: 'docs/COMMON_GROUND.md', dest: 'guides/common-ground.md', title: 'Common Ground', description: 'Surface and validate hidden assumptions about projects' },
+  { src: 'docs/ATLASSIAN_MCP_SETUP.md', dest: 'guides/atlassian-mcp-setup.md', title: 'Atlassian MCP Setup', description: 'Configure Jira and Confluence MCP integration' },
+  { src: 'docs/local_skill_development.md', dest: 'guides/local-development.md', title: 'Local Development', description: 'Develop and test skills locally' },
 ];
 
 // ─── Link rewrite map (built during sync) ───────────────────────────
@@ -161,7 +164,7 @@ function cleanSyncedContent() {
 // ─── Sync core docs ─────────────────────────────────────────────────
 
 function syncCoreDocs() {
-  for (const { src, dest, title } of CORE_DOCS) {
+  for (const { src, dest, title, description, category } of CORE_DOCS) {
     const srcPath = path.join(ROOT, src);
     if (!fs.existsSync(srcPath)) {
       console.warn(`  SKIP ${src} (not found)`);
@@ -182,13 +185,16 @@ function syncCoreDocs() {
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, fm + '\n' + body.trim() + '\n');
     console.log(`  ${src} → ${dest}`);
+
+    const slug = dest.replace(/\.md$/, '');
+    pageManifest.push({ siteUrl: `/${slug}/`, title, description, category, contentFile: dest });
   }
 }
 
 // ─── Sync guide docs ────────────────────────────────────────────────
 
 function syncGuideDocs() {
-  for (const { src, dest, title } of GUIDE_DOCS) {
+  for (const { src, dest, title, description } of GUIDE_DOCS) {
     const srcPath = path.join(ROOT, src);
     if (!fs.existsSync(srcPath)) {
       console.warn(`  SKIP ${src} (not found)`);
@@ -206,6 +212,9 @@ function syncGuideDocs() {
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, fm + '\n' + body.trim() + '\n');
     console.log(`  ${src} → ${dest}`);
+
+    const slug = dest.replace(/\.md$/, '');
+    pageManifest.push({ siteUrl: `/${slug}/`, title, description, category: 'guides', contentFile: dest });
   }
 }
 
@@ -234,6 +243,11 @@ function syncWorkflowDocs() {
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, fm + '\n' + body.trim() + '\n');
     console.log(`  docs/workflow/${file} → workflows/${file}`);
+
+    const firstPara = body.split('\n\n').find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('|') && !p.startsWith('-'));
+    const workflowDesc = firstPara ? firstPara.trim().replace(/\n/g, ' ').slice(0, 120) : '';
+    const slug = file.replace(/\.md$/, '');
+    pageManifest.push({ siteUrl: `/workflows/${slug}/`, title, description: workflowDesc, category: 'workflows', contentFile: `workflows/${file}` });
   }
 }
 
@@ -346,9 +360,211 @@ function syncSkillPages(skillIndex) {
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, page);
     count++;
+
+    pageManifest.push({ siteUrl: `/skills/${domain}/${dir}/`, title, description, category: `skills:${domain}`, contentFile: `skills/${domain}/${dir}.md` });
   }
 
   console.log(`  ${count} skill pages synced`);
+}
+
+// ─── Clean generated public content ──────────────────────────────────
+
+function cleanGeneratedPublicContent() {
+  if (!fs.existsSync(PUBLIC_DIR)) return;
+
+  for (const file of ['llms.txt', 'llms-full.txt', 'index.html.md']) {
+    const full = path.join(PUBLIC_DIR, file);
+    if (fs.existsSync(full)) fs.unlinkSync(full);
+  }
+
+  function cleanDir(dir) {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        cleanDir(full);
+        try { fs.rmdirSync(full); } catch { /* not empty, skip */ }
+      } else if (entry.name === 'index.html.md') {
+        fs.unlinkSync(full);
+      }
+    }
+  }
+
+  for (const dir of ['getting-started', 'skills-guide', 'skills', 'guides', 'workflows', 'contributing', 'changelog', 'roadmap']) {
+    cleanDir(path.join(PUBLIC_DIR, dir));
+    const full = path.join(PUBLIC_DIR, dir);
+    if (fs.existsSync(full)) {
+      try { fs.rmdirSync(full); } catch { /* not empty, skip */ }
+    }
+  }
+}
+
+// ─── Generate markdown mirrors ──────────────────────────────────────
+
+function generateMarkdownMirrors() {
+  let count = 0;
+  for (const { siteUrl, title, contentFile } of pageManifest) {
+    const srcPath = path.join(DOCS_DIR, contentFile);
+    if (!fs.existsSync(srcPath)) {
+      console.warn(`  SKIP mirror for ${siteUrl} (${contentFile} not found)`);
+      continue;
+    }
+
+    const content = fs.readFileSync(srcPath, 'utf-8');
+    const { body } = stripFrontmatter(content);
+    const markdown = `# ${title}\n\n${body.trim()}\n`;
+
+    const destPath = path.join(PUBLIC_DIR, siteUrl, 'index.html.md');
+    ensureDir(path.dirname(destPath));
+    fs.writeFileSync(destPath, markdown);
+    count++;
+  }
+  console.log(`  ${count} markdown mirrors generated`);
+}
+
+// ─── Generate index mirror (landing page) ───────────────────────────
+
+function generateIndexMirror() {
+  const versionData = JSON.parse(fs.readFileSync(path.join(ROOT, 'version.json'), 'utf-8'));
+
+  const markdown = `# Claude Skills
+
+> ${versionData.skillCount} specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.
+
+Transform Claude Code into your expert pair programmer across the entire development stack.
+
+## Quick Install
+
+\`\`\`bash
+/plugin marketplace add jeffallan/claude-skills
+\`\`\`
+
+\`\`\`bash
+/plugin install fullstack-dev-skills@jeffallan
+\`\`\`
+
+## Stats
+
+- **${versionData.skillCount}** specialized skills across 12 domains
+- **${versionData.workflowCount}** project workflow commands
+- **${versionData.referenceFileCount}** deep-dive reference files
+
+See the [Getting Started guide](/getting-started/) for all installation methods and first steps.
+`;
+
+  const destPath = path.join(PUBLIC_DIR, 'index.html.md');
+  ensureDir(PUBLIC_DIR);
+  fs.writeFileSync(destPath, markdown);
+  console.log('  index.html.md generated');
+}
+
+// ─── Generate llms.txt ──────────────────────────────────────────────
+
+function generateLlmsTxt() {
+  const versionData = JSON.parse(fs.readFileSync(path.join(ROOT, 'version.json'), 'utf-8'));
+
+  const lines = [];
+  lines.push('# Claude Skills');
+  lines.push(`> ${versionData.skillCount} specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.`);
+  lines.push('');
+
+  // Group manifest entries by category
+  const groups = {};
+  for (const entry of pageManifest) {
+    if (!groups[entry.category]) groups[entry.category] = [];
+    groups[entry.category].push(entry);
+  }
+
+  // Docs
+  if (groups['docs']?.length) {
+    lines.push('## Docs');
+    for (const { siteUrl, title, description } of groups['docs']) {
+      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+    }
+    lines.push('');
+  }
+
+  // Guides
+  if (groups['guides']?.length) {
+    lines.push('## Guides');
+    for (const { siteUrl, title, description } of groups['guides']) {
+      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+    }
+    lines.push('');
+  }
+
+  // Skills by domain (same order as DOMAIN_LABELS)
+  for (const [domain, label] of Object.entries(DOMAIN_LABELS)) {
+    const key = `skills:${domain}`;
+    if (groups[key]?.length) {
+      lines.push(`## Skills: ${label}`);
+      for (const { siteUrl, title, description } of groups[key]) {
+        lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+      }
+      lines.push('');
+    }
+  }
+
+  // Workflows
+  if (groups['workflows']?.length) {
+    lines.push('## Workflows');
+    for (const { siteUrl, title, description } of groups['workflows']) {
+      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+    }
+    lines.push('');
+  }
+
+  // Optional (project pages)
+  if (groups['project']?.length) {
+    lines.push('## Optional');
+    for (const { siteUrl, title, description } of groups['project']) {
+      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+    }
+    lines.push('');
+  }
+
+  const destPath = path.join(PUBLIC_DIR, 'llms.txt');
+  ensureDir(PUBLIC_DIR);
+  fs.writeFileSync(destPath, lines.join('\n'));
+  console.log('  llms.txt generated');
+}
+
+// ─── Generate llms-full.txt ─────────────────────────────────────────
+
+function generateLlmsFullTxt() {
+  const sections = [];
+
+  // Order: docs → guides → skills (by domain) → workflows → project
+  const orderedCategories = [
+    'docs',
+    'guides',
+    ...Object.keys(DOMAIN_LABELS).map((d) => `skills:${d}`),
+    'workflows',
+    'project',
+  ];
+
+  const groups = {};
+  for (const entry of pageManifest) {
+    if (!groups[entry.category]) groups[entry.category] = [];
+    groups[entry.category].push(entry);
+  }
+
+  for (const cat of orderedCategories) {
+    if (!groups[cat]?.length) continue;
+    for (const { title, contentFile } of groups[cat]) {
+      const srcPath = path.join(DOCS_DIR, contentFile);
+      if (!fs.existsSync(srcPath)) continue;
+
+      const content = fs.readFileSync(srcPath, 'utf-8');
+      const { body } = stripFrontmatter(content);
+      sections.push(`# ${title}\n\n${body.trim()}`);
+    }
+  }
+
+  const destPath = path.join(PUBLIC_DIR, 'llms-full.txt');
+  ensureDir(PUBLIC_DIR);
+  fs.writeFileSync(destPath, sections.join('\n\n---\n\n') + '\n');
+  console.log('  llms-full.txt generated');
 }
 
 // ─── Main ────────────────────────────────────────────────────────────
@@ -375,6 +591,13 @@ function main() {
 
   console.log('Syncing skill pages...');
   syncSkillPages(skillIndex);
+
+  console.log('Generating LLM content...');
+  cleanGeneratedPublicContent();
+  generateMarkdownMirrors();
+  generateIndexMirror();
+  generateLlmsTxt();
+  generateLlmsFullTxt();
 
   console.log('sync-content: done.');
 }
