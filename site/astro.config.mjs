@@ -8,6 +8,9 @@ export default defineConfig({
       description:
         '65 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
       customCss: ['./src/styles/custom.css'],
+      components: {
+        SocialIcons: './src/components/SocialIcons.astro',
+      },
       social: [
         {
           icon: 'github',
