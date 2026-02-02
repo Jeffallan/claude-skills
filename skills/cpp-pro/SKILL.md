@@ -1,20 +1,16 @@
 ---
 name: cpp-pro
 description: Use when building C++ applications requiring modern C++20/23 features, template metaprogramming, or high-performance systems. Invoke for concepts, ranges, coroutines, SIMD optimization, memory management.
-triggers:
-  - C++
-  - C++20
-  - C++23
-  - modern C++
-  - template metaprogramming
-  - systems programming
-  - performance optimization
-  - SIMD
-  - memory management
-  - CMake
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: C++, C++20, C++23, modern C++, template metaprogramming, systems programming, performance optimization, SIMD, memory management, CMake
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: rust-engineer, embedded-systems
 ---
 
 # C++ Pro

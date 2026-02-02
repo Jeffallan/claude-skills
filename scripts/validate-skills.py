@@ -43,45 +43,81 @@ def simple_yaml_parse(yaml_str: str) -> dict:
     Handles the basic structure used in this project:
     - Simple key: value pairs
     - Lists with - prefix
+    - One level of nested mappings (e.g., metadata: with indented key: value)
     """
     result = {}
     current_key = None
-    current_list = None
+    current_collection = None  # list or dict
+    collection_type = None  # "list" or "dict" or None (undetermined)
+
+    def _save_current():
+        nonlocal current_key, current_collection, collection_type
+        if current_key and current_collection is not None:
+            result[current_key] = current_collection
+        current_key = None
+        current_collection = None
+        collection_type = None
 
     for line in yaml_str.strip().split("\n"):
         # Skip empty lines
         if not line.strip():
             continue
 
-        # Check for list item
+        # Check for list item (indented with -)
         if line.startswith("  - ") or line.startswith("    - "):
-            if current_key and current_list is not None:
-                item = line.strip().lstrip("- ").strip()
-                current_list.append(item)
+            if current_key is not None:
+                if collection_type is None:
+                    # First child is a list item — this is a list
+                    current_collection = []
+                    collection_type = "list"
+                if collection_type == "list":
+                    item = line.strip().lstrip("- ").strip()
+                    current_collection.append(item)
             continue
 
-        # Check for key: value pair
+        # Check for nested key: value (indented, part of a mapping)
+        if line.startswith("  ") and ":" in line and not line.startswith("  - "):
+            if current_key is not None:
+                if collection_type is None:
+                    # First child is a key: value — this is a dict
+                    current_collection = {}
+                    collection_type = "dict"
+                if collection_type == "dict":
+                    nested_parts = line.strip().split(":", 1)
+                    nested_key = nested_parts[0].strip()
+                    nested_value = nested_parts[1].strip() if len(nested_parts) > 1 else ""
+                    # Strip surrounding quotes from values
+                    if nested_value.startswith('"') and nested_value.endswith('"'):
+                        nested_value = nested_value[1:-1]
+                    current_collection[nested_key] = nested_value
+            continue
+
+        # Check for top-level key: value pair
         if ":" in line and not line.startswith(" "):
-            # Save previous list if any
-            if current_key and current_list is not None:
-                result[current_key] = current_list
+            _save_current()
 
             parts = line.split(":", 1)
             key = parts[0].strip()
             value = parts[1].strip() if len(parts) > 1 else ""
 
-            # Check if this starts a list (empty value or just whitespace)
             if not value:
+                # Starts a collection — type determined by first child
                 current_key = key
-                current_list = []
+                current_collection = None
+                collection_type = None
             else:
+                # Strip surrounding quotes from values
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
                 result[key] = value
-                current_key = None
-                current_list = None
 
-    # Save any remaining list
-    if current_key and current_list is not None:
-        result[current_key] = current_list
+    # Save any remaining collection
+    if current_key is not None:
+        if current_collection is None:
+            # Key with no children — store as empty dict
+            result[current_key] = {}
+        else:
+            result[current_key] = current_collection
 
     return result
 
@@ -98,10 +134,20 @@ def parse_yaml(yaml_str: str) -> dict:
 # =============================================================================
 
 SKILLS_DIR = "skills"
-REQUIRED_FIELDS = ["name", "description", "triggers"]
+REQUIRED_FIELDS = ["name", "description"]
 MAX_DESCRIPTION_LENGTH = 1024
 DESCRIPTION_PREFIX = "Use when"
 NAME_PATTERN = re.compile(r"^[a-zA-Z0-9-]+$")
+
+# Required metadata sub-fields (under the metadata key)
+REQUIRED_METADATA_FIELDS = ["triggers", "role", "scope", "output-format", "domain", "related-skills"]
+
+# Known domain values (warning, not error, for unknown)
+KNOWN_DOMAINS = {
+    "language", "backend", "frontend", "infrastructure", "api-architecture",
+    "quality", "devops", "security", "data-ml", "platform", "specialized",
+    "workflow",
+}
 
 # Files to check for count consistency
 COUNT_FILES = [
@@ -341,14 +387,6 @@ class RequiredFieldsChecker(BaseChecker):
                     message=f"Missing required field: {field}",
                     file=str(skill_md),
                 ))
-            elif field == "triggers" and not isinstance(frontmatter.get("triggers"), list):
-                issues.append(ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message="'triggers' must be a list",
-                    file=str(skill_md),
-                ))
 
         return issues
 
@@ -482,6 +520,123 @@ class DescriptionFormatChecker(BaseChecker):
                 message=f"Description should start with '{DESCRIPTION_PREFIX}' (trigger-only format)",
                 file=str(skill_md),
             ))
+
+        return issues
+
+
+class MetadataFieldsChecker(BaseChecker):
+    """Validates metadata key exists with required sub-fields."""
+
+    name = "metadata-fields"
+    category = "yaml"
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        issues = []
+        skill_md = skill_path / "SKILL.md"
+
+        if not skill_md.exists():
+            return issues
+
+        content = skill_md.read_text()
+        if not content.startswith("---"):
+            return issues
+
+        parts = content.split("---", 2)
+        if len(parts) < 3:
+            return issues
+
+        try:
+            frontmatter = parse_yaml(parts[1])
+            if frontmatter is None:
+                return issues
+        except Exception:
+            return issues
+
+        metadata = frontmatter.get("metadata")
+        if metadata is None:
+            issues.append(ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.ERROR,
+                message="Missing 'metadata' key",
+                file=str(skill_md),
+            ))
+            return issues
+
+        if not isinstance(metadata, dict):
+            issues.append(ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.ERROR,
+                message="'metadata' must be a mapping",
+                file=str(skill_md),
+            ))
+            return issues
+
+        for field in REQUIRED_METADATA_FIELDS:
+            if field not in metadata:
+                issues.append(ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Missing required metadata field: {field}",
+                    file=str(skill_md),
+                ))
+
+        # Validate triggers is a non-empty string
+        triggers = metadata.get("triggers")
+        if triggers is not None:
+            if not isinstance(triggers, str) or not triggers.strip():
+                issues.append(ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="'metadata.triggers' must be a non-empty string",
+                    file=str(skill_md),
+                ))
+
+        # Validate domain is a known value (warning, not error)
+        domain = metadata.get("domain")
+        if domain is not None and domain not in KNOWN_DOMAINS:
+            issues.append(ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"Unknown domain: '{domain}'. Known: {', '.join(sorted(KNOWN_DOMAINS))}",
+                file=str(skill_md),
+            ))
+
+        # Validate related-skills is a non-empty string with valid skill references
+        if "related-skills" in metadata:
+            related = metadata.get("related-skills")
+            if related is None or (isinstance(related, str) and not related.strip()):
+                issues.append(ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="'metadata.related-skills' is empty",
+                    file=str(skill_md),
+                ))
+            elif not isinstance(related, str):
+                issues.append(ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="'metadata.related-skills' must be a string",
+                    file=str(skill_md),
+                ))
+            else:
+                # Validate each comma-separated value resolves to an existing skill directory
+                skills_dir = skill_path.parent
+                for ref in (r.strip() for r in related.split(",")):
+                    if ref and not (skills_dir / ref).is_dir():
+                        issues.append(ValidationIssue(
+                            skill=skill_name,
+                            check=self.name,
+                            severity=Severity.WARNING,
+                            message=f"'metadata.related-skills' references non-existent skill: '{ref}'",
+                            file=str(skill_md),
+                        ))
 
         return issues
 
@@ -1295,6 +1450,7 @@ class SkillValidator:
         all_checkers = [
             YamlChecker(),
             RequiredFieldsChecker(),
+            MetadataFieldsChecker(),
             NameFormatChecker(),
             DescriptionLengthChecker(),
             DescriptionFormatChecker(),

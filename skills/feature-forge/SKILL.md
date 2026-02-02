@@ -1,16 +1,16 @@
 ---
 name: feature-forge
 description: Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs.
-triggers:
-  - requirements
-  - specification
-  - feature definition
-  - user stories
-  - EARS
-  - planning
-role: specialist
-scope: design
-output-format: document
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: workflow
+  triggers: requirements, specification, feature definition, user stories, EARS, planning
+  role: specialist
+  scope: design
+  output-format: document
+  related-skills: fullstack-guardian, spec-miner, test-master
 ---
 
 # Feature Forge

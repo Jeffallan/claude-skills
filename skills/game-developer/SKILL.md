@@ -1,19 +1,16 @@
 ---
 name: game-developer
 description: Use when building game systems, implementing Unity/Unreal features, or optimizing game performance. Invoke for Unity, Unreal, game patterns, ECS, physics, networking, performance optimization.
-triggers:
-  - Unity
-  - Unreal Engine
-  - game development
-  - ECS architecture
-  - game physics
-  - multiplayer networking
-  - game optimization
-  - shader programming
-  - game AI
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: specialized
+  triggers: Unity, Unreal Engine, game development, ECS architecture, game physics, multiplayer networking, game optimization, shader programming, game AI
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: 
 ---
 
 # Game Developer

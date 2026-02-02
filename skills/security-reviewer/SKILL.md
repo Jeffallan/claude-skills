@@ -1,22 +1,17 @@
 ---
 name: security-reviewer
 description: Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews.
-triggers:
-  - security review
-  - vulnerability scan
-  - SAST
-  - security audit
-  - penetration test
-  - code audit
-  - security analysis
-  - infrastructure security
-  - DevSecOps
-  - cloud security
-  - compliance audit
-role: specialist
-scope: review
+license: MIT
 allowed-tools: Read, Grep, Glob, Bash
-output-format: report
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: security
+  triggers: security review, vulnerability scan, SAST, security audit, penetration test, code audit, security analysis, infrastructure security, DevSecOps, cloud security, compliance audit
+  role: specialist
+  scope: review
+  output-format: report
+  related-skills: secure-code-guardian, code-reviewer, devops-engineer, cloud-architect, kubernetes-specialist
 ---
 
 # Security Reviewer

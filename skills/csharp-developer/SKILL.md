@@ -1,19 +1,16 @@
 ---
 name: csharp-developer
-description: Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Invoke for Entity Framework Core, minimal APIs, async patterns, CQRS with MediatR.
-triggers:
-  - C#
-  - .NET
-  - ASP.NET Core
-  - Blazor
-  - Entity Framework
-  - EF Core
-  - Minimal API
-  - MAUI
-  - SignalR
-role: specialist
-scope: implementation
-output-format: code
+description: "Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Invoke for Entity Framework Core, minimal APIs, async patterns, CQRS with MediatR."
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: C#, .NET, ASP.NET Core, Blazor, Entity Framework, EF Core, Minimal API, MAUI, SignalR
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: api-designer, database-optimizer, devops-engineer
 ---
 
 # C# Developer

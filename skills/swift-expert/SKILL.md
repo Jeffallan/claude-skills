@@ -1,18 +1,16 @@
 ---
 name: swift-expert
 description: Use when building iOS/macOS applications with Swift 5.9+, SwiftUI, or async/await concurrency. Invoke for protocol-oriented programming, SwiftUI state management, actors, server-side Swift.
-triggers:
-  - Swift
-  - SwiftUI
-  - iOS development
-  - macOS development
-  - async/await Swift
-  - Combine
-  - UIKit
-  - Vapor
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: Swift, SwiftUI, iOS development, macOS development, async/await Swift, Combine, UIKit, Vapor
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: 
 ---
 
 # Swift Expert

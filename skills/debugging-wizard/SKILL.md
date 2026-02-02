@@ -1,20 +1,16 @@
 ---
 name: debugging-wizard
 description: Use when investigating errors, analyzing stack traces, or finding root causes of unexpected behavior. Invoke for error investigation, troubleshooting, log analysis, root cause analysis.
-triggers:
-  - debug
-  - error
-  - bug
-  - exception
-  - traceback
-  - stack trace
-  - troubleshoot
-  - not working
-  - crash
-  - fix issue
-role: specialist
-scope: analysis
-output-format: analysis
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: quality
+  triggers: debug, error, bug, exception, traceback, stack trace, troubleshoot, not working, crash, fix issue
+  role: specialist
+  scope: analysis
+  output-format: analysis
+  related-skills: test-master, fullstack-guardian, monitoring-expert
 ---
 
 # Debugging Wizard

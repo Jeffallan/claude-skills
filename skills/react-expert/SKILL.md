@@ -1,24 +1,16 @@
 ---
 name: react-expert
 description: Use when building React 18+ applications requiring component architecture, hooks patterns, or state management. Invoke for Server Components, performance optimization, Suspense boundaries, React 19 features.
-triggers:
-  - React
-  - JSX
-  - hooks
-  - useState
-  - useEffect
-  - useContext
-  - Server Components
-  - React 19
-  - Suspense
-  - TanStack Query
-  - Redux
-  - Zustand
-  - component
-  - frontend
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: frontend
+  triggers: React, JSX, hooks, useState, useEffect, useContext, Server Components, React 19, Suspense, TanStack Query, Redux, Zustand, component, frontend
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, playwright-expert, test-master
 ---
 
 # React Expert

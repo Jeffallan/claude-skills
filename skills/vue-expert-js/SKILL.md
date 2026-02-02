@@ -1,17 +1,16 @@
 ---
 name: vue-expert-js
 description: Use when building Vue 3 applications with JavaScript only (no TypeScript). Invoke for JSDoc typing, vanilla JS composables, .mjs modules.
-triggers:
-  - Vue JavaScript
-  - Vue without TypeScript
-  - Vue JSDoc
-  - Vue JS only
-  - Vue vanilla JavaScript
-  - .mjs Vue
-  - Vue no TS
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: frontend
+  triggers: Vue JavaScript, Vue without TypeScript, Vue JSDoc, Vue JS only, Vue vanilla JavaScript, .mjs Vue, Vue no TS
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: vue-expert, javascript-pro
 ---
 
 # Vue Expert (JavaScript)

@@ -1,17 +1,16 @@
 ---
 name: playwright-expert
 description: Use when writing E2E tests with Playwright, setting up test infrastructure, or debugging flaky browser tests. Invoke for browser automation, E2E tests, Page Object Model, test flakiness, visual testing.
-triggers:
-  - Playwright
-  - E2E test
-  - end-to-end
-  - browser testing
-  - automation
-  - UI testing
-  - visual testing
-role: specialist
-scope: testing
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: quality
+  triggers: Playwright, E2E test, end-to-end, browser testing, automation, UI testing, visual testing
+  role: specialist
+  scope: testing
+  output-format: code
+  related-skills: test-master, react-expert, devops-engineer
 ---
 
 # Playwright Expert

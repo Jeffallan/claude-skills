@@ -1,19 +1,16 @@
 ---
 name: nextjs-developer
 description: Use when building Next.js 14+ applications with App Router, server components, or server actions. Invoke for full-stack features, performance optimization, SEO implementation, production deployment.
-triggers:
-  - Next.js
-  - Next.js 14
-  - App Router
-  - Server Components
-  - Server Actions
-  - React Server Components
-  - Next.js deployment
-  - Vercel
-  - Next.js performance
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: frontend
+  triggers: Next.js, Next.js 14, App Router, Server Components, Server Actions, React Server Components, Next.js deployment, Vercel, Next.js performance
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: typescript-pro
 ---
 
 # Next.js Developer

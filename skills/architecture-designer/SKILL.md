@@ -1,18 +1,16 @@
 ---
 name: architecture-designer
 description: Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning.
-triggers:
-  - architecture
-  - system design
-  - design pattern
-  - microservices
-  - scalability
-  - ADR
-  - technical design
-  - infrastructure
-role: expert
-scope: design
-output-format: document
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: api-architecture
+  triggers: architecture, system design, design pattern, microservices, scalability, ADR, technical design, infrastructure
+  role: expert
+  scope: design
+  output-format: document
+  related-skills: fullstack-guardian, devops-engineer, secure-code-guardian
 ---
 
 # Architecture Designer

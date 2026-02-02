@@ -1,17 +1,17 @@
 ---
 name: spec-miner
 description: Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.
-triggers:
-  - reverse engineer
-  - legacy code
-  - code analysis
-  - undocumented
-  - understand codebase
-  - existing system
-role: specialist
-scope: review
+license: MIT
 allowed-tools: Read, Grep, Glob, Bash
-output-format: document
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: workflow
+  triggers: reverse engineer, legacy code, code analysis, undocumented, understand codebase, existing system
+  role: specialist
+  scope: review
+  output-format: document
+  related-skills: feature-forge, fullstack-guardian, architecture-designer
 ---
 
 # Spec Miner

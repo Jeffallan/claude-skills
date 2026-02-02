@@ -1,20 +1,16 @@
 ---
 name: rag-architect
 description: Use when building RAG systems, vector databases, or knowledge-grounded AI applications requiring semantic search, document retrieval, or context augmentation.
-triggers:
-  - RAG
-  - retrieval-augmented generation
-  - vector search
-  - embeddings
-  - semantic search
-  - vector database
-  - document retrieval
-  - knowledge base
-  - context retrieval
-  - similarity search
-role: architect
-scope: system-design
-output-format: architecture
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: data-ml
+  triggers: RAG, retrieval-augmented generation, vector search, embeddings, semantic search, vector database, document retrieval, knowledge base, context retrieval, similarity search
+  role: architect
+  scope: system-design
+  output-format: architecture
+  related-skills: python-pro, database-optimizer, monitoring-expert, api-designer
 ---
 
 # RAG Architect

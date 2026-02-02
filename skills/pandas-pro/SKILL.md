@@ -1,22 +1,16 @@
 ---
 name: pandas-pro
 description: Use when working with pandas DataFrames, data cleaning, aggregation, merging, or time series analysis. Invoke for data manipulation, missing value handling, groupby operations, or performance optimization.
-triggers:
-  - pandas
-  - DataFrame
-  - data manipulation
-  - data cleaning
-  - aggregation
-  - groupby
-  - merge
-  - join
-  - time series
-  - data wrangling
-  - pivot table
-  - data transformation
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: data-ml
+  triggers: pandas, DataFrame, data manipulation, data cleaning, aggregation, groupby, merge, join, time series, data wrangling, pivot table, data transformation
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: python-pro
 ---
 
 # Pandas Pro

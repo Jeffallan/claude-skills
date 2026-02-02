@@ -1,22 +1,16 @@
 ---
 name: devops-engineer
 description: Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps.
-triggers:
-  - DevOps
-  - CI/CD
-  - deployment
-  - Docker
-  - Kubernetes
-  - Terraform
-  - GitHub Actions
-  - infrastructure
-  - platform engineering
-  - incident response
-  - on-call
-  - self-service
-role: engineer
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: devops
+  triggers: DevOps, CI/CD, deployment, Docker, Kubernetes, Terraform, GitHub Actions, infrastructure, platform engineering, incident response, on-call, self-service
+  role: engineer
+  scope: implementation
+  output-format: code
+  related-skills: 
 ---
 
 # DevOps Engineer

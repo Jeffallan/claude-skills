@@ -1,25 +1,16 @@
 ---
 name: ml-pipeline
 description: Use when building ML pipelines, orchestrating training workflows, automating model lifecycle, implementing feature stores, or managing experiment tracking systems.
-triggers:
-  - ML pipeline
-  - MLflow
-  - Kubeflow
-  - feature engineering
-  - model training
-  - experiment tracking
-  - feature store
-  - hyperparameter tuning
-  - pipeline orchestration
-  - model registry
-  - training workflow
-  - MLOps
-  - model deployment
-  - data pipeline
-  - model versioning
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: data-ml
+  triggers: ML pipeline, MLflow, Kubeflow, feature engineering, model training, experiment tracking, feature store, hyperparameter tuning, pipeline orchestration, model registry, training workflow, MLOps, model deployment, data pipeline, model versioning
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer, kubernetes-specialist, cloud-architect, python-pro
 ---
 
 # ML Pipeline Expert

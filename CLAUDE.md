@@ -34,21 +34,43 @@ Descriptions tell WHEN to use the skill. The SKILL.md body tells HOW.
 
 ### Frontmatter Requirements
 
+Per the [Agent Skills specification](https://agentskills.io/specification), only `name` and `description` are top-level required fields. Custom fields go under `metadata`.
+
 ```yaml
 ---
 name: skill-name-with-hyphens
 description: Use when [triggering conditions] - max 1024 chars
-triggers: [keyword1, keyword2, keyword3]
-role: specialist|expert|architect
-scope: implementation|review|design|system-design
-output-format: code|document|report|architecture
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: frontend
+  triggers: keyword1, keyword2, keyword3
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, test-master, devops-engineer
 ---
 ```
 
-**Constraints:**
+**Top-level fields (spec-defined):**
 - `name`: Letters, numbers, and hyphens only (no parentheses or special characters)
 - `description`: Maximum 1024 characters, trigger-only format
-- `triggers`: Searchable keywords that would appear in user requests
+- `license`: Always `MIT` for this project
+- `allowed-tools`: Space-delimited tool list (only on skills that restrict tools)
+
+**Metadata fields (project-specific):**
+- `author`: GitHub profile URL of the skill author
+- `version`: Semantic version string (quoted, e.g., `"1.0.0"`)
+- `domain`: Category from the domain list below
+- `triggers`: Comma-separated searchable keywords
+- `role`: `specialist` | `expert` | `architect` | `engineer`
+- `scope`: `implementation` | `review` | `design` | `system-design` | `testing` | `analysis` | `infrastructure` | `optimization` | `architecture`
+- `output-format`: `code` | `document` | `report` | `architecture` | `specification` | `schema` | `manifests` | `analysis` | `analysis-and-code` | `code+analysis`
+- `related-skills`: Comma-separated skill directory names (e.g., `fullstack-guardian, test-master`). Must resolve to existing skill directories.
+
+**Domain values:**
+`language` · `backend` · `frontend` · `infrastructure` · `api-architecture` · `quality` · `devops` · `security` · `data-ml` · `platform` · `specialized` · `workflow`
 
 ---
 
