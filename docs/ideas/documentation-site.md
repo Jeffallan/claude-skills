@@ -232,52 +232,128 @@ Use a technical writing agent to:
 4. **Write missing content** — landing page copy, category descriptions, getting started guide
 5. **Refresh stale content** — update any sections referencing old versions or outdated patterns
 
-### Phase 3: Site Generator Selection and Setup
+### Phase 3: Complete #69 — Skill Metadata Enhancement (BLOCKING)
 
-Evaluate based on:
-- **[HARD] Dual-format output** — Can it output both HTML and raw markdown for every page?
-- Can it consume YAML frontmatter and generate pages programmatically?
-- Does it support auto-generation from structured data (like the command YAML files)?
-- Does it handle markdown with embedded code blocks well?
-- Does it support sitemap generation, meta tags, OpenGraph?
-- Can it deploy to GitHub Pages?
+**This phase must complete before site generator setup.** The Astro content collection schemas depend on the finalized metadata structure. Building the site before #69 means defining the schema twice — once provisionally, then again when the metadata spec lands.
 
-Candidates:
-- **MkDocs + Material theme** — Python ecosystem, strong autodoc mindset, YAML-native config, good search. Dual-format: would need a plugin or post-build script to copy source .md files to output.
-- **Astro + Starlight** — Modern, content-collection-based, supports YAML/MDX, fast builds. Dual-format: Astro's build pipeline can output multiple formats per route via custom endpoints.
-- **Docusaurus** — React-based, good for versioned docs, plugin ecosystem. Dual-format: would need a custom plugin to emit .md alongside HTML.
-- **VitePress** — Vue-based, fast, good defaults for technical docs. Dual-format: would need a post-build step.
+#69 determines:
+- What fields exist in SKILL.md frontmatter vs. the `metadata.*` key
+- How relationship types are structured (complementary, prerequisite, alternative)
+- Whether domain tags, compatibility info, or other new metadata lives under `metadata.*`
+- The finalized schema that both the agent runtime AND the docs site consume
 
-Note: Since the source content is already markdown, the simplest dual-format approach for any generator is a post-build script that copies the source `.md` files into the output directory mirroring the HTML route structure. This is generator-agnostic and avoids lock-in.
+The content collection schema, the internal link graph, the per-page meta tags, and the `llms.txt` index all derive from whatever #69 produces. Get the data model right first.
 
-### Phase 4: Build and Deploy
+**What CAN proceed in parallel with #69:**
+- Phase 1 (audit) and Phase 2 (content restructuring) — these are about the docs content, not the schema
+- Evaluating Astro + Starlight with a proof-of-concept using current frontmatter fields
+- Setting up the repo structure for the docs site (Astro project scaffolding)
 
-1. Set up the selected generator with the proposed site structure
-2. Write generator plugins/scripts to consume YAML definitions and produce pages
-3. Deploy to GitHub Pages with custom domain
-4. Submit sitemap to Google Search Console
-5. Add `llms.txt` to site root
-6. Add sponsor badges to site and repo README
-7. Set up GitHub Actions for auto-deploy on push to main
+### Phase 4: Site Generator Setup — Astro + Starlight
 
-### Phase 5: Ongoing Maintenance
+#### Decision: Astro + Starlight
+
+After evaluating Docusaurus, Hugo, MkDocs Material, and VitePress against the hard requirements (dual-format output, auto-generation from YAML/markdown, SEO), **Astro + Starlight** is the recommended choice.
+
+**Why Astro wins for this project:**
+
+| Requirement | How Astro Handles It |
+|---|---|
+| **Dual-format (HTML+MD)** | Custom endpoints serve raw markdown at `/skills/react-expert/index.md` alongside HTML at `/skills/react-expert/`. Supported pattern, not a hack. |
+| **Auto-gen from YAML/SKILL.md** | Content collections: define a schema matching SKILL.md frontmatter, point at `skills/*/SKILL.md`, pages are auto-generated with typed data. Command YAML files become a second collection. |
+| **SEO out of the box** | 100/100 Lighthouse scores. Auto sitemap, meta tags, OpenGraph. Starlight adds search, navigation, TOC. |
+| **Zero JS shipped** | Pure static HTML by default. No SPA hydration overhead. Instant loads for developers hitting docs from Google or LLM referrals. |
+| **Social cards** | Existing `scripts/capture-screenshot.js` can be adapted for per-page OG images. |
+
+**Why not the others:**
+
+- **Docusaurus** — Best SEO defaults, but ships a React SPA (unnecessary JS weight) and has no native content collection concept. Dual-format requires a custom plugin.
+- **Hugo** — Only SSG with first-class dual-format output (custom output formats). But Go templating for auto-generation from structured YAML is more manual wiring than Astro content collections. Strong fallback if Astro proves problematic.
+- **MkDocs Material** — Unique auto social card generation, but weakest on dual-format and programmatic page generation. Too opinionated about directory structure.
+- **VitePress** — Fast and clean, but less mature plugin ecosystem and no content collections.
+
+**Ecosystem fit:** The project targets TypeScript/JavaScript developers. Astro uses TypeScript natively. Existing Python scripts (`validate-skills.py`, `update-docs.py`) remain as CI validation — the site generator doesn't replace them.
+
+#### How Content Collections Map to This Project
+
+```
+// Astro content collection schema (conceptual)
+// IMPORTANT: Final schema depends on #69 metadata enhancement
+
+skills collection:
+  source: skills/*/SKILL.md
+  schema:
+    name: string          ← from frontmatter
+    description: string   ← from frontmatter (max 1024 chars)
+    triggers: string[]    ← from frontmatter
+    role: enum            ← specialist | expert | architect
+    scope: enum           ← implementation | review | design | ...
+    output-format: enum   ← code | document | report | ...
+    metadata:             ← from #69, structure TBD
+      related: object[]   ← typed relationships (complementary, prerequisite, etc.)
+      domain: string[]    ← domain tags
+      ...
+
+commands collection:
+  source: commands/**/*.yaml
+  schema:
+    command: string       ← phase:action identifier
+    phase: string         ← intake | discovery | planning | ...
+    inputs: object[]      ← typed input definitions
+    outputs: object[]     ← typed output definitions
+    requires: string[]    ← ticketing | documentation
+    status: enum          ← existing | planned | deprecated
+
+workflows collection:
+  source: commands/workflow-manifest.yaml
+  schema:
+    phases: object        ← DAG definition with depends_on edges
+    utilities: object[]   ← on-demand commands
+```
+
+### Phase 5: Build and Deploy
+
+1. Define Astro content collection schemas from finalized #69 metadata spec
+2. Build page templates for skills, commands, workflows
+3. Implement dual-format endpoints (HTML + markdown per page)
+4. Generate `llms.txt` from content collections at build time
+5. Deploy to GitHub Pages with custom domain
+6. Submit sitemap to Google Search Console
+7. Add sponsor badges to site and repo README
+8. Set up GitHub Actions for auto-deploy on push to main
+
+### Phase 6: Ongoing Maintenance
 
 - CI check: validate that every skill/command has a corresponding docs page
 - CI check: validate internal links (extends #100 cross-reference validation)
 - Auto-regenerate `llms.txt` on release
 - Auto-regenerate sitemap on content changes
+- Content collection schema validation catches broken frontmatter at build time
 
 ---
 
-## Relationship to Existing Issues
+## Dependency Chain
 
-| Issue | Relationship |
-|-------|-------------|
-| #69 — Skill Metadata Enhancement | Prerequisite for structured internal linking; can proceed with static `## Related Skills` sections initially |
-| #100 — Cross-Reference Validation | Extends to docs site link validation |
-| #65 — Cross-Domain Recommendations | Content improvements that directly improve docs site quality |
-| #66 — Enhanced Routing Logic | Better descriptions/triggers = better page titles and meta descriptions |
-| #68 — Skill Dependency Mapping | Visual DAG representation becomes a docs site page |
+```
+#69 Skill Metadata Enhancement
+ ├── Docs site content collection schemas (can't finalize without #69)
+ ├── #65 Cross-Domain Recommendations (content work, depends on #69)
+ ├── #66 Enhanced Routing Logic (better descriptions = better page titles)
+ └── Internal link graph (relationship metadata → <a href> links)
+
+#100 Cross-Reference Validation
+ └── Docs site link validation (same check, dual purpose)
+
+#68 Skill Dependency Mapping
+ └── DAG visualization page on docs site
+
+Phase 1 (Audit) ──────────────────── can start NOW
+Phase 2 (Content restructuring) ──── can start NOW
+Phase 3 (#69 metadata) ──────────── BLOCKING for site schema
+Phase 4 (Astro setup) ───────────── after #69
+Phase 5 (Build and deploy) ──────── after Phase 4
+Phase 6 (Maintenance) ───────────── ongoing after Phase 5
+```
 
 ---
 
@@ -285,5 +361,5 @@ Note: Since the source content is already markdown, the simplest dual-format app
 
 1. **Custom domain?** — `docs.claudeskills.dev`, `skills.jeffallan.dev`, or subdirectory of existing site?
 2. **Versioned docs?** — Do we need docs for multiple versions, or just latest?
-3. **Search** — Built-in site search vs. Algolia DocSearch (free for open source)?
-4. **When to start?** — Can begin Phase 1 (audit) independently of #69 metadata work
+3. **Search** — Starlight built-in search vs. Algolia DocSearch (free for open source)?
+4. **Docs site repo** — Same repo (monorepo with `/site` directory) or separate repo?

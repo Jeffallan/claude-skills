@@ -223,80 +223,80 @@ And all issue links resolve to existing GitHub issues
 
 ## Implementation TODO
 
-### Phase 1: YAML Schema & Definitions
-- [ ] Define YAML schema for per-command workflow definitions (document in `commands/references/workflow-definition-schema.md`)
-- [ ] Create `.yaml` files for all 11 commands (3 intake, 3 discovery, 2 planning, 2 execution, 1 retrospective)
-- [ ] Create `commands/workflow-manifest.yaml` with phase DAG and per-phase ordering
-- [ ] Create `docs/workflow/` directory with per-phase and per-command overview markdown files
+### Phase 1: YAML Schema & Definitions (DONE)
+- [x] Define YAML schema for per-command workflow definitions (document in `docs/workflow/workflow-definition-schema.md`)
+- [x] Create `.yaml` files for all 12 commands (3 intake, 3 discovery, 2 planning, 2 execution, 1 retrospective, 1 utility)
+- [x] Create `commands/workflow-manifest.yaml` with phase DAG and per-phase ordering
+- [x] Create `docs/workflow/` directory with per-phase and per-command overview markdown files
 
-### Phase 2: Document Consolidation
-- [ ] Merge `v0.5.0-ideas.md`, `v0.5.0-ideas-2.md`, `v0.5.0-implementation.md` into `docs/v0.5.0-plan.md`
-- [ ] Restructure `docs/v0.5.0-narrative.md` with per-command input/output format
-- [ ] Delete superseded docs
-- [ ] Cross-link plan doc ↔ GitHub issues ↔ YAML definitions
+### Phase 2: Document Consolidation (DONE)
+- [x] Merge `v0.5.0-ideas.md`, `v0.5.0-ideas-2.md`, `v0.5.0-implementation.md` into `docs/v0.5.0-plan.md`
+- [x] Restructure `docs/v0.5.0-narrative.md` with per-command input/output format
+- [x] Delete superseded docs
+- [x] Cross-link plan doc ↔ GitHub issues ↔ YAML definitions
 
-### Phase 3: GitHub Issue Re-Triage
-- [ ] Create milestone: v0.6.0 (global-to-local config migration)
-- [ ] Create milestone: v0.7.0 (enhanced skill routing + common-ground)
+### Phase 3: GitHub Issue Re-Triage (DONE)
+- [x] Create milestone: v0.6.0 (global-to-local config migration)
+- [x] Create milestone: v0.7.0 (enhanced skill routing + common-ground)
 
 **v0.5.0 assignments:**
-- [ ] Keep #62 in v0.5.0 (core workflow generalization)
-- [ ] Assign #103 to v0.5.0 (discovery rework covers this)
+- [x] Keep #62 in v0.5.0 (core workflow generalization)
+- [x] Assign #103 to v0.5.0 (discovery rework covers this)
 
 **v0.6.0 assignments:**
-- [ ] Move #50-55 from v0.5.0 to v0.6.0 (depend on local config)
-- [ ] Assign #109 to v0.6.0 (local config migration)
+- [x] Move #50-55 from v0.5.0 to v0.6.0 (depend on local config)
+- [x] Assign #109 to v0.6.0 (local config migration)
 
 **v0.7.0 assignments:**
-- [ ] Move #65, #66, #69 from v0.5.0 to v0.7.0 (skill content work)
-- [ ] Move #68 from v0.5.0 to v0.7.0 (deferred diagram generation)
-- [ ] Assign #108, #110, #111 to v0.7.0 (common-ground enhancements)
+- [x] Move #65, #66, #69 from v0.5.0 to v0.7.0 (skill content work)
+- [x] Move #68 from v0.5.0 to v0.7.0 (deferred diagram generation)
+- [x] Assign #108, #110, #111 to v0.7.0 (common-ground enhancements)
 
 **Closures:**
-- [ ] Close #67 (deep linking → #69, context sharing → deferred to v0.6.0)
-- [ ] Close #70, #71, #72 as duplicates (merged into #64)
-- [ ] Update #64 body to consolidate scope from #70, #71, #72
-- [ ] Convert #64 to GitHub Discussion, label 'needs-third-party'
+- [x] Close #67 (deep linking → #69, context sharing → deferred to v0.6.0)
+- [x] Close #70, #71, #72 as duplicates (merged into #64)
+- [x] Update #64 body to consolidate scope from #70, #71, #72
+- [x] Label #64 'needs-third-party', remove from milestone
+- [ ] Convert #64 to GitHub Discussion (requires GitHub UI — manual step)
 
 **No milestone:**
-- [ ] Leave #98, #100 unmilestoned (good-first-issues)
-- [ ] Leave #106, #107 unmilestoned (infrastructure, not release-tied)
+- [x] Leave #98, #100 unmilestoned (good-first-issues)
+- [x] Leave #106, #107 unmilestoned (infrastructure, not release-tied)
 
-**New issues to create for v0.5.0:**
-- [ ] Backend adapter reference files (Phase 1 of v0.5.0 plan)
-- [ ] Intake commands (document-codebase, capture-behavior, create-system-description)
-- [ ] Discovery command rework (topic-based, local-first)
-- [ ] Feature-forge integration (system description context, discovery recommendation)
-- [ ] Namespace change + directory restructure
-- [ ] YAML workflow definition schema + DAG manifest
-- [ ] Narrative document restructure
-- [ ] CI portability check (`npx skills` detection in GitHub Actions)
+**New issues created for v0.5.0:**
+- [x] #119 Backend adapter reference files
+- [x] #120 Intake commands (document-codebase, capture-behavior, create-system-description)
+- [x] #121 Discovery command rework (topic-based, local-first)
+- [x] #122 Feature-forge integration (system description context, discovery recommendation)
+- [x] #123 Namespace change + directory restructure
+- [x] #124 YAML workflow definition schema + DAG manifest
+- [x] #125 Narrative document restructure
+- [x] #126 CI portability check (`npx skills` detection in GitHub Actions)
 
 **Verification:**
-- [ ] Every open issue has a milestone (except #98, #100, #106, #107)
-- [ ] No issue is assigned to multiple milestones
+- [x] Every open issue has a milestone (except #64, #98, #100, #106, #107)
+- [x] No issue is assigned to multiple milestones
+- [x] Removed stale v0.5.0 label from all issues (milestones are source of truth)
 
-### Phase 4: Roadmap Update
-- [ ] Mark v0.3.0 as completed (note actual release info)
-- [ ] Mark v0.4.0, v0.4.1, v0.4.2 as completed
-- [ ] Rewrite v0.5.0 section: workflow overhaul (backend adapters, intake, discovery rework, feature-forge integration, namespace/directory restructure, YAML workflow definitions)
-- [ ] Add v0.6.0 section: global-to-local config migration (Discussion #112, meta-skill/project analyzer, per-project `.claude/skills/`, #50-55 workflow infra)
-- [ ] Add v0.7.0 section: enhanced skill routing (#64-72 with feasibility notes), common-ground improvements (#108-111), common-ground invocation points in new workflow
-- [ ] Update v0.8.0+ / v1.0.0 sections to reflect updated roadmap
-- [ ] Update development timeline ASCII diagram
-- [ ] Run `python scripts/update-docs.py` to sync counts
+### Phase 4: Roadmap Update (DONE)
+- [x] Mark v0.3.0 as completed (released 2025-12-26)
+- [x] Mark v0.4.0, v0.4.1, v0.4.2 as completed (2026-01-18, 2026-01-19, 2026-01-29)
+- [x] Rewrite v0.5.0 section: workflow overhaul (backend adapters, intake, discovery rework, feature-forge integration, namespace/directory restructure, YAML workflow definitions)
+- [x] Add v0.6.0 section: global-to-local config migration (Discussion #112, meta-skill/project analyzer, per-project `.claude/skills/`, #50-55 workflow infra)
+- [x] Add v0.7.0 section: enhanced skill routing (#64-72 with feasibility notes), common-ground improvements (#108-111)
+- [x] Update v1.0.0 section to reflect updated roadmap
+- [x] Update development timeline ASCII diagram
+- [ ] Run `python scripts/update-docs.py` to sync counts (deferred to v0.5.0 release)
 
-### Phase 5: Validation Script Extension
-- [ ] Extend `scripts/validate-skills.py` to validate `.yaml` workflow definitions
-- [ ] Add DAG cycle detection for `workflow-manifest.yaml`
-- [ ] Add orphan detection (YAML without .md, .md without YAML)
-- [ ] Ensure `scripts/update-docs.py` excludes `.yaml` from workflow count
+### Phase 5: Validation Script Extension (DONE)
+- [x] Extend `scripts/validate-skills.py` to validate `.yaml` workflow definitions (`--check workflows`)
+- [x] Add DAG cycle detection for `workflow-manifest.yaml`
+- [x] Add orphan detection (.md without YAML)
+- [x] Add manifest ↔ definition consistency check (command names match)
+- [x] Verified `scripts/update-docs.py` already excludes `.yaml` from workflow count (uses `rglob("*.md")`)
 
-### Phase 6: CI Portability Check
-- [ ] Add GitHub Action that runs `npx skills add . --non-interactive --list` on PRs
-- [ ] Assert detected skill count matches expected count from `version.json`
-- [ ] Catches portability regressions that `validate-skills.py` (project-specific) would miss
-- [ ] Validates skills remain discoverable by the standard ecosystem tooling (`add-skill`/`skills` CLI, VS Code Copilot, OpenCode, etc.)
+### Phase 6: CI Portability Check (DROPPED)
+Dropped — `npx skills add` resolves from the published registry, not the local working tree. Running it in CI on PRs would validate the last released version, not the PR's changes. The local `validate-skills.py` (Phase 5) is the pre-merge gate. Post-release smoke testing can be done manually.
 
 ## Out of Scope
 

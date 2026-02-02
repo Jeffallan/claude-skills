@@ -9,6 +9,7 @@ Usage:
     python scripts/validate-skills.py              # Run all checks
     python scripts/validate-skills.py --check yaml # YAML-related checks only
     python scripts/validate-skills.py --check references  # Reference checks only
+    python scripts/validate-skills.py --check workflows   # Workflow definition checks only
     python scripts/validate-skills.py --skill react-expert  # Single skill
     python scripts/validate-skills.py --format json  # JSON for CI
 
@@ -114,6 +115,27 @@ COUNT_FILES = [
 
 
 # =============================================================================
+# Workflow Constants
+# =============================================================================
+
+COMMANDS_DIR_WORKFLOW = "commands"
+MANIFEST_FILE = "commands/workflow-manifest.yaml"
+
+# Required fields in per-command YAML definitions
+REQUIRED_DEFINITION_FIELDS = [
+    "command", "path", "description", "inputs", "outputs", "requires",
+]
+
+# Valid values for workflow definition fields
+VALID_INPUT_TYPES = {"string", "url", "list[url]", "list[string]", "flag", "file[]"}
+VALID_OUTPUT_TYPES = {"url", "document", "tickets", "report", "file", "directory"}
+VALID_REQUIRES = {"ticketing", "documentation"}
+VALID_STATUS = {"existing", "planned", "deprecated"}
+VALID_PHASES = {"intake", "discovery", "planning", "execution", "retrospective"}
+VALID_DEPENDENCY_STRENGTHS = {"required", "recommended"}
+
+
+# =============================================================================
 # Data Classes
 # =============================================================================
 
@@ -169,29 +191,35 @@ class ValidationReport:
     """Full validation report."""
     results: list[ValidationResult] = field(default_factory=list)
     count_issues: list[ValidationIssue] = field(default_factory=list)
+    workflow_issues: list[ValidationIssue] = field(default_factory=list)
 
     @property
     def has_errors(self) -> bool:
-        return any(r.has_errors for r in self.results) or any(
-            i.severity == Severity.ERROR for i in self.count_issues
+        return (
+            any(r.has_errors for r in self.results)
+            or any(i.severity == Severity.ERROR for i in self.count_issues)
+            or any(i.severity == Severity.ERROR for i in self.workflow_issues)
         )
 
     @property
     def total_errors(self) -> int:
         count = sum(1 for r in self.results for i in r.issues if i.severity == Severity.ERROR)
         count += sum(1 for i in self.count_issues if i.severity == Severity.ERROR)
+        count += sum(1 for i in self.workflow_issues if i.severity == Severity.ERROR)
         return count
 
     @property
     def total_warnings(self) -> int:
         count = sum(1 for r in self.results for i in r.issues if i.severity == Severity.WARNING)
         count += sum(1 for i in self.count_issues if i.severity == Severity.WARNING)
+        count += sum(1 for i in self.workflow_issues if i.severity == Severity.WARNING)
         return count
 
     def to_dict(self) -> dict:
         return {
             "results": [r.to_dict() for r in self.results],
             "count_issues": [i.to_dict() for i in self.count_issues],
+            "workflow_issues": [i.to_dict() for i in self.workflow_issues],
             "summary": {
                 "total_skills": len(self.results),
                 "total_errors": self.total_errors,
@@ -560,6 +588,522 @@ class NonStandardHeadersChecker(BaseChecker):
 
 
 # =============================================================================
+# Workflow Checkers
+# =============================================================================
+
+class WorkflowDefinitionChecker:
+    """Validates per-command YAML definition files against the schema."""
+
+    name = "workflow-definition"
+
+    def check(self, base_path: Path) -> list[ValidationIssue]:
+        issues = []
+        commands_dir = base_path / COMMANDS_DIR_WORKFLOW
+
+        if not commands_dir.exists():
+            issues.append(ValidationIssue(
+                skill="__workflow__",
+                check=self.name,
+                severity=Severity.ERROR,
+                message=f"Commands directory not found: {commands_dir}",
+            ))
+            return issues
+
+        yaml_files = sorted([
+            f for f in commands_dir.rglob("*.yaml")
+            if f.name != "workflow-manifest.yaml"
+        ])
+
+        if not yaml_files:
+            issues.append(ValidationIssue(
+                skill="__workflow__",
+                check=self.name,
+                severity=Severity.WARNING,
+                message="No workflow definition YAML files found",
+            ))
+            return issues
+
+        for yaml_file in yaml_files:
+            rel_path = str(yaml_file.relative_to(base_path))
+            issues.extend(self._validate_definition(yaml_file, rel_path, base_path))
+
+        return issues
+
+    def _validate_definition(
+        self, yaml_file: Path, rel_path: str, base_path: Path
+    ) -> list[ValidationIssue]:
+        issues = []
+
+        try:
+            data = parse_yaml(yaml_file.read_text())
+            if data is None:
+                issues.append(ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="YAML file is empty",
+                    file=rel_path,
+                ))
+                return issues
+        except Exception as e:
+            issues.append(ValidationIssue(
+                skill=rel_path,
+                check=self.name,
+                severity=Severity.ERROR,
+                message=f"YAML parse error: {e}",
+                file=rel_path,
+            ))
+            return issues
+
+        command = data.get("command", "")
+        is_utility = ":" not in command
+
+        # Check required fields (phase is optional for utility commands)
+        for req_field in REQUIRED_DEFINITION_FIELDS:
+            if req_field not in data:
+                issues.append(ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Missing required field: {req_field}",
+                    file=rel_path,
+                ))
+
+        if not is_utility and "phase" not in data:
+            issues.append(ValidationIssue(
+                skill=rel_path,
+                check=self.name,
+                severity=Severity.ERROR,
+                message="Missing required field: phase (required for phased commands)",
+                file=rel_path,
+            ))
+
+        # Validate phase value
+        phase = data.get("phase", "")
+        if phase and phase not in VALID_PHASES:
+            issues.append(ValidationIssue(
+                skill=rel_path,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"Non-standard phase: '{phase}'. Expected: {', '.join(sorted(VALID_PHASES))}",
+                file=rel_path,
+            ))
+
+        # Validate command prefix matches phase
+        if command and phase and ":" in command:
+            cmd_phase = command.split(":")[0]
+            # Allow plural forms (e.g., "retrospectives" phase, "retrospectives:" prefix)
+            if cmd_phase != phase and cmd_phase.rstrip("s") != phase.rstrip("s"):
+                issues.append(ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Command prefix '{cmd_phase}' doesn't match phase '{phase}'",
+                    file=rel_path,
+                ))
+
+        # Validate status
+        status = data.get("status", "existing")
+        if status not in VALID_STATUS:
+            issues.append(ValidationIssue(
+                skill=rel_path,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"Unknown status: '{status}'. Expected: {', '.join(sorted(VALID_STATUS))}",
+                file=rel_path,
+            ))
+
+        # Validate path resolves (when status is existing)
+        cmd_path = data.get("path", "")
+        if cmd_path and status == "existing":
+            if not (base_path / cmd_path).exists():
+                issues.append(ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Command file not found: {cmd_path}",
+                    file=rel_path,
+                ))
+
+        # Validate description path resolves
+        desc_path = data.get("description", "")
+        if desc_path:
+            if not (base_path / desc_path).exists():
+                issues.append(ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Description file not found: {desc_path}",
+                    file=rel_path,
+                ))
+
+        # Validate requires values
+        requires = data.get("requires", [])
+        if isinstance(requires, list):
+            for req in requires:
+                if req not in VALID_REQUIRES:
+                    issues.append(ValidationIssue(
+                        skill=rel_path,
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message=f"Unknown requires value: '{req}'. Expected: {', '.join(sorted(VALID_REQUIRES))}",
+                        file=rel_path,
+                    ))
+
+        # Validate inputs structure
+        inputs = data.get("inputs", [])
+        if isinstance(inputs, list):
+            for i, inp in enumerate(inputs):
+                if isinstance(inp, dict):
+                    for req_field in ["name", "type", "required", "description"]:
+                        if req_field not in inp:
+                            issues.append(ValidationIssue(
+                                skill=rel_path,
+                                check=self.name,
+                                severity=Severity.ERROR,
+                                message=f"Input [{i}] missing field: {req_field}",
+                                file=rel_path,
+                            ))
+                    inp_type = inp.get("type", "")
+                    if inp_type and inp_type not in VALID_INPUT_TYPES:
+                        issues.append(ValidationIssue(
+                            skill=rel_path,
+                            check=self.name,
+                            severity=Severity.WARNING,
+                            message=f"Input [{i}] unknown type: '{inp_type}'",
+                            file=rel_path,
+                        ))
+
+        # Validate outputs structure
+        outputs = data.get("outputs", [])
+        if isinstance(outputs, list):
+            for i, out in enumerate(outputs):
+                if isinstance(out, dict):
+                    for req_field in ["name", "type"]:
+                        if req_field not in out:
+                            issues.append(ValidationIssue(
+                                skill=rel_path,
+                                check=self.name,
+                                severity=Severity.ERROR,
+                                message=f"Output [{i}] missing field: {req_field}",
+                                file=rel_path,
+                            ))
+                    out_type = out.get("type", "")
+                    if out_type and out_type not in VALID_OUTPUT_TYPES:
+                        issues.append(ValidationIssue(
+                            skill=rel_path,
+                            check=self.name,
+                            severity=Severity.WARNING,
+                            message=f"Output [{i}] unknown type: '{out_type}'",
+                            file=rel_path,
+                        ))
+
+        return issues
+
+
+class ManifestDagChecker:
+    """Validates workflow-manifest.yaml structure and DAG integrity."""
+
+    name = "manifest-dag"
+
+    def check(self, base_path: Path) -> list[ValidationIssue]:
+        issues = []
+        manifest_path = base_path / MANIFEST_FILE
+
+        if not manifest_path.exists():
+            issues.append(ValidationIssue(
+                skill="__manifest__",
+                check=self.name,
+                severity=Severity.ERROR,
+                message=f"Manifest file not found: {MANIFEST_FILE}",
+            ))
+            return issues
+
+        try:
+            data = parse_yaml(manifest_path.read_text())
+            if data is None:
+                issues.append(ValidationIssue(
+                    skill="__manifest__",
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="Manifest is empty",
+                    file=str(manifest_path),
+                ))
+                return issues
+        except Exception as e:
+            issues.append(ValidationIssue(
+                skill="__manifest__",
+                check=self.name,
+                severity=Severity.ERROR,
+                message=f"YAML parse error: {e}",
+                file=str(manifest_path),
+            ))
+            return issues
+
+        phases = data.get("phases", {})
+        if not phases:
+            issues.append(ValidationIssue(
+                skill="__manifest__",
+                check=self.name,
+                severity=Severity.ERROR,
+                message="No phases defined in manifest",
+                file=str(manifest_path),
+            ))
+            return issues
+
+        phase_names = set(phases.keys())
+        all_commands = set()
+
+        for phase_name, phase_data in phases.items():
+            if not isinstance(phase_data, dict):
+                issues.append(ValidationIssue(
+                    skill="__manifest__",
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Phase '{phase_name}' must be a mapping",
+                    file=str(manifest_path),
+                ))
+                continue
+
+            # Check description path
+            desc = phase_data.get("description", "")
+            if desc and not (base_path / desc).exists():
+                issues.append(ValidationIssue(
+                    skill="__manifest__",
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Phase '{phase_name}' description not found: {desc}",
+                    file=str(manifest_path),
+                ))
+
+            # Check dependency references
+            depends_on = phase_data.get("depends_on", [])
+            if isinstance(depends_on, list):
+                for dep in depends_on:
+                    if isinstance(dep, dict):
+                        dep_phase = dep.get("phase", "")
+                        if dep_phase and dep_phase not in phase_names:
+                            issues.append(ValidationIssue(
+                                skill="__manifest__",
+                                check=self.name,
+                                severity=Severity.ERROR,
+                                message=f"Phase '{phase_name}' depends on undefined phase: '{dep_phase}'",
+                                file=str(manifest_path),
+                            ))
+                        strength = dep.get("strength", "")
+                        if strength and strength not in VALID_DEPENDENCY_STRENGTHS:
+                            issues.append(ValidationIssue(
+                                skill="__manifest__",
+                                check=self.name,
+                                severity=Severity.WARNING,
+                                message=f"Phase '{phase_name}' dependency strength '{strength}' not standard",
+                                file=str(manifest_path),
+                            ))
+
+            # Check commands
+            commands = phase_data.get("commands", [])
+            if isinstance(commands, list):
+                for cmd in commands:
+                    if isinstance(cmd, dict):
+                        cmd_name = cmd.get("command", "")
+                        if cmd_name:
+                            if cmd_name in all_commands:
+                                issues.append(ValidationIssue(
+                                    skill="__manifest__",
+                                    check=self.name,
+                                    severity=Severity.ERROR,
+                                    message=f"Duplicate command: '{cmd_name}'",
+                                    file=str(manifest_path),
+                                ))
+                            all_commands.add(cmd_name)
+
+                        definition = cmd.get("definition", "")
+                        if definition and not (base_path / definition).exists():
+                            issues.append(ValidationIssue(
+                                skill="__manifest__",
+                                check=self.name,
+                                severity=Severity.ERROR,
+                                message=f"Command '{cmd_name}' definition not found: {definition}",
+                                file=str(manifest_path),
+                            ))
+
+        # Check utilities
+        utilities = data.get("utilities", [])
+        if isinstance(utilities, list):
+            for util in utilities:
+                if isinstance(util, dict):
+                    cmd_name = util.get("command", "")
+                    if cmd_name:
+                        if cmd_name in all_commands:
+                            issues.append(ValidationIssue(
+                                skill="__manifest__",
+                                check=self.name,
+                                severity=Severity.ERROR,
+                                message=f"Duplicate command: '{cmd_name}'",
+                                file=str(manifest_path),
+                            ))
+                        all_commands.add(cmd_name)
+
+                    definition = util.get("definition", "")
+                    if definition and not (base_path / definition).exists():
+                        issues.append(ValidationIssue(
+                            skill="__manifest__",
+                            check=self.name,
+                            severity=Severity.ERROR,
+                            message=f"Utility '{cmd_name}' definition not found: {definition}",
+                            file=str(manifest_path),
+                        ))
+
+        # DAG cycle detection
+        issues.extend(self._detect_cycles(phases, manifest_path))
+
+        # Cross-check: manifest commands match their definition files
+        issues.extend(self._check_definition_consistency(
+            phases, utilities, base_path, manifest_path
+        ))
+
+        return issues
+
+    def _detect_cycles(self, phases: dict, manifest_path: Path) -> list[ValidationIssue]:
+        """Detect cycles in the phase dependency graph using DFS."""
+        issues = []
+
+        # Build adjacency list
+        graph = {}
+        for phase_name, phase_data in phases.items():
+            if not isinstance(phase_data, dict):
+                continue
+            deps = []
+            for dep in phase_data.get("depends_on", []):
+                if isinstance(dep, dict):
+                    dep_phase = dep.get("phase", "")
+                    if dep_phase:
+                        deps.append(dep_phase)
+            graph[phase_name] = deps
+
+        WHITE, GRAY, BLACK = 0, 1, 2
+        color = {node: WHITE for node in graph}
+        path = []
+
+        def dfs(node):
+            color[node] = GRAY
+            path.append(node)
+            for neighbor in graph.get(node, []):
+                if neighbor not in color:
+                    continue  # Reference to undefined phase (caught elsewhere)
+                if color[neighbor] == GRAY:
+                    cycle_start = path.index(neighbor)
+                    cycle = path[cycle_start:] + [neighbor]
+                    issues.append(ValidationIssue(
+                        skill="__manifest__",
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"DAG cycle detected: {' -> '.join(cycle)}",
+                        file=str(manifest_path),
+                    ))
+                    path.pop()
+                    return
+                if color[neighbor] == WHITE:
+                    dfs(neighbor)
+            path.pop()
+            color[node] = BLACK
+
+        for node in graph:
+            if color[node] == WHITE:
+                dfs(node)
+
+        return issues
+
+    def _check_definition_consistency(
+        self,
+        phases: dict,
+        utilities: list,
+        base_path: Path,
+        manifest_path: Path,
+    ) -> list[ValidationIssue]:
+        """Verify manifest command names match the command field in their YAML definitions."""
+        issues = []
+
+        def check_cmd(cmd_name: str, definition_path: str):
+            full_path = base_path / definition_path
+            if not full_path.exists():
+                return  # Missing file already reported
+            try:
+                data = parse_yaml(full_path.read_text())
+                if data and data.get("command", "") != cmd_name:
+                    issues.append(ValidationIssue(
+                        skill="__manifest__",
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=(
+                            f"Manifest command '{cmd_name}' doesn't match "
+                            f"definition command '{data.get('command', '')}' in {definition_path}"
+                        ),
+                        file=str(manifest_path),
+                    ))
+            except Exception:
+                pass  # Parse errors reported elsewhere
+
+        for phase_data in phases.values():
+            if not isinstance(phase_data, dict):
+                continue
+            for cmd in phase_data.get("commands", []):
+                if isinstance(cmd, dict):
+                    check_cmd(cmd.get("command", ""), cmd.get("definition", ""))
+
+        if isinstance(utilities, list):
+            for util in utilities:
+                if isinstance(util, dict):
+                    check_cmd(util.get("command", ""), util.get("definition", ""))
+
+        return issues
+
+
+class WorkflowOrphanChecker:
+    """Detects command .md files not referenced by any YAML definition."""
+
+    name = "workflow-orphans"
+
+    def check(self, base_path: Path) -> list[ValidationIssue]:
+        issues = []
+        commands_dir = base_path / COMMANDS_DIR_WORKFLOW
+
+        if not commands_dir.exists():
+            return issues
+
+        # Collect path references from all per-command YAML files
+        referenced_paths = set()
+        for yaml_file in commands_dir.rglob("*.yaml"):
+            if yaml_file.name == "workflow-manifest.yaml":
+                continue
+            try:
+                data = parse_yaml(yaml_file.read_text())
+                if data and "path" in data:
+                    referenced_paths.add(data["path"])
+            except Exception:
+                pass  # Parse errors reported by WorkflowDefinitionChecker
+
+        # Collect command .md files (exclude references/, skip COMMAND.md pattern)
+        for md_file in sorted(commands_dir.rglob("*.md")):
+            if "references" in md_file.parts:
+                continue
+            if md_file.name == "COMMAND.md":
+                continue
+
+            md_rel = str(md_file.relative_to(base_path))
+            if md_rel not in referenced_paths:
+                issues.append(ValidationIssue(
+                    skill="__orphans__",
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Command file has no YAML definition: {md_rel}",
+                    file=md_rel,
+                ))
+
+        return issues
+
+
+# =============================================================================
 # Count Consistency Checker
 # =============================================================================
 
@@ -632,6 +1176,28 @@ class CountConsistencyChecker:
 
 
 # =============================================================================
+# Workflow Validator
+# =============================================================================
+
+class WorkflowValidator:
+    """Orchestrates workflow definition and manifest validation."""
+
+    def __init__(self, base_path: Path):
+        self.base_path = base_path
+        self.checkers = [
+            WorkflowDefinitionChecker(),
+            ManifestDagChecker(),
+            WorkflowOrphanChecker(),
+        ]
+
+    def validate(self) -> list[ValidationIssue]:
+        issues = []
+        for checker in self.checkers:
+            issues.extend(checker.check(self.base_path))
+        return issues
+
+
+# =============================================================================
 # Formatters
 # =============================================================================
 
@@ -658,6 +1224,17 @@ class TableFormatter:
                     icon = "ERROR" if issue.severity == Severity.ERROR else "WARN "
                     file_info = f" ({issue.file})" if issue.file else ""
                     lines.append(f"    [{icon}] {issue.check}: {issue.message}{file_info}")
+
+        # Workflow issues
+        if report.workflow_issues:
+            lines.append("")
+            lines.append("WORKFLOW ISSUES:")
+            lines.append("-" * 80)
+            for issue in report.workflow_issues:
+                icon = "ERROR" if issue.severity == Severity.ERROR else "WARN "
+                file_info = f" ({issue.file})" if issue.file else ""
+                scope = f"[{issue.skill}] " if issue.skill else ""
+                lines.append(f"  [{icon}] {scope}{issue.check}: {issue.message}{file_info}")
 
         # Count issues
         if report.count_issues:
@@ -698,11 +1275,11 @@ class JsonFormatter:
 
 
 # =============================================================================
-# Validator
+# Skill Validator
 # =============================================================================
 
 class SkillValidator:
-    """Main validator that orchestrates checks."""
+    """Main validator that orchestrates skill checks."""
 
     def __init__(
         self,
@@ -783,18 +1360,20 @@ Examples:
   python scripts/validate-skills.py              # Run all checks
   python scripts/validate-skills.py --check yaml # YAML-related checks only
   python scripts/validate-skills.py --check references  # Reference checks only
+  python scripts/validate-skills.py --check workflows   # Workflow definition checks only
   python scripts/validate-skills.py --skill react-expert  # Single skill
   python scripts/validate-skills.py --format json  # JSON for CI
 
 Check categories:
   yaml        - YAML frontmatter validation (parsing, required fields, format)
   references  - Reference file validation (directory, count, headers)
+  workflows   - Workflow YAML definitions, manifest DAG, orphan detection
 """,
     )
 
     parser.add_argument(
         "--check",
-        choices=["yaml", "references"],
+        choices=["yaml", "references", "workflows"],
         help="Run only checks in the specified category",
     )
 
@@ -818,13 +1397,22 @@ Check categories:
 
     args = parser.parse_args()
 
-    # Run validation
-    validator = SkillValidator(
-        skills_dir=args.skills_dir,
-        check_category=args.check,
-        skill_filter=args.skill,
-    )
-    report = validator.validate()
+    report = ValidationReport()
+
+    # Run skill validation (unless --check workflows)
+    if args.check != "workflows":
+        validator = SkillValidator(
+            skills_dir=args.skills_dir,
+            check_category=args.check,
+            skill_filter=args.skill,
+        )
+        report = validator.validate()
+
+    # Run workflow validation (unless filtering to skill-specific checks)
+    if args.check == "workflows" or (args.check is None and not args.skill):
+        base_path = Path(".")
+        workflow_validator = WorkflowValidator(base_path)
+        report.workflow_issues = workflow_validator.validate()
 
     # Format and output
     if args.format == "json":
