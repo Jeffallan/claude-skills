@@ -35,18 +35,11 @@ const DOMAIN_LABELS = {
   workflow: 'Workflow Skills',
 };
 
-// ─── Role → sidebar badge ───────────────────────────────────────────
-const ROLE_BADGES = {
-  specialist: { text: 'Specialist', variant: 'default' },
-  expert: { text: 'Expert', variant: 'success' },
-  architect: { text: 'Architect', variant: 'caution' },
-  engineer: { text: 'Engineer', variant: 'note' },
-};
-
 // ─── Core docs mapping (source relative to ROOT → dest relative to DOCS_DIR)
 const CORE_DOCS = [
   { src: 'QUICKSTART.md', dest: 'getting-started.md', title: 'Getting Started', description: 'Installation and first steps', category: 'docs' },
   { src: 'SKILLS_GUIDE.md', dest: 'skills-guide.md', title: 'Skills Guide', description: 'Decision trees and skill combinations for choosing the right skill', category: 'docs' },
+  { src: 'README.md', dest: 'readme.md', title: 'README', description: 'Project overview, architecture, and usage patterns', category: 'project' },
   { src: 'CONTRIBUTING.md', dest: 'contributing.md', title: 'Contributing', description: 'How to contribute new skills and improve existing ones', category: 'project' },
   { src: 'CHANGELOG.md', dest: 'changelog.md', title: 'Changelog', description: 'Version history and release notes', category: 'project' },
   { src: 'ROADMAP.md', dest: 'roadmap.md', title: 'Roadmap', description: 'Planned features and future direction', category: 'project' },
@@ -73,6 +66,17 @@ function buildLinkMap() {
   for (const { src, dest } of GUIDE_DOCS) {
     const slug = dest.replace(/\.md$/, '');
     addLinkVariants(src, `/${slug}/`);
+  }
+  // README is now synced via CORE_DOCS, but add extra variant without path prefix
+  linkMap.set('README.md', '/readme/');
+  linkMap.set('./README.md', '/readme/');
+  // Workflow cross-links (relative .md references between workflow files)
+  const workflowDir = path.join(ROOT, 'docs', 'workflow');
+  if (fs.existsSync(workflowDir)) {
+    for (const file of fs.readdirSync(workflowDir).filter((f) => f.endsWith('.md'))) {
+      const slug = file.replace(/\.md$/, '');
+      linkMap.set(file, `/workflows/${slug}/`);
+    }
   }
 }
 
@@ -180,7 +184,7 @@ function syncCoreDocs() {
     // Remove GitHub-specific HTML (badges, images, typing SVGs)
     body = body.replace(/<p align="center">[\s\S]*?<\/p>/g, '');
 
-    const fm = starlightFrontmatter({ title });
+    const fm = starlightFrontmatter({ title, description });
     const destPath = path.join(DOCS_DIR, dest);
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, fm + '\n' + body.trim() + '\n');
@@ -207,7 +211,7 @@ function syncGuideDocs() {
     body = stripHtmlCommentTags(body);
     body = rewriteLinks(body);
 
-    const fm = starlightFrontmatter({ title });
+    const fm = starlightFrontmatter({ title, description });
     const destPath = path.join(DOCS_DIR, dest);
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, fm + '\n' + body.trim() + '\n');
@@ -238,16 +242,17 @@ function syncWorkflowDocs() {
     body = rewriteLinks(body);
 
     const title = h1 || file.replace(/\.md$/, '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-    const fm = starlightFrontmatter({ title });
+    const firstPara = body.split('\n\n').find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('|') && !p.startsWith('-'));
+    const description = firstPara ? firstPara.trim().replace(/\n/g, ' ').slice(0, 160) : '';
+
+    const fm = starlightFrontmatter({ title, description });
     const destPath = path.join(DOCS_DIR, 'workflows', file);
     ensureDir(path.dirname(destPath));
     fs.writeFileSync(destPath, fm + '\n' + body.trim() + '\n');
     console.log(`  docs/workflow/${file} → workflows/${file}`);
 
-    const firstPara = body.split('\n\n').find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('|') && !p.startsWith('-'));
-    const workflowDesc = firstPara ? firstPara.trim().replace(/\n/g, ' ').slice(0, 120) : '';
     const slug = file.replace(/\.md$/, '');
-    pageManifest.push({ siteUrl: `/workflows/${slug}/`, title, description: workflowDesc, category: 'workflows', contentFile: `workflows/${file}` });
+    pageManifest.push({ siteUrl: `/workflows/${slug}/`, title, description, category: 'workflows', contentFile: `workflows/${file}` });
   }
 }
 
@@ -343,14 +348,10 @@ function syncSkillPages(skillIndex) {
 
     body = rewriteLinks(body);
 
-    // Build sidebar badge
-    const badge = ROLE_BADGES[role] || ROLE_BADGES.specialist;
-
     // Assemble frontmatter
     const fm = starlightFrontmatter({
       title,
       description,
-      sidebar: { badge },
     });
 
     // Assemble page

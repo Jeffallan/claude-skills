@@ -2,12 +2,25 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
+  site: 'https://jeffallan.github.io',
+  base: '/claude-skills',
   integrations: [
     starlight({
       title: 'Claude Skills',
       description:
         '65 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
       customCss: ['./src/styles/custom.css'],
+      head: [
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'alternate',
+            type: 'text/plain',
+            href: '/claude-skills/llms.txt',
+            title: 'LLM-friendly content',
+          },
+        },
+      ],
       components: {
         SocialIcons: './src/components/SocialIcons.astro',
         Header: './src/components/Header.astro',
@@ -41,7 +54,56 @@ export default defineConfig({
         {
           label: 'Workflows',
           collapsed: true,
-          autogenerate: { directory: 'workflows' },
+          items: [
+            {
+              label: 'Intake Phase',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/workflows/intake-phase/' },
+                { label: 'intake:document-codebase', link: '/workflows/intake-document-codebase/' },
+                { label: 'intake:capture-behavior', link: '/workflows/intake-capture-behavior/' },
+                { label: 'intake:create-system-description', link: '/workflows/intake-create-system-description/' },
+              ],
+            },
+            {
+              label: 'Discovery Phase',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/workflows/discovery-phase/' },
+                { label: 'discovery:create', link: '/workflows/discovery-create/' },
+                { label: 'discovery:synthesize', link: '/workflows/discovery-synthesize/' },
+                { label: 'discovery:approve', link: '/workflows/discovery-approve/' },
+              ],
+            },
+            {
+              label: 'Planning Phase',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/workflows/planning-phase/' },
+                { label: 'planning:epic-plan', link: '/workflows/planning-epic-plan/' },
+                { label: 'planning:impl-plan', link: '/workflows/planning-impl-plan/' },
+              ],
+            },
+            {
+              label: 'Execution Phase',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/workflows/execution-phase/' },
+                { label: 'execution:execute-ticket', link: '/workflows/execution-execute-ticket/' },
+                { label: 'execution:complete-ticket', link: '/workflows/execution-complete-ticket/' },
+              ],
+            },
+            {
+              label: 'Retrospective Phase',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/workflows/retrospective-phase/' },
+                { label: 'retrospectives:complete-epic', link: '/workflows/retrospective-complete-epic/' },
+              ],
+            },
+            { label: 'common-ground', link: '/workflows/common-ground/' },
+            { label: 'Workflow Definition Schema', link: '/workflows/workflow-definition-schema/' },
+          ],
         },
         {
           label: 'Language',
@@ -106,6 +168,7 @@ export default defineConfig({
         {
           label: 'Project',
           items: [
+            { label: 'README', link: '/readme/' },
             { label: 'Contributing', link: '/contributing/' },
             { label: 'Changelog', link: '/changelog/' },
             { label: 'Roadmap', link: '/roadmap/' },
