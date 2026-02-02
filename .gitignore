@@ -34,3 +34,16 @@ yarn-error.log*
 
 # Awesome list submission workspace
 submits/
+
+# Astro docs site
+site/node_modules/
+site/dist/
+site/.astro/
+site/src/content/docs/skills/
+site/src/content/docs/guides/
+site/src/content/docs/workflows/
+site/src/content/docs/getting-started.md
+site/src/content/docs/skills-guide.md
+site/src/content/docs/contributing.md
+site/src/content/docs/changelog.md
+site/src/content/docs/roadmap.md

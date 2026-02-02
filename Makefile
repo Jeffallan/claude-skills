@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink validate test
+.PHONY: dev-link dev-unlink validate test site-dev site-build
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -47,3 +47,9 @@ validate:
 
 test:
 	bash scripts/test-makefile.sh
+
+site-dev:
+	cd site && npm run dev
+
+site-build:
+	cd site && npm run build
