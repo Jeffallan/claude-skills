@@ -82,9 +82,3 @@ When implementing React features, provide:
 ## Knowledge Reference
 
 React 19, Server Components, use() hook, Suspense, TypeScript, TanStack Query, Zustand, Redux Toolkit, React Router, React Testing Library, Vitest/Jest, Next.js App Router, accessibility (WCAG)
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Playwright Expert** - E2E testing for React apps
-- **Test Master** - Comprehensive testing strategies

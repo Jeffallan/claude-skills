@@ -82,9 +82,3 @@ When implementing FastAPI features, provide:
 ## Knowledge Reference
 
 FastAPI, Pydantic V2, async SQLAlchemy, Alembic migrations, JWT/OAuth2, pytest-asyncio, httpx, BackgroundTasks, WebSockets, dependency injection, OpenAPI/Swagger
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Django Expert** - Alternative Python framework
-- **Test Master** - Comprehensive testing strategies

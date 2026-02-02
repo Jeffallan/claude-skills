@@ -80,9 +80,3 @@ Include:
 ## Knowledge Reference
 
 Code archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference
-
-## Related Skills
-
-- **Feature Forge** - Creates specs for new features
-- **Fullstack Guardian** - Implements changes to documented systems
-- **Architecture Designer** - Reviews discovered architecture

@@ -88,11 +88,3 @@ When designing APIs, provide:
 ## Knowledge Reference
 
 REST architecture, OpenAPI 3.1, GraphQL, HTTP semantics, JSON:API, HATEOAS, OAuth 2.0, JWT, RFC 7807 Problem Details, API versioning patterns, pagination strategies, rate limiting, webhook design, SDK generation
-
-## Related Skills
-
-- **GraphQL Architect** - GraphQL-specific API design
-- **FastAPI Expert** - Python API implementation
-- **NestJS Expert** - TypeScript API implementation
-- **Spring Boot Engineer** - Java API implementation
-- **Security Reviewer** - API security assessment

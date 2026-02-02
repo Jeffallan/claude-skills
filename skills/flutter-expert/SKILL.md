@@ -80,9 +80,3 @@ When implementing Flutter features, provide:
 ## Knowledge Reference
 
 Flutter 3.19+, Dart 3.3+, Riverpod 2.0, Bloc 8.x, GoRouter, freezed, json_serializable, Dio, flutter_hooks
-
-## Related Skills
-
-- **React Native Expert** - Alternative mobile framework
-- **Test Master** - Flutter testing patterns
-- **Fullstack Guardian** - API integration

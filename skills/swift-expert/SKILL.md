@@ -84,9 +84,3 @@ When implementing Swift features, provide:
 ## Knowledge Reference
 
 Swift 5.9+, SwiftUI, UIKit, async/await, actors, structured concurrency, Combine, property wrappers, result builders, protocol-oriented programming, generics, type erasure, ARC, Instruments, XCTest, Swift Package Manager, Vapor
-
-## Related Skills
-
-- **Mobile Developer** - Cross-platform mobile development
-- **Frontend Expert** - UI/UX implementation patterns
-- **Backend Developer** - Server-side Swift integration

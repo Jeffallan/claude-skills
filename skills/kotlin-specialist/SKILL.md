@@ -83,9 +83,3 @@ When implementing Kotlin features, provide:
 ## Knowledge Reference
 
 Kotlin 1.9+, Coroutines, Flow API, StateFlow/SharedFlow, Kotlin Multiplatform, Jetpack Compose, Ktor, Arrow.kt, kotlinx.serialization, Detekt, ktlint, Gradle Kotlin DSL, JUnit 5, MockK, Turbine
-
-## Related Skills
-
-- **Android Expert** - Android-specific development patterns
-- **Backend Architect** - Server-side architecture design
-- **Test Master** - Comprehensive testing strategies

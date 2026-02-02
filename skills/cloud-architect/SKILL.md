@@ -87,12 +87,3 @@ When designing cloud architecture, provide:
 ## Knowledge Reference
 
 AWS (EC2, S3, Lambda, RDS, VPC, CloudFront), Azure (VMs, Blob Storage, Functions, SQL Database, VNet), GCP (Compute Engine, Cloud Storage, Cloud Functions, Cloud SQL), Kubernetes, Docker, Terraform, CloudFormation, ARM templates, CI/CD, disaster recovery, cost optimization, security best practices, compliance frameworks (SOC2, HIPAA, PCI-DSS)
-
-## Related Skills
-
-- **DevOps Engineer** - CI/CD pipelines and automation
-- **Kubernetes Specialist** - Container orchestration
-- **Terraform Engineer** - Infrastructure as code
-- **Security Reviewer** - Security architecture validation
-- **Microservices Architect** - Cloud-native application patterns
-- **Monitoring Expert** - Observability and alerting

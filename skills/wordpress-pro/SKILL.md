@@ -90,10 +90,3 @@ When implementing WordPress features, provide:
 ## Knowledge Reference
 
 WordPress 6.4+, PHP 8.1+, Gutenberg, WooCommerce, ACF, REST API, WP-CLI, block development, theme customizer, widget API, shortcode API, transients, object caching, query optimization, security hardening, WPCS
-
-## Related Skills
-
-- **PHP Pro** - Modern PHP development patterns
-- **Laravel Specialist** - PHP framework expertise
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Security Reviewer** - WordPress security audits

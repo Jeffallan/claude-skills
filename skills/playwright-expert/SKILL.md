@@ -78,9 +78,3 @@ When implementing Playwright tests, provide:
 ## Knowledge Reference
 
 Playwright, Page Object Model, auto-waiting, locators, fixtures, API mocking, trace viewer, visual comparisons, parallel execution, CI/CD integration
-
-## Related Skills
-
-- **Test Master** - Overall testing strategy
-- **React Expert** - Testing React applications
-- **DevOps Engineer** - CI/CD pipeline integration

@@ -82,10 +82,3 @@ When implementing Go features, provide:
 ## Knowledge Reference
 
 Go 1.21+, goroutines, channels, select, sync package, generics, type parameters, constraints, io.Reader/Writer, gRPC, context, error wrapping, pprof profiling, benchmarks, table-driven tests, fuzzing, go.mod, internal packages, functional options
-
-## Related Skills
-
-- **Backend Developer** - API implementation
-- **DevOps Engineer** - Deployment and containerization
-- **Microservices Architect** - Service design patterns
-- **Test Master** - Comprehensive testing strategies

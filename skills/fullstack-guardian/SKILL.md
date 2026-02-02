@@ -81,9 +81,3 @@ When implementing features, provide:
 2. Backend code (models, schemas, endpoints)
 3. Frontend code (components, hooks, API calls)
 4. Brief security notes
-
-## Related Skills
-
-- **Feature Forge** - Receives specifications from
-- **Test Master** - Hands off for testing
-- **DevOps Engineer** - Hands off for deployment

@@ -83,11 +83,3 @@ When implementing WebSocket features, provide:
 ## Knowledge Reference
 
 Socket.IO, ws, uWebSockets.js, Redis adapter, sticky sessions, nginx WebSocket proxy, JWT over WebSocket, rooms/namespaces, acknowledgments, binary data, compression, heartbeat, backpressure, horizontal pod autoscaling
-
-## Related Skills
-
-- **FastAPI Expert** - WebSocket endpoints in Python
-- **NestJS Expert** - WebSocket gateways in NestJS
-- **DevOps Engineer** - Deployment, load balancing, monitoring
-- **Monitoring Expert** - Real-time metrics and alerting
-- **Security Reviewer** - WebSocket security audit

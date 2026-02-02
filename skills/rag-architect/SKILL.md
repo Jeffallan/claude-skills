@@ -86,11 +86,3 @@ When designing RAG architecture, provide:
 ## Knowledge Reference
 
 Vector databases (Pinecone, Weaviate, Chroma, Qdrant, Milvus, pgvector), embedding models (OpenAI, Cohere, Sentence Transformers, BGE, E5), chunking algorithms, semantic search, hybrid search, BM25, reranking (Cohere, Cross-Encoder), query expansion, HyDE, metadata filtering, HNSW indexes, quantization, embedding fine-tuning, RAG evaluation frameworks (RAGAS, TruLens)
-
-## Related Skills
-
-- **AI Engineer** - LLM integration and prompt engineering
-- **Python Pro** - Implementation with LangChain, LlamaIndex, or custom pipelines
-- **Database Optimizer** - Query performance and indexing
-- **Monitoring Expert** - RAG observability and metrics
-- **API Designer** - Retrieval API design

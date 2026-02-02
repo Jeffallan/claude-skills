@@ -92,10 +92,3 @@ When implementing Spring Boot features, provide:
 ## Knowledge Reference
 
 Spring Boot 3.x, Spring Framework 6, Spring Data JPA, Spring Security 6, Spring Cloud, Project Reactor (WebFlux), JPA/Hibernate, Bean Validation, RestTemplate/WebClient, Actuator, Micrometer, JUnit 5, Mockito, Testcontainers, Docker, Kubernetes
-
-## Related Skills
-
-- **Java Architect** - Enterprise Java patterns and architecture
-- **Database Optimizer** - JPA optimization and query tuning
-- **Microservices Architect** - Service boundaries and patterns
-- **DevOps Engineer** - Deployment and containerization

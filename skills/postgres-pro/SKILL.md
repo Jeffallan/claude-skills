@@ -85,10 +85,3 @@ When implementing PostgreSQL solutions, provide:
 ## Knowledge Reference
 
 PostgreSQL 12-16, EXPLAIN ANALYZE, B-tree/GIN/GiST/BRIN indexes, JSONB operators, streaming replication, logical replication, VACUUM/ANALYZE, pg_stat views, PostGIS, pgvector, pg_trgm, WAL archiving, PITR
-
-## Related Skills
-
-- **Database Optimizer** - General database optimization
-- **Backend Developer** - Application query patterns
-- **DevOps Engineer** - Deployment and automation
-- **SRE Engineer** - Reliability and monitoring

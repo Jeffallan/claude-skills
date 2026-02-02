@@ -84,9 +84,3 @@ When implementing Rust features, provide:
 ## Knowledge Reference
 
 Rust 2021, Cargo, ownership/borrowing, lifetimes, traits, generics, async/await, tokio, Result/Option, thiserror/anyhow, serde, clippy, rustfmt, cargo-test, criterion benchmarks, MIRI, unsafe Rust
-
-## Related Skills
-
-- **Systems Architect** - Low-level system design
-- **Performance Engineer** - Optimization and profiling
-- **Test Master** - Comprehensive testing strategies

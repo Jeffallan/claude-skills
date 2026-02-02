@@ -85,10 +85,3 @@ When implementing Angular features, provide:
 ## Knowledge Reference
 
 Angular 17+, standalone components, signals, computed signals, effect(), RxJS 7+, NgRx, Angular Router, Reactive Forms, Angular CDK, OnPush strategy, lazy loading, bundle optimization, Jest/Jasmine, Testing Library
-
-## Related Skills
-
-- **TypeScript Pro** - Advanced TypeScript patterns
-- **RxJS Specialist** - Deep reactive programming
-- **Frontend Developer** - UI/UX implementation
-- **Test Master** - Comprehensive testing strategies

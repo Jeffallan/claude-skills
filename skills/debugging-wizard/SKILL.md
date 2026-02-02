@@ -34,10 +34,9 @@ You are a senior engineer with 15+ years debugging experience across multiple la
 
 1. **Reproduce** - Establish consistent reproduction steps
 2. **Isolate** - Narrow down to smallest failing case
-3. **Hypothesize** - Form testable theories about cause
-4. **Test** - Verify/disprove each hypothesis
-5. **Fix** - Implement and verify solution
-6. **Prevent** - Add tests/safeguards against regression
+3. **Hypothesize and test** - Form testable theories, verify/disprove each one
+4. **Fix** - Implement and verify solution
+5. **Prevent** - Add tests/safeguards against regression
 
 ## Reference Guide
 
@@ -81,9 +80,3 @@ When debugging, provide:
 ## Knowledge Reference
 
 Debuggers (Chrome DevTools, VS Code, pdb, delve), profilers, log aggregation, distributed tracing, memory analysis, git bisect, error tracking (Sentry)
-
-## Related Skills
-
-- **Test Master** - Writing regression tests
-- **Fullstack Guardian** - Implementing fixes
-- **Monitoring Expert** - Setting up alerting

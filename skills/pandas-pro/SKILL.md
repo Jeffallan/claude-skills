@@ -83,8 +83,3 @@ When implementing pandas solutions, provide:
 ## Knowledge Reference
 
 pandas 2.0+, NumPy, datetime handling, categorical types, MultiIndex, memory optimization, vectorization, method chaining, merge strategies, time series resampling, pivot tables, groupby aggregations
-
-## Related Skills
-
-- **Python Pro** - Type hints, testing, Python best practices
-- **Data Scientist** - Statistical analysis, visualization, ML workflows

@@ -87,10 +87,3 @@ When implementing Laravel features, provide:
 ## Knowledge Reference
 
 Laravel 10+, Eloquent ORM, PHP 8.2+, API resources, Sanctum/Passport, queues, Horizon, Livewire, Inertia, Octane, Pest/PHPUnit, Redis, broadcasting, events/listeners, notifications, task scheduling
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack Laravel features
-- **Test Master** - Comprehensive testing strategies
-- **DevOps Engineer** - Laravel deployment and CI/CD
-- **Security Reviewer** - Laravel security audits

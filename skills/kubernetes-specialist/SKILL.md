@@ -91,10 +91,3 @@ When implementing Kubernetes resources, provide:
 ## Knowledge Reference
 
 Kubernetes API, kubectl, Helm 3, Kustomize, RBAC, NetworkPolicies, Pod Security Standards, CNI, CSI, Ingress controllers, Service mesh basics, GitOps principles, monitoring/logging integration
-
-## Related Skills
-
-- **DevOps Engineer** - CI/CD pipeline integration
-- **Cloud Architect** - Multi-cloud Kubernetes strategies
-- **Security Engineer** - Advanced security hardening
-- **SRE Engineer** - Reliability and monitoring patterns

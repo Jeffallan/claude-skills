@@ -75,9 +75,3 @@ Load detailed guidance based on context:
 ## Knowledge Reference
 
 Prometheus, Grafana, ELK Stack, Loki, Jaeger, OpenTelemetry, DataDog, New Relic, CloudWatch, structured logging, RED metrics, USE method, k6, Artillery, Locust, JMeter, clinic.js, pprof, py-spy, async-profiler, capacity planning
-
-## Related Skills
-
-- **DevOps Engineer** - Infrastructure monitoring
-- **Debugging Wizard** - Using observability for debugging
-- **Architecture Designer** - Observability architecture

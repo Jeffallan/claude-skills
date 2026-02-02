@@ -85,10 +85,3 @@ When implementing Rails features, provide:
 ## Knowledge Reference
 
 Rails 7+, Hotwire/Turbo, Stimulus, Action Cable, Active Record, Sidekiq, RSpec, FactoryBot, Capybara, ViewComponent, Kredis, Import Maps, Tailwind CSS, PostgreSQL
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Ruby Specialist** - Ruby language optimization
-- **Database Optimizer** - Query and schema optimization
-- **Performance Engineer** - Application performance tuning

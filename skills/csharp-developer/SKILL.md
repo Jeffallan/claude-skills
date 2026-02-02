@@ -82,10 +82,3 @@ When implementing .NET features, provide:
 ## Knowledge Reference
 
 C# 12, .NET 8, ASP.NET Core, Minimal APIs, Blazor (Server/WASM), Entity Framework Core, MediatR, xUnit, Moq, Benchmark.NET, SignalR, gRPC, Azure SDK, Polly, FluentValidation, Serilog
-
-## Related Skills
-
-- **API Designer** - OpenAPI/Swagger specifications
-- **Azure Specialist** - Cloud deployment and services
-- **Database Optimizer** - SQL performance tuning
-- **DevOps Engineer** - CI/CD pipelines

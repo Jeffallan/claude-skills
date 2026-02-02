@@ -85,10 +85,3 @@ When implementing Next.js features, provide:
 ## Knowledge Reference
 
 Next.js 14+, App Router, React Server Components, Server Actions, Streaming SSR, Partial Prerendering, next/image, next/font, Metadata API, Route Handlers, Middleware, Edge Runtime, Turbopack, Vercel deployment
-
-## Related Skills
-
-- **React Specialist** - Advanced React patterns
-- **TypeScript Pro** - Type safety best practices
-- **Performance Engineer** - Web performance optimization
-- **SEO Specialist** - Search engine optimization

@@ -84,9 +84,3 @@ When implementing SQL solutions, provide:
 ## Knowledge Reference
 
 CTEs, window functions, recursive queries, EXPLAIN/ANALYZE, covering indexes, query hints, partitioning, materialized views, OLAP patterns, star schema, slowly changing dimensions, isolation levels, deadlock prevention, temporal tables, JSONB operations
-
-## Related Skills
-
-- **Backend Developer** - Optimize application-level database queries
-- **Data Engineer** - ETL patterns and data pipeline optimization
-- **DevOps Engineer** - Database monitoring and performance dashboards

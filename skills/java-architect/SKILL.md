@@ -83,10 +83,3 @@ When implementing Java features, provide:
 ## Knowledge Reference
 
 Spring Boot 3.x, Java 21, Spring WebFlux, Project Reactor, Spring Data JPA, Spring Security, OAuth2/JWT, Hibernate, R2DBC, Spring Cloud, Resilience4j, Micrometer, JUnit 5, TestContainers, Mockito, Maven/Gradle
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **API Designer** - REST API design and documentation
-- **DevOps Engineer** - Deployment and CI/CD
-- **Database Optimizer** - Query optimization and indexing

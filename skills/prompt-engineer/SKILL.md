@@ -86,10 +86,3 @@ When delivering prompt work, provide:
 ## Knowledge Reference
 
 Prompt engineering techniques, chain-of-thought prompting, few-shot learning, zero-shot prompting, ReAct pattern, tree-of-thoughts, constitutional AI, prompt injection defense, system message design, JSON mode, function calling, structured generation, evaluation metrics, LLM capabilities (GPT-4, Claude, Gemini), token optimization, temperature tuning, output parsing
-
-## Related Skills
-
-- **LLM Architect** - System design with LLM components
-- **AI Engineer** - Production AI application development
-- **Test Master** - Evaluation framework implementation
-- **Technical Writer** - Prompt documentation and guidelines

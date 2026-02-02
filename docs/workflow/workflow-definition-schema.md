@@ -58,8 +58,8 @@ repeat: false
 | Field | Type | Required | Default | Constraints |
 |-------|------|----------|---------|-------------|
 | `command` | string | yes | — | Format `{phase}:{action}` or bare name for utilities. Unique across all definitions. |
-| `phase` | string | yes | — | One of: `intake`, `discovery`, `planning`, `execution`, `retrospective`. Omit for utility commands. |
-| `path` | string | yes | — | Relative path from repo root to the `.md` command file. Must resolve to an existing file when `status: existing`. |
+| `phase` | string | yes | — | One of: `intake`, `discovery`, `planning`, `execution`, `retrospectives`. Required for phase commands. Omit for utility commands. |
+| `path` | string | yes | — | Relative path from repo root to the `.md` command file. Must resolve to an existing file when `status: existing`. When `status: planned`, the path is not required to resolve to an existing file. |
 | `description` | string | yes | — | Relative path from repo root to the overview `.md` in `docs/workflow/`. Must resolve to an existing file. |
 | `inputs` | list | yes | — | Ordered list of input objects. May be empty (`[]`). |
 | `inputs[].name` | string | yes | — | Kebab-case identifier. |

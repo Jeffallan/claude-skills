@@ -86,9 +86,3 @@ When implementing Atlassian MCP features, provide:
 ## Knowledge Reference
 
 Atlassian MCP Server (official), mcp-atlassian (sooperset), atlassian-mcp (xuanxt), JQL (Jira Query Language), CQL (Confluence Query Language), OAuth 2.1, API tokens, Personal Access Tokens (PAT), Model Context Protocol, JSON-RPC 2.0, rate limiting, pagination, permission scopes, Jira REST API, Confluence REST API
-
-## Related Skills
-
-- **MCP Developer** - Building custom MCP servers and protocol compliance
-- **API Designer** - REST API integration patterns and error handling
-- **Security Reviewer** - OAuth security audits and token management

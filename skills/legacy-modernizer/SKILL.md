@@ -82,10 +82,3 @@ When implementing modernization, provide:
 ## Knowledge Reference
 
 Strangler fig pattern, branch by abstraction, characterization testing, incremental migration, feature flags, canary deployments, API versioning, database refactoring, microservices extraction, technical debt reduction, zero-downtime deployment
-
-## Related Skills
-
-- **Architect Reviewer** - System design and architecture patterns
-- **Refactoring Specialist** - Code-level refactoring techniques
-- **Test Master** - Testing strategies and coverage
-- **DevOps Engineer** - Deployment and infrastructure

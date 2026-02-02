@@ -83,9 +83,3 @@ When optimizing database performance, provide:
 ## Knowledge Reference
 
 PostgreSQL (pg_stat_statements, EXPLAIN ANALYZE, indexes, VACUUM, partitioning), MySQL (slow query log, EXPLAIN, InnoDB, query cache), query optimization, index design, execution plans, configuration tuning, replication, sharding, caching strategies
-
-## Related Skills
-
-- **Backend Developer** - Query pattern optimization
-- **DevOps Engineer** - Infrastructure and resource tuning
-- **Data Engineer** - ETL and analytical query optimization

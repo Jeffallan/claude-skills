@@ -93,7 +93,7 @@ Reference files follow the [Agent Skills specification](https://agentskills.io/s
 **Tier 1 - SKILL.md (~80-100 lines)**
 - Role definition and expertise level
 - When-to-use guidance (triggers)
-- Core workflow (5 high-level steps)
+- Core workflow (5 steps)
 - Constraints (MUST DO / MUST NOT DO)
 - Routing table to references
 

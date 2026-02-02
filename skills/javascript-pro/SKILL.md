@@ -83,10 +83,3 @@ When implementing JavaScript features, provide:
 ## Knowledge Reference
 
 ES2023, optional chaining, nullish coalescing, private fields, top-level await, Promise patterns, async/await, event loop, ESM/CJS, dynamic imports, Fetch API, Web Workers, Service Workers, Node.js streams, EventEmitter, memory optimization, functional programming
-
-## Related Skills
-
-- **TypeScript Expert** - Type-safe JavaScript development
-- **React Developer** - Frontend framework implementation
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Performance Engineer** - Advanced optimization strategies

@@ -84,9 +84,3 @@ When implementing PHP features, provide:
 ## Knowledge Reference
 
 PHP 8.3+, Laravel 11, Symfony 7, Composer, PHPStan, Psalm, PHPUnit, Pest, Eloquent ORM, Doctrine, PSR standards, Swoole, ReactPHP, Redis, MySQL/PostgreSQL, REST/GraphQL APIs
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **FastAPI Expert** - Alternative Python framework patterns
-- **MySQL Expert** - Database optimization

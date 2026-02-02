@@ -82,10 +82,3 @@ When implementing game features, provide:
 ## Knowledge Reference
 
 Unity C#, Unreal C++, Entity Component System (ECS), object pooling, state machines, command pattern, observer pattern, physics optimization, shader programming (HLSL/GLSL), multiplayer networking, client-server architecture, lag compensation, client prediction, performance profiling, LOD systems, occlusion culling, draw call batching
-
-## Related Skills
-
-- **Performance Engineer** - Deep performance optimization
-- **Backend Developer** - Game server implementation
-- **Frontend Developer** - Game UI/UX implementation
-- **Mobile Developer** - Mobile game optimization

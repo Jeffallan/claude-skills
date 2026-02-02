@@ -79,9 +79,3 @@ When implementing Django features, provide:
 ## Knowledge Reference
 
 Django 5.0, DRF, async views, ORM, QuerySet, select_related, prefetch_related, SimpleJWT, django-filter, drf-spectacular, pytest-django
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **FastAPI Expert** - Alternative Python framework
-- **Test Master** - Comprehensive testing strategies

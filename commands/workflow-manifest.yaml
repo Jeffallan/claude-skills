@@ -52,7 +52,7 @@ phases:
       - command: "execution:complete-ticket"
         definition: commands/project/execution/complete-ticket.yaml
 
-  retrospective:
+  retrospectives:
     description: docs/workflow/retrospective-phase.md
     depends_on:
       - phase: execution

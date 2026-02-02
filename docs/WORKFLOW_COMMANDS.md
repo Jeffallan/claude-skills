@@ -31,6 +31,20 @@ The workflow command system provides a structured approach to managing software 
 
 ---
 
+## Intake Phase (Pre-Workflow)
+
+> **Status:** Planned — these commands are not yet implemented.
+
+The Intake phase runs once per project to document the existing codebase. See [Intake Phase Overview](workflow/intake-phase.md) for details.
+
+| Command | Purpose | Status |
+|---------|---------|--------|
+| `intake:document-codebase` | Generate codebase documentation | Planned |
+| `intake:capture-behavior` | Capture existing system behavior | Planned |
+| `intake:create-system-description` | Create system description | Planned |
+
+---
+
 ## Full Lifecycle Overview
 
 The complete workflow spans four distinct phases, each with specialized commands that produce artifacts consumed by downstream phases.
@@ -69,9 +83,6 @@ flowchart TB
     subgraph Retrospectives["Retrospectives Phase"]
         direction TB
         CE["/project:retrospectives:complete-epic"]
-        CS["/project:retrospectives:complete-sprint"]
-
-        CE -->|"Completion Report"| CS
     end
 
     Discovery -->|"Tickets Created"| Planning
@@ -86,15 +97,14 @@ flowchart TB
 
 | Phase | Input | Command | Output |
 |-------|-------|---------|--------|
-| Discovery | Epic Key | `create-epic-discovery` | Discovery Document |
-| Discovery | Discovery Doc + Research | `synthesize-discovery` | Synthesis Doc + Proposed Tickets |
-| Discovery | Synthesis Doc URL | `approve-synthesis` | Jira Tickets |
-| Planning | Epic Key | `create-epic-plan` | Overview Document |
-| Planning | Overview Doc URL | `create-implementation-plan` | Implementation Plan + Updated Tickets |
-| Execution | Ticket Key | `execute-ticket` | Implemented Code |
-| Execution | Ticket Key | `complete-ticket` | Jira Transition + Plan Update |
-| Retrospectives | Epic Key | `complete-epic` | Completion Report |
-| Retrospectives | Sprint Number | `complete-sprint` | Sprint Retrospective |
+| Discovery | Epic Key | `discovery:create` | Discovery Document |
+| Discovery | Discovery Doc + Research | `discovery:synthesize` | Synthesis Doc + Proposed Tickets |
+| Discovery | Synthesis Doc URL | `discovery:approve` | Jira Tickets |
+| Planning | Epic Key | `planning:epic-plan` | Overview Document |
+| Planning | Overview Doc URL | `planning:impl-plan` | Implementation Plan + Updated Tickets |
+| Execution | Ticket Key | `execution:execute-ticket` | Implemented Code |
+| Execution | Ticket Key | `execution:complete-ticket` | Jira Transition + Plan Update |
+| Retrospectives | Epic Key | `retrospectives:complete-epic` | Completion Report |
 
 ---
 
@@ -164,7 +174,7 @@ flowchart LR
     Approve --> NT
 ```
 
-### create-epic-discovery
+### discovery:create (create-epic-discovery)
 
 **Command:** `/project:discovery:create-epic-discovery <epic-key>`
 
@@ -193,7 +203,7 @@ flowchart LR
 
 ---
 
-### synthesize-discovery
+### discovery:synthesize (synthesize-discovery)
 
 **Command:** `/project:discovery:synthesize-discovery <source-url> [source-url...] [--target=<epic-key>]`
 
@@ -221,22 +231,22 @@ flowchart LR
 - Blocking Decisions (decisions that block ticket creation)
 - Decision Log
 - Source Cross-Reference
-- Proposed Tickets Data (JSON for `approve-synthesis`)
+- Proposed Tickets Data (JSON for `discovery:approve`)
 
 **Publish Location:** `/Epics/Discovery/{Discovery_Epic_Key}/Synthesis/`
 
-**Next Step:** Run `/approve-synthesis <synthesis-url>` to resolve decisions and create tickets.
+**Next Step:** Run `discovery:approve <synthesis-url>` to resolve decisions and create tickets.
 
 ---
 
-### approve-synthesis
+### discovery:approve (approve-synthesis)
 
 **Command:** `/project:discovery:approve-synthesis <synthesis-url>`
 
 **Purpose:** Reviews synthesis document, resolves blocking decisions, and creates approved tickets in Jira.
 
 **Arguments:**
-- `<synthesis-url>` - URL of the synthesis document from `synthesize-discovery`
+- `<synthesis-url>` - URL of the synthesis document from `discovery:synthesize`
 
 **Process:**
 1. Fetches synthesis document and extracts proposed tickets JSON
@@ -313,7 +323,7 @@ flowchart LR
     CreateImpl --> UT2
 ```
 
-### create-epic-plan
+### planning:epic-plan (create-epic-plan)
 
 **Command:** `/project:planning:create-epic-plan <epic-key>`
 
@@ -365,7 +375,7 @@ flowchart LR
 
 ---
 
-### create-implementation-plan
+### planning:impl-plan (create-implementation-plan)
 
 **Command:** `/project:planning:create-implementation-plan <overview-doc-url>`
 
@@ -455,7 +465,7 @@ flowchart LR
     PU -->|"Next Ticket"| Execute
 ```
 
-### execute-ticket
+### execution:execute-ticket
 
 **Command:** `/project:execution:execute-ticket <ticket-key>`
 
@@ -503,7 +513,7 @@ If implementation plan must be deviated from:
 
 ---
 
-### complete-ticket
+### execution:complete-ticket
 
 **Command:** `/project:execution:complete-ticket [ticket-key]`
 
@@ -546,7 +556,7 @@ If implementation plan must be deviated from:
 
 ## Retrospectives Phase
 
-The retrospectives phase generates completion reports and sprint retrospectives for knowledge capture and process improvement.
+The retrospectives phase generates completion reports for knowledge capture and process improvement.
 
 ```mermaid
 flowchart LR
@@ -557,7 +567,7 @@ flowchart LR
         JT["Completed Tickets"]
     end
 
-    subgraph CompleteEpic["complete-epic"]
+    subgraph CompleteEpic["retrospectives:complete-epic"]
         direction TB
         VT["Verify All Tickets Done"]
         GR["Generate Report<br/>(12 Sections)"]
@@ -567,21 +577,8 @@ flowchart LR
         VT --> GR --> MD --> CE
     end
 
-    subgraph CompleteSprint["complete-sprint"]
-        direction TB
-        LE["Load All Epics"]
-        PT["Parallel Analysis<br/>(6 Tracks)"]
-        SR["Synthesize Report"]
-        GA["Generate Actions"]
-        PR["Publish Retro"]
-
-        LE --> PT --> SR --> GA --> PR
-    end
-
     subgraph Outputs
         CR["Completion Report"]
-        SR2["Sprint Retrospective"]
-        AI["Action Items"]
     end
 
     EK --> CompleteEpic
@@ -589,12 +586,9 @@ flowchart LR
     IP --> CompleteEpic
     JT --> CompleteEpic
     CompleteEpic --> CR
-    CR --> CompleteSprint
-    CompleteSprint --> SR2
-    CompleteSprint --> AI
 ```
 
-### complete-epic
+### retrospectives:complete-epic
 
 **Command:** `/project:retrospectives:complete-epic <epic-key>`
 
@@ -629,48 +623,7 @@ flowchart LR
 
 ---
 
-### complete-sprint
-
-**Command:** `/project:retrospectives:complete-sprint <sprint-number-or-folder-path>`
-
-**Purpose:** Generates a comprehensive sprint retrospective from all completed epics in a sprint.
-
-**Arguments:**
-- `<sprint-number>` - Sprint number (e.g., "1", "2")
-- `<folder-path>` - Alternatively, direct Confluence folder path
-
-**Process:**
-1. Locates all epic documents in sprint folder
-2. Reads all Overview Documents, Implementation Plans, and Completion Reports
-3. Executes 6 parallel analysis tracks
-4. Synthesizes findings into unified report
-5. Generates prioritized action items
-6. Publishes retrospective
-
-**Parallel Analysis Tracks:**
-
-| Track | Focus Areas |
-|-------|-------------|
-| Engineering Excellence | Code quality, technical debt, architecture, performance |
-| Quality Assurance | Test coverage, bug patterns, regressions, automation |
-| Security and Compliance | Vulnerabilities, auth/authz, data privacy, compliance |
-| Product and UX | Feature completeness, acceptance criteria, accessibility |
-| DevOps and Infrastructure | CI/CD, migrations, monitoring, performance |
-| Process and Collaboration | Estimation accuracy, blockers, communication, documentation |
-
-**Retrospective Sections:**
-- Executive Summary (goals, metrics, top wins/challenges)
-- Epic Breakdown
-- What Went Well (by track)
-- What Needs Improvement (by track with impact)
-- Action Items (Critical, High, Medium, Deferred)
-- Patterns and Insights
-- Metrics Dashboard
-- Knowledge Transfer
-- Systemic Issues
-- Meeting Discussion Topics
-
-**Publish Location:** `/Retrospectives/Sprint [N]/`
+> **Note:** Sprint-level retrospectives (`complete-sprint`) have been removed in favor of epic-level analysis with `retrospectives:complete-epic`.
 
 ---
 
@@ -680,19 +633,20 @@ Quick reference table for all workflow commands:
 
 | Command | Arguments | Description | Output |
 |---------|-----------|-------------|--------|
-| `create-epic-discovery` | `<epic-key>` | Creates discovery document for research epics | Discovery Document (Confluence) |
-| `synthesize-discovery` | `<doc-urls> [--target=<epic>]` | Synthesizes findings into proposed tickets | Synthesis Doc + Proposed Tickets |
-| `approve-synthesis` | `<synthesis-url>` | Resolves decisions, creates tickets in Jira | Jira Tickets |
-| `create-epic-plan` | `<epic-key>` | Creates overview document with codebase analysis | Overview Document (Confluence) |
-| `create-implementation-plan` | `<overview-doc-url>` | Creates execution plan with parallel waves | Implementation Plan + Updated Tickets |
-| `execute-ticket` | `<ticket-key>` | Implements individual ticket | Code Changes + Tests |
-| `complete-ticket` | `[ticket-key]` | Transitions Jira, updates plan | Jira Status + Plan Update |
-| `complete-epic` | `<epic-key>` | Generates completion report, closes epic | Completion Report |
-| `complete-sprint` | `<sprint-number>` | Comprehensive sprint retrospective | Sprint Retrospective |
+| `discovery:create` | `<epic-key>` | Creates discovery document for research epics | Discovery Document (Confluence) |
+| `discovery:synthesize` | `<doc-urls> [--target=<epic>]` | Synthesizes findings into proposed tickets | Synthesis Doc + Proposed Tickets |
+| `discovery:approve` | `<synthesis-url>` | Resolves decisions, creates tickets in Jira | Jira Tickets |
+| `planning:epic-plan` | `<epic-key>` | Creates overview document with codebase analysis | Overview Document (Confluence) |
+| `planning:impl-plan` | `<overview-doc-url>` | Creates execution plan with parallel waves | Implementation Plan + Updated Tickets |
+| `execution:execute-ticket` | `<ticket-key>` | Implements individual ticket | Code Changes + Tests |
+| `execution:complete-ticket` | `[ticket-key]` | Transitions Jira, updates plan | Jira Status + Plan Update |
+| `retrospectives:complete-epic` | `<epic-key>` | Generates completion report, closes epic | Completion Report |
 
 ---
 
 ## Integration Points
+
+> **Setup Required:** See [Atlassian MCP Setup Guide](ATLASSIAN_MCP_SETUP.md) for Jira and Confluence configuration.
 
 ### Jira Integration
 
@@ -790,15 +744,14 @@ What would you like to do? [A/B/C]
 
 | Command | Checkpoints |
 |---------|-------------|
-| `create-epic-discovery` | Epic confirmation, Document review before publish |
-| `synthesize-discovery` | Sources confirmation, Synthesis review before publish |
-| `approve-synthesis` | Decision resolution, Ticket modifications, Ticket creation approval |
-| `create-epic-plan` | Epic confirmation, Document review before publish |
-| `create-implementation-plan` | Document confirmation, Ticket changes, Plan preview, Overview updates |
-| `execute-ticket` | Ticket selection, Deviation approval, Completion review |
-| `complete-ticket` | Finalization confirmation |
-| `complete-epic` | Completion readiness, Documentation updates, Epic closure |
-| `complete-sprint` | Document confirmation, Retrospective review before publish |
+| `discovery:create` | Epic confirmation, Document review before publish |
+| `discovery:synthesize` | Sources confirmation, Synthesis review before publish |
+| `discovery:approve` | Decision resolution, Ticket modifications, Ticket creation approval |
+| `planning:epic-plan` | Epic confirmation, Document review before publish |
+| `planning:impl-plan` | Document confirmation, Ticket changes, Plan preview, Overview updates |
+| `execution:execute-ticket` | Ticket selection, Deviation approval, Completion review |
+| `execution:complete-ticket` | Finalization confirmation |
+| `retrospectives:complete-epic` | Completion readiness, Documentation updates, Epic closure |
 
 ### Checkpoint Responses
 
@@ -813,27 +766,30 @@ What would you like to do? [A/B/C]
 
 ---
 
+## Utility Commands
+
+### Common Ground
+
+Available at any phase. Surfaces and validates Claude's hidden assumptions about the project.
+
+See [Common Ground Guide](COMMON_GROUND.md) for full documentation.
+
+---
+
 ## Workflow Variations
 
 ### Standard Implementation Flow
 
 For epics with clear requirements:
 ```
-create-epic-plan -> create-implementation-plan -> [execute-ticket + complete-ticket] x N -> complete-epic
+planning:epic-plan -> planning:impl-plan -> [execution:execute-ticket + execution:complete-ticket] x N -> retrospectives:complete-epic
 ```
 
 ### Discovery-First Flow
 
 For epics requiring research:
 ```
-create-epic-discovery -> [research] -> synthesize-discovery -> approve-synthesis -> create-epic-plan -> create-implementation-plan -> [execute-ticket + complete-ticket] x N -> complete-epic
-```
-
-### Sprint Completion Flow
-
-At end of sprint:
-```
-[complete-epic] x N -> complete-sprint
+discovery:create -> [research] -> discovery:synthesize -> discovery:approve -> planning:epic-plan -> planning:impl-plan -> [execution:execute-ticket + execution:complete-ticket] x N -> retrospectives:complete-epic
 ```
 
 ---
@@ -844,14 +800,14 @@ At end of sprint:
 
 Always capture and provide document URLs when outputting command results. Downstream commands depend on these URLs:
 
-- `create-epic-discovery` outputs `{Discovery_Document}` for `synthesize-discovery`
-- `synthesize-discovery` outputs `{Synthesis_Document}` for `approve-synthesis`
-- `create-epic-plan` outputs `{Overview_Document}` for `create-implementation-plan`
-- `create-implementation-plan` outputs `{Implementation_Plan}` referenced in tickets
+- `discovery:create` outputs `{Discovery_Document}` for `discovery:synthesize`
+- `discovery:synthesize` outputs `{Synthesis_Document}` for `discovery:approve`
+- `planning:epic-plan` outputs `{Overview_Document}` for `planning:impl-plan`
+- `planning:impl-plan` outputs `{Implementation_Plan}` referenced in tickets
 
 ### Ticket Self-Containment
 
-After `create-implementation-plan`, each ticket should be fully self-contained with:
+After `planning:impl-plan`, each ticket should be fully self-contained with:
 - All implementation steps
 - Complete test code (copy-paste ready)
 - File paths and modifications

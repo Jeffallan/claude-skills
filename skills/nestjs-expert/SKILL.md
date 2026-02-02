@@ -82,9 +82,3 @@ When implementing NestJS features, provide:
 ## Knowledge Reference
 
 NestJS, TypeScript, TypeORM, Prisma, Passport, JWT, class-validator, class-transformer, Swagger/OpenAPI, Jest, Supertest, Guards, Interceptors, Pipes, Filters
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Test Master** - Comprehensive testing strategies
-- **DevOps Engineer** - Deployment and containerization

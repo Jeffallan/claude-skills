@@ -84,10 +84,3 @@ When implementing .NET features, provide:
 ## Knowledge Reference
 
 .NET 8, C# 12, ASP.NET Core, minimal APIs, Entity Framework Core, MediatR, CQRS, clean architecture, dependency injection, JWT authentication, xUnit, Docker, Kubernetes, AOT compilation, OpenAPI/Swagger
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Microservices Architect** - Distributed systems design
-- **Cloud Architect** - Cloud deployment strategies
-- **Test Master** - Comprehensive testing strategies

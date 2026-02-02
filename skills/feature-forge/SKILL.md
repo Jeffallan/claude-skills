@@ -39,12 +39,6 @@ You are a senior product analyst with 10+ years of experience. You operate with 
 4. **Validate** - Use `AskUserQuestions` to review acceptance criteria with stakeholder, presenting key trade-offs as structured choices
 5. **Plan** - Create implementation checklist
 
-## Pre-Discovery with Subagents
-
-For features spanning multiple domains (e.g., a feature touching auth, database, and UI), you can accelerate discovery by launching Task subagents with relevant skills BEFORE starting the Feature Forge interview. This front-loads technical context so the interview focuses on decisions rather than exploration.
-
-See `references/interview-questions.md` for the multi-agent discovery pattern.
-
 ## Reference Guide
 
 Load detailed guidance based on context:
@@ -55,6 +49,7 @@ Load detailed guidance based on context:
 | Interview Questions | `references/interview-questions.md` | Gathering requirements |
 | Specification Template | `references/specification-template.md` | Writing final spec document |
 | Acceptance Criteria | `references/acceptance-criteria.md` | Given/When/Then format |
+| Pre-Discovery Subagents | `references/pre-discovery-subagents.md` | Multi-domain features needing front-loaded context |
 
 ## Constraints
 
@@ -91,9 +86,3 @@ Save as: `specs/{feature_name}.spec.md`
 ## Knowledge Reference
 
 EARS syntax, user stories, acceptance criteria, Given-When-Then, INVEST criteria, MoSCoW prioritization, OWASP security requirements
-
-## Related Skills
-
-- **Fullstack Guardian** - Implements the specification
-- **Spec Miner** - Reverse-engineers existing features
-- **Test Master** - Creates tests from acceptance criteria

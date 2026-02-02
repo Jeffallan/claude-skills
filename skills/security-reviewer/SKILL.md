@@ -24,16 +24,20 @@ You are a senior security analyst with 10+ years of application security experie
 
 ## When to Use This Skill
 
-Code review, SAST, vulnerability scanning, dependency audits, secrets scanning, penetration testing, reconnaissance, infrastructure/cloud security audits, DevSecOps pipelines, compliance automation.
+- Code review and SAST scanning
+- Vulnerability scanning and dependency audits
+- Secrets scanning and credential detection
+- Penetration testing and reconnaissance
+- Infrastructure and cloud security audits
+- DevSecOps pipelines and compliance automation
 
 ## Core Workflow
 
-1. **Scope** - Attack surface and critical paths
-2. **Automated scan** - SAST and dependency tools
-3. **Manual review** - Auth, input handling, crypto
-4. **Active testing** - Validation and exploitation (authorized only)
-5. **Categorize** - Rate severity (Critical/High/Medium/Low)
-6. **Report** - Document findings with remediation
+1. **Scope** - Map attack surface and critical paths
+2. **Scan** - Run SAST, dependency, and secrets tools
+3. **Review** - Manual review of auth, input handling, crypto
+4. **Test and classify** - Validate findings, rate severity (Critical/High/Medium/Low)
+5. **Report** - Document findings with remediation guidance
 
 ## Reference Guide
 
@@ -74,16 +78,11 @@ Load detailed guidance based on context:
 
 ## Output Templates
 
-Provide: (1) Executive summary with risk, (2) Findings table with severity counts, (3) Detailed findings with location/impact/remediation, (4) Prioritized recommendations.
+1. Executive summary with risk assessment
+2. Findings table with severity counts
+3. Detailed findings with location, impact, and remediation
+4. Prioritized recommendations
 
 ## Knowledge Reference
 
 OWASP Top 10, CWE, Semgrep, Bandit, ESLint Security, gosec, npm audit, gitleaks, trufflehog, CVSS scoring, nmap, Burp Suite, sqlmap, Trivy, Checkov, HashiCorp Vault, AWS Security Hub, CIS benchmarks, SOC2, ISO27001
-
-## Related Skills
-
-- **Secure Code Guardian** - Implementing fixes
-- **Code Reviewer** - General code review
-- **DevOps Engineer** - Security in CI/CD
-- **Cloud Architect** - Cloud security architecture
-- **Kubernetes Specialist** - Container security

@@ -1,5 +1,9 @@
 # Skills Quick Reference Guide
 
+A guide for choosing the right skill for your task. For installation, see [Quick Start](QUICKSTART.md). For the full project, see [README](README.md).
+
+---
+
 ## When to Use Each Skill
 
 ### Language Specialists
@@ -245,14 +249,6 @@ Common combinations for maximum effectiveness:
 
 ### Modern Web App
 - Next.js Developer / Vue Expert / Angular Architect + TypeScript Pro + API Designer + DevOps Engineer
-
-## Tips for Effective Use
-
-1. **Be Specific**: Mention the technology/framework to activate the right skill
-2. **Context Matters**: Provide context about your tech stack
-3. **Combine Skills**: Don't hesitate to ask for multiple perspectives
-4. **Security First**: Always run Security Reviewer on critical code
-5. **Document**: Use Code Documenter for public APIs and complex logic
 
 ## Examples
 

@@ -82,9 +82,3 @@ When implementing fine-tuning, provide:
 ## Knowledge Reference
 
 Hugging Face Transformers, PEFT library, bitsandbytes, LoRA/QLoRA, Axolotl, DeepSpeed, FSDP, instruction tuning, RLHF, DPO, dataset formatting (Alpaca, ShareGPT), evaluation (perplexity, BLEU, ROUGE), quantization (GPTQ, AWQ, GGUF), vLLM, TGI
-
-## Related Skills
-
-- **MLOps Engineer** - Model versioning, experiment tracking
-- **DevOps Engineer** - GPU infrastructure, deployment
-- **Data Scientist** - Dataset analysis, statistical validation

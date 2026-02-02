@@ -83,10 +83,3 @@ When implementing MCP features, provide:
 ## Knowledge Reference
 
 Model Context Protocol (MCP), JSON-RPC 2.0, TypeScript SDK (@modelcontextprotocol/sdk), Python SDK (mcp), Zod schemas, Pydantic validation, stdio transport, SSE transport, resource URIs, tool functions, prompt templates, authentication, rate limiting
-
-## Related Skills
-
-- **FastAPI Expert** - Python API servers for HTTP transport
-- **TypeScript Pro** - Advanced TypeScript for Node.js servers
-- **Security Reviewer** - Security audits for MCP implementations
-- **DevOps Engineer** - Deployment and monitoring

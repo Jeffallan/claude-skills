@@ -92,11 +92,3 @@ When implementing ML pipelines, provide:
 ## Knowledge Reference
 
 MLflow, Kubeflow Pipelines, Apache Airflow, Prefect, Feast, Weights & Biases, Neptune, DVC, Great Expectations, Ray, Horovod, Kubernetes, Docker, S3/GCS/Azure Blob, model registry patterns, feature store architecture, distributed training, hyperparameter optimization
-
-## Related Skills
-
-- **DevOps Engineer** - CI/CD integration for ML workflows
-- **Kubernetes Specialist** - ML workload orchestration on K8s
-- **Cloud Architect** - Cloud infrastructure for ML pipelines
-- **Python Pro** - Python best practices for ML code
-- **Data Engineer** - Data pipeline integration

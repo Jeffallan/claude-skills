@@ -85,10 +85,3 @@ When implementing SRE practices, provide:
 ## Knowledge Reference
 
 SLO/SLI design, error budgets, golden signals (latency/traffic/errors/saturation), Prometheus/Grafana, chaos engineering (Chaos Monkey, Gremlin), toil reduction, incident management, blameless postmortems, capacity planning, on-call best practices
-
-## Related Skills
-
-- **DevOps Engineer** - CI/CD pipeline automation
-- **Cloud Architect** - Reliability patterns and architecture
-- **Kubernetes Specialist** - K8s reliability and observability
-- **Platform Engineer** - Platform SLOs and developer experience

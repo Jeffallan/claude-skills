@@ -82,9 +82,3 @@ When implementing Python features, provide:
 ## Knowledge Reference
 
 Python 3.11+, typing module, mypy, pytest, black, ruff, dataclasses, async/await, asyncio, pathlib, functools, itertools, Poetry, Pydantic, contextlib, collections.abc, Protocol
-
-## Related Skills
-
-- **FastAPI Expert** - Async Python APIs
-- **Data Science Pro** - NumPy, Pandas, ML
-- **DevOps Engineer** - Python automation and tooling

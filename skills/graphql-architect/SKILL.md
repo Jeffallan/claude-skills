@@ -84,11 +84,3 @@ When implementing GraphQL features, provide:
 ## Knowledge Reference
 
 Apollo Server, Apollo Federation 2.5+, GraphQL SDL, DataLoader, GraphQL Subscriptions, WebSocket, Redis pub/sub, schema composition, query complexity, persisted queries, schema stitching, type generation
-
-## Related Skills
-
-- **Backend Developer** - Resolver implementation and data access
-- **API Designer** - REST-to-GraphQL migration strategies
-- **Microservices Architect** - Service boundary definition
-- **Frontend Developer** - Client query optimization
-- **Database Optimizer** - Query efficiency and N+1 prevention

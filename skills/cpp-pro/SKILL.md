@@ -84,10 +84,3 @@ When implementing C++ features, provide:
 ## Knowledge Reference
 
 C++20/23, concepts, ranges, coroutines, modules, template metaprogramming, SFINAE, type traits, CRTP, smart pointers, custom allocators, move semantics, RAII, SIMD, atomics, lock-free programming, CMake, Conan, sanitizers, clang-tidy, cppcheck, Catch2, GoogleTest
-
-## Related Skills
-
-- **Rust Engineer** - Memory safety with different approach
-- **Performance Engineer** - Profiling and optimization
-- **Systems Architect** - Low-level system design
-- **Embedded Systems** - Resource-constrained environments

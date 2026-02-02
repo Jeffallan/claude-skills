@@ -56,6 +56,14 @@ cp -r skills/* ~/.claude/skills/
 # Test all examples in the SKILL.md
 ```
 
+#### 4.5. Validate Your Skill
+
+Run the validation script to catch issues before CI:
+
+```bash
+python scripts/validate-skills.py --skill your-skill-name
+```
+
 #### 5. Commit Your Changes
 ```bash
 git add .
@@ -85,27 +93,29 @@ Then create a Pull Request on GitHub with:
 
 ```yaml
 ---
-name: Skill Name
-description: [Role] for [Domain]. Invoke for [triggers]. Keywords: [terms].
-triggers:
-  - keyword1
-  - keyword2
-  - phrase1
-role: expert | specialist | engineer
-scope: implementation | review | design | testing
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep  # Optional: restrict tools
-output-format: code | document | report | analysis
+name: my-skill-name
+description: Use when [triggering conditions]. Invoke for [specific keywords].
+license: MIT
+metadata:
+  author: https://github.com/YourGitHub
+  version: "1.0.0"
+  triggers: keyword1, keyword2, phrase1
+  role: specialist
+  scope: implementation
+  output-format: code
+  domain: frontend
+  related-skills: react-expert, typescript-pro, nextjs-developer
 ---
 ```
 
 **Description Formula:**
 ```
-[Role] for [Domain]. Invoke for: [specific triggers]. Keywords: [search terms].
+Use when [triggering conditions]. Invoke for [specific keywords].
 ```
 
 **Example:**
 ```yaml
-description: React specialist for production-grade web applications. Invoke for component architecture, hooks patterns, state management, Server Components. Keywords: React, JSX, hooks, useState, use(), Suspense.
+description: Use when building React 18+ applications requiring component architecture, hooks patterns, or state management. Invoke for Server Components, performance optimization, Suspense boundaries, React 19 features.
 ```
 
 ### Required Sections (In Order)
@@ -164,9 +174,6 @@ When implementing [X], provide:
 
 [Comma-separated keywords only - no sentences]
 
-## Related Skills
-
-- **Skill Name** - Brief integration note
 ```
 
 ### Progressive Disclosure Pattern
@@ -216,7 +223,7 @@ Load detailed guidance based on context:
 
 **When to Use Progressive Disclosure:**
 - Skill has 5+ distinct topic areas
-- Original content exceeds 200 lines
+- Original content exceeds 100 lines
 - Topics are contextually independent
 - Code examples are extensive
 

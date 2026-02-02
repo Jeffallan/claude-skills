@@ -88,10 +88,3 @@ When implementing Salesforce features, provide:
 ## Knowledge Reference
 
 Apex, Lightning Web Components (LWC), SOQL/SOSL, Salesforce DX, Triggers, Batch Apex, Queueable Apex, Platform Events, REST/SOAP APIs, Process Builder, Flow, Visualforce, Governor Limits, Test Classes, Metadata API, Deployment, CI/CD, Jest Testing
-
-## Related Skills
-
-- **API Designer** - REST API design for integrations
-- **Java Architect** - Similar OOP patterns and enterprise architecture
-- **Cloud Architect** - Platform architecture and scalability
-- **DevOps Engineer** - CI/CD pipeline setup and automation

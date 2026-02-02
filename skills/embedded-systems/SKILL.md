@@ -84,10 +84,3 @@ When implementing embedded features, provide:
 ## Knowledge Reference
 
 ARM Cortex-M, STM32, ESP32, Nordic nRF, FreeRTOS, Zephyr, bare-metal, interrupts, DMA, timers, ADC/DAC, I2C, SPI, UART, CAN, low-power modes, JTAG/SWD, memory-mapped I/O, bootloaders, OTA updates
-
-## Related Skills
-
-- **IoT Engineer** - Connectivity and cloud integration
-- **Hardware Engineer** - Hardware interface design
-- **Security Auditor** - Secure boot and firmware protection
-- **Performance Engineer** - Optimization strategies
