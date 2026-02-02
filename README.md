@@ -435,3 +435,10 @@ Fullstack engineering, security compliance, and technical due diligence for team
 ---
 
 **Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->356<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills** 
+
+## Compatible Agents
+
+These skills work with any agent that supports the skills standard:
+
+- [Claude Code](https://claude.ai/code) - Anthropic's coding agent
+- [AdaL](https://sylph.ai/adal) - Self-evolving AI coding agent with Claude Code compatibility
