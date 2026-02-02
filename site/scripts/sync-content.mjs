@@ -348,10 +348,15 @@ function syncSkillPages(skillIndex) {
 
     body = rewriteLinks(body);
 
-    // Assemble frontmatter
+    // Assemble frontmatter (branded title + description for SEO, skills only)
+    const metaTitle = `Agent Skills for Claude Code | ${title}`;
+    const metaDescription = description
+      ? `Claude Skills | ${title} | ${description}`
+      : '';
     const fm = starlightFrontmatter({
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
+      sidebar: { label: title },
     });
 
     // Assemble page
