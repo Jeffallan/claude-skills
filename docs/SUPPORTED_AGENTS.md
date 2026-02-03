@@ -16,6 +16,7 @@ This plugin follows the [Agent Skills specification](https://agentskills.io/spec
 | [Roo Code](https://github.com/RooCodeInc/Roo-Code) | Roo Code Inc | VS Code | [Roo Skills](https://docs.roocode.com/features/skills) |
 | [Amp](https://ampcode.com) | Sourcegraph | CLI, VS Code | [Amp Skills](https://ampcode.com/news/agent-skills) |
 | [OpenCode](https://github.com/opencode-ai/opencode) | OpenCode AI | CLI | [OpenCode Skills](https://opencode.ai/docs/skills) |
+| [AdaL CLI](https://sylph.ai/) | SylphAI | CLI | [AdaL Skills](https://docs.sylph.ai/features/plugins-and-skills) |
 
 ## Submit a New Agent
 
