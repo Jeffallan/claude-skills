@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with Fullstack Dev Skills Plugin in minutes!
+Get up and running with the Fullstack Dev Skills Plugin.
 
 ## Installation (Choose One)
 
@@ -28,7 +28,7 @@ Restart Claude Code after copying.
 
 ## Test Your Installation
 
-Try these commands to verify skills are working:
+Verify skills are working:
 
 ```bash
 # Test NestJS Expert
@@ -55,25 +55,25 @@ Try these commands to verify skills are working:
 - <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Project Workflow Commands (discovery, planning, execution, retrospectives)
 - Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
-### 2. Your First Prompt
+### 2. First Prompt
 
-Be specific about your tech stack and Claude activates the right skills automatically:
-
-```
-You: "I need to implement a user profile feature in my NestJS API with authentication"
-Claude: [Activates NestJS Expert + Secure Code Guardian]
-```
+Specify the tech stack and Claude activates the appropriate skills:
 
 ```
-You: "My React app has a memory leak, help me debug it"
-Claude: [Activates Debugging Wizard + React Expert]
+"I need to implement a user profile feature in my NestJS API with authentication"
+→ Activates NestJS Expert + Secure Code Guardian
+```
+
+```
+"My React app has a memory leak, help me debug it"
+→ Activates Debugging Wizard + React Expert
 ```
 
 ### 3. Learn More
 
 See [SKILLS_GUIDE.md](SKILLS_GUIDE.md) for decision trees, skill combinations, and detailed examples for every category.
 
-## Tips for Maximum Effectiveness
+## Effective Usage
 
 ### 1. Provide Context
 Include relevant information:
@@ -97,13 +97,13 @@ Include relevant information:
 
 ## Troubleshooting
 
-### Skills Not Activating?
+### Skills Not Activating
 1. Restart Claude Code after installation
 2. Check skill files exist: `ls ~/.claude/skills/`
 3. Be more specific with framework/technology names
 4. Try explicitly mentioning the skill name: "Use the NestJS Expert to help me..."
 
-### Skills Not Loading After Install?
+### Skills Not Loading After Install
 1. Verify the plugin is installed: `/plugin list`
 2. Check for conflicting skill names in `~/.claude/skills/`
 3. Try reinstalling: `/plugin uninstall fullstack-dev-skills@jeffallan` then reinstall
@@ -116,32 +116,30 @@ cd claude-skills && git pull
 cp -r ./skills/* ~/.claude/skills/
 ```
 
-### Need Help?
+### Need Help
 - Check [SKILLS_GUIDE.md](SKILLS_GUIDE.md) for skill-specific guidance
 - Review individual `skills/*/SKILL.md` files
 - Open an [issue on GitHub](https://github.com/jeffallan/claude-skills/issues)
 
-## What's Next?
+## Next Steps
 
 ### Explore Skills
-Browse `skills/` directory to see what each skill offers.
+Browse the `skills/` directory for available skills.
 
 ### Customize
-Edit any `SKILL.md` to match your team's conventions.
+Edit any `SKILL.md` to match team conventions.
 
 ### Contribute
-Add your own skills! See `CONTRIBUTING.md`.
+Add new skills. See `CONTRIBUTING.md`.
 
 ### Share
-If you find this useful, share with your team:
+Share with a team:
 ```bash
 # They can install with one command
 claude plugin install https://github.com/jeffallan/claude-skills
 ```
 
 ## Quick Reference Card
-
-Print or save this for quick reference:
 
 ```
 FRAMEWORKS

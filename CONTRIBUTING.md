@@ -1,6 +1,6 @@
 # Contributing to Fullstack Dev Skills Plugin
 
-Thank you for your interest in contributing! This document provides guidelines for contributing to this project.
+Guidelines for contributing to this project.
 
 ## How to Contribute
 
@@ -299,7 +299,7 @@ Before submitting:
 - Assume good intent
 - Keep discussions productive
 
-## Questions?
+## Questions
 
 - Open a [GitHub Discussion](https://github.com/jeffallan/claude-skills/discussions)
 - Comment on relevant issues
@@ -312,4 +312,4 @@ Contributors will be recognized in:
 - Release notes for significant contributions
 - GitHub contributors page
 
-Thank you for helping make this plugin better!
+
