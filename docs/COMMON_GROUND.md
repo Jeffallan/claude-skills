@@ -418,10 +418,10 @@ Check git remote configuration. For non-git projects, the absolute path is used.
 
 ## Related Documentation
 
-- [WORKFLOW_COMMANDS.md](WORKFLOW_COMMANDS.md) — Project workflow commands
-- [ATLASSIAN_MCP_SETUP.md](ATLASSIAN_MCP_SETUP.md) — Jira/Confluence integration
+- [Workflow Commands](WORKFLOW_COMMANDS.md) — Project workflow commands
+- [Atlassian MCP Setup](ATLASSIAN_MCP_SETUP.md) — Jira/Confluence integration
 - [commands/common-ground/COMMAND.md](../commands/common-ground/COMMAND.md) — Technical implementation
-- [workflow/common-ground.md](workflow/common-ground.md) — Workflow integration details
+- [Common Ground Workflow](workflow/common-ground.md) — Workflow integration details
 
 ---
 

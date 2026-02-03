@@ -78,7 +78,7 @@ Specify the tech stack and Claude activates the appropriate skills:
 
 ### 3. Learn More
 
-See [SKILLS_GUIDE.md](SKILLS_GUIDE.md) for decision trees, skill combinations, and detailed examples for every category.
+See [Skills Guide](SKILLS_GUIDE.md) for decision trees, skill combinations, and detailed examples for every category.
 
 ## Effective Usage
 
@@ -96,11 +96,11 @@ Include relevant information:
 ```
 
 ### 3. Reference the Guides
-- [README.md](README.md) - Overview and architecture
-- [SKILLS_GUIDE.md](SKILLS_GUIDE.md) - Detailed skill reference with decision trees
-- [docs/COMMON_GROUND.md](docs/COMMON_GROUND.md) - Context engineering guide
-- [docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md) - Workflow commands reference
-- [CONTRIBUTING.md](CONTRIBUTING.md) - How to customize/extend
+- [README](README.md) - Overview and architecture
+- [Skills Guide](SKILLS_GUIDE.md) - Detailed skill reference with decision trees
+- [Common Ground](docs/COMMON_GROUND.md) - Context engineering guide
+- [Workflow Commands](docs/WORKFLOW_COMMANDS.md) - Workflow commands reference
+- [Contributing](CONTRIBUTING.md) - How to customize/extend
 
 ## Troubleshooting
 
@@ -124,7 +124,7 @@ cp -r ./skills/* ~/.claude/skills/
 ```
 
 ### Need Help
-- Check [SKILLS_GUIDE.md](SKILLS_GUIDE.md) for skill-specific guidance
+- Check [Skills Guide](SKILLS_GUIDE.md) for skill-specific guidance
 - Review individual `skills/*/SKILL.md` files
 - Open an [issue on GitHub](https://github.com/jeffallan/claude-skills/issues)
 
@@ -141,6 +141,6 @@ Add new skills. See `CONTRIBUTING.md`.
 
 ## Support
 
-- Documentation: Check [README.md](README.md) and [SKILLS_GUIDE.md](SKILLS_GUIDE.md)
+- Documentation: Check [README](README.md) and [Skills Guide](SKILLS_GUIDE.md)
 - Issues: [GitHub Issues](https://github.com/jeffallan/claude-skills/issues)
 - Discussions: [GitHub Discussions](https://github.com/jeffallan/claude-skills/discussions)

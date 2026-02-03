@@ -39,7 +39,7 @@ For all installation methods and first steps, see the **[Quick Start Guide](QUIC
 
 <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
 
-See **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** for the full list, decision trees, and workflow combinations.
+See **[Skills Guide](SKILLS_GUIDE.md)** for the full list, decision trees, and workflow combinations.
 
 ## Usage Patterns
 
@@ -80,22 +80,22 @@ Surface and validate Claude's hidden assumptions about your project with `/commo
 ## Documentation
 
 - **[Quick Start Guide](QUICKSTART.md)** - Installation and first steps
-- **[SKILLS_GUIDE.md](SKILLS_GUIDE.md)** - Skill reference and decision trees
-- **[docs/COMMON_GROUND.md](docs/COMMON_GROUND.md)** - Context engineering with `/common-ground`
-- **[docs/WORKFLOW_COMMANDS.md](docs/WORKFLOW_COMMANDS.md)** - Project workflow commands guide
-- **[docs/ATLASSIAN_MCP_SETUP.md](docs/ATLASSIAN_MCP_SETUP.md)** - Atlassian MCP server setup
-- **[docs/local_skill_development.md](docs/local_skill_development.md)** - Local skill development
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[Skills Guide](SKILLS_GUIDE.md)** - Skill reference and decision trees
+- **[Common Ground](docs/COMMON_GROUND.md)** - Context engineering with `/common-ground`
+- **[Workflow Commands](docs/WORKFLOW_COMMANDS.md)** - Project workflow commands guide
+- **[Atlassian MCP Setup](docs/ATLASSIAN_MCP_SETUP.md)** - Atlassian MCP server setup
+- **[Local Development](docs/local_skill_development.md)** - Local skill development
+- **[Contributing](CONTRIBUTING.md)** - Contribution guidelines
 - **skills/\*/SKILL.md** - Individual skill documentation
 - **skills/\*/references/** - Deep-dive reference materials
 
 ## Contributing
 
-See **[CONTRIBUTING.md](CONTRIBUTING.md)** for guidelines on adding skills, writing references, and submitting pull requests.
+See **[Contributing](CONTRIBUTING.md)** for guidelines on adding skills, writing references, and submitting pull requests.
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for full version history and release notes.
+See [Changelog](CHANGELOG.md) for full version history and release notes.
 
 ## License
 
