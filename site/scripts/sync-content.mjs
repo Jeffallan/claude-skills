@@ -16,6 +16,7 @@ const DOCS_DIR = path.resolve(import.meta.dirname, '..', 'src', 'content', 'docs
 const PUBLIC_DIR = path.resolve(import.meta.dirname, '..', 'public');
 
 const GITHUB_BLOB = 'https://github.com/jeffallan/claude-skills/blob/main';
+const BASE_PATH = '/claude-skills';
 
 const pageManifest = []; // { siteUrl, title, description, category, contentFile }
 
@@ -51,6 +52,7 @@ const GUIDE_DOCS = [
   { src: 'docs/COMMON_GROUND.md', dest: 'guides/common-ground.md', title: 'Common Ground', description: 'Surface and validate hidden assumptions about projects' },
   { src: 'docs/ATLASSIAN_MCP_SETUP.md', dest: 'guides/atlassian-mcp-setup.md', title: 'Atlassian MCP Setup', description: 'Configure Jira and Confluence MCP integration' },
   { src: 'docs/local_skill_development.md', dest: 'guides/local-development.md', title: 'Local Development', description: 'Develop and test skills locally' },
+  { src: 'docs/SUPPORTED_AGENTS.md', dest: 'guides/supported-agents.md', title: 'Supported Agents', description: 'Agents and frameworks compatible with the Agent Skills specification' },
 ];
 
 // ─── Link rewrite map (built during sync) ───────────────────────────
@@ -60,24 +62,40 @@ function buildLinkMap() {
   // Core docs
   for (const { src, dest } of CORE_DOCS) {
     const slug = dest.replace(/\.md$/, '');
-    addLinkVariants(src, `/${slug}/`);
+    addLinkVariants(src, `${BASE_PATH}/${slug}/`);
   }
   // Guide docs
   for (const { src, dest } of GUIDE_DOCS) {
     const slug = dest.replace(/\.md$/, '');
-    addLinkVariants(src, `/${slug}/`);
+    addLinkVariants(src, `${BASE_PATH}/${slug}/`);
+    // Also map the dest path for cross-references between guides
+    const destSlug = dest.replace(/\.md$/, '').replace('guides/', '');
+    linkMap.set(`/guides/${destSlug}/`, `${BASE_PATH}/guides/${destSlug}/`);
   }
   // README is now synced via CORE_DOCS, but add extra variant without path prefix
-  linkMap.set('README.md', '/readme/');
-  linkMap.set('./README.md', '/readme/');
+  linkMap.set('README.md', `${BASE_PATH}/readme/`);
+  linkMap.set('./README.md', `${BASE_PATH}/readme/`);
   // Workflow cross-links (relative .md references between workflow files)
   const workflowDir = path.join(ROOT, 'docs', 'workflow');
   if (fs.existsSync(workflowDir)) {
     for (const file of fs.readdirSync(workflowDir).filter((f) => f.endsWith('.md'))) {
       const slug = file.replace(/\.md$/, '');
-      linkMap.set(file, `/workflows/${slug}/`);
+      linkMap.set(file, `${BASE_PATH}/workflows/${slug}/`);
+      linkMap.set(`workflow/${file}`, `${BASE_PATH}/workflows/${slug}/`);
+      linkMap.set(`/workflows/${slug}/`, `${BASE_PATH}/workflows/${slug}/`);
     }
   }
+  // Map common internal paths that may appear without base path
+  const coreSlugs = ['getting-started', 'skills-guide', 'readme', 'contributing', 'changelog', 'roadmap'];
+  for (const slug of coreSlugs) {
+    linkMap.set(`/${slug}/`, `${BASE_PATH}/${slug}/`);
+  }
+  // Map command source files to their doc site equivalents
+  linkMap.set('../commands/common-ground/COMMAND.md', `${BASE_PATH}/guides/common-ground/`);
+  linkMap.set('commands/common-ground/COMMAND.md', `${BASE_PATH}/guides/common-ground/`);
+  // Map source-only files to GitHub
+  linkMap.set('LICENSE', `${GITHUB_BLOB}/LICENSE`);
+  linkMap.set('docs/v0.5.0-plan.md', `${GITHUB_BLOB}/docs/v0.5.0-plan.md`);
 }
 
 function addLinkVariants(srcPath, siteUrl) {
@@ -131,11 +149,22 @@ function rewriteLinks(body) {
 
     // Strip anchor from URL for lookup, preserve anchor
     const [urlPath, anchor] = url.split('#');
+    const suffix = anchor ? `#${anchor}` : '';
+
+    // Check linkMap first
     const resolved = linkMap.get(urlPath) || linkMap.get(urlPath.replace(/^\.\//, ''));
     if (resolved) {
-      const suffix = anchor ? `#${anchor}` : '';
       return `[${text}](${resolved}${suffix})`;
     }
+
+    // Handle absolute paths that need base path prefix
+    if (urlPath.startsWith('/') && !urlPath.startsWith(BASE_PATH)) {
+      // Check if it's an internal site path (skills, guides, workflows, etc.)
+      if (urlPath.match(/^\/(skills|guides|workflows|getting-started|skills-guide|readme|contributing|changelog|roadmap)\//)) {
+        return `[${text}](${BASE_PATH}${urlPath}${suffix})`;
+      }
+    }
+
     return _match;
   });
 }
@@ -332,7 +361,7 @@ function syncSkillPages(skillIndex) {
       const links = names.map((name) => {
         const info = skillIndex.get(name);
         if (info) {
-          return `[${info.title}](/skills/${info.domain}/${name}/)`;
+          return `[${info.title}](${BASE_PATH}/skills/${info.domain}/${name}/)`;
         }
         return name;
       });

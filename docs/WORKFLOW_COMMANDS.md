@@ -54,7 +54,7 @@ flowchart TB
     subgraph Discovery["Discovery Phase"]
         direction TB
         CED["/project:discovery:create-epic-discovery"]
-        MR["[Manual Research]<br/>Interviews, Spikes, Analysis"]
+        MR["Manual Research<br/>Interviews, Spikes, Analysis"]
         SD["/project:discovery:synthesize-discovery"]
         AS["/project:discovery:approve-synthesis"]
 

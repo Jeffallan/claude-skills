@@ -20,6 +20,9 @@ When suggesting a new skill:
 3. List relevant technologies/frameworks
 4. Provide examples of when it would be triggered
 
+### Adding Supported Agents
+To add a new agent that implements the Agent Skills specification, see the [Supported Agents guide](docs/SUPPORTED_AGENTS.md#submit-a-new-agent) for submission instructions and PR template.
+
 ### Submitting Changes
 
 #### 1. Fork and Clone
@@ -181,7 +184,7 @@ When implementing [X], provide:
 For skills with extensive reference material, use the progressive disclosure pattern to reduce initial token load:
 
 **Structure:**
-```
+```text
 skills/my-skill/
 ├── SKILL.md           # Lean main file (~80-100 lines)
 └── references/        # Domain-specific reference files

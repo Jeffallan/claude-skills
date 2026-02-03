@@ -2,6 +2,17 @@
 
 How to develop and test Claude Code marketplace plugins (skills) without releasing new versions.
 
+## Quick Start
+
+This repo includes Makefile targets that automate the symlink workflow:
+
+```bash
+make dev-link    # Link your working copy to the plugin cache
+make dev-unlink  # Restore the released version
+```
+
+Restart Claude Code after running either command.
+
 ---
 
 ## How Plugin Loading Works

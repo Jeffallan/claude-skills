@@ -20,6 +20,32 @@ export default defineConfig({
             title: 'LLM-friendly content',
           },
         },
+        {
+          tag: 'script',
+          attrs: {
+            type: 'module',
+          },
+          content: `
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+            mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+            function renderMermaid() {
+              document.querySelectorAll('pre[data-language="mermaid"]').forEach((pre, i) => {
+                const lines = pre.querySelectorAll('.ec-line');
+                const code = Array.from(lines).map(line => line.textContent).join('\\n');
+                const div = document.createElement('div');
+                div.className = 'mermaid';
+                div.id = 'mermaid-' + i;
+                div.textContent = code;
+                pre.closest('.expressive-code').replaceWith(div);
+              });
+              mermaid.run();
+            }
+
+            renderMermaid();
+            document.addEventListener('astro:page-load', renderMermaid);
+          `,
+        },
       ],
       components: {
         SocialIcons: './src/components/SocialIcons.astro',
@@ -48,6 +74,10 @@ export default defineConfig({
             {
               label: 'Local Development',
               link: '/guides/local-development/',
+            },
+            {
+              label: 'Supported Agents',
+              link: '/guides/supported-agents/',
             },
           ],
         },

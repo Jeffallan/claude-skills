@@ -20,6 +20,13 @@ Get up and running with the Fullstack Dev Skills Plugin.
 claude plugin install https://github.com/jeffallan/claude-skills
 ```
 
+### Install via skills.sh
+```bash
+npx skills add jeffallan/claude-skills
+```
+
+> **Note:** This method installs skills only. Slash commands (`/common-ground`, `/project:*`) are not included.
+
 ### Local Development
 ```bash
 cp -r ./skills/* ~/.claude/skills/
@@ -132,42 +139,8 @@ Edit any `SKILL.md` to match team conventions.
 ### Contribute
 Add new skills. See `CONTRIBUTING.md`.
 
-### Share
-Share with a team:
-```bash
-# They can install with one command
-claude plugin install https://github.com/jeffallan/claude-skills
-```
-
-## Quick Reference Card
-
-```
-FRAMEWORKS
-├─ Backend: NestJS | Django | FastAPI
-├─ Frontend: React
-└─ Mobile: React Native | Flutter
-
-WORKFLOWS
-├─ Requirements: Feature Forge
-├─ Implementation: Fullstack Guardian + Framework Expert
-├─ Testing: Test Master + Playwright Expert
-├─ Review: Code Reviewer + Security Reviewer
-├─ Deploy: DevOps Engineer
-├─ Monitor: Monitoring Expert
-├─ Debug: Debugging Wizard
-└─ Design: Architecture Designer
-
-SECURITY
-├─ Writing: Secure Code Guardian
-└─ Reviewing: Security Reviewer
-
-DOCUMENTATION
-└─ Code Documenter (OpenAPI, JSDoc, Docstrings)
-```
-
 ## Support
 
 - Documentation: Check [README.md](README.md) and [SKILLS_GUIDE.md](SKILLS_GUIDE.md)
 - Issues: [GitHub Issues](https://github.com/jeffallan/claude-skills/issues)
 - Discussions: [GitHub Discussions](https://github.com/jeffallan/claude-skills/discussions)
-- Contributing: See [CONTRIBUTING.md](CONTRIBUTING.md)
