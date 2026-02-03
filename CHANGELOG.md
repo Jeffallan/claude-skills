@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-02-03
+
+### Added
+- Documentation site built with Astro Starlight (`site/`) (closes #106)
+  - Custom GitHub stars component with live API fetch
+  - View as Markdown toggle for skill pages
+  - SEO metadata improvements
+- Automated release workflow `.github/workflows/release.yml` (closes #107)
+  - Triggers on version tag push (`v*`)
+  - Validates using reusable workflow
+  - Extracts release notes from CHANGELOG.md
+  - Builds and deploys docs site to GitHub Pages
+  - Creates GitHub Release with extracted notes
+- YAML workflow definitions and DAG manifest for project commands (`commands/`) (closes #124)
+- `related-skills` field in skill frontmatter metadata (closes #69)
+- `scripts/migrate-frontmatter.py` for bulk skill metadata updates
+- Local skill development guide (`docs/local_skill_development.md`)
+
+### Changed
+- Restructured primary docs, workflow docs, and skill files
+- Rewrote ROADMAP.md with re-triaged GitHub issues
+- Extended `validate-skills.py` with related-skills validation
+- Documentation tone consistency improvements (closes #132)
+- Fixed broken links and missing references in cloud-architect skill
+- Added links in SKILLS_GUIDE.md
+
 ## [0.4.2] - 2026-01-29
 
 ### Added
@@ -239,6 +265,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.3]: https://github.com/jeffallan/claude-skills/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/jeffallan/claude-skills/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/jeffallan/claude-skills/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/jeffallan/claude-skills/compare/v0.3.2...v0.4.0
