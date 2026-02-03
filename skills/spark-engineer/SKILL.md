@@ -1,23 +1,16 @@
 ---
 name: spark-engineer
 description: Use when building Apache Spark applications, distributed data processing pipelines, or optimizing big data workloads. Invoke for DataFrame API, Spark SQL, RDD operations, performance tuning, streaming analytics.
-triggers:
-  - Apache Spark
-  - PySpark
-  - Spark SQL
-  - distributed computing
-  - big data
-  - DataFrame API
-  - RDD
-  - Spark Streaming
-  - structured streaming
-  - data partitioning
-  - Spark performance
-  - cluster computing
-  - data processing pipeline
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: data-ml
+  triggers: Apache Spark, PySpark, Spark SQL, distributed computing, big data, DataFrame API, RDD, Spark Streaming, structured streaming, data partitioning, Spark performance, cluster computing, data processing pipeline
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: python-pro, sql-pro, devops-engineer
 ---
 
 # Spark Engineer
@@ -92,9 +85,3 @@ When implementing Spark solutions, provide:
 ## Knowledge Reference
 
 Spark DataFrame API, Spark SQL, RDD transformations/actions, catalyst optimizer, tungsten execution engine, partitioning strategies, broadcast variables, accumulators, structured streaming, watermarks, checkpointing, Spark UI analysis, memory management, shuffle optimization
-
-## Related Skills
-
-- **Python Pro** - PySpark development patterns and best practices
-- **SQL Pro** - Advanced Spark SQL query optimization
-- **DevOps Engineer** - Spark cluster deployment and monitoring

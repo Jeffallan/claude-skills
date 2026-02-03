@@ -1,25 +1,16 @@
 ---
 name: monitoring-expert
 description: Use when setting up monitoring systems, logging, metrics, tracing, or alerting. Invoke for dashboards, Prometheus/Grafana, load testing, profiling, capacity planning.
-triggers:
-  - monitoring
-  - observability
-  - logging
-  - metrics
-  - tracing
-  - alerting
-  - Prometheus
-  - Grafana
-  - DataDog
-  - APM
-  - performance testing
-  - load testing
-  - profiling
-  - capacity planning
-  - bottleneck
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: devops
+  triggers: monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana, DataDog, APM, performance testing, load testing, profiling, capacity planning, bottleneck
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer, debugging-wizard, architecture-designer
 ---
 
 # Monitoring Expert
@@ -84,9 +75,3 @@ Load detailed guidance based on context:
 ## Knowledge Reference
 
 Prometheus, Grafana, ELK Stack, Loki, Jaeger, OpenTelemetry, DataDog, New Relic, CloudWatch, structured logging, RED metrics, USE method, k6, Artillery, Locust, JMeter, clinic.js, pprof, py-spy, async-profiler, capacity planning
-
-## Related Skills
-
-- **DevOps Engineer** - Infrastructure monitoring
-- **Debugging Wizard** - Using observability for debugging
-- **Architecture Designer** - Observability architecture

@@ -1,20 +1,16 @@
 ---
 name: rust-engineer
 description: Use when building Rust applications requiring memory safety, systems programming, or zero-cost abstractions. Invoke for ownership patterns, lifetimes, traits, async/await with tokio.
-triggers:
-  - Rust
-  - Cargo
-  - ownership
-  - borrowing
-  - lifetimes
-  - async Rust
-  - tokio
-  - zero-cost abstractions
-  - memory safety
-  - systems programming
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: Rust, Cargo, ownership, borrowing, lifetimes, async Rust, tokio, zero-cost abstractions, memory safety, systems programming
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: test-master
 ---
 
 # Rust Engineer
@@ -88,9 +84,3 @@ When implementing Rust features, provide:
 ## Knowledge Reference
 
 Rust 2021, Cargo, ownership/borrowing, lifetimes, traits, generics, async/await, tokio, Result/Option, thiserror/anyhow, serde, clippy, rustfmt, cargo-test, criterion benchmarks, MIRI, unsafe Rust
-
-## Related Skills
-
-- **Systems Architect** - Low-level system design
-- **Performance Engineer** - Optimization and profiling
-- **Test Master** - Comprehensive testing strategies

@@ -1,21 +1,16 @@
 ---
 name: laravel-specialist
 description: Use when building Laravel 10+ applications requiring Eloquent ORM, API resources, or queue systems. Invoke for Laravel models, Livewire components, Sanctum authentication, Horizon queues.
-triggers:
-  - Laravel
-  - Eloquent
-  - PHP framework
-  - Laravel API
-  - Artisan
-  - Blade templates
-  - Laravel queues
-  - Livewire
-  - Laravel testing
-  - Sanctum
-  - Horizon
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: backend
+  triggers: Laravel, Eloquent, PHP framework, Laravel API, Artisan, Blade templates, Laravel queues, Livewire, Laravel testing, Sanctum, Horizon
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, test-master, devops-engineer, security-reviewer
 ---
 
 # Laravel Specialist
@@ -92,10 +87,3 @@ When implementing Laravel features, provide:
 ## Knowledge Reference
 
 Laravel 10+, Eloquent ORM, PHP 8.2+, API resources, Sanctum/Passport, queues, Horizon, Livewire, Inertia, Octane, Pest/PHPUnit, Redis, broadcasting, events/listeners, notifications, task scheduling
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack Laravel features
-- **Test Master** - Comprehensive testing strategies
-- **DevOps Engineer** - Laravel deployment and CI/CD
-- **Security Reviewer** - Laravel security audits

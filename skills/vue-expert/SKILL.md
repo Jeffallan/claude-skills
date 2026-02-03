@@ -1,27 +1,16 @@
 ---
 name: vue-expert
 description: Use when building Vue 3 applications with Composition API, Nuxt 3, or Quasar. Invoke for Pinia, TypeScript, PWA, Capacitor mobile apps, Vite configuration.
-triggers:
-  - Vue 3
-  - Composition API
-  - Nuxt
-  - Pinia
-  - Vue composables
-  - reactive
-  - ref
-  - Vue Router
-  - Vite Vue
-  - Quasar
-  - Capacitor
-  - PWA
-  - service worker
-  - Fastify SSR
-  - sourcemap
-  - Vite config
-  - build optimization
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: frontend
+  triggers: Vue 3, Composition API, Nuxt, Pinia, Vue composables, reactive, ref, Vue Router, Vite Vue, Quasar, Capacitor, PWA, service worker, Fastify SSR, sourcemap, Vite config, build optimization
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: typescript-pro, fullstack-guardian
 ---
 
 # Vue Expert
@@ -100,10 +89,3 @@ When implementing Vue features, provide:
 ## Knowledge Reference
 
 Vue 3 Composition API, Pinia, Nuxt 3, Vue Router 4, Vite, VueUse, TypeScript, Vitest, Vue Test Utils, SSR/SSG, reactive programming, performance optimization
-
-## Related Skills
-
-- **Frontend Developer** - UI/UX implementation
-- **TypeScript Pro** - Type safety patterns
-- **Fullstack Guardian** - Full-stack integration
-- **Performance Engineer** - Optimization strategies

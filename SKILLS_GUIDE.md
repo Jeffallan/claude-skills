@@ -1,95 +1,99 @@
 # Skills Quick Reference Guide
 
+A guide for choosing the right skill for your task. For installation, see [Quick Start](QUICKSTART.md). For the full project, see [README](README.md).
+
+---
+
 ## When to Use Each Skill
 
 ### Language Specialists
-- **Python Pro**: Python development, type hints, async patterns, performance optimization
-- **TypeScript Pro**: TypeScript advanced types, type guards, generics, utility types
-- **JavaScript Pro**: Modern JavaScript, async patterns, ES2024+ features
-- **Go Pro**: Go concurrency, interfaces, goroutines, channels
-- **Rust Engineer**: Rust systems programming, ownership, lifetimes, async Rust
-- **SQL Pro**: Advanced SQL, query optimization, window functions, CTEs
-- **C++ Pro**: Modern C++, RAII, templates, performance optimization
-- **Swift Expert**: Swift for iOS/macOS, SwiftUI, Combine, Concurrency
-- **Kotlin Specialist**: Kotlin for Android, coroutines, Flow, Jetpack Compose
-- **C# Developer**: C# .NET development, LINQ, async/await, modern features
-- **PHP Pro**: Modern PHP, Laravel patterns, performance optimization
-- **Java Architect**: Java enterprise, Spring ecosystem, design patterns
+- **[Python Pro](https://jeffallan.github.io/claude-skills/skills/language/python-pro/)**: Python development, type hints, async patterns, performance optimization
+- **[TypeScript Pro](https://jeffallan.github.io/claude-skills/skills/language/typescript-pro/)**: TypeScript advanced types, type guards, generics, utility types
+- **[JavaScript Pro](https://jeffallan.github.io/claude-skills/skills/language/javascript-pro/)**: Modern JavaScript, async patterns, ES2024+ features
+- **[Go Pro](https://jeffallan.github.io/claude-skills/skills/language/golang-pro/)**: Go concurrency, interfaces, goroutines, channels
+- **[Rust Engineer](https://jeffallan.github.io/claude-skills/skills/language/rust-engineer/)**: Rust systems programming, ownership, lifetimes, async Rust
+- **[SQL Pro](https://jeffallan.github.io/claude-skills/skills/language/sql-pro/)**: Advanced SQL, query optimization, window functions, CTEs
+- **[C++ Pro](https://jeffallan.github.io/claude-skills/skills/language/cpp-pro/)**: Modern C++, RAII, templates, performance optimization
+- **[Swift Expert](https://jeffallan.github.io/claude-skills/skills/language/swift-expert/)**: Swift for iOS/macOS, SwiftUI, Combine, Concurrency
+- **[Kotlin Specialist](https://jeffallan.github.io/claude-skills/skills/language/kotlin-specialist/)**: Kotlin for Android, coroutines, Flow, Jetpack Compose
+- **[C# Developer](https://jeffallan.github.io/claude-skills/skills/language/csharp-developer/)**: C# .NET development, LINQ, async/await, modern features
+- **[PHP Pro](https://jeffallan.github.io/claude-skills/skills/language/php-pro/)**: Modern PHP, Laravel patterns, performance optimization
+- **[Java Architect](https://jeffallan.github.io/claude-skills/skills/language/java-architect/)**: Java enterprise, Spring ecosystem, design patterns
 
 ### Backend Frameworks
-- **NestJS Expert**: Building TypeScript backend APIs with NestJS
-- **Django Expert**: Building Python web apps with Django/DRF
-- **FastAPI Expert**: Building async Python APIs with FastAPI
-- **Spring Boot Engineer**: Java enterprise applications with Spring Boot
-- **Laravel Specialist**: PHP web applications with Laravel
-- **Rails Expert**: Ruby on Rails web applications
-- **.NET Core Expert**: .NET Core APIs and applications
+- **[NestJS Expert](https://jeffallan.github.io/claude-skills/skills/backend/nestjs-expert/)**: Building TypeScript backend APIs with NestJS
+- **[Django Expert](https://jeffallan.github.io/claude-skills/skills/backend/django-expert/)**: Building Python web apps with Django/DRF
+- **[FastAPI Expert](https://jeffallan.github.io/claude-skills/skills/backend/fastapi-expert/)**: Building async Python APIs with FastAPI
+- **[Spring Boot Engineer](https://jeffallan.github.io/claude-skills/skills/backend/spring-boot-engineer/)**: Java enterprise applications with Spring Boot
+- **[Laravel Specialist](https://jeffallan.github.io/claude-skills/skills/backend/laravel-specialist/)**: PHP web applications with Laravel
+- **[Rails Expert](https://jeffallan.github.io/claude-skills/skills/backend/rails-expert/)**: Ruby on Rails web applications
+- **[.NET Core Expert](https://jeffallan.github.io/claude-skills/skills/backend/dotnet-core-expert/)**: .NET Core APIs and applications
 
 ### Frontend & Mobile
-- **React Expert**: Building React web applications
-- **Next.js Developer**: Next.js App Router, Server Components, Server Actions
-- **Vue Expert**: Vue 3 applications with Composition API and Pinia (TypeScript)
-- **Vue Expert (JS)**: Vue 3 applications with JavaScript only (JSDoc typing)
-- **Angular Architect**: Angular applications with standalone components
-- **React Native Expert**: Building cross-platform mobile apps (React Native)
-- **Flutter Expert**: Building cross-platform apps with Flutter
+- **[React Expert](https://jeffallan.github.io/claude-skills/skills/frontend/react-expert/)**: Building React web applications
+- **[Next.js Developer](https://jeffallan.github.io/claude-skills/skills/frontend/nextjs-developer/)**: Next.js App Router, Server Components, Server Actions
+- **[Vue Expert](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert/)**: Vue 3 applications with Composition API and Pinia (TypeScript)
+- **[Vue Expert (JS)](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert-js/)**: Vue 3 applications with JavaScript only (JSDoc typing)
+- **[Angular Architect](https://jeffallan.github.io/claude-skills/skills/frontend/angular-architect/)**: Angular applications with standalone components
+- **[React Native Expert](https://jeffallan.github.io/claude-skills/skills/frontend/react-native-expert/)**: Building cross-platform mobile apps (React Native)
+- **[Flutter Expert](https://jeffallan.github.io/claude-skills/skills/frontend/flutter-expert/)**: Building cross-platform apps with Flutter
 
 ### Infrastructure & Cloud
-- **Kubernetes Specialist**: K8s deployments, Helm charts, cluster management
-- **Terraform Engineer**: Infrastructure as Code, multi-cloud provisioning
-- **Postgres Pro**: PostgreSQL optimization, replication, advanced features
-- **Cloud Architect**: AWS/Azure/GCP architecture, multi-cloud strategies
-- **Database Optimizer**: Database performance tuning, indexing strategies
+- **[Kubernetes Specialist](https://jeffallan.github.io/claude-skills/skills/infrastructure/kubernetes-specialist/)**: K8s deployments, Helm charts, cluster management
+- **[Terraform Engineer](https://jeffallan.github.io/claude-skills/skills/infrastructure/terraform-engineer/)**: Infrastructure as Code, multi-cloud provisioning
+- **[Postgres Pro](https://jeffallan.github.io/claude-skills/skills/infrastructure/postgres-pro/)**: PostgreSQL optimization, replication, advanced features
+- **[Cloud Architect](https://jeffallan.github.io/claude-skills/skills/infrastructure/cloud-architect/)**: AWS/Azure/GCP architecture, multi-cloud strategies
+- **[Database Optimizer](https://jeffallan.github.io/claude-skills/skills/infrastructure/database-optimizer/)**: Database performance tuning, indexing strategies
 
 ### API & Architecture
-- **GraphQL Architect**: GraphQL schema design, resolvers, federation
-- **API Designer**: RESTful API design, OpenAPI, API versioning
-- **WebSocket Engineer**: Real-time communication, WebSockets, Socket.IO
-- **Microservices Architect**: Microservices patterns, service mesh, distributed systems
-- **MCP Developer**: Model Context Protocol development and integration
-- **Architecture Designer**: System design, choosing architectures, ADRs
-- **Feature Forge**: Creating new features, gathering requirements, writing specs
-- **Spec Miner**: Analyzing existing code, reverse-engineering specifications
+- **[GraphQL Architect](https://jeffallan.github.io/claude-skills/skills/api-architecture/graphql-architect/)**: GraphQL schema design, resolvers, federation
+- **[API Designer](https://jeffallan.github.io/claude-skills/skills/api-architecture/api-designer/)**: RESTful API design, OpenAPI, API versioning
+- **[WebSocket Engineer](https://jeffallan.github.io/claude-skills/skills/api-architecture/websocket-engineer/)**: Real-time communication, WebSockets, Socket.IO
+- **[Microservices Architect](https://jeffallan.github.io/claude-skills/skills/api-architecture/microservices-architect/)**: Microservices patterns, service mesh, distributed systems
+- **[MCP Developer](https://jeffallan.github.io/claude-skills/skills/api-architecture/mcp-developer/)**: Model Context Protocol development and integration
+- **[Architecture Designer](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/)**: System design, choosing architectures, ADRs
+- **[Feature Forge](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)**: Creating new features, gathering requirements, writing specs
+- **[Spec Miner](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)**: Analyzing existing code, reverse-engineering specifications
 
 ### Quality & Testing
-- **Test Master**: Overall testing strategy (unit, integration, E2E, performance, security)
-- **Playwright Expert**: Browser automation and E2E testing
-- **Code Reviewer**: Conducting thorough code reviews
-- **Code Documenter**: Adding inline documentation and API docs
+- **[Test Master](https://jeffallan.github.io/claude-skills/skills/quality/test-master/)**: Overall testing strategy (unit, integration, E2E, performance, security)
+- **[Playwright Expert](https://jeffallan.github.io/claude-skills/skills/quality/playwright-expert/)**: Browser automation and E2E testing
+- **[Code Reviewer](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/)**: Conducting thorough code reviews
+- **[Code Documenter](https://jeffallan.github.io/claude-skills/skills/quality/code-documenter/)**: Adding inline documentation and API docs
 
 ### DevOps & Operations
-- **DevOps Engineer**: CI/CD, deployment, infrastructure, platform engineering
-- **Monitoring Expert**: Logging, metrics, tracing, alerting, performance testing
-- **SRE Engineer**: Site reliability, incident response, SLO/SLA management
-- **Chaos Engineer**: Chaos testing, resilience engineering, fault injection
-- **CLI Developer**: Command-line tools, CLI frameworks, shell integration
+- **[DevOps Engineer](https://jeffallan.github.io/claude-skills/skills/devops/devops-engineer/)**: CI/CD, deployment, infrastructure, platform engineering
+- **[Monitoring Expert](https://jeffallan.github.io/claude-skills/skills/devops/monitoring-expert/)**: Logging, metrics, tracing, alerting, performance testing
+- **[SRE Engineer](https://jeffallan.github.io/claude-skills/skills/devops/sre-engineer/)**: Site reliability, incident response, SLO/SLA management
+- **[Chaos Engineer](https://jeffallan.github.io/claude-skills/skills/devops/chaos-engineer/)**: Chaos testing, resilience engineering, fault injection
+- **[CLI Developer](https://jeffallan.github.io/claude-skills/skills/devops/cli-developer/)**: Command-line tools, CLI frameworks, shell integration
 
 ### Security
-- **Secure Code Guardian**: Writing secure code, preventing vulnerabilities
-- **Security Reviewer**: Security code review, SAST analysis, penetration testing
+- **[Secure Code Guardian](https://jeffallan.github.io/claude-skills/skills/security/secure-code-guardian/)**: Writing secure code, preventing vulnerabilities
+- **[Security Reviewer](https://jeffallan.github.io/claude-skills/skills/security/security-reviewer/)**: Security code review, SAST analysis, penetration testing
 
 ### Data & Machine Learning
-- **Pandas Pro**: DataFrame manipulation, data cleaning, aggregation, time series
-- **Spark Engineer**: Apache Spark, PySpark, distributed data processing, Spark SQL
-- **ML Pipeline**: ML pipelines, MLflow, Kubeflow, feature stores, experiment tracking
-- **Prompt Engineer**: LLM prompt design, chain-of-thought, few-shot learning, evaluation
-- **RAG Architect**: RAG systems, vector databases, embeddings, semantic search
-- **Fine-Tuning Expert**: LLM fine-tuning, LoRA, QLoRA, PEFT, model optimization
+- **[Pandas Pro](https://jeffallan.github.io/claude-skills/skills/data-ml/pandas-pro/)**: DataFrame manipulation, data cleaning, aggregation, time series
+- **[Spark Engineer](https://jeffallan.github.io/claude-skills/skills/data-ml/spark-engineer/)**: Apache Spark, PySpark, distributed data processing, Spark SQL
+- **[ML Pipeline](https://jeffallan.github.io/claude-skills/skills/data-ml/ml-pipeline/)**: ML pipelines, MLflow, Kubeflow, feature stores, experiment tracking
+- **[Prompt Engineer](https://jeffallan.github.io/claude-skills/skills/data-ml/prompt-engineer/)**: LLM prompt design, chain-of-thought, few-shot learning, evaluation
+- **[RAG Architect](https://jeffallan.github.io/claude-skills/skills/data-ml/rag-architect/)**: RAG systems, vector databases, embeddings, semantic search
+- **[Fine-Tuning Expert](https://jeffallan.github.io/claude-skills/skills/data-ml/fine-tuning-expert/)**: LLM fine-tuning, LoRA, QLoRA, PEFT, model optimization
 
 ### Platform Specialists
-- **Salesforce Developer**: Apex, Lightning Web Components, SOQL, governor limits
-- **Shopify Expert**: Liquid templating, Storefront API, Shopify apps, checkout extensions
-- **WordPress Pro**: WordPress themes, plugins, Gutenberg blocks, WooCommerce
-- **Atlassian MCP**: Jira/Confluence integration via MCP, JQL, CQL queries
+- **[Salesforce Developer](https://jeffallan.github.io/claude-skills/skills/platform/salesforce-developer/)**: Apex, Lightning Web Components, SOQL, governor limits
+- **[Shopify Expert](https://jeffallan.github.io/claude-skills/skills/platform/shopify-expert/)**: Liquid templating, Storefront API, Shopify apps, checkout extensions
+- **[WordPress Pro](https://jeffallan.github.io/claude-skills/skills/platform/wordpress-pro/)**: WordPress themes, plugins, Gutenberg blocks, WooCommerce
+- **[Atlassian MCP](https://jeffallan.github.io/claude-skills/skills/platform/atlassian-mcp/)**: Jira/Confluence integration via MCP, JQL, CQL queries
 
 ### Specialized
-- **Legacy Modernizer**: Legacy code modernization, migration strategies
-- **Embedded Systems**: Embedded development, IoT, firmware, real-time systems
-- **Game Developer**: Game development, game engines, graphics, physics
+- **[Legacy Modernizer](https://jeffallan.github.io/claude-skills/skills/specialized/legacy-modernizer/)**: Legacy code modernization, migration strategies
+- **[Embedded Systems](https://jeffallan.github.io/claude-skills/skills/specialized/embedded-systems/)**: Embedded development, IoT, firmware, real-time systems
+- **[Game Developer](https://jeffallan.github.io/claude-skills/skills/specialized/game-developer/)**: Game development, game engines, graphics, physics
 
 ### Workflow
-- **Debugging Wizard**: Systematic debugging across all languages
-- **Fullstack Guardian**: Implementing features across full stack
+- **[Debugging Wizard](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)**: Systematic debugging across all languages
+- **[Fullstack Guardian](https://jeffallan.github.io/claude-skills/skills/security/fullstack-guardian/)**: Implementing features across full stack
 
 ## Skill Workflows
 
@@ -245,14 +249,6 @@ Common combinations for maximum effectiveness:
 
 ### Modern Web App
 - Next.js Developer / Vue Expert / Angular Architect + TypeScript Pro + API Designer + DevOps Engineer
-
-## Tips for Effective Use
-
-1. **Be Specific**: Mention the technology/framework to activate the right skill
-2. **Context Matters**: Provide context about your tech stack
-3. **Combine Skills**: Don't hesitate to ask for multiple perspectives
-4. **Security First**: Always run Security Reviewer on critical code
-5. **Document**: Use Code Documenter for public APIs and complex logic
 
 ## Examples
 

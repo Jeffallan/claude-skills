@@ -1,20 +1,16 @@
 ---
 name: database-optimizer
 description: Use when investigating slow queries, analyzing execution plans, or optimizing database performance. Invoke for index design, query rewrites, configuration tuning, partitioning strategies, lock contention resolution.
-triggers:
-  - database optimization
-  - slow query
-  - query performance
-  - database tuning
-  - index optimization
-  - execution plan
-  - EXPLAIN ANALYZE
-  - database performance
-  - PostgreSQL optimization
-  - MySQL optimization
-role: specialist
-scope: optimization
-output-format: analysis-and-code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: infrastructure
+  triggers: database optimization, slow query, query performance, database tuning, index optimization, execution plan, EXPLAIN ANALYZE, database performance, PostgreSQL optimization, MySQL optimization
+  role: specialist
+  scope: optimization
+  output-format: analysis-and-code
+  related-skills: devops-engineer
 ---
 
 # Database Optimizer
@@ -87,9 +83,3 @@ When optimizing database performance, provide:
 ## Knowledge Reference
 
 PostgreSQL (pg_stat_statements, EXPLAIN ANALYZE, indexes, VACUUM, partitioning), MySQL (slow query log, EXPLAIN, InnoDB, query cache), query optimization, index design, execution plans, configuration tuning, replication, sharding, caching strategies
-
-## Related Skills
-
-- **Backend Developer** - Query pattern optimization
-- **DevOps Engineer** - Infrastructure and resource tuning
-- **Data Engineer** - ETL and analytical query optimization

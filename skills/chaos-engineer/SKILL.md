@@ -1,20 +1,16 @@
 ---
 name: chaos-engineer
 description: Use when designing chaos experiments, implementing failure injection frameworks, or conducting game day exercises. Invoke for chaos experiments, resilience testing, blast radius control, game days, antifragile systems.
-triggers:
-  - chaos engineering
-  - resilience testing
-  - failure injection
-  - game day
-  - blast radius
-  - chaos experiment
-  - fault injection
-  - Chaos Monkey
-  - Litmus Chaos
-  - antifragile
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: devops
+  triggers: chaos engineering, resilience testing, failure injection, game day, blast radius, chaos experiment, fault injection, Chaos Monkey, Litmus Chaos, antifragile
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: sre-engineer, devops-engineer, kubernetes-specialist
 ---
 
 # Chaos Engineer
@@ -88,11 +84,3 @@ When implementing chaos engineering, provide:
 ## Knowledge Reference
 
 Chaos Monkey, Litmus Chaos, Chaos Mesh, Gremlin, Pumba, toxiproxy, chaos experiments, blast radius control, game days, failure injection, network chaos, infrastructure resilience, Kubernetes chaos, organizational resilience, MTTR reduction, antifragile systems
-
-## Related Skills
-
-- **SRE Engineer** - Reliability and incident response
-- **DevOps Engineer** - CI/CD integration for chaos
-- **Kubernetes Specialist** - K8s-specific chaos engineering
-- **Platform Engineer** - Building chaos platforms
-- **Performance Engineer** - Load and performance chaos

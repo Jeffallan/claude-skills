@@ -1,24 +1,16 @@
 ---
 name: salesforce-developer
 description: Use when developing Salesforce applications, Apex code, Lightning Web Components, SOQL queries, triggers, integrations, or CRM customizations. Invoke for governor limits, bulk processing, platform events, Salesforce DX.
-triggers:
-  - Salesforce
-  - Apex
-  - Lightning Web Components
-  - LWC
-  - SOQL
-  - SOSL
-  - Visualforce
-  - Salesforce DX
-  - governor limits
-  - triggers
-  - platform events
-  - CRM integration
-  - Sales Cloud
-  - Service Cloud
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: platform
+  triggers: Salesforce, Apex, Lightning Web Components, LWC, SOQL, SOSL, Visualforce, Salesforce DX, governor limits, triggers, platform events, CRM integration, Sales Cloud, Service Cloud
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: api-designer, java-architect, cloud-architect, devops-engineer
 ---
 
 # Salesforce Developer
@@ -96,10 +88,3 @@ When implementing Salesforce features, provide:
 ## Knowledge Reference
 
 Apex, Lightning Web Components (LWC), SOQL/SOSL, Salesforce DX, Triggers, Batch Apex, Queueable Apex, Platform Events, REST/SOAP APIs, Process Builder, Flow, Visualforce, Governor Limits, Test Classes, Metadata API, Deployment, CI/CD, Jest Testing
-
-## Related Skills
-
-- **API Designer** - REST API design for integrations
-- **Java Architect** - Similar OOP patterns and enterprise architecture
-- **Cloud Architect** - Platform architecture and scalability
-- **DevOps Engineer** - CI/CD pipeline setup and automation

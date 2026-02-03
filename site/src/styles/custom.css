@@ -1,0 +1,55 @@
+/* Purple-to-cyan theme matching social preview */
+
+:root {
+  --sl-color-accent-low: #ede9fe;
+  --sl-color-accent: #7c3aed;
+  --sl-color-accent-high: #4c1d95;
+  --sl-color-white: #1a1a2e;
+  --sl-color-gray-1: #3d3d5c;
+  --sl-color-gray-2: #53536e;
+  --sl-color-gray-3: #8888a0;
+  --sl-color-gray-4: #b8b8cc;
+  --sl-color-gray-5: #d4d4e0;
+  --sl-color-gray-6: #ededf4;
+  --sl-color-black: #fafafe;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low: #1e1048;
+  --sl-color-accent: #8b5cf6;
+  --sl-color-accent-high: #c4b5fd;
+  --sl-color-white: #fafafe;
+  --sl-color-gray-1: #ededf4;
+  --sl-color-gray-2: #d4d4e0;
+  --sl-color-gray-3: #8888a0;
+  --sl-color-gray-4: #53536e;
+  --sl-color-gray-5: #3d3d5c;
+  --sl-color-gray-6: #1a1a2e;
+  --sl-color-black: #0f0f1a;
+}
+
+/* Gradient accent bar under site header */
+header.header {
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #7c3aed, #6366f1, #3b82f6, #0ea5e9) 1;
+}
+
+/* Skill metadata tables: tighter layout */
+.sl-markdown-content table:first-of-type {
+  margin-top: 0.5rem;
+}
+
+/* Mermaid diagrams */
+.mermaid {
+  margin: 1.5rem 0;
+  text-align: center;
+  background: var(--sl-color-gray-6);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}

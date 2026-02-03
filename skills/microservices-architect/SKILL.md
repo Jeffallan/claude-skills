@@ -1,21 +1,16 @@
 ---
 name: microservices-architect
 description: Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing.
-triggers:
-  - microservices
-  - service mesh
-  - distributed systems
-  - service boundaries
-  - domain-driven design
-  - event sourcing
-  - CQRS
-  - saga pattern
-  - Kubernetes microservices
-  - Istio
-  - distributed tracing
-role: architect
-scope: system-design
-output-format: architecture
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: api-architecture
+  triggers: microservices, service mesh, distributed systems, service boundaries, domain-driven design, event sourcing, CQRS, saga pattern, Kubernetes microservices, Istio, distributed tracing
+  role: architect
+  scope: system-design
+  output-format: architecture
+  related-skills: devops-engineer, kubernetes-specialist, graphql-architect, architecture-designer, monitoring-expert
 ---
 
 # Microservices Architect
@@ -92,11 +87,3 @@ When designing microservices architecture, provide:
 ## Knowledge Reference
 
 Domain-driven design, bounded contexts, event storming, REST/gRPC, message queues (Kafka, RabbitMQ), service mesh (Istio, Linkerd), Kubernetes, circuit breakers, saga patterns, event sourcing, CQRS, distributed tracing (Jaeger, Zipkin), API gateways, eventual consistency, CAP theorem
-
-## Related Skills
-
-- **DevOps Engineer** - Container orchestration and CI/CD pipelines
-- **Kubernetes Specialist** - Advanced K8s patterns and operators
-- **GraphQL Architect** - Federation for distributed schemas
-- **Architecture Designer** - High-level system design
-- **Monitoring Expert** - Observability implementation

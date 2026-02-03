@@ -1,19 +1,16 @@
 ---
 name: game-developer
 description: Use when building game systems, implementing Unity/Unreal features, or optimizing game performance. Invoke for Unity, Unreal, game patterns, ECS, physics, networking, performance optimization.
-triggers:
-  - Unity
-  - Unreal Engine
-  - game development
-  - ECS architecture
-  - game physics
-  - multiplayer networking
-  - game optimization
-  - shader programming
-  - game AI
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: specialized
+  triggers: Unity, Unreal Engine, game development, ECS architecture, game physics, multiplayer networking, game optimization, shader programming, game AI
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: 
 ---
 
 # Game Developer
@@ -85,10 +82,3 @@ When implementing game features, provide:
 ## Knowledge Reference
 
 Unity C#, Unreal C++, Entity Component System (ECS), object pooling, state machines, command pattern, observer pattern, physics optimization, shader programming (HLSL/GLSL), multiplayer networking, client-server architecture, lag compensation, client prediction, performance profiling, LOD systems, occlusion culling, draw call batching
-
-## Related Skills
-
-- **Performance Engineer** - Deep performance optimization
-- **Backend Developer** - Game server implementation
-- **Frontend Developer** - Game UI/UX implementation
-- **Mobile Developer** - Mobile game optimization

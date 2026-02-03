@@ -1,20 +1,16 @@
 ---
 name: secure-code-guardian
 description: Use when implementing authentication/authorization, securing user input, or preventing OWASP Top 10 vulnerabilities. Invoke for authentication, authorization, input validation, encryption, OWASP Top 10 prevention.
-triggers:
-  - security
-  - authentication
-  - authorization
-  - encryption
-  - OWASP
-  - vulnerability
-  - secure coding
-  - password
-  - JWT
-  - OAuth
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: security
+  triggers: security, authentication, authorization, encryption, OWASP, vulnerability, secure coding, password, JWT, OAuth
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, security-reviewer, architecture-designer
 ---
 
 # Secure Code Guardian
@@ -85,9 +81,3 @@ When implementing security features, provide:
 ## Knowledge Reference
 
 OWASP Top 10, bcrypt/argon2, JWT, OAuth 2.0, OIDC, CSP, CORS, rate limiting, input validation, output encoding, encryption (AES, RSA), TLS, security headers
-
-## Related Skills
-
-- **Fullstack Guardian** - Feature implementation with security
-- **Security Reviewer** - Security code review
-- **Architecture Designer** - Security architecture

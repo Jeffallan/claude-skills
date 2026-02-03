@@ -1,21 +1,16 @@
 ---
 name: sql-pro
 description: Use when optimizing SQL queries, designing database schemas, or tuning database performance. Invoke for complex queries, window functions, CTEs, indexing strategies, query plan analysis.
-triggers:
-  - SQL optimization
-  - query performance
-  - database design
-  - PostgreSQL
-  - MySQL
-  - SQL Server
-  - window functions
-  - CTEs
-  - query tuning
-  - EXPLAIN plan
-  - database indexing
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: SQL optimization, query performance, database design, PostgreSQL, MySQL, SQL Server, window functions, CTEs, query tuning, EXPLAIN plan, database indexing
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer
 ---
 
 # SQL Pro
@@ -89,9 +84,3 @@ When implementing SQL solutions, provide:
 ## Knowledge Reference
 
 CTEs, window functions, recursive queries, EXPLAIN/ANALYZE, covering indexes, query hints, partitioning, materialized views, OLAP patterns, star schema, slowly changing dimensions, isolation levels, deadlock prevention, temporal tables, JSONB operations
-
-## Related Skills
-
-- **Backend Developer** - Optimize application-level database queries
-- **Data Engineer** - ETL patterns and data pipeline optimization
-- **DevOps Engineer** - Database monitoring and performance dashboards

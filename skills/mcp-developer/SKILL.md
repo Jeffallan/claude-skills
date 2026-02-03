@@ -1,18 +1,16 @@
 ---
 name: mcp-developer
 description: Use when building MCP servers or clients that connect AI systems with external tools and data sources. Invoke for MCP protocol compliance, TypeScript/Python SDKs, resource providers, tool functions.
-triggers:
-  - MCP
-  - Model Context Protocol
-  - MCP server
-  - MCP client
-  - Claude integration
-  - AI tools
-  - context protocol
-  - JSON-RPC
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: api-architecture
+  triggers: MCP, Model Context Protocol, MCP server, MCP client, Claude integration, AI tools, context protocol, JSON-RPC
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fastapi-expert, typescript-pro, security-reviewer, devops-engineer
 ---
 
 # MCP Developer
@@ -85,10 +83,3 @@ When implementing MCP features, provide:
 ## Knowledge Reference
 
 Model Context Protocol (MCP), JSON-RPC 2.0, TypeScript SDK (@modelcontextprotocol/sdk), Python SDK (mcp), Zod schemas, Pydantic validation, stdio transport, SSE transport, resource URIs, tool functions, prompt templates, authentication, rate limiting
-
-## Related Skills
-
-- **FastAPI Expert** - Python API servers for HTTP transport
-- **TypeScript Pro** - Advanced TypeScript for Node.js servers
-- **Security Reviewer** - Security audits for MCP implementations
-- **DevOps Engineer** - Deployment and monitoring

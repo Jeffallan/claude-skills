@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jeffallan.github.io/claude-skills/sitemap-index.xml

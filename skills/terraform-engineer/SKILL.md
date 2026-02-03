@@ -1,20 +1,16 @@
 ---
 name: terraform-engineer
 description: Use when implementing infrastructure as code with Terraform across AWS, Azure, or GCP. Invoke for module development, state management, provider configuration, multi-environment workflows, infrastructure testing.
-triggers:
-  - Terraform
-  - infrastructure as code
-  - IaC
-  - terraform module
-  - terraform state
-  - AWS provider
-  - Azure provider
-  - GCP provider
-  - terraform plan
-  - terraform apply
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: infrastructure
+  triggers: Terraform, infrastructure as code, IaC, terraform module, terraform state, AWS provider, Azure provider, GCP provider, terraform plan, terraform apply
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: cloud-architect, devops-engineer, kubernetes-specialist
 ---
 
 # Terraform Engineer
@@ -88,10 +84,3 @@ When implementing Terraform solutions, provide:
 ## Knowledge Reference
 
 Terraform 1.5+, HCL syntax, AWS/Azure/GCP providers, remote backends (S3, Azure Blob, GCS), state locking (DynamoDB, Azure Blob leases), workspaces, modules, dynamic blocks, for_each/count, terraform plan/apply, terratest, tflint, Open Policy Agent, cost estimation
-
-## Related Skills
-
-- **Cloud Architect** - Cloud platform design
-- **DevOps Engineer** - CI/CD integration
-- **Security Engineer** - Security compliance
-- **Kubernetes Specialist** - K8s infrastructure provisioning

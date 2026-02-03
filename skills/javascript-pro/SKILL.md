@@ -1,19 +1,16 @@
 ---
 name: javascript-pro
 description: Use when building JavaScript applications with modern ES2023+ features, async patterns, or Node.js development. Invoke for vanilla JavaScript, browser APIs, performance optimization, module systems.
-triggers:
-  - JavaScript
-  - ES2023
-  - async await
-  - Node.js
-  - vanilla JavaScript
-  - Web Workers
-  - Fetch API
-  - browser API
-  - module system
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: JavaScript, ES2023, async await, Node.js, vanilla JavaScript, Web Workers, Fetch API, browser API, module system
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian
 ---
 
 # JavaScript Pro
@@ -86,10 +83,3 @@ When implementing JavaScript features, provide:
 ## Knowledge Reference
 
 ES2023, optional chaining, nullish coalescing, private fields, top-level await, Promise patterns, async/await, event loop, ESM/CJS, dynamic imports, Fetch API, Web Workers, Service Workers, Node.js streams, EventEmitter, memory optimization, functional programming
-
-## Related Skills
-
-- **TypeScript Expert** - Type-safe JavaScript development
-- **React Developer** - Frontend framework implementation
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Performance Engineer** - Advanced optimization strategies

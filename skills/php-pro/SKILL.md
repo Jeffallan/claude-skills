@@ -1,19 +1,16 @@
 ---
 name: php-pro
 description: Use when building PHP applications with modern PHP 8.3+ features, Laravel, or Symfony frameworks. Invoke for strict typing, PHPStan level 9, async patterns with Swoole, PSR standards.
-triggers:
-  - PHP
-  - Laravel
-  - Symfony
-  - Composer
-  - PHPStan
-  - PSR
-  - PHP API
-  - Eloquent
-  - Doctrine
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: PHP, Laravel, Symfony, Composer, PHPStan, PSR, PHP API, Eloquent, Doctrine
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, fastapi-expert
 ---
 
 # PHP Pro
@@ -87,9 +84,3 @@ When implementing PHP features, provide:
 ## Knowledge Reference
 
 PHP 8.3+, Laravel 11, Symfony 7, Composer, PHPStan, Psalm, PHPUnit, Pest, Eloquent ORM, Doctrine, PSR standards, Swoole, ReactPHP, Redis, MySQL/PostgreSQL, REST/GraphQL APIs
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **FastAPI Expert** - Alternative Python framework patterns
-- **MySQL Expert** - Database optimization

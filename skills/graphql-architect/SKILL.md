@@ -1,19 +1,16 @@
 ---
 name: graphql-architect
 description: Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives.
-triggers:
-  - GraphQL
-  - Apollo Federation
-  - GraphQL schema
-  - API graph
-  - GraphQL subscriptions
-  - Apollo Server
-  - schema design
-  - GraphQL resolvers
-  - DataLoader
-role: architect
-scope: design
-output-format: schema
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: api-architecture
+  triggers: GraphQL, Apollo Federation, GraphQL schema, API graph, GraphQL subscriptions, Apollo Server, schema design, GraphQL resolvers, DataLoader
+  role: architect
+  scope: design
+  output-format: schema
+  related-skills: api-designer, microservices-architect, database-optimizer
 ---
 
 # GraphQL Architect
@@ -87,11 +84,3 @@ When implementing GraphQL features, provide:
 ## Knowledge Reference
 
 Apollo Server, Apollo Federation 2.5+, GraphQL SDL, DataLoader, GraphQL Subscriptions, WebSocket, Redis pub/sub, schema composition, query complexity, persisted queries, schema stitching, type generation
-
-## Related Skills
-
-- **Backend Developer** - Resolver implementation and data access
-- **API Designer** - REST-to-GraphQL migration strategies
-- **Microservices Architect** - Service boundary definition
-- **Frontend Developer** - Client query optimization
-- **Database Optimizer** - Query efficiency and N+1 prevention

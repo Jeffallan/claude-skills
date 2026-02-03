@@ -1,22 +1,16 @@
 ---
 name: atlassian-mcp
 description: Use when querying Jira issues, searching Confluence pages, creating tickets, updating documentation, or integrating Atlassian tools via MCP protocol.
-triggers:
-  - Jira
-  - Confluence
-  - Atlassian
-  - MCP
-  - tickets
-  - issues
-  - wiki
-  - JQL
-  - CQL
-  - sprint
-  - backlog
-  - project management
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: platform
+  triggers: Jira, Confluence, Atlassian, MCP, tickets, issues, wiki, JQL, CQL, sprint, backlog, project management
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: mcp-developer, api-designer, security-reviewer
 ---
 
 # Atlassian MCP Expert
@@ -92,9 +86,3 @@ When implementing Atlassian MCP features, provide:
 ## Knowledge Reference
 
 Atlassian MCP Server (official), mcp-atlassian (sooperset), atlassian-mcp (xuanxt), JQL (Jira Query Language), CQL (Confluence Query Language), OAuth 2.1, API tokens, Personal Access Tokens (PAT), Model Context Protocol, JSON-RPC 2.0, rate limiting, pagination, permission scopes, Jira REST API, Confluence REST API
-
-## Related Skills
-
-- **MCP Developer** - Building custom MCP servers and protocol compliance
-- **API Designer** - REST API integration patterns and error handling
-- **Security Reviewer** - OAuth security audits and token management

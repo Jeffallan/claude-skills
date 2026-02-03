@@ -1,19 +1,16 @@
 ---
 name: angular-architect
 description: Use when building Angular 17+ applications with standalone components or signals. Invoke for enterprise apps, RxJS patterns, NgRx state management, performance optimization, advanced routing.
-triggers:
-  - Angular
-  - Angular 17
-  - standalone components
-  - signals
-  - RxJS
-  - NgRx
-  - Angular performance
-  - Angular routing
-  - Angular testing
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: frontend
+  triggers: Angular, Angular 17, standalone components, signals, RxJS, NgRx, Angular performance, Angular routing, Angular testing
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: typescript-pro, test-master
 ---
 
 # Angular Architect
@@ -88,10 +85,3 @@ When implementing Angular features, provide:
 ## Knowledge Reference
 
 Angular 17+, standalone components, signals, computed signals, effect(), RxJS 7+, NgRx, Angular Router, Reactive Forms, Angular CDK, OnPush strategy, lazy loading, bundle optimization, Jest/Jasmine, Testing Library
-
-## Related Skills
-
-- **TypeScript Pro** - Advanced TypeScript patterns
-- **RxJS Specialist** - Deep reactive programming
-- **Frontend Developer** - UI/UX implementation
-- **Test Master** - Comprehensive testing strategies

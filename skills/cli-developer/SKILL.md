@@ -1,21 +1,16 @@
 ---
 name: cli-developer
 description: Use when building CLI tools, implementing argument parsing, or adding interactive prompts. Invoke for CLI design, argument parsing, interactive prompts, progress indicators, shell completions.
-triggers:
-  - CLI
-  - command-line
-  - terminal app
-  - argument parsing
-  - shell completion
-  - interactive prompt
-  - progress bar
-  - commander
-  - click
-  - typer
-  - cobra
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: devops
+  triggers: CLI, command-line, terminal app, argument parsing, shell completion, interactive prompt, progress bar, commander, click, typer, cobra
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer
 ---
 
 # CLI Developer
@@ -88,10 +83,3 @@ When implementing CLI features, provide:
 ## Knowledge Reference
 
 CLI frameworks (commander, yargs, oclif, click, typer, argparse, cobra, viper), terminal UI (chalk, inquirer, rich, bubbletea), testing (snapshot testing, E2E), distribution (npm, pip, homebrew, releases), performance optimization
-
-## Related Skills
-
-- **Node.js Expert** - Node.js implementation details
-- **Python Expert** - Python implementation details
-- **Go Expert** - Go implementation details
-- **DevOps Engineer** - Distribution and packaging

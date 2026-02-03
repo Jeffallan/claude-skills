@@ -1,26 +1,16 @@
 ---
 name: fullstack-guardian
 description: Use when implementing features across frontend and backend, building APIs with UI, or creating end-to-end data flows. Invoke for feature implementation, API development, UI building, cross-stack work.
-triggers:
-  - fullstack
-  - implement feature
-  - build feature
-  - create API
-  - frontend and backend
-  - full stack
-  - new feature
-  - implement
-  - microservices
-  - websocket
-  - real-time
-  - deployment pipeline
-  - monorepo
-  - architecture decision
-  - technology selection
-  - end-to-end
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: security
+  triggers: fullstack, implement feature, build feature, create API, frontend and backend, full stack, new feature, implement, microservices, websocket, real-time, deployment pipeline, monorepo, architecture decision, technology selection, end-to-end
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: feature-forge, test-master, devops-engineer
 ---
 
 # Fullstack Guardian
@@ -91,9 +81,3 @@ When implementing features, provide:
 2. Backend code (models, schemas, endpoints)
 3. Frontend code (components, hooks, API calls)
 4. Brief security notes
-
-## Related Skills
-
-- **Feature Forge** - Receives specifications from
-- **Test Master** - Hands off for testing
-- **DevOps Engineer** - Hands off for deployment

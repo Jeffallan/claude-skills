@@ -1,20 +1,16 @@
 ---
 name: postgres-pro
 description: Use when optimizing PostgreSQL queries, configuring replication, or implementing advanced database features. Invoke for EXPLAIN analysis, JSONB operations, extension usage, VACUUM tuning, performance monitoring.
-triggers:
-  - PostgreSQL
-  - Postgres
-  - EXPLAIN ANALYZE
-  - pg_stat
-  - JSONB
-  - streaming replication
-  - logical replication
-  - VACUUM
-  - PostGIS
-  - pgvector
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: infrastructure
+  triggers: PostgreSQL, Postgres, EXPLAIN ANALYZE, pg_stat, JSONB, streaming replication, logical replication, VACUUM, PostGIS, pgvector
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: database-optimizer, devops-engineer, sre-engineer
 ---
 
 # PostgreSQL Pro
@@ -89,10 +85,3 @@ When implementing PostgreSQL solutions, provide:
 ## Knowledge Reference
 
 PostgreSQL 12-16, EXPLAIN ANALYZE, B-tree/GIN/GiST/BRIN indexes, JSONB operators, streaming replication, logical replication, VACUUM/ANALYZE, pg_stat views, PostGIS, pgvector, pg_trgm, WAL archiving, PITR
-
-## Related Skills
-
-- **Database Optimizer** - General database optimization
-- **Backend Developer** - Application query patterns
-- **DevOps Engineer** - Deployment and automation
-- **SRE Engineer** - Reliability and monitoring

@@ -1,16 +1,17 @@
 ---
 name: code-reviewer
 description: Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions.
-triggers:
-  - code review
-  - PR review
-  - pull request
-  - review code
-  - code quality
-role: specialist
-scope: review
+license: MIT
 allowed-tools: Read, Grep, Glob
-output-format: report
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: quality
+  triggers: code review, PR review, pull request, review code, code quality
+  role: specialist
+  scope: review
+  output-format: report
+  related-skills: security-reviewer, test-master, architecture-designer
 ---
 
 # Code Reviewer
@@ -84,9 +85,3 @@ Code review report should include:
 ## Knowledge Reference
 
 SOLID, DRY, KISS, YAGNI, design patterns, OWASP Top 10, language idioms, testing patterns
-
-## Related Skills
-
-- **Security Reviewer** - Deep security analysis
-- **Test Master** - Test quality assessment
-- **Architecture Designer** - Design review

@@ -1,22 +1,16 @@
 ---
 name: shopify-expert
 description: Use when building Shopify themes, apps, custom storefronts, or e-commerce solutions. Invoke for Liquid templating, Storefront API, app development, checkout customization, Shopify Plus features.
-triggers:
-  - Shopify
-  - Liquid
-  - Storefront API
-  - Shopify Plus
-  - Hydrogen
-  - Shopify app
-  - checkout extensions
-  - Shopify Functions
-  - App Bridge
-  - theme development
-  - e-commerce
-  - Polaris
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: platform
+  triggers: Shopify, Liquid, Storefront API, Shopify Plus, Hydrogen, Shopify app, checkout extensions, Shopify Functions, App Bridge, theme development, e-commerce, Polaris
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: react-expert, graphql-architect, api-designer
 ---
 
 # Shopify Expert
@@ -93,10 +87,3 @@ When implementing Shopify solutions, provide:
 ## Knowledge Reference
 
 Shopify CLI 3.x, Liquid 2.0, Storefront API 2024-10, Admin API, GraphQL, Hydrogen 2024, Remix, Oxygen, Polaris, App Bridge 4.0, Checkout UI Extensions, Shopify Functions, metafields, metaobjects, theme architecture, Shopify Plus features
-
-## Related Skills
-
-- **React Expert** - For Hydrogen and headless frontends
-- **GraphQL Architect** - Advanced Storefront API patterns
-- **API Designer** - Custom app API design
-- **Frontend Developer** - Theme UI/UX implementation

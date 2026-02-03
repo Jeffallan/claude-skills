@@ -1,22 +1,16 @@
 ---
 name: wordpress-pro
 description: Use when developing WordPress themes, plugins, customizing Gutenberg blocks, implementing WooCommerce features, or optimizing WordPress performance and security.
-triggers:
-  - WordPress
-  - WooCommerce
-  - Gutenberg
-  - WordPress theme
-  - WordPress plugin
-  - custom blocks
-  - ACF
-  - WordPress REST API
-  - hooks
-  - filters
-  - WordPress performance
-  - WordPress security
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: platform
+  triggers: WordPress, WooCommerce, Gutenberg, WordPress theme, WordPress plugin, custom blocks, ACF, WordPress REST API, hooks, filters, WordPress performance, WordPress security
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: php-pro, laravel-specialist, fullstack-guardian, security-reviewer
 ---
 
 # WordPress Pro
@@ -96,10 +90,3 @@ When implementing WordPress features, provide:
 ## Knowledge Reference
 
 WordPress 6.4+, PHP 8.1+, Gutenberg, WooCommerce, ACF, REST API, WP-CLI, block development, theme customizer, widget API, shortcode API, transients, object caching, query optimization, security hardening, WPCS
-
-## Related Skills
-
-- **PHP Pro** - Modern PHP development patterns
-- **Laravel Specialist** - PHP framework expertise
-- **Fullstack Guardian** - Full-stack feature implementation
-- **Security Reviewer** - WordPress security audits

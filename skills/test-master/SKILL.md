@@ -1,34 +1,16 @@
 ---
 name: test-master
 description: Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing.
-triggers:
-  - test
-  - testing
-  - QA
-  - unit test
-  - integration test
-  - E2E
-  - coverage
-  - performance test
-  - security test
-  - regression
-  - test strategy
-  - test automation
-  - test framework
-  - quality metrics
-  - defect
-  - exploratory
-  - usability
-  - accessibility
-  - localization
-  - manual testing
-  - shift-left
-  - quality gate
-  - flaky test
-  - test maintenance
-role: specialist
-scope: testing
-output-format: report
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: quality
+  triggers: test, testing, QA, unit test, integration test, E2E, coverage, performance test, security test, regression, test strategy, test automation, test framework, quality metrics, defect, exploratory, usability, accessibility, localization, manual testing, shift-left, quality gate, flaky test, test maintenance
+  role: specialist
+  scope: testing
+  output-format: report
+  related-skills: fullstack-guardian, playwright-expert, devops-engineer
 ---
 
 # Test Master
@@ -96,9 +78,3 @@ When creating test plans, provide:
 ## Knowledge Reference
 
 Jest, Vitest, pytest, React Testing Library, Supertest, Playwright, Cypress, k6, Artillery, OWASP testing, code coverage, mocking, fixtures, test automation frameworks, CI/CD integration, quality metrics, defect management, BDD, page object model, screenplay pattern, exploratory testing, accessibility (WCAG), usability testing, shift-left testing, quality gates
-
-## Related Skills
-
-- **Fullstack Guardian** - Receives features for testing
-- **Playwright Expert** - E2E testing specifics
-- **DevOps Engineer** - CI/CD test integration

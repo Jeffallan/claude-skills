@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with Fullstack Dev Skills Plugin in minutes!
+Get up and running with the Fullstack Dev Skills Plugin.
 
 ## Installation (Choose One)
 
@@ -20,6 +20,13 @@ Get up and running with Fullstack Dev Skills Plugin in minutes!
 claude plugin install https://github.com/jeffallan/claude-skills
 ```
 
+### Install via skills.sh
+```bash
+npx skills add jeffallan/claude-skills
+```
+
+> **Note:** This method installs skills only. Slash commands (`/common-ground`, `/project:*`) are not included.
+
 ### Local Development
 ```bash
 cp -r ./skills/* ~/.claude/skills/
@@ -28,7 +35,7 @@ Restart Claude Code after copying.
 
 ## Test Your Installation
 
-Try these commands to verify skills are working:
+Verify skills are working:
 
 ```bash
 # Test NestJS Expert
@@ -46,68 +53,34 @@ Try these commands to verify skills are working:
 
 ## First Steps
 
-### 1. Understand What You Have
+### 1. What's Included
+
 <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> skills covering:
 - 12 Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
-- 10 Backend Framework Experts (NestJS, Django, FastAPI, Spring Boot, Laravel, Rails, .NET Core, etc.)
+- 7 Backend Framework Experts (NestJS, Django, FastAPI, Spring Boot, Laravel, Rails, .NET Core)
 - 7 Frontend & Mobile Experts (React, Next.js, Vue, Angular, React Native, Flutter)
 - <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Project Workflow Commands (discovery, planning, execution, retrospectives)
 - Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
-### 2. Common Use Cases
+### 2. First Prompt
 
-**Starting a New Feature**
-```
-You: "I need to implement a user profile feature in my NestJS API with authentication"
-Claude: [Activates NestJS Expert + Secure Code Guardian]
-```
+Specify the tech stack and Claude activates the appropriate skills:
 
-**Debugging an Issue**
 ```
-You: "My React app has a memory leak, help me debug it"
-Claude: [Activates Debugging Wizard + React Expert]
+"I need to implement a user profile feature in my NestJS API with authentication"
+→ Activates NestJS Expert + Secure Code Guardian
 ```
 
-**Code Review**
 ```
-You: "Review this authentication implementation for security issues"
-Claude: [Activates Code Reviewer + Security Reviewer]
-```
-
-**Setting Up Infrastructure**
-```
-You: "Help me set up monitoring for my FastAPI application"
-Claude: [Activates Monitoring Expert + FastAPI Expert]
+"My React app has a memory leak, help me debug it"
+→ Activates Debugging Wizard + React Expert
 ```
 
-### 3. Best Practices
+### 3. Learn More
 
-**Be Specific About Tech Stack**
-✅ "Help me implement pagination in my FastAPI endpoint"
-❌ "Help me implement pagination"
+See [Skills Guide](SKILLS_GUIDE.md) for decision trees, skill combinations, and detailed examples for every category.
 
-**Mention Security When Relevant**
-✅ "Implement user authentication in Django with proper security"
-✅ "Review this code for security issues"
-
-**Combine Skills**
-✅ "Design the architecture and implement a microservices system"
-✅ "Implement this feature and add comprehensive tests"
-
-### 4. Skill Activation Examples
-
-| Your Request | Skills Activated |
-|-------------|------------------|
-| "Implement GraphQL in NestJS" | NestJS Expert |
-| "Debug this async issue" | Debugging Wizard |
-| "Review this PR" | Code Reviewer |
-| "Set up CI/CD pipeline" | DevOps Engineer |
-| "Create E2E tests with Playwright" | Playwright Expert, Test Master |
-| "Design a scalable architecture" | Architecture Designer |
-| "Implement secure password hashing" | Secure Code Guardian |
-| "Scan code for vulnerabilities" | Security Reviewer |
-
-## Tips for Maximum Effectiveness
+## Effective Usage
 
 ### 1. Provide Context
 Include relevant information:
@@ -122,86 +95,52 @@ Include relevant information:
 [Activates: Security Reviewer + Code Reviewer]
 ```
 
-### 3. Follow Recommended Workflows
-
-**New Feature: Requirements → Design → Implement → Test → Review → Deploy**
-1. Feature Forge (requirements)
-2. Architecture Designer (design)
-3. Fullstack Guardian + Framework Expert (implement)
-4. Test Master + Playwright Expert (test)
-5. Code Reviewer + Security Reviewer (review)
-6. DevOps Engineer (deploy)
-7. Monitoring Expert (observe)
-
-### 4. Reference the Guides
-- `README.md` - Overview and installation
-- `SKILLS_GUIDE.md` - Detailed skill reference
-- `CONTRIBUTING.md` - How to customize/extend
+### 3. Reference the Guides
+- [README](README.md) - Overview and architecture
+- [Skills Guide](SKILLS_GUIDE.md) - Detailed skill reference with decision trees
+- [Common Ground](docs/COMMON_GROUND.md) - Context engineering guide
+- [Workflow Commands](docs/WORKFLOW_COMMANDS.md) - Workflow commands reference
+- [Contributing](CONTRIBUTING.md) - How to customize/extend
 
 ## Troubleshooting
 
-### Skills Not Activating?
+### Skills Not Activating
 1. Restart Claude Code after installation
 2. Check skill files exist: `ls ~/.claude/skills/`
 3. Be more specific with framework/technology names
 4. Try explicitly mentioning the skill name: "Use the NestJS Expert to help me..."
 
-### Need Help?
-- Check `SKILLS_GUIDE.md` for skill-specific guidance
-- Review individual `skills/*/SKILL.md` files
-- Open an issue on GitHub
+### Skills Not Loading After Install
+1. Verify the plugin is installed: `/plugin list`
+2. Check for conflicting skill names in `~/.claude/skills/`
+3. Try reinstalling: `/plugin uninstall fullstack-dev-skills@jeffallan` then reinstall
 
-## What's Next?
+### How to Update
+```bash
+# Marketplace installs update automatically
+# For manual installs, pull latest and re-copy:
+cd claude-skills && git pull
+cp -r ./skills/* ~/.claude/skills/
+```
+
+### Need Help
+- Check [Skills Guide](SKILLS_GUIDE.md) for skill-specific guidance
+- Review individual `skills/*/SKILL.md` files
+- Open an [issue on GitHub](https://github.com/jeffallan/claude-skills/issues)
+
+## Next Steps
 
 ### Explore Skills
-Browse `skills/` directory to see what each skill offers.
+Browse the `skills/` directory for available skills.
 
 ### Customize
-Edit any `SKILL.md` to match your team's conventions.
+Edit any `SKILL.md` to match team conventions.
 
 ### Contribute
-Add your own skills! See `CONTRIBUTING.md`.
-
-### Share
-If you find this useful, share with your team:
-```bash
-# They can install with one command
-claude plugin install https://github.com/jeffallan/claude-skills
-```
-
-## Quick Reference Card
-
-Print or save this for quick reference:
-
-```
-FRAMEWORKS
-├─ Backend: NestJS | Django | FastAPI
-├─ Frontend: React
-└─ Mobile: React Native | Flutter
-
-WORKFLOWS
-├─ Requirements: Feature Forge
-├─ Implementation: Fullstack Guardian + Framework Expert
-├─ Testing: Test Master + Playwright Expert
-├─ Review: Code Reviewer + Security Reviewer
-├─ Deploy: DevOps Engineer
-├─ Monitor: Monitoring Expert
-├─ Debug: Debugging Wizard
-└─ Design: Architecture Designer
-
-SECURITY
-├─ Writing: Secure Code Guardian
-└─ Reviewing: Security Reviewer
-
-DOCUMENTATION
-└─ Code Documenter (OpenAPI, JSDoc, Docstrings)
-```
+Add new skills. See `CONTRIBUTING.md`.
 
 ## Support
 
-- 📖 Documentation: Check README.md and SKILLS_GUIDE.md
-- 🐛 Issues: GitHub Issues
-- 💬 Discussions: GitHub Discussions
-- 🤝 Contributing: See CONTRIBUTING.md
-
-Happy coding! 🚀
+- Documentation: Check [README](README.md) and [Skills Guide](SKILLS_GUIDE.md)
+- Issues: [GitHub Issues](https://github.com/jeffallan/claude-skills/issues)
+- Discussions: [GitHub Discussions](https://github.com/jeffallan/claude-skills/discussions)

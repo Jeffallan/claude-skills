@@ -1,19 +1,16 @@
 ---
 name: golang-pro
 description: Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration.
-triggers:
-  - Go
-  - Golang
-  - goroutines
-  - channels
-  - gRPC
-  - microservices Go
-  - Go generics
-  - concurrent programming
-  - Go interfaces
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: Go, Golang, goroutines, channels, gRPC, microservices Go, Go generics, concurrent programming, Go interfaces
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer, microservices-architect, test-master
 ---
 
 # Golang Pro
@@ -85,10 +82,3 @@ When implementing Go features, provide:
 ## Knowledge Reference
 
 Go 1.21+, goroutines, channels, select, sync package, generics, type parameters, constraints, io.Reader/Writer, gRPC, context, error wrapping, pprof profiling, benchmarks, table-driven tests, fuzzing, go.mod, internal packages, functional options
-
-## Related Skills
-
-- **Backend Developer** - API implementation
-- **DevOps Engineer** - Deployment and containerization
-- **Microservices Architect** - Service design patterns
-- **Test Master** - Comprehensive testing strategies

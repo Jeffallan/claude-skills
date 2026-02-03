@@ -1,24 +1,16 @@
 ---
 name: fine-tuning-expert
 description: Use when fine-tuning LLMs, training custom models, or optimizing model performance for specific tasks. Invoke for parameter-efficient methods, dataset preparation, or model adaptation.
-triggers:
-  - fine-tuning
-  - fine tuning
-  - LoRA
-  - QLoRA
-  - PEFT
-  - adapter tuning
-  - transfer learning
-  - model training
-  - custom model
-  - LLM training
-  - instruction tuning
-  - RLHF
-  - model optimization
-  - quantization
-role: expert
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: data-ml
+  triggers: fine-tuning, fine tuning, LoRA, QLoRA, PEFT, adapter tuning, transfer learning, model training, custom model, LLM training, instruction tuning, RLHF, model optimization, quantization
+  role: expert
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer
 ---
 
 # Fine-Tuning Expert
@@ -90,9 +82,3 @@ When implementing fine-tuning, provide:
 ## Knowledge Reference
 
 Hugging Face Transformers, PEFT library, bitsandbytes, LoRA/QLoRA, Axolotl, DeepSpeed, FSDP, instruction tuning, RLHF, DPO, dataset formatting (Alpaca, ShareGPT), evaluation (perplexity, BLEU, ROUGE), quantization (GPTQ, AWQ, GGUF), vLLM, TGI
-
-## Related Skills
-
-- **MLOps Engineer** - Model versioning, experiment tracking
-- **DevOps Engineer** - GPU infrastructure, deployment
-- **Data Scientist** - Dataset analysis, statistical validation

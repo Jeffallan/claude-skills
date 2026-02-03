@@ -1,0 +1,44 @@
+---
+title: Claude Skills
+description: 65 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.
+template: splash
+hero:
+  tagline: Transform Claude Code into your expert pair programmer across the entire development stack.
+  actions:
+    - text: Get Started
+      link: /claude-skills/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: Browse Skills
+      link: /claude-skills/skills-guide/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="65 Skills" icon="puzzle">
+    Specialized skills covering 12 domains — languages, frameworks, infrastructure, security, DevOps, data/ML, and more.
+  </Card>
+  <Card title="9 Workflows" icon="rocket">
+    Project workflow commands managing epics from discovery through retrospectives, with Jira and Confluence integration.
+  </Card>
+  <Card title="357 References" icon="open-book">
+    Deep-dive reference files loaded on-demand for surgical precision when context requires it.
+  </Card>
+  <Card title="Progressive Disclosure" icon="magnifier">
+    Lean 80-line skill cores with routing tables to detailed references — 50% token reduction, faster initial responses.
+  </Card>
+</CardGrid>
+
+## Quick Install
+
+```bash
+/plugin marketplace add jeffallan/claude-skills
+```
+
+```bash
+/plugin install fullstack-dev-skills@jeffallan
+```
+
+See the [Getting Started guide](/claude-skills/getting-started/) for all installation methods and first steps.

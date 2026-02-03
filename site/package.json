@@ -1,0 +1,17 @@
+{
+  "name": "claude-skills-docs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "sync": "node scripts/sync-content.mjs",
+    "dev": "npm run sync && astro dev",
+    "build": "npm run sync && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.7.10",
+    "@astrojs/starlight": "^0.34.1",
+    "sharp": "^0.33.5",
+    "js-yaml": "^4.1.0"
+  }
+}

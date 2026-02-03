@@ -1,19 +1,16 @@
 ---
 name: kotlin-specialist
 description: Use when building Kotlin applications requiring coroutines, multiplatform development, or Android with Compose. Invoke for Flow API, KMP projects, Ktor servers, DSL design, sealed classes.
-triggers:
-  - Kotlin
-  - coroutines
-  - Kotlin Multiplatform
-  - KMP
-  - Jetpack Compose
-  - Ktor
-  - Flow
-  - Android Kotlin
-  - suspend function
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: Kotlin, coroutines, Kotlin Multiplatform, KMP, Jetpack Compose, Ktor, Flow, Android Kotlin, suspend function
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: test-master
 ---
 
 # Kotlin Specialist
@@ -86,9 +83,3 @@ When implementing Kotlin features, provide:
 ## Knowledge Reference
 
 Kotlin 1.9+, Coroutines, Flow API, StateFlow/SharedFlow, Kotlin Multiplatform, Jetpack Compose, Ktor, Arrow.kt, kotlinx.serialization, Detekt, ktlint, Gradle Kotlin DSL, JUnit 5, MockK, Turbine
-
-## Related Skills
-
-- **Android Expert** - Android-specific development patterns
-- **Backend Architect** - Server-side architecture design
-- **Test Master** - Comprehensive testing strategies

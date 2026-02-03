@@ -1,19 +1,16 @@
 ---
 name: typescript-pro
 description: Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup.
-triggers:
-  - TypeScript
-  - generics
-  - type safety
-  - conditional types
-  - mapped types
-  - tRPC
-  - tsconfig
-  - type guards
-  - discriminated unions
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: TypeScript, generics, type safety, conditional types, mapped types, tRPC, tsconfig, type guards, discriminated unions
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, api-designer
 ---
 
 # TypeScript Pro
@@ -86,9 +83,3 @@ When implementing TypeScript features, provide:
 ## Knowledge Reference
 
 TypeScript 5.0+, generics, conditional types, mapped types, template literal types, discriminated unions, type guards, branded types, tRPC, project references, incremental compilation, declaration files, const assertions, satisfies operator
-
-## Related Skills
-
-- **React Developer** - Component type safety
-- **Fullstack Guardian** - End-to-end type safety
-- **API Designer** - Type-safe API contracts

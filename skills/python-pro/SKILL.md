@@ -1,18 +1,16 @@
 ---
 name: python-pro
 description: Use when building Python 3.11+ applications requiring type safety, async programming, or production-grade patterns. Invoke for type hints, pytest, async/await, dataclasses, mypy configuration.
-triggers:
-  - Python development
-  - type hints
-  - async Python
-  - pytest
-  - mypy
-  - dataclasses
-  - Python best practices
-  - Pythonic code
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: language
+  triggers: Python development, type hints, async Python, pytest, mypy, dataclasses, Python best practices, Pythonic code
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fastapi-expert, devops-engineer
 ---
 
 # Python Pro
@@ -84,9 +82,3 @@ When implementing Python features, provide:
 ## Knowledge Reference
 
 Python 3.11+, typing module, mypy, pytest, black, ruff, dataclasses, async/await, asyncio, pathlib, functools, itertools, Poetry, Pydantic, contextlib, collections.abc, Protocol
-
-## Related Skills
-
-- **FastAPI Expert** - Async Python APIs
-- **Data Science Pro** - NumPy, Pandas, ML
-- **DevOps Engineer** - Python automation and tooling

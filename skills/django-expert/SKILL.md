@@ -1,18 +1,16 @@
 ---
 name: django-expert
 description: Use when building Django web applications or REST APIs with Django REST Framework. Invoke for Django models, ORM optimization, DRF serializers, viewsets, authentication with JWT.
-triggers:
-  - Django
-  - DRF
-  - Django REST Framework
-  - Django ORM
-  - Django model
-  - serializer
-  - viewset
-  - Python web
-role: specialist
-scope: implementation
-output-format: code
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: backend
+  triggers: Django, DRF, Django REST Framework, Django ORM, Django model, serializer, viewset, Python web
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, fastapi-expert, test-master
 ---
 
 # Django Expert
@@ -81,9 +79,3 @@ When implementing Django features, provide:
 ## Knowledge Reference
 
 Django 5.0, DRF, async views, ORM, QuerySet, select_related, prefetch_related, SimpleJWT, django-filter, drf-spectacular, pytest-django
-
-## Related Skills
-
-- **Fullstack Guardian** - Full-stack feature implementation
-- **FastAPI Expert** - Alternative Python framework
-- **Test Master** - Comprehensive testing strategies

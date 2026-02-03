@@ -1,20 +1,16 @@
 ---
 name: prompt-engineer
 description: Use when designing prompts for LLMs, optimizing model performance, building evaluation frameworks, or implementing advanced prompting techniques like chain-of-thought, few-shot learning, or structured outputs.
-triggers:
-  - prompt engineering
-  - prompt optimization
-  - chain-of-thought
-  - few-shot learning
-  - prompt testing
-  - LLM prompts
-  - prompt evaluation
-  - system prompts
-  - structured outputs
-  - prompt design
-role: expert
-scope: design
-output-format: document
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: data-ml
+  triggers: prompt engineering, prompt optimization, chain-of-thought, few-shot learning, prompt testing, LLM prompts, prompt evaluation, system prompts, structured outputs, prompt design
+  role: expert
+  scope: design
+  output-format: document
+  related-skills: test-master
 ---
 
 # Prompt Engineer
@@ -90,10 +86,3 @@ When delivering prompt work, provide:
 ## Knowledge Reference
 
 Prompt engineering techniques, chain-of-thought prompting, few-shot learning, zero-shot prompting, ReAct pattern, tree-of-thoughts, constitutional AI, prompt injection defense, system message design, JSON mode, function calling, structured generation, evaluation metrics, LLM capabilities (GPT-4, Claude, Gemini), token optimization, temperature tuning, output parsing
-
-## Related Skills
-
-- **LLM Architect** - System design with LLM components
-- **AI Engineer** - Production AI application development
-- **Test Master** - Evaluation framework implementation
-- **Technical Writer** - Prompt documentation and guidelines

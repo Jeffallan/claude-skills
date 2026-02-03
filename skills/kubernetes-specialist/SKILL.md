@@ -1,33 +1,16 @@
 ---
 name: kubernetes-specialist
 description: Use when deploying or managing Kubernetes workloads requiring cluster configuration, security hardening, or troubleshooting. Invoke for Helm charts, RBAC policies, NetworkPolicies, storage configuration, performance optimization.
-triggers:
-  - Kubernetes
-  - K8s
-  - kubectl
-  - Helm
-  - container orchestration
-  - pod deployment
-  - RBAC
-  - NetworkPolicy
-  - Ingress
-  - StatefulSet
-  - Operator
-  - CRD
-  - CustomResourceDefinition
-  - ArgoCD
-  - Flux
-  - GitOps
-  - Istio
-  - Linkerd
-  - service mesh
-  - multi-cluster
-  - cost optimization
-  - VPA
-  - spot instances
-role: specialist
-scope: infrastructure
-output-format: manifests
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: infrastructure
+  triggers: Kubernetes, K8s, kubectl, Helm, container orchestration, pod deployment, RBAC, NetworkPolicy, Ingress, StatefulSet, Operator, CRD, CustomResourceDefinition, ArgoCD, Flux, GitOps, Istio, Linkerd, service mesh, multi-cluster, cost optimization, VPA, spot instances
+  role: specialist
+  scope: infrastructure
+  output-format: manifests
+  related-skills: devops-engineer, cloud-architect, sre-engineer
 ---
 
 # Kubernetes Specialist
@@ -108,10 +91,3 @@ When implementing Kubernetes resources, provide:
 ## Knowledge Reference
 
 Kubernetes API, kubectl, Helm 3, Kustomize, RBAC, NetworkPolicies, Pod Security Standards, CNI, CSI, Ingress controllers, Service mesh basics, GitOps principles, monitoring/logging integration
-
-## Related Skills
-
-- **DevOps Engineer** - CI/CD pipeline integration
-- **Cloud Architect** - Multi-cloud Kubernetes strategies
-- **Security Engineer** - Advanced security hardening
-- **SRE Engineer** - Reliability and monitoring patterns

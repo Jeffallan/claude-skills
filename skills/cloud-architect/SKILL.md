@@ -1,24 +1,16 @@
 ---
 name: cloud-architect
 description: Use when designing cloud architectures, planning migrations, or optimizing multi-cloud deployments. Invoke for Well-Architected Framework, cost optimization, disaster recovery, landing zones, security architecture, serverless design.
-triggers:
-  - AWS
-  - Azure
-  - GCP
-  - Google Cloud
-  - cloud migration
-  - cloud architecture
-  - multi-cloud
-  - cloud cost
-  - Well-Architected
-  - landing zone
-  - cloud security
-  - disaster recovery
-  - cloud native
-  - serverless architecture
-role: architect
-scope: infrastructure
-output-format: architecture
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  version: "1.0.0"
+  domain: infrastructure
+  triggers: AWS, Azure, GCP, Google Cloud, cloud migration, cloud architecture, multi-cloud, cloud cost, Well-Architected, landing zone, cloud security, disaster recovery, cloud native, serverless architecture
+  role: architect
+  scope: infrastructure
+  output-format: architecture
+  related-skills: devops-engineer, kubernetes-specialist, terraform-engineer, security-reviewer, microservices-architect, monitoring-expert
 ---
 
 # Cloud Architect
@@ -95,12 +87,3 @@ When designing cloud architecture, provide:
 ## Knowledge Reference
 
 AWS (EC2, S3, Lambda, RDS, VPC, CloudFront), Azure (VMs, Blob Storage, Functions, SQL Database, VNet), GCP (Compute Engine, Cloud Storage, Cloud Functions, Cloud SQL), Kubernetes, Docker, Terraform, CloudFormation, ARM templates, CI/CD, disaster recovery, cost optimization, security best practices, compliance frameworks (SOC2, HIPAA, PCI-DSS)
-
-## Related Skills
-
-- **DevOps Engineer** - CI/CD pipelines and automation
-- **Kubernetes Specialist** - Container orchestration
-- **Terraform Engineer** - Infrastructure as code
-- **Security Reviewer** - Security architecture validation
-- **Microservices Architect** - Cloud-native application patterns
-- **Monitoring Expert** - Observability and alerting
