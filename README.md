@@ -113,9 +113,7 @@ Built by **[jeffallan](https://jeffallan.github.io)** [<img src="https://cdn.jsd
 
 **Principal Consultant** at **[Synergetic Solutions](https://synergetic.solutions)** [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/company/synergetic-holdings)
 
-Fullstack engineering, security compliance, and technical due diligence for teams leveraging AI.
-
-**AI workflow consulting:** [synergetic.solutions](https://synergetic.solutions)
+Fullstack engineering, security engineering, compliance, and technical due diligence.
 
 ## Community
 
