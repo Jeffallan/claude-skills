@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.4] - Unreleased
 
+### Fixed
+- Replaced CONTRIBUTORS.md reference with GitHub contributors link in CONTRIBUTING.md (closes #130)
+
 ### Changed
 - Refactored `validate-skills.py` with Python 3.11+ best practices (closes #133)
   - Extracted `FrontmatterResult` dataclass and `_extract_frontmatter()` helper to eliminate duplicate parsing

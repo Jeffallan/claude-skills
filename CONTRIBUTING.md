@@ -311,8 +311,7 @@ Before submitting:
 ## Recognition
 
 Contributors will be recognized in:
-- CONTRIBUTORS.md file
+- [GitHub contributors page](https://github.com/Jeffallan/claude-skills/graphs/contributors)
 - Release notes for significant contributions
-- GitHub contributors page
 
 
