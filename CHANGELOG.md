@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Modernized type hints (`X | None` syntax) and added `DFSColor` IntEnum
 - `update-docs.py` now auto-bumps version in ROADMAP "Last updated" line
 - Added `__pycache__/` to `.gitignore`
+- Added AdaL CLI (SylphAI) to supported agents table (#135)
+
+### Contributors
+- @liyin2015 — docs: add AdaL CLI to supported agents (#135)
 
 ## [0.4.3] - 2026-02-03
 
