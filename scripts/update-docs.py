@@ -131,6 +131,13 @@ def update_markdown_file(file_path: Path, version: str, counts: dict, dry_run: b
         content
     )
 
+    # Update "Last updated" version reference (e.g., in ROADMAP.md)
+    content = re.sub(
+        r'(Last updated:.*?\(v)[\d.]+(\))',
+        rf'\g<1>{version}\2',
+        content
+    )
+
     if content != original:
         if dry_run:
             print(f"  Would update {file_path}")
