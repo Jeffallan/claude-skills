@@ -20,14 +20,12 @@ Exit codes:
 
 import argparse
 import json
-import os
 import re
 import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, IntEnum
 from pathlib import Path
-from typing import Optional
 
 # Try to import PyYAML, fall back to simple parser if not available
 try:
@@ -149,6 +147,42 @@ KNOWN_DOMAINS = {
     "workflow",
 }
 
+# Valid enum values for metadata fields
+VALID_SCOPES = {
+    "implementation", "review", "design", "system-design",
+    "analysis", "testing", "infrastructure", "optimization", "architecture",
+}
+
+VALID_OUTPUT_FORMATS = {
+    "code", "document", "report", "architecture",
+    "analysis", "manifests", "specification", "schema",
+    "analysis-and-code",
+}
+
+# Canonical section order (H2 headers)
+CANONICAL_SECTIONS = [
+    "Role Definition",
+    "When to Use This Skill",
+    "Core Workflow",
+    "Reference Guide",
+    "Constraints",
+    "Output Templates",
+    "Knowledge Reference",
+    "Related Skills",
+]
+
+# Line count thresholds for SKILL.md
+MIN_NON_BLANK_LINES = 80
+MAX_NON_BLANK_LINES = 100
+
+# Compiled regex patterns for body content checks
+CORE_WORKFLOW_PATTERN = re.compile(r"##\s*Core\s+Workflow")
+WHEN_TO_USE_PATTERN = re.compile(r"##\s*When\s+to\s+Use(?:\s+This\s+Skill)?", re.IGNORECASE)
+NUMBERED_STEP_PATTERN = re.compile(r"^\d+\.\s", re.MULTILINE)
+BULLET_PATTERN = re.compile(r"^\s*[-*]\s")
+NEXT_SECTION_PATTERN = re.compile(r"\n##\s+")
+H2_HEADER_PATTERN = re.compile(r"^##\s+(.+)$", re.MULTILINE)
+
 # Files to check for count consistency
 COUNT_FILES = [
     ".claude-plugin/plugin.json",
@@ -190,6 +224,21 @@ class Severity(Enum):
     WARNING = "warning"
 
 
+class DFSColor(IntEnum):
+    """Colors for DFS cycle detection."""
+    WHITE = 0  # Unvisited
+    GRAY = 1   # In progress
+    BLACK = 2  # Completed
+
+
+@dataclass
+class FrontmatterResult:
+    """Result of frontmatter extraction."""
+    frontmatter: dict
+    body: str
+    skill_md: Path
+
+
 @dataclass
 class ValidationIssue:
     """Individual validation issue."""
@@ -197,7 +246,7 @@ class ValidationIssue:
     check: str
     severity: Severity
     message: str
-    file: Optional[str] = None
+    file: str | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -285,6 +334,26 @@ class BaseChecker(ABC):
     name: str = "base"
     category: str = "general"
 
+    @staticmethod
+    def _extract_frontmatter(skill_path: Path) -> FrontmatterResult | None:
+        """Extract frontmatter safely, returning None if invalid."""
+        skill_md = skill_path / "SKILL.md"
+        if not skill_md.exists():
+            return None
+        content = skill_md.read_text()
+        if not content.startswith("---"):
+            return None
+        parts = content.split("---", 2)
+        if len(parts) < 3:
+            return None
+        try:
+            frontmatter = parse_yaml(parts[1])
+            if frontmatter is None:
+                return None
+            return FrontmatterResult(frontmatter, parts[2], skill_md)
+        except Exception:
+            return None
+
     @abstractmethod
     def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
         """Run the check and return any issues found."""
@@ -357,35 +426,19 @@ class RequiredFieldsChecker(BaseChecker):
     category = "yaml"
 
     def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []  # YamlChecker will report this
+
         issues = []
-        skill_md = skill_path / "SKILL.md"
-
-        if not skill_md.exists():
-            return issues  # YamlChecker will report this
-
-        content = skill_md.read_text()
-        if not content.startswith("---"):
-            return issues  # YamlChecker will report this
-
-        parts = content.split("---", 2)
-        if len(parts) < 3:
-            return issues  # YamlChecker will report this
-
-        try:
-            frontmatter = parse_yaml(parts[1])
-            if frontmatter is None:
-                frontmatter = {}
-        except Exception:
-            return issues  # YamlChecker will report this
-
-        for field in REQUIRED_FIELDS:
-            if field not in frontmatter:
+        for fld in REQUIRED_FIELDS:
+            if fld not in result.frontmatter:
                 issues.append(ValidationIssue(
                     skill=skill_name,
                     check=self.name,
                     severity=Severity.ERROR,
-                    message=f"Missing required field: {field}",
-                    file=str(skill_md),
+                    message=f"Missing required field: {fld}",
+                    file=str(result.skill_md),
                 ))
 
         return issues
@@ -398,35 +451,19 @@ class NameFormatChecker(BaseChecker):
     category = "yaml"
 
     def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
         issues = []
-        skill_md = skill_path / "SKILL.md"
-
-        if not skill_md.exists():
-            return issues
-
-        content = skill_md.read_text()
-        if not content.startswith("---"):
-            return issues
-
-        parts = content.split("---", 2)
-        if len(parts) < 3:
-            return issues
-
-        try:
-            frontmatter = parse_yaml(parts[1])
-            if frontmatter is None:
-                return issues
-        except Exception:
-            return issues
-
-        name = frontmatter.get("name", "")
+        name = result.frontmatter.get("name", "")
         if name and not NAME_PATTERN.match(name):
             issues.append(ValidationIssue(
                 skill=skill_name,
                 check=self.name,
                 severity=Severity.ERROR,
                 message=f"Invalid name format: '{name}'. Use only letters, numbers, and hyphens.",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
 
         # Also check that directory name matches skill name
@@ -436,7 +473,7 @@ class NameFormatChecker(BaseChecker):
                 check=self.name,
                 severity=Severity.WARNING,
                 message=f"Directory name '{skill_name}' doesn't match skill name '{name}'",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
 
         return issues
@@ -449,35 +486,19 @@ class DescriptionLengthChecker(BaseChecker):
     category = "yaml"
 
     def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
         issues = []
-        skill_md = skill_path / "SKILL.md"
-
-        if not skill_md.exists():
-            return issues
-
-        content = skill_md.read_text()
-        if not content.startswith("---"):
-            return issues
-
-        parts = content.split("---", 2)
-        if len(parts) < 3:
-            return issues
-
-        try:
-            frontmatter = parse_yaml(parts[1])
-            if frontmatter is None:
-                return issues
-        except Exception:
-            return issues
-
-        description = frontmatter.get("description", "")
+        description = result.frontmatter.get("description", "")
         if description and len(description) > MAX_DESCRIPTION_LENGTH:
             issues.append(ValidationIssue(
                 skill=skill_name,
                 check=self.name,
                 severity=Severity.WARNING,
                 message=f"Description exceeds {MAX_DESCRIPTION_LENGTH} chars ({len(description)} chars)",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
 
         return issues
@@ -490,35 +511,19 @@ class DescriptionFormatChecker(BaseChecker):
     category = "yaml"
 
     def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
         issues = []
-        skill_md = skill_path / "SKILL.md"
-
-        if not skill_md.exists():
-            return issues
-
-        content = skill_md.read_text()
-        if not content.startswith("---"):
-            return issues
-
-        parts = content.split("---", 2)
-        if len(parts) < 3:
-            return issues
-
-        try:
-            frontmatter = parse_yaml(parts[1])
-            if frontmatter is None:
-                return issues
-        except Exception:
-            return issues
-
-        description = frontmatter.get("description", "")
+        description = result.frontmatter.get("description", "")
         if description and not description.startswith(DESCRIPTION_PREFIX):
             issues.append(ValidationIssue(
                 skill=skill_name,
                 check=self.name,
                 severity=Severity.WARNING,
                 message=f"Description should start with '{DESCRIPTION_PREFIX}' (trigger-only format)",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
 
         return issues
@@ -531,35 +536,19 @@ class MetadataFieldsChecker(BaseChecker):
     category = "yaml"
 
     def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
         issues = []
-        skill_md = skill_path / "SKILL.md"
-
-        if not skill_md.exists():
-            return issues
-
-        content = skill_md.read_text()
-        if not content.startswith("---"):
-            return issues
-
-        parts = content.split("---", 2)
-        if len(parts) < 3:
-            return issues
-
-        try:
-            frontmatter = parse_yaml(parts[1])
-            if frontmatter is None:
-                return issues
-        except Exception:
-            return issues
-
-        metadata = frontmatter.get("metadata")
+        metadata = result.frontmatter.get("metadata")
         if metadata is None:
             issues.append(ValidationIssue(
                 skill=skill_name,
                 check=self.name,
                 severity=Severity.ERROR,
                 message="Missing 'metadata' key",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
             return issues
 
@@ -569,18 +558,18 @@ class MetadataFieldsChecker(BaseChecker):
                 check=self.name,
                 severity=Severity.ERROR,
                 message="'metadata' must be a mapping",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
             return issues
 
-        for field in REQUIRED_METADATA_FIELDS:
-            if field not in metadata:
+        for fld in REQUIRED_METADATA_FIELDS:
+            if fld not in metadata:
                 issues.append(ValidationIssue(
                     skill=skill_name,
                     check=self.name,
                     severity=Severity.ERROR,
-                    message=f"Missing required metadata field: {field}",
-                    file=str(skill_md),
+                    message=f"Missing required metadata field: {fld}",
+                    file=str(result.skill_md),
                 ))
 
         # Validate triggers is a non-empty string
@@ -592,7 +581,7 @@ class MetadataFieldsChecker(BaseChecker):
                     check=self.name,
                     severity=Severity.ERROR,
                     message="'metadata.triggers' must be a non-empty string",
-                    file=str(skill_md),
+                    file=str(result.skill_md),
                 ))
 
         # Validate domain is a known value (warning, not error)
@@ -603,7 +592,7 @@ class MetadataFieldsChecker(BaseChecker):
                 check=self.name,
                 severity=Severity.WARNING,
                 message=f"Unknown domain: '{domain}'. Known: {', '.join(sorted(KNOWN_DOMAINS))}",
-                file=str(skill_md),
+                file=str(result.skill_md),
             ))
 
         # Validate related-skills is a non-empty string with valid skill references
@@ -615,7 +604,7 @@ class MetadataFieldsChecker(BaseChecker):
                     check=self.name,
                     severity=Severity.WARNING,
                     message="'metadata.related-skills' is empty",
-                    file=str(skill_md),
+                    file=str(result.skill_md),
                 ))
             elif not isinstance(related, str):
                 issues.append(ValidationIssue(
@@ -623,7 +612,7 @@ class MetadataFieldsChecker(BaseChecker):
                     check=self.name,
                     severity=Severity.ERROR,
                     message="'metadata.related-skills' must be a string",
-                    file=str(skill_md),
+                    file=str(result.skill_md),
                 ))
             else:
                 # Validate each comma-separated value resolves to an existing skill directory
@@ -635,7 +624,7 @@ class MetadataFieldsChecker(BaseChecker):
                             check=self.name,
                             severity=Severity.WARNING,
                             message=f"'metadata.related-skills' references non-existent skill: '{ref}'",
-                            file=str(skill_md),
+                            file=str(result.skill_md),
                         ))
 
         return issues
@@ -740,6 +729,221 @@ class NonStandardHeadersChecker(BaseChecker):
                 ))
 
         return issues
+
+
+class MetadataEnumChecker(BaseChecker):
+    """Generic checker for metadata enum fields."""
+
+    field_name: str = ""  # e.g., "scope"
+    valid_values: frozenset[str] = frozenset()
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
+        metadata = result.frontmatter.get("metadata", {})
+        if not isinstance(metadata, dict):
+            return []
+
+        value = metadata.get(self.field_name)
+        if value is not None and value not in self.valid_values:
+            return [ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"Unknown {self.field_name}: '{value}'. Expected: {', '.join(sorted(self.valid_values))}",
+                file=str(result.skill_md),
+            )]
+        return []
+
+
+class ScopeEnumChecker(MetadataEnumChecker):
+    """Validates metadata.scope uses a known value."""
+
+    name = "scope-enum"
+    category = "yaml"
+    field_name = "scope"
+    valid_values = frozenset(VALID_SCOPES)
+
+
+class OutputFormatEnumChecker(MetadataEnumChecker):
+    """Validates metadata.output-format uses a known value."""
+
+    name = "output-format-enum"
+    category = "yaml"
+    field_name = "output-format"
+    valid_values = frozenset(VALID_OUTPUT_FORMATS)
+
+
+class CoreWorkflowStepCountChecker(BaseChecker):
+    """Validates Core Workflow section has exactly 5 numbered steps."""
+
+    name = "core-workflow-steps"
+    category = "yaml"
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
+        # Find Core Workflow section
+        workflow_match = CORE_WORKFLOW_PATTERN.search(result.body)
+        if not workflow_match:
+            return [ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message="Missing '## Core Workflow' section",
+                file=str(result.skill_md),
+            )]
+
+        # Get section content (up to next H2 or end of file)
+        section_start = workflow_match.end()
+        next_section = NEXT_SECTION_PATTERN.search(result.body[section_start:])
+        if next_section:
+            section_content = result.body[section_start:section_start + next_section.start()]
+        else:
+            section_content = result.body[section_start:]
+
+        # Count numbered list items (e.g., "1. ", "2. ", etc.)
+        steps = NUMBERED_STEP_PATTERN.findall(section_content)
+        step_count = len(steps)
+
+        if step_count != 5:
+            return [ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"Core Workflow has {step_count} steps (expected 5)",
+                file=str(result.skill_md),
+            )]
+
+        return []
+
+
+class WhenToUseFormatChecker(BaseChecker):
+    """Validates 'When to Use' section uses bullet list format."""
+
+    name = "when-to-use-format"
+    category = "yaml"
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
+        # Find "When to Use" section (various forms)
+        section_match = WHEN_TO_USE_PATTERN.search(result.body)
+        if not section_match:
+            # Section is optional; don't warn if missing
+            return []
+
+        # Get section content (up to next H2 or end of file)
+        section_start = section_match.end()
+        next_section = NEXT_SECTION_PATTERN.search(result.body[section_start:])
+        if next_section:
+            section_content = result.body[section_start:section_start + next_section.start()]
+        else:
+            section_content = result.body[section_start:]
+
+        # Check for bullet list format
+        lines = section_content.strip().split("\n")
+        content_lines = [line for line in lines if line.strip() and not line.strip().startswith("#")]
+
+        if not content_lines:
+            return []
+
+        # Check if lines use bullet format (- or *)
+        non_bullet_lines = [
+            line for line in content_lines
+            if line.strip() and not BULLET_PATTERN.match(line)
+        ]
+
+        # Allow some non-bullet lines (like sub-items or code blocks), but warn if majority is prose
+        if len(non_bullet_lines) > len(content_lines) // 2:
+            return [ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message="'When to Use' section should use bullet list format (- or *)",
+                file=str(result.skill_md),
+            )]
+
+        return []
+
+
+class SectionOrderChecker(BaseChecker):
+    """Validates H2 sections appear in canonical order."""
+
+    name = "section-order"
+    category = "yaml"
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
+        # Extract all H2 headers
+        headers = H2_HEADER_PATTERN.findall(result.body)
+
+        # Filter to only canonical sections (ignore non-standard headers)
+        canonical_set = set(CANONICAL_SECTIONS)
+        found_canonical = [h.strip() for h in headers if h.strip() in canonical_set]
+
+        if len(found_canonical) < 2:
+            # Not enough canonical sections to check order
+            return []
+
+        # Check order: for each pair of canonical sections found, verify order
+        for i, section in enumerate(found_canonical[:-1]):
+            current_idx = CANONICAL_SECTIONS.index(section)
+            next_idx = CANONICAL_SECTIONS.index(found_canonical[i + 1])
+            if current_idx > next_idx:
+                return [ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Section order: '{section}' should come after '{found_canonical[i + 1]}'",
+                    file=str(result.skill_md),
+                )]
+
+        return []
+
+
+class LineCountChecker(BaseChecker):
+    """Validates SKILL.md has 80-100 non-blank lines (excluding frontmatter)."""
+
+    name = "line-count"
+    category = "yaml"
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
+        # Count non-blank lines
+        non_blank_lines = [line for line in result.body.split("\n") if line.strip()]
+        count = len(non_blank_lines)
+
+        if count < MIN_NON_BLANK_LINES:
+            return [ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"SKILL.md has {count} non-blank lines (minimum {MIN_NON_BLANK_LINES})",
+                file=str(result.skill_md),
+            )]
+        elif count > MAX_NON_BLANK_LINES:
+            return [ValidationIssue(
+                skill=skill_name,
+                check=self.name,
+                severity=Severity.WARNING,
+                message=f"SKILL.md has {count} non-blank lines (maximum {MAX_NON_BLANK_LINES})",
+                file=str(result.skill_md),
+            )]
+
+        return []
 
 
 # =============================================================================
@@ -1136,17 +1340,16 @@ class ManifestDagChecker:
                         deps.append(dep_phase)
             graph[phase_name] = deps
 
-        WHITE, GRAY, BLACK = 0, 1, 2
-        color = {node: WHITE for node in graph}
-        path = []
+        color = {node: DFSColor.WHITE for node in graph}
+        path: list[str] = []
 
-        def dfs(node):
-            color[node] = GRAY
+        def dfs(node: str) -> None:
+            color[node] = DFSColor.GRAY
             path.append(node)
             for neighbor in graph.get(node, []):
                 if neighbor not in color:
                     continue  # Reference to undefined phase (caught elsewhere)
-                if color[neighbor] == GRAY:
+                if color[neighbor] == DFSColor.GRAY:
                     cycle_start = path.index(neighbor)
                     cycle = path[cycle_start:] + [neighbor]
                     issues.append(ValidationIssue(
@@ -1158,13 +1361,13 @@ class ManifestDagChecker:
                     ))
                     path.pop()
                     return
-                if color[neighbor] == WHITE:
+                if color[neighbor] == DFSColor.WHITE:
                     dfs(neighbor)
             path.pop()
-            color[node] = BLACK
+            color[node] = DFSColor.BLACK
 
         for node in graph:
-            if color[node] == WHITE:
+            if color[node] == DFSColor.WHITE:
                 dfs(node)
 
         return issues
@@ -1439,8 +1642,8 @@ class SkillValidator:
     def __init__(
         self,
         skills_dir: str = SKILLS_DIR,
-        check_category: Optional[str] = None,
-        skill_filter: Optional[str] = None,
+        check_category: str | None = None,
+        skill_filter: str | None = None,
     ):
         self.skills_dir = Path(skills_dir)
         self.check_category = check_category
@@ -1454,6 +1657,12 @@ class SkillValidator:
             NameFormatChecker(),
             DescriptionLengthChecker(),
             DescriptionFormatChecker(),
+            ScopeEnumChecker(),
+            OutputFormatEnumChecker(),
+            CoreWorkflowStepCountChecker(),
+            WhenToUseFormatChecker(),
+            SectionOrderChecker(),
+            LineCountChecker(),
             ReferencesDirectoryChecker(),
             ReferenceFileCountChecker(),
             NonStandardHeadersChecker(),

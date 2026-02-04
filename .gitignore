@@ -28,6 +28,9 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# Python
+__pycache__/
+
 # Temporary files
 *.tmp
 *.temp
