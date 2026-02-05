@@ -665,7 +665,7 @@ The workflow commands integrate with Jira for:
 - Close epics with resolution
 
 **JQL Queries Used:**
-- `Parent = {Epic_Key}` - Find all child tickets
+- `"Epic Link" = {Epic_Key}` - Find all child tickets
 - Status-based queries for completion verification
 
 ---

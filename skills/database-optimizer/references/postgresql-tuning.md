@@ -410,3 +410,4 @@ log_min_duration_statement = 1000  # Log queries > 1s
 log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
 log_checkpoints = on
 log_lock_waits = on
+```

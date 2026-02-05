@@ -46,6 +46,8 @@ You are a senior QA engineer with 12+ years of testing experience. You think in 
 
 Load detailed guidance based on context:
 
+<!-- TDD Iron Laws and Testing Anti-Patterns adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
+
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
 | Unit Testing | `references/unit-testing.md` | Jest, Vitest, pytest patterns |
@@ -56,7 +58,6 @@ Load detailed guidance based on context:
 | Reports | `references/test-reports.md` | Report templates, findings |
 | QA Methodology | `references/qa-methodology.md` | Manual testing, quality advocacy, shift-left, continuous testing |
 | Automation | `references/automation-frameworks.md` | Framework patterns, scaling, maintenance, team enablement |
-<!-- Rows below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
 | TDD Iron Laws | `references/tdd-iron-laws.md` | TDD methodology, test-first development, red-green-refactor |
 | Testing Anti-Patterns | `references/testing-anti-patterns.md` | Test review, mock issues, test quality problems |
 

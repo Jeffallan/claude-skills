@@ -92,15 +92,29 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
+        /* Title row */
+        .title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
         /* Title */
         .title {
             font-size: 92px;
             font-weight: 900;
             color: #ffffff;
             line-height: 1;
-            margin-bottom: 24px;
+            margin-bottom: 0;
             letter-spacing: -0.03em;
             text-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Awesome badge */
+        .awesome-badge {
+            height: 56px;
+            filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.3));
         }
 
         /* Subtitle */
@@ -234,8 +248,11 @@
             <!-- Icon -->
             <!-- <div class="icon">⚡</div> -->
 
-            <!-- Title -->
-            <h1 class="title">Claude Skills</h1>
+            <!-- Title row with badge -->
+            <div class="title-row">
+                <h1 class="title">Claude Skills</h1>
+                <img src="https://awesome.re/mentioned-badge.svg" class="awesome-badge" alt="Mentioned in Awesome Claude Code"/>
+            </div>
 
             <!-- Subtitle -->
             <h2 class="subtitle"><!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Specialized Skills and <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflows for Full-Stack Developers</h2>

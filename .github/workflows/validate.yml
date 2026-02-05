@@ -23,5 +23,8 @@ jobs:
       - name: Validate skills
         run: python scripts/validate-skills.py
 
+      - name: Validate markdown
+        run: python scripts/validate-markdown.py --check
+
       - name: Check docs in sync
         run: python scripts/update-docs.py --check

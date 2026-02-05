@@ -76,7 +76,7 @@ Creates tickets in target implementation epics
 ## Phase 1: Question Extraction
 
 1. **Read all Jira tickets** linked to epic `{Epic_Key}`
-   - Use JQL query: `Parent = {Epic_Key}` to find all child tickets
+   - Use JQL query: `"Epic Link" = {Epic_Key}` to find all child tickets
    - Extract acceptance criteria from each ticket
    - Identify ticket dependencies and relationships
    - Note any technical constraints mentioned

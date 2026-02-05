@@ -449,3 +449,4 @@ performance_schema = ON
 # Character Set
 character_set_server = utf8mb4
 collation_server = utf8mb4_unicode_ci
+```

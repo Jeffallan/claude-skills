@@ -74,7 +74,7 @@ This command creates a comprehensive planning document (Overview Document) for a
 ## Phase 1: Discovery
 
 1. **Read all Jira tickets** linked to epic `{Epic_Key}`
-   - Use JQL query: `Parent = {Epic_Key}` to find all child tickets
+   - Use JQL query: `"Epic Link" = {Epic_Key}` to find all child tickets
    - Extract acceptance criteria from each ticket
    - Identify ticket dependencies and relationships
    - Note any technical constraints mentioned
@@ -228,7 +228,7 @@ Capture findings from codebase exploration to inform the implementation plan:
 |-----|---------|------|--------------|
 | [TICKET-123](url) | Ticket summary | Task/Bug/Story | X |
 
-*Use JQL `Parent = {Epic_Key}` to fetch current ticket list.*
+*Use JQL `"Epic Link" = {Epic_Key}` to fetch current ticket list.*
 
 ---
 

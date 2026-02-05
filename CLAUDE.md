@@ -239,7 +239,30 @@ python scripts/validate-skills.py --help             # Full usage
 
 **Exit codes:** 0 = success (warnings OK), 1 = errors found
 
-### 6. Final Verification
+### 6. Validate Markdown Syntax
+
+**Critical:** Run markdown validation to catch parsing errors.
+
+```bash
+python scripts/validate-markdown.py
+```
+
+The script validates:
+- **HTML comments in tables** - Comments between table rows break parsing
+- **Unclosed code blocks** - Ensures all code fences are properly closed
+- **Missing table separators** - Tables require `|---|` row after header
+- **Column count consistency** - All table rows must have same column count
+
+**Options:**
+```bash
+python scripts/validate-markdown.py --check       # CI mode (exit code only)
+python scripts/validate-markdown.py --path FILE   # Single file
+python scripts/validate-markdown.py --format json # JSON output for CI
+```
+
+**Exit codes:** 0 = no issues, 1 = issues found
+
+### 7. Final Verification
 
 After running validation, manually verify:
 

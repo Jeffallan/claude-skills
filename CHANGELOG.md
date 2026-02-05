@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.5] - 2026-02-05
+
+### Added
+- Added "Mentioned in Awesome Claude Code" badge to README (closes #138)
+- Added Awesome Claude Code stat to social preview
+- Added `scripts/validate-markdown.py` for detecting markdown parsing errors
+  - Checks for HTML comments breaking tables, unclosed code blocks, missing table separators, column count mismatches
+  - Integrated into CI workflow and release checklist
+
+### Fixed
+- Fixed markdown bold formatting rendering as raw `**` in README.md (#139)
+- Fixed minor syntax error in skill YAML frontmatter (#137)
+- Fixed incorrect JQL syntax in epic planning workflows (`Parent =` → `"Epic Link" =`)
+  - Affected: `create-epic-plan`, `create-epic-discovery`, `WORKFLOW_COMMANDS.md`
+- Fixed markdown parsing errors across skill files:
+  - Moved HTML comments above tables in `code-reviewer` and `debugging-wizard` skills
+  - Added missing closing code fences in `incident-chaos`, `mysql-tuning`, `postgresql-tuning`
+  - Escaped pipe character in `php-pro/modern-php-features.md` table
+
+### Contributors
+- @hesreallyhim — Featured in Awesome Claude Code (#138)
+- @hesreallyhim — Fix formatting and links in README.md (#139)
+- @hesreallyhim — fix: minor syntax error in .md yaml frontmatter (#137)
+
 ## [0.4.4] - 2026-02-03
 
 ### Fixed
@@ -283,6 +307,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.5]: https://github.com/jeffallan/claude-skills/compare/v0.4.4...v0.4.5
 [0.4.4]: https://github.com/jeffallan/claude-skills/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/jeffallan/claude-skills/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/jeffallan/claude-skills/compare/v0.4.1...v0.4.2

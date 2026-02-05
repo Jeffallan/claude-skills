@@ -319,5 +319,5 @@ class NotFoundException extends \Exception
 | Never type | 8.1+ | `function exit(): never` |
 | Fibers | 8.1+ | `new \Fiber(fn() => ...)` |
 | Pure intersection types | 8.1+ | `A&B $param` |
-| DNF types | 8.2+ | `(A&B)|C $param` |
+| DNF types | 8.2+ | `(A&B)\|C $param` |
 | Constants in traits | 8.2+ | `trait T { const X = 1; }` |
