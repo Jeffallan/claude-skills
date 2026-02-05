@@ -31,7 +31,7 @@ then
 /plugin install fullstack-dev-skills@jeffallan
 ```
 
-For all installation methods and first steps, see the **[Quick Start Guide](QUICKSTART.md)**.
+For all installation methods and first steps, see the [**Quick Start Guide**](QUICKSTART.md).
 
 **Full documentation:** [jeffallan.github.io/claude-skills](https://jeffallan.github.io/claude-skills)
 
@@ -39,7 +39,7 @@ For all installation methods and first steps, see the **[Quick Start Guide](QUIC
 
 <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
 
-See **[Skills Guide](SKILLS_GUIDE.md)** for the full list, decision trees, and workflow combinations.
+See [**Skills Guide**](SKILLS_GUIDE.md) for the full list, decision trees, and workflow combinations.
 
 ## Usage Patterns
 
@@ -69,29 +69,31 @@ Security Hardening:  Secure Code Guardian → Security Reviewer → Test Master
 
 ## Context Engineering
 
-Surface and validate Claude's hidden assumptions about your project with `/common-ground`. See the **[Common Ground Guide](docs/COMMON_GROUND.md)** for full documentation.
+Surface and validate Claude's hidden assumptions about your project with `/common-ground`. See the [**Common Ground Guide**](docs/COMMON_GROUND.md) for full documentation.
 
 ## Project Workflow
 
-<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflow commands manage epics from discovery through retrospectives, integrating with Jira and Confluence. See **[Workflow Commands Reference](docs/WORKFLOW_COMMANDS.md)** for the full command reference and lifecycle diagrams.
+<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflow commands manage epics from discovery through retrospectives, integrating with Jira and Confluence. See <a href="docs/WORKFLOW_COMMANDS.md"><strong>Workflow Commands Reference</strong></a> for the full command reference and lifecycle diagrams.
+&nbsp;
 
-> **Setup:** Workflow commands require an Atlassian MCP server. See the **[Atlassian MCP Setup Guide](docs/ATLASSIAN_MCP_SETUP.md)**.
+> [!TIP]
+> **Setup:** Workflow commands require an Atlassian MCP server. See the [**Atlassian MCP Setup Guide**](docs/ATLASSIAN_MCP_SETUP.md).
 
 ## Documentation
 
-- **[Quick Start Guide](QUICKSTART.md)** - Installation and first steps
-- **[Skills Guide](SKILLS_GUIDE.md)** - Skill reference and decision trees
-- **[Common Ground](docs/COMMON_GROUND.md)** - Context engineering with `/common-ground`
-- **[Workflow Commands](docs/WORKFLOW_COMMANDS.md)** - Project workflow commands guide
-- **[Atlassian MCP Setup](docs/ATLASSIAN_MCP_SETUP.md)** - Atlassian MCP server setup
-- **[Local Development](docs/local_skill_development.md)** - Local skill development
-- **[Contributing](CONTRIBUTING.md)** - Contribution guidelines
+- [**Quick Start Guide**](QUICKSTART.md) - Installation and first steps
+- [**Skills Guide**](SKILLS_GUIDE.md) - Skill reference and decision trees
+- [**Common Ground**](docs/COMMON_GROUND.md) - Context engineering with `/common-ground`
+- [**Workflow Commands**](docs/WORKFLOW_COMMANDS.md) - Project workflow commands guide
+- [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup
+- [**Local Development**](docs/local_skill_development.md) - Local skill development
+- [**Contributing**](CONTRIBUTING.md) - Contribution guidelines
 - **skills/\*/SKILL.md** - Individual skill documentation
 - **skills/\*/references/** - Deep-dive reference materials
 
 ## Contributing
 
-See **[Contributing](CONTRIBUTING.md)** for guidelines on adding skills, writing references, and submitting pull requests.
+See [**Contributing**](CONTRIBUTING.md) for guidelines on adding skills, writing references, and submitting pull requests.
 
 ## Changelog
 
@@ -109,9 +111,9 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Author
 
-Built by **[jeffallan](https://jeffallan.github.io)** [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/in/jeff-smolinski/)
+Built by [**jeffallan**](https://jeffallan.github.io) [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/in/jeff-smolinski/)
 
-**Principal Consultant** at **[Synergetic Solutions](https://synergetic.solutions)** [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/company/synergetic-holdings)
+**Principal Consultant** at [**Synergetic Solutions**](https://synergetic.solutions) [<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="16" height="16" alt="LinkedIn"/>](https://www.linkedin.com/company/synergetic-holdings)
 
 Fullstack engineering, security engineering, compliance, and technical due diligence.
 
