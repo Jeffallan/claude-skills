@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2026-02-08
+
+### Added
+- `the-fool` — domain-agnostic critical reasoning skill with 5 modes (Socratic questioning, dialectic synthesis, pre-mortem, red team, evidence audit)
+  - Two-step `AskUserQuestion` mode selection for 5 modes within 4-option constraint
+  - 6 reference files: mode-selection-guide, socratic-questioning, dialectic-synthesis, pre-mortem-analysis, red-team-adversarial, evidence-audit
+  - Added to Workflow category in SKILLS_GUIDE.md
+  - Added Critical Thinking decision tree and Decision Validation workflow
+
+### Fixed
+- Fixed `sync-content.mjs` regex in `stripHtmlCommentTags` not stripping version markers (dots in `0.4.x` didn't match `\w+`)
+- Fixed social preview generation command in CLAUDE.md release checklist (added `npm install --no-save puppeteer`)
+
 ## [0.4.5] - 2026-02-05
 
 ### Added
@@ -307,6 +320,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.6]: https://github.com/jeffallan/claude-skills/compare/v0.4.5...v0.4.6
 [0.4.5]: https://github.com/jeffallan/claude-skills/compare/v0.4.4...v0.4.5
 [0.4.4]: https://github.com/jeffallan/claude-skills/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/jeffallan/claude-skills/compare/v0.4.2...v0.4.3

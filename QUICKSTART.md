@@ -55,7 +55,7 @@ Verify skills are working:
 
 ### 1. What's Included
 
-<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> skills covering:
+<!-- SKILL_COUNT -->66<!-- /SKILL_COUNT --> skills covering:
 - 12 Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
 - 7 Backend Framework Experts (NestJS, Django, FastAPI, Spring Boot, Laravel, Rails, .NET Core)
 - 7 Frontend & Mobile Experts (React, Next.js, Vue, Angular, React Native, Flutter)

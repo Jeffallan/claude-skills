@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.5-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.6-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <strong><!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills</strong> | <strong><!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows</strong> | <strong>Context Engineering</strong> | <strong>Progressive Disclosure</strong>
+  <strong><!-- SKILL_COUNT -->66<!-- /SKILL_COUNT --> Skills</strong> | <strong><!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows</strong> | <strong>Context Engineering</strong> | <strong>Progressive Disclosure</strong>
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@ For all installation methods and first steps, see the [**Quick Start Guide**](QU
 
 ## Skills
 
-<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
+<!-- SKILL_COUNT -->66<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
 
 See [**Skills Guide**](SKILLS_GUIDE.md) for the full list, decision trees, and workflow combinations.
 
@@ -128,4 +128,4 @@ Fullstack engineering, security engineering, compliance, and technical due dilig
 
 ---
 
-**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->359<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> Skills**
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->365<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->66<!-- /SKILL_COUNT --> Skills**
