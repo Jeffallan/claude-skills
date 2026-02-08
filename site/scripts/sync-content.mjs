@@ -171,7 +171,7 @@ function rewriteLinks(body) {
 
 function stripHtmlCommentTags(body) {
   // Remove <!-- SKILL_COUNT -->65<!-- /SKILL_COUNT --> style tags, keep inner text
-  return body.replace(/<!--\s*\w+\s*-->(\w+)<!--\s*\/\w+\s*-->/g, '$1');
+  return body.replace(/<!--\s*\w+\s*-->([^<]+?)<!--\s*\/\w+\s*-->/g, '$1');
 }
 
 // ─── Clean synced content ────────────────────────────────────────────

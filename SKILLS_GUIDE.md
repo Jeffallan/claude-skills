@@ -94,6 +94,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 ### Workflow
 - **[Debugging Wizard](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)**: Systematic debugging across all languages
 - **[Fullstack Guardian](https://jeffallan.github.io/claude-skills/skills/security/fullstack-guardian/)**: Implementing features across full stack
+- **[The Fool](https://jeffallan.github.io/claude-skills/skills/workflow/the-fool/)**: Challenge ideas and decisions with 5 structured reasoning modes
 
 ## Skill Workflows
 
@@ -195,6 +196,12 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **Resilience Testing** → Chaos Engineer
 - **CLI Tools** → CLI Developer
 
+### Critical Thinking
+- **Surface Assumptions** → Common Ground (command)
+- **Challenge Decisions** → The Fool
+- **Evaluate Code** → Code Reviewer
+- **Audit Security** → Security Reviewer
+
 ## Skill Combinations
 
 Common combinations for maximum effectiveness:
@@ -240,6 +247,9 @@ Common combinations for maximum effectiveness:
 
 ### E-commerce Platform
 - Shopify Expert + React Expert + API Designer + DevOps Engineer
+
+### Decision Validation
+- Common Ground (surface assumptions) + The Fool (stress-test the decision) + Architecture Designer (document refined decision)
 
 ### CRM Development
 - Salesforce Developer + API Designer + Security Reviewer + Test Master

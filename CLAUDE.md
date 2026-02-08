@@ -208,7 +208,7 @@ Add version comparison link at bottom:
 After all updates, regenerate the social preview image:
 
 ```bash
-node ./assets/capture-screenshot.js
+npm install --no-save puppeteer && node ./assets/capture-screenshot.js
 ```
 
 This creates `assets/social-preview.png` from `assets/social-preview.html`.
