@@ -10,6 +10,7 @@ Usage:
     python scripts/validate-skills.py --check yaml # YAML-related checks only
     python scripts/validate-skills.py --check references  # Reference checks only
     python scripts/validate-skills.py --check workflows   # Workflow definition checks only
+    python scripts/validate-skills.py --check crossrefs   # Cross-reference validation only
     python scripts/validate-skills.py --skill react-expert  # Single skill
     python scripts/validate-skills.py --format json  # JSON for CI
 
@@ -287,6 +288,7 @@ class ValidationReport:
     results: list[ValidationResult] = field(default_factory=list)
     count_issues: list[ValidationIssue] = field(default_factory=list)
     workflow_issues: list[ValidationIssue] = field(default_factory=list)
+    crossref_issues: list[ValidationIssue] = field(default_factory=list)
 
     @property
     def has_errors(self) -> bool:
@@ -294,6 +296,7 @@ class ValidationReport:
             any(r.has_errors for r in self.results)
             or any(i.severity == Severity.ERROR for i in self.count_issues)
             or any(i.severity == Severity.ERROR for i in self.workflow_issues)
+            or any(i.severity == Severity.ERROR for i in self.crossref_issues)
         )
 
     @property
@@ -301,6 +304,7 @@ class ValidationReport:
         count = sum(1 for r in self.results for i in r.issues if i.severity == Severity.ERROR)
         count += sum(1 for i in self.count_issues if i.severity == Severity.ERROR)
         count += sum(1 for i in self.workflow_issues if i.severity == Severity.ERROR)
+        count += sum(1 for i in self.crossref_issues if i.severity == Severity.ERROR)
         return count
 
     @property
@@ -308,6 +312,7 @@ class ValidationReport:
         count = sum(1 for r in self.results for i in r.issues if i.severity == Severity.WARNING)
         count += sum(1 for i in self.count_issues if i.severity == Severity.WARNING)
         count += sum(1 for i in self.workflow_issues if i.severity == Severity.WARNING)
+        count += sum(1 for i in self.crossref_issues if i.severity == Severity.WARNING)
         return count
 
     def to_dict(self) -> dict:
@@ -315,6 +320,7 @@ class ValidationReport:
             "results": [r.to_dict() for r in self.results],
             "count_issues": [i.to_dict() for i in self.count_issues],
             "workflow_issues": [i.to_dict() for i in self.workflow_issues],
+            "crossref_issues": [i.to_dict() for i in self.crossref_issues],
             "summary": {
                 "total_skills": len(self.results),
                 "total_errors": self.total_errors,
@@ -1534,6 +1540,97 @@ class CountConsistencyChecker:
 
 
 # =============================================================================
+# Cross-Reference Checker
+# =============================================================================
+
+class CrossRefChecker:
+    """Validates bidirectional related-skills references and detects orphan skills."""
+
+    name = "crossrefs"
+
+    def check(self, skills_dir: Path) -> list[ValidationIssue]:
+        issues = []
+        graph = self._build_graph(skills_dir)
+        issues.extend(self._check_bidirectional(graph))
+        issues.extend(self._check_orphans(graph, skills_dir))
+        return issues
+
+    def _build_graph(self, skills_dir: Path) -> dict[str, set[str]]:
+        """Parse all skills' metadata.related-skills into a graph."""
+        graph: dict[str, set[str]] = {}
+
+        for skill_path in sorted(skills_dir.iterdir()):
+            if not skill_path.is_dir() or skill_path.name.startswith("."):
+                continue
+
+            result = BaseChecker._extract_frontmatter(skill_path)
+            if result is None:
+                if (skill_path / "SKILL.md").exists():
+                    graph[skill_path.name] = set()
+                continue
+
+            metadata = result.frontmatter.get("metadata", {})
+            if not isinstance(metadata, dict):
+                graph[skill_path.name] = set()
+                continue
+
+            related = metadata.get("related-skills", "")
+            if isinstance(related, str) and related.strip():
+                refs = {r.strip() for r in related.split(",") if r.strip()}
+            else:
+                refs = set()
+
+            graph[skill_path.name] = refs
+
+        return graph
+
+    def _check_bidirectional(self, graph: dict[str, set[str]]) -> list[ValidationIssue]:
+        """Warn when A references B but B does not reference A."""
+        issues = []
+        reported: set[tuple[str, str]] = set()
+
+        for skill, refs in sorted(graph.items()):
+            for ref in sorted(refs):
+                if ref not in graph:
+                    continue  # Non-existent skill; MetadataFieldsChecker handles this
+                pair = (min(skill, ref), max(skill, ref))
+                if pair in reported:
+                    continue
+                if skill not in graph[ref]:
+                    reported.add(pair)
+                    issues.append(ValidationIssue(
+                        skill="__crossrefs__",
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message=f"'{skill}' references '{ref}' but '{ref}' does not reference '{skill}'",
+                    ))
+
+        return issues
+
+    def _check_orphans(
+        self, graph: dict[str, set[str]], skills_dir: Path
+    ) -> list[ValidationIssue]:
+        """Warn about skills with no incoming or outgoing references."""
+        issues = []
+
+        # Collect all skills that are referenced by at least one other skill
+        referenced: set[str] = set()
+        for refs in graph.values():
+            referenced.update(refs)
+
+        for skill, refs in sorted(graph.items()):
+            if not refs and skill not in referenced:
+                issues.append(ValidationIssue(
+                    skill="__crossrefs__",
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Orphan skill: '{skill}' has no related-skills and is not referenced by any other skill",
+                ))
+
+        return issues
+
+
+# =============================================================================
 # Workflow Validator
 # =============================================================================
 
@@ -1593,6 +1690,15 @@ class TableFormatter:
                 file_info = f" ({issue.file})" if issue.file else ""
                 scope = f"[{issue.skill}] " if issue.skill else ""
                 lines.append(f"  [{icon}] {scope}{issue.check}: {issue.message}{file_info}")
+
+        # Cross-reference issues
+        if report.crossref_issues:
+            lines.append("")
+            lines.append("CROSS-REFERENCE ISSUES:")
+            lines.append("-" * 80)
+            for issue in report.crossref_issues:
+                icon = "ERROR" if issue.severity == Severity.ERROR else "WARN "
+                lines.append(f"  [{icon}] {issue.message}")
 
         # Count issues
         if report.count_issues:
@@ -1733,12 +1839,13 @@ Check categories:
   yaml        - YAML frontmatter validation (parsing, required fields, format)
   references  - Reference file validation (directory, count, headers)
   workflows   - Workflow YAML definitions, manifest DAG, orphan detection
+  crossrefs   - Bidirectional related-skills validation, orphan detection
 """,
     )
 
     parser.add_argument(
         "--check",
-        choices=["yaml", "references", "workflows"],
+        choices=["yaml", "references", "workflows", "crossrefs"],
         help="Run only checks in the specified category",
     )
 
@@ -1764,8 +1871,8 @@ Check categories:
 
     report = ValidationReport()
 
-    # Run skill validation (unless --check workflows)
-    if args.check != "workflows":
+    # Run skill validation (unless --check workflows or --check crossrefs)
+    if args.check not in ("workflows", "crossrefs"):
         validator = SkillValidator(
             skills_dir=args.skills_dir,
             check_category=args.check,
@@ -1778,6 +1885,11 @@ Check categories:
         base_path = Path(".")
         workflow_validator = WorkflowValidator(base_path)
         report.workflow_issues = workflow_validator.validate()
+
+    # Run cross-reference validation (unless filtering to single skill or non-crossref category)
+    if args.check == "crossrefs" or (args.check is None and not args.skill):
+        crossref_checker = CrossRefChecker()
+        report.crossref_issues = crossref_checker.check(Path(args.skills_dir))
 
     # Format and output
     if args.format == "json":

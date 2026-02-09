@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.7] - 2026-02-08
+
+### Added
+- Bidirectional cross-reference validation in `validate-skills.py` (closes #100)
+  - `CrossRefChecker` class: warns when skill A references B but B doesn't reference A
+  - Orphan detection: warns about skills with no incoming or outgoing references
+  - New `--check crossrefs` CLI option for isolated cross-reference validation
+  - All issues are WARNING severity (advisory, won't fail CI)
+
+### Changed
+- Upgraded Code of Conduct to Contributor Covenant v2.1 (closes #131)
+- Refactored `CrossRefChecker._build_graph()` to reuse `BaseChecker._extract_frontmatter()`
+
 ## [0.4.6] - 2026-02-08
 
 ### Added
@@ -320,6 +333,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.7]: https://github.com/jeffallan/claude-skills/compare/v0.4.6...v0.4.7
 [0.4.6]: https://github.com/jeffallan/claude-skills/compare/v0.4.5...v0.4.6
 [0.4.5]: https://github.com/jeffallan/claude-skills/compare/v0.4.4...v0.4.5
 [0.4.4]: https://github.com/jeffallan/claude-skills/compare/v0.4.3...v0.4.4
