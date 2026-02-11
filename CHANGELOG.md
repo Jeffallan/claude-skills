@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- 🎉 **Milestone:** Appeared on [GitHub Weekly Trending](https://github.com/Jeffallan/claude-skills/discussions/148) repos (#8 overall)
+
+### Changed
+- Upgraded GitHub Actions for Node 24 compatibility (#146)
+  - `actions/checkout` v4 → v6
+  - `actions/setup-node` v4 → v6
+  - `actions/setup-python` v5 → v6
+- Upgraded `actions/upload-pages-artifact` v3 → v4 (#147)
+
+### Contributors
+- @salmanmkc — Upgrade GitHub Actions for Node 24 compatibility (#146)
+- @salmanmkc — Upgrade GitHub Actions to latest versions (#147)
+
 ## [0.4.7] - 2026-02-08
 
 ### Added
