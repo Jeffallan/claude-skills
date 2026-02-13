@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 🎉 **Milestone:** Appeared on [GitHub Weekly Trending](https://github.com/Jeffallan/claude-skills/discussions/148) repos (#8 overall)
 
 ### Changed
+- Added Agent Skills CLI as alternative installation method in QUICKSTART.md (#151)
 - Upgraded GitHub Actions for Node 24 compatibility (#146)
   - `actions/checkout` v4 → v6
   - `actions/setup-node` v4 → v6
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Contributors
 - @salmanmkc — Upgrade GitHub Actions for Node 24 compatibility (#146)
 - @salmanmkc — Upgrade GitHub Actions to latest versions (#147)
+- @Karanjot786 — Add Agent Skills CLI installation method (#151)
 
 ## [0.4.7] - 2026-02-08
 
