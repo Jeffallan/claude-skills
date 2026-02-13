@@ -29,7 +29,7 @@ npx skills add jeffallan/claude-skills
 
 ### Install via Agent Skills CLI
 ```bash
-npx agent-skills-cli install @Jeffallan/claude-skills
+npx agent-skills-cli@latest add @Jeffallan/claude-skills
 ```
 
 > **Note:** This method installs skills only. Slash commands (`/common-ground`, `/project:*`) are not included. Installs to 42+ AI agents including Claude, Cursor, Copilot, Windsurf, and more. [Learn more](https://www.agentskills.in)
