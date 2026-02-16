@@ -96,6 +96,10 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Fullstack Guardian](https://jeffallan.github.io/claude-skills/skills/security/fullstack-guardian/)**: Implementing features across full stack
 - **[The Fool](https://jeffallan.github.io/claude-skills/skills/workflow/the-fool/)**: Challenge ideas and decisions with 5 structured reasoning modes
 
+
+### Community Skills (External)
+- **[oiloil-ui-ux-guide](https://github.com/oil-oil/oiloil-ui-ux-guide)**: Modern UI/UX guidance and review. Two modes: `guide` (do/don't rules) and `review` (P0/P1/P2 fix list). Covers CRAP principles, task-first UX, cognitive load, HCI laws. Install: `npx skills add oil-oil/oiloil-ui-ux-guide`
+
 ## Skill Workflows
 
 ### New Feature Development
