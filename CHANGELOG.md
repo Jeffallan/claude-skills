@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.8] - 2026-02-17
+
 ### Added
 - 🎉 **Milestone:** Appeared on [GitHub Weekly Trending](https://github.com/Jeffallan/claude-skills/discussions/148) repos (#8 overall)
 
@@ -18,10 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `actions/setup-python` v5 → v6
 - Upgraded `actions/upload-pages-artifact` v3 → v4 (#147)
 
+### Fixed
+- Removed incorrect Python/Pydantic V1 reference from `php-pro` skill MUST NOT DO section (#154)
+
 ### Contributors
 - @salmanmkc — Upgrade GitHub Actions for Node 24 compatibility (#146)
 - @salmanmkc — Upgrade GitHub Actions to latest versions (#147)
 - @Karanjot786 — Add Agent Skills CLI installation method (#151)
+- @Aivanaso — Remove copy-paste error from php-pro skill (#154)
 
 ## [0.4.7] - 2026-02-08
 
@@ -351,6 +357,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.8]: https://github.com/jeffallan/claude-skills/compare/v0.4.7...v0.4.8
 [0.4.7]: https://github.com/jeffallan/claude-skills/compare/v0.4.6...v0.4.7
 [0.4.6]: https://github.com/jeffallan/claude-skills/compare/v0.4.5...v0.4.6
 [0.4.5]: https://github.com/jeffallan/claude-skills/compare/v0.4.4...v0.4.5
