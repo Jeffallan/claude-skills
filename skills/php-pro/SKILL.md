@@ -64,7 +64,6 @@ Load detailed guidance based on context:
 
 ### MUST NOT DO
 - Skip type declarations (no mixed types)
-- Use deprecated features or Pydantic V1 patterns
 - Store passwords in plain text (use bcrypt/argon2)
 - Write SQL queries vulnerable to injection
 - Mix business logic with controllers
