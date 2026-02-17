@@ -360,4 +360,3 @@ Documents that should link to each other but currently do not:
 | High priority items | 6 |
 | Medium priority items | 6 |
 | Nice-to-have items | 5 |
-

@@ -41,10 +41,10 @@ test('accessibility compliance', async ({ page }) => {
   expect(['A', 'BUTTON', 'INPUT']).toContain(
     await page.evaluate(() => document.activeElement.tagName)
   );
-  
+
   // ARIA labels
   expect(await page.getByRole('button').first().getAttribute('aria-label')).toBeTruthy();
-  
+
   // Color contrast (axe-core)
   const violations = await page.evaluate(async () => {
     const axe = await import('axe-core');

@@ -330,5 +330,3 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 Contributors will be recognized in:
 - [GitHub contributors page](https://github.com/Jeffallan/claude-skills/graphs/contributors)
 - Release notes for significant contributions
-
-

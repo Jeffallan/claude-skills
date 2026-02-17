@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Migrate skill SKILL.md frontmatter to Agent Skills spec-compliant structure.
+"""Migrate skill SKILL.md frontmatter to Agent Skills spec-compliant structure.
 
 Moves triggers, role, scope, output-format under metadata key.
 Adds license, metadata.author, metadata.version, metadata.domain.
@@ -21,6 +20,7 @@ from pathlib import Path
 # Try to import PyYAML, fall back to simple parser if not available
 try:
     import yaml
+
     HAS_PYYAML = True
 except ImportError:
     HAS_PYYAML = False
@@ -173,7 +173,7 @@ def build_new_frontmatter(fm: dict, skill_name: str) -> str:
     # Description may contain special YAML characters, quote if needed
     desc = fm["description"]
     if any(c in desc for c in ":#{}[]|>&*!%@`"):
-        lines.append(f"description: \"{desc}\"")
+        lines.append(f'description: "{desc}"')
     else:
         lines.append(f"description: {desc}")
 
@@ -191,7 +191,7 @@ def build_new_frontmatter(fm: dict, skill_name: str) -> str:
     lines.append("  author: https://github.com/Jeffallan")
 
     # metadata.version (new)
-    lines.append("  version: \"1.0.0\"")
+    lines.append('  version: "1.0.0"')
 
     # metadata.domain (new, from map)
     domain = SKILL_DOMAIN_MAP.get(skill_name, "unknown")
@@ -225,12 +225,10 @@ def build_new_frontmatter(fm: dict, skill_name: str) -> str:
 def extract_related_skills(body: str, valid_dirs: set[str]) -> str:
     """Extract related skill names from the ## Related Skills body section.
 
-    Parses bold display names (e.g., **Fullstack Guardian**), converts to
-    directory-name format (lowercase, spaces to hyphens), and filters to only
-    names that exist as directories under skills/.
+    Parses bold display names (e.g., **Fullstack Guardian**), converts to directory-name format (lowercase, spaces to
+    hyphens), and filters to only names that exist as directories under skills/.
 
-    Returns a comma-separated string of valid skill directory names,
-    or empty string if none found.
+    Returns a comma-separated string of valid skill directory names, or empty string if none found.
     """
     # Find the ## Related Skills section
     match = re.search(r"## Related Skills\s*\n(.*?)(?=\n## |\Z)", body, re.DOTALL)
@@ -253,10 +251,10 @@ def extract_related_skills(body: str, valid_dirs: set[str]) -> str:
 
 
 def add_related_skills_to_frontmatter(content: str, related_skills: str) -> str:
-    """Insert related-skills into an existing metadata block in the frontmatter.
+    """Insert related-skills into an existing metadata block in the
+    frontmatter.
 
-    Adds the related-skills line after output-format (or as the last metadata
-    field if output-format is not present).
+    Adds the related-skills line after output-format (or as the last metadata field if output-format is not present).
     """
     parts = content.split("---", 2)
     if len(parts) < 3:
@@ -294,7 +292,9 @@ def add_related_skills_to_frontmatter(content: str, related_skills: str) -> str:
 
 
 def migrate_related_skills(
-    skill_dir: Path, valid_dirs: set[str], dry_run: bool = False,
+    skill_dir: Path,
+    valid_dirs: set[str],
+    dry_run: bool = False,
 ) -> tuple[bool, str]:
     """Add related-skills metadata to a single skill's frontmatter.
 
@@ -397,10 +397,9 @@ def main():
         sys.exit(1)
 
     # Find skill directories
-    skill_dirs = sorted([
-        d for d in SKILLS_DIR.iterdir()
-        if d.is_dir() and not d.name.startswith(".")
-    ])
+    skill_dirs = sorted(
+        [d for d in SKILLS_DIR.iterdir() if d.is_dir() and not d.name.startswith(".")]
+    )
 
     if args.skill:
         skill_dirs = [d for d in skill_dirs if d.name == args.skill]
@@ -410,7 +409,8 @@ def main():
 
     # Build set of all valid skill directory names
     all_skill_dirs = {
-        d.name for d in SKILLS_DIR.iterdir()
+        d.name
+        for d in SKILLS_DIR.iterdir()
         if d.is_dir() and not d.name.startswith(".")
     }
 
@@ -422,7 +422,9 @@ def main():
 
         for skill_dir in skill_dirs:
             ok, msg = migrate_related_skills(
-                skill_dir, all_skill_dirs, dry_run=args.dry_run,
+                skill_dir,
+                all_skill_dirs,
+                dry_run=args.dry_run,
             )
             if ok:
                 if "skipped" in msg:

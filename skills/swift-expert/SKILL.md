@@ -10,7 +10,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: 
+  related-skills:
 ---
 
 # Swift Expert

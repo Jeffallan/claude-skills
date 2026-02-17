@@ -10,7 +10,7 @@ metadata:
   role: engineer
   scope: implementation
   output-format: code
-  related-skills: 
+  related-skills:
 ---
 
 # DevOps Engineer

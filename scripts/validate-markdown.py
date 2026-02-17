@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Validate markdown files for common parsing errors.
+"""Validate markdown files for common parsing errors.
 
 Checks for:
 - HTML comments breaking tables
@@ -12,12 +11,12 @@ Usage:
     python scripts/validate-markdown.py [--check] [--path PATH]
 """
 
-from dataclasses import dataclass
-from pathlib import Path
-from enum import StrEnum
 import argparse
 import re
 import sys
+from dataclasses import dataclass
+from enum import StrEnum
+from pathlib import Path
 
 
 class IssueType(StrEnum):
@@ -108,7 +107,7 @@ def validate_file(path: Path) -> list[MarkdownIssue]:
 
         # Check for table
         if is_table_row(line):
-            table_start = i
+            # table_start = i  <-- Removed unused variable
             header_cols = count_columns(line)
 
             # Check next line
@@ -196,7 +195,10 @@ def validate_directory(root: Path) -> list[MarkdownIssue]:
 
 
 def main() -> int:
-    """Main entry point. Returns exit code."""
+    """Main entry point.
+
+    Returns exit code.
+    """
     parser = argparse.ArgumentParser(
         description="Validate markdown files for parsing errors"
     )

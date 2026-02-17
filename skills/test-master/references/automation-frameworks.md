@@ -116,7 +116,7 @@ export default defineConfig({
   workers: process.env.CI ? 8 : 4,
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
-  
+
   // Shard tests across multiple machines
   shard: process.env.SHARD ? {
     current: parseInt(process.env.SHARD_INDEX),
@@ -170,17 +170,17 @@ jobs:
     strategy:
       matrix:
         shard: [1, 2, 3, 4]
-    
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - run: npm ci
       - run: npx playwright install --with-deps
-      
+
       - run: npx playwright test --shard=${{ matrix.shard }}/4
         env:
           CI: true
-      
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:
