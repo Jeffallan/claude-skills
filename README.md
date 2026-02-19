@@ -20,11 +20,13 @@
 ## Quick Start
 
 ```bash
+# Add the marketplace
 /plugin marketplace add jeffallan/claude-skills
-```
-then
-```bash
+
+# Install the plugin
 /plugin install fullstack-dev-skills@jeffallan
+
+# Restart Claude Code when prompted
 ```
 
 For all installation methods and first steps, see the [**Quick Start Guide**](QUICKSTART.md).
