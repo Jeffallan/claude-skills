@@ -111,10 +111,17 @@
             text-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
         }
 
-        /* Awesome badge */
-        .awesome-badge {
-            height: 56px;
+        /* Trendshift badge in title row */
+        .trendshift-title-badge {
+            height: 72px;
             filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.3));
+            border-radius: 8px;
+        }
+
+        /* Awesome badge in stats row */
+        .awesome-badge-stat {
+            height: 36px;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
         }
 
         /* Subtitle */
@@ -251,7 +258,7 @@
             <!-- Title row with badge -->
             <div class="title-row">
                 <h1 class="title">Claude Skills</h1>
-                <img src="https://awesome.re/mentioned-badge.svg" class="awesome-badge" alt="Mentioned in Awesome Claude Code"/>
+                <img src="https://trendshift.io/api/badge/repositories/20667" class="trendshift-title-badge" alt="Trendshift"/>
             </div>
 
             <!-- Subtitle -->
@@ -289,6 +296,11 @@
                     <div class="stat-content">
                         <span class="stat-icon">📋</span>
                         <span>Project Management</span>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-content">
+                        <img src="https://awesome.re/mentioned-badge.svg" class="awesome-badge-stat" alt="Mentioned in Awesome Claude Code"/>
                     </div>
                 </div>
             </div>
