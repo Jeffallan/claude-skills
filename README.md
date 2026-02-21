@@ -81,6 +81,7 @@ Surface and validate Claude's hidden assumptions about your project with `/commo
 
 - [**Quick Start Guide**](QUICKSTART.md) - Installation and first steps
 - [**Skills Guide**](SKILLS_GUIDE.md) - Skill reference and decision trees
+- [**Workflow Examples**](examples/README.md) - Multi-skill workflow walkthroughs (TypeScript, Python, Java)
 - [**Common Ground**](docs/COMMON_GROUND.md) - Context engineering with `/common-ground`
 - [**Workflow Commands**](docs/WORKFLOW_COMMANDS.md) - Project workflow commands guide
 - [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup
