@@ -226,47 +226,44 @@ Final Answer:
 
 ### Example: Debugging with CoT
 
-**Prompt:**
+````
+Debug the following code by analyzing it step by step.
 
-> Debug the following code by analyzing it step by step.
->
-> **Code:**
-> ```python
-> def calculate_average(numbers):
->     total = 0
->     for num in numbers:
->         total += num
->     return total / len(numbers)
-> ```
->
-> **Error:** ZeroDivisionError when called with empty list
+Code:
+```python
+def calculate_average(numbers):
+    total = 0
+    for num in numbers:
+        total += num
+    return total / len(numbers)
+```
 
-**Analysis:**
+Error: ZeroDivisionError when called with empty list
 
-> **Step 1: Trace the execution path**
->
-> Let me trace what happens when `numbers = []`:
-> 1. `total = 0` - total is initialized to 0
-> 2. `for num in numbers:` - loop doesn't execute (empty list)
-> 3. `return total / len(numbers)` - returns `0 / 0`
->
-> **Step 2: Identify the root cause**
->
-> The function doesn't handle the edge case of an empty list.
-> `len([])` returns 0, causing division by zero.
->
-> **Step 3: Propose fix**
->
-> Add a check for empty input before division.
->
-> **Fixed Code:**
-> ```python
-> def calculate_average(numbers):
->     if not numbers:
->         return 0  # or raise ValueError("Cannot average empty list")
->     total = sum(numbers)
->     return total / len(numbers)
-> ```
+## Analysis
+
+### Step 1: Trace the execution path
+Let me trace what happens when `numbers = []`:
+1. `total = 0` - total is initialized to 0
+2. `for num in numbers:` - loop doesn't execute (empty list)
+3. `return total / len(numbers)` - returns `0 / 0`
+
+### Step 2: Identify the root cause
+The function doesn't handle the edge case of an empty list.
+`len([])` returns 0, causing division by zero.
+
+### Step 3: Propose fix
+Add a check for empty input before division.
+
+### Fixed Code:
+```python
+def calculate_average(numbers):
+    if not numbers:
+        return 0  # or raise ValueError("Cannot average empty list")
+    total = sum(numbers)
+    return total / len(numbers)
+```
+````
 
 ### CoT Variants
 
@@ -308,25 +305,20 @@ Question: {user_question}
 
 ### Example: ReAct for Research
 
-**Question:** What is the current market cap of the company that created ChatGPT?
+```
+Question: What is the current market cap of the company that created ChatGPT?
 
-**Response:**
+Thought: I need to find out which company created ChatGPT, then look up their market cap.
+Action: search("company that created ChatGPT")
+Observation: ChatGPT was created by OpenAI, an AI research company.
 
-> **Thought:** I need to find out which company created ChatGPT, then look up their market cap.
->
-> **Action:** `search("company that created ChatGPT")`
->
-> **Observation:** ChatGPT was created by OpenAI, an AI research company.
->
-> **Thought:** Now I need to find OpenAI's current market cap.
->
-> **Action:** `search("OpenAI market cap 2025")`
->
-> **Observation:** OpenAI's valuation reached $157 billion in 2024 after their latest funding round.
->
-> **Thought:** I now have the information needed to answer.
->
-> **Answer:** ChatGPT was created by OpenAI, which has a valuation of approximately $157 billion (as of their 2024 funding round). Note: OpenAI is a private company, so this is a valuation rather than a public market cap.
+Thought: Now I need to find OpenAI's current market cap.
+Action: search("OpenAI market cap 2025")
+Observation: OpenAI's valuation reached $157 billion in 2024 after their latest funding round.
+
+Thought: I now have the information needed to answer.
+Answer: ChatGPT was created by OpenAI, which has a valuation of approximately $157 billion (as of their 2024 funding round). Note: OpenAI is a private company, so this is a valuation rather than a public market cap.
+```
 
 ### ReAct Implementation Pattern
 
@@ -401,66 +393,67 @@ Based on the analysis, Approach [X] is most promising because [reasoning].
 
 ### ToT for Code Architecture
 
-**Problem:** Design a caching system for a high-traffic API endpoint.
+```
+Design a caching system for a high-traffic API endpoint.
 
-**Candidate Architectures:**
+## Candidate Architectures
 
-> **Option A: In-Memory Cache (Redis)**
->
-> Thought: Use Redis for distributed caching
->
-> Evaluation:
-> - Latency: ~1ms (excellent)
-> - Scalability: Horizontal scaling supported
-> - Complexity: Low - well-established pattern
-> - Risk: Cache invalidation complexity
->
-> Score: 8/10
+### Option A: In-Memory Cache (Redis)
+Thought: Use Redis for distributed caching
+Evaluation:
+- Latency: ~1ms (excellent)
+- Scalability: Horizontal scaling supported
+- Complexity: Low - well-established pattern
+- Risk: Cache invalidation complexity
+Score: 8/10
 
-> **Option B: CDN Edge Caching**
->
-> Thought: Cache at CDN level for static/semi-static content
->
-> Evaluation:
-> - Latency: ~10-50ms (good)
-> - Scalability: Excellent - distributed globally
-> - Complexity: Medium - cache headers management
-> - Risk: Stale content for dynamic data
->
-> Score: 6/10
+### Option B: CDN Edge Caching
+Thought: Cache at CDN level for static/semi-static content
+Evaluation:
+- Latency: ~10-50ms (good)
+- Scalability: Excellent - distributed globally
+- Complexity: Medium - cache headers management
+- Risk: Stale content for dynamic data
+Score: 6/10
 
-> **Option C: Multi-Layer Cache**
->
-> Thought: Combine L1 (local) + L2 (Redis) + L3 (CDN)
->
-> Evaluation:
-> - Latency: <1ms for hot data
-> - Scalability: Excellent
-> - Complexity: High - multiple invalidation points
-> - Risk: Consistency challenges
->
-> Score: 7/10
+### Option C: Multi-Layer Cache
+Thought: Combine L1 (local) + L2 (Redis) + L3 (CDN)
+Evaluation:
+- Latency: <1ms for hot data
+- Scalability: Excellent
+- Complexity: High - multiple invalidation points
+- Risk: Consistency challenges
+Score: 7/10
 
-**Decision:**
-
+## Decision
 Option A (Redis) selected for initial implementation:
 - Lowest complexity for team's current expertise
 - Sufficient performance for projected load
 - Clear upgrade path to Option C if needed
 
-**Implementation Plan:** [Detailed implementation steps...]
+## Implementation Plan
+[Detailed implementation steps...]
+```
 
 ---
 
 ## Pattern Comparison Quick Reference
 
-| Pattern | Tokens | Complexity | Reliability | Best For |
-|---------|--------|------------|-------------|----------|
-| Zero-shot | Low | Low | Medium | Simple tasks |
-| Few-shot | Medium | Medium | High | Format/style |
-| CoT | Medium | Medium | High | Reasoning |
-| ReAct | High | High | Very High | Tool usage |
-| ToT | Very High | Very High | Very High | Complex solve |
+```
+┌────────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+│    Pattern     │   Tokens     │  Complexity  │  Reliability │   Best For   │
+├────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│   Zero-shot    │     Low      │     Low      │    Medium    │ Simple tasks │
+├────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│   Few-shot     │    Medium    │    Medium    │     High     │Format/style  │
+├────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│      CoT       │    Medium    │    Medium    │     High     │  Reasoning   │
+├────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│     ReAct      │     High     │     High     │  Very High   │ Tool usage   │
+├────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│      ToT       │  Very High   │  Very High   │  Very High   │Complex solve │
+└────────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+```
 
 ---
 
