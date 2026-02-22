@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed nested code block rendering in `prompt-engineer` skill's CoT example (#160)
+
+### Contributors
+- @fiberproduct Fix nested code block formatting in prompt-patterns.md (#160)
+
 ## [0.4.8] - 2026-02-17
 
 ### Added
