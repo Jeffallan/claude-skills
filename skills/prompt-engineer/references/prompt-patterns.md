@@ -226,7 +226,7 @@ Final Answer:
 
 ### Example: Debugging with CoT
 
-```
+````
 Debug the following code by analyzing it step by step.
 
 Code:
@@ -263,7 +263,7 @@ def calculate_average(numbers):
     total = sum(numbers)
     return total / len(numbers)
 ```
-```
+````
 
 ### CoT Variants
 
