@@ -7,14 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Issue linking documentation in `atlassian-mcp/references/jira-queries.md` with parameter semantics, code examples, and anti-patterns (#163)
+
 ### Changed
 - Updated `php-pro` Symfony console command example to use framework's built-in exception handling (#164)
 - Added Framework Idiom Principle to CLAUDE.md reference file standards
+- Added inline `jira_create_issue_link` parameter hints to `approve-synthesis` and `create-implementation-plan` commands (#163)
 
 ### Fixed
+- Fixed reversed Jira "Blocks" link parameters — `inward_issue_key` is the blocker, `outward_issue_key` is the blocked issue (#163)
 - Fixed nested code block rendering in `prompt-engineer` skill's CoT example (#160)
 
 ### Contributors
+- @wiretail — Report and document reversed Jira issue link semantics (#163)
 - @Big-Shark — Update console example in symfony-patterns (#164)
 - @fiberproduct — Fix nested code block formatting in prompt-patterns.md (#160)
 

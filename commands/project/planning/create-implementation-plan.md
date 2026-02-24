@@ -54,7 +54,7 @@ Analyze existing tickets and prepare adjustments:
 - **Create new tickets** for gaps (missing functionality, dependencies)
 - **Split large tickets** (>8 story points)
 - **Add story points** to all tickets
-- **Link dependencies** (blocked-by relationships)
+- **Link dependencies** (blocked-by relationships via `jira_create_issue_link`: `inward_issue_key` = blocker, `outward_issue_key` = blocked — see `atlassian-mcp/references/jira-queries.md > Issue Linking`)
 
 **CHECKPOINT:** Present proposed ticket changes and get approval before modifying Jira.
 
