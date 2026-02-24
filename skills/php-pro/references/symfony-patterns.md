@@ -322,16 +322,11 @@ final class CreateUserCommand extends Command
         $password = $input->getArgument('password');
         $isAdmin = $input->getOption('admin');
 
-        try {
-            $user = $this->userService->createUser($email, $password, $isAdmin);
+        $user = $this->userService->createUser($email, $password, $isAdmin);
 
-            $io->success(sprintf('User created with ID: %d', $user->getId()));
+        $io->success(sprintf('User created with ID: %d', $user->getId()));
 
-            return Command::SUCCESS;
-        } catch (\Exception $e) {
-            $io->error($e->getMessage());
-            return Command::FAILURE;
-        }
+        return Command::SUCCESS;
     }
 }
 ```
