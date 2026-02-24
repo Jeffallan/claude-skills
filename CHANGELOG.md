@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.9] - 2026-02-24
 
 ### Added
 - Issue linking documentation in `atlassian-mcp/references/jira-queries.md` with parameter semantics, code examples, and anti-patterns (#163)
@@ -374,6 +374,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.9]: https://github.com/jeffallan/claude-skills/compare/v0.4.8...v0.4.9
 [0.4.8]: https://github.com/jeffallan/claude-skills/compare/v0.4.7...v0.4.8
 [0.4.7]: https://github.com/jeffallan/claude-skills/compare/v0.4.6...v0.4.7
 [0.4.6]: https://github.com/jeffallan/claude-skills/compare/v0.4.5...v0.4.6
