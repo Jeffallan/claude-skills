@@ -26,10 +26,9 @@ Exit codes:
 
 import argparse
 import json
+from pathlib import Path
 import re
 import sys
-from pathlib import Path
-
 
 # =============================================================================
 # Configuration
@@ -62,15 +61,13 @@ MARKERS = {
 # Count Functions
 # =============================================================================
 
+
 def count_skills(base_path: Path) -> int:
     """Count skill directories that contain a SKILL.md file."""
     skills_dir = base_path / SKILLS_DIR
     if not skills_dir.exists():
         return 0
-    return sum(
-        1 for d in skills_dir.iterdir()
-        if d.is_dir() and (d / "SKILL.md").exists()
-    )
+    return sum(1 for d in skills_dir.iterdir() if d.is_dir() and (d / "SKILL.md").exists())
 
 
 def count_references(base_path: Path) -> int:
@@ -93,6 +90,7 @@ def count_workflows(base_path: Path) -> int:
 # Marker-Based Replacement (for markdown/HTML)
 # =============================================================================
 
+
 def replace_marker(content: str, marker: str, value: str) -> str:
     """Replace content between <!-- MARKER -->...<!-- /MARKER --> tags.
 
@@ -104,8 +102,8 @@ def replace_marker(content: str, marker: str, value: str) -> str:
     Returns:
         Updated content with marker value replaced
     """
-    pattern = rf'(<!--\s*{marker}\s*-->).*?(<!--\s*/{marker}\s*-->)'
-    replacement = rf'\g<1>{value}\g<2>'
+    pattern = rf"(<!--\s*{marker}\s*-->).*?(<!--\s*/{marker}\s*-->)"
+    replacement = rf"\g<1>{value}\g<2>"
     return re.sub(pattern, replacement, content, flags=re.DOTALL)
 
 
@@ -125,18 +123,10 @@ def update_markdown_file(file_path: Path, version: str, counts: dict, dry_run: b
     content = replace_marker(content, MARKERS["version"], version)
 
     # Also update version badge URL (no marker needed - URL pattern is unique)
-    content = re.sub(
-        r'version-[\d.]+-blue\.svg',
-        f'version-{version}-blue.svg',
-        content
-    )
+    content = re.sub(r"version-[\d.]+-blue\.svg", f"version-{version}-blue.svg", content)
 
     # Update "Last updated" version reference (e.g., in ROADMAP.md)
-    content = re.sub(
-        r'(Last updated:.*?\(v)[\d.]+(\))',
-        rf'\g<1>{version}\2',
-        content
-    )
+    content = re.sub(r"(Last updated:.*?\(v)[\d.]+(\))", rf"\g<1>{version}\2", content)
 
     if content != original:
         if dry_run:
@@ -177,6 +167,7 @@ def update_html_file(file_path: Path, version: str, counts: dict, dry_run: bool)
 # JSON File Updates (anchored patterns - no HTML comments in JSON)
 # =============================================================================
 
+
 def update_json_file(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
     """Update JSON files using anchored regex patterns.
 
@@ -191,26 +182,22 @@ def update_json_file(file_path: Path, version: str, counts: dict, dry_run: bool)
     original = content
 
     # Update version in "version": "X.Y.Z" pattern
-    content = re.sub(
-        r'"version":\s*"[^"]*"',
-        f'"version": "{version}"',
-        content
-    )
+    content = re.sub(r'"version":\s*"[^"]*"', f'"version": "{version}"', content)
 
     # Update skill count in descriptions (anchored to "description":)
     # Pattern: "65 specialized skills" within description strings
     content = re.sub(
         r'("description":\s*"[^"]*?)(\d+)\s+specialized\s+skills',
-        rf'\g<1>{counts["skillCount"]} specialized skills',
-        content
+        rf"\g<1>{counts['skillCount']} specialized skills",
+        content,
     )
 
     # Update workflow count in descriptions
     # Pattern: "9 project workflow commands" within description strings
     content = re.sub(
         r'("description":\s*"[^"]*?)(\d+)\s+project\s+workflow\s+commands',
-        rf'\g<1>{counts["workflowCount"]} project workflow commands',
-        content
+        rf"\g<1>{counts['workflowCount']} project workflow commands",
+        content,
     )
 
     if content != original:
@@ -226,6 +213,7 @@ def update_json_file(file_path: Path, version: str, counts: dict, dry_run: bool)
 # =============================================================================
 # Main
 # =============================================================================
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -270,9 +258,9 @@ def main():
 
     # Update version.json with computed counts
     needs_update = (
-        version_data.get("skillCount") != counts["skillCount"] or
-        version_data.get("workflowCount") != counts["workflowCount"] or
-        version_data.get("referenceFileCount") != counts["referenceFileCount"]
+        version_data.get("skillCount") != counts["skillCount"]
+        or version_data.get("workflowCount") != counts["workflowCount"]
+        or version_data.get("referenceFileCount") != counts["referenceFileCount"]
     )
 
     if needs_update:

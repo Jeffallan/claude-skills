@@ -14,13 +14,14 @@ Usage:
 """
 
 import argparse
+from pathlib import Path
 import re
 import sys
-from pathlib import Path
 
 # Try to import PyYAML, fall back to simple parser if not available
 try:
     import yaml
+
     HAS_PYYAML = True
 except ImportError:
     HAS_PYYAML = False
@@ -173,7 +174,7 @@ def build_new_frontmatter(fm: dict, skill_name: str) -> str:
     # Description may contain special YAML characters, quote if needed
     desc = fm["description"]
     if any(c in desc for c in ":#{}[]|>&*!%@`"):
-        lines.append(f"description: \"{desc}\"")
+        lines.append(f'description: "{desc}"')
     else:
         lines.append(f"description: {desc}")
 
@@ -191,7 +192,7 @@ def build_new_frontmatter(fm: dict, skill_name: str) -> str:
     lines.append("  author: https://github.com/Jeffallan")
 
     # metadata.version (new)
-    lines.append("  version: \"1.0.0\"")
+    lines.append('  version: "1.0.0"')
 
     # metadata.domain (new, from map)
     domain = SKILL_DOMAIN_MAP.get(skill_name, "unknown")
@@ -199,10 +200,7 @@ def build_new_frontmatter(fm: dict, skill_name: str) -> str:
 
     # metadata.triggers (converted from array to comma-separated string)
     triggers = fm.get("triggers", [])
-    if isinstance(triggers, list):
-        triggers_str = ", ".join(triggers)
-    else:
-        triggers_str = str(triggers)
+    triggers_str = ", ".join(triggers) if isinstance(triggers, list) else str(triggers)
     lines.append(f"  triggers: {triggers_str}")
 
     # metadata.role (moved from top-level)
@@ -294,7 +292,9 @@ def add_related_skills_to_frontmatter(content: str, related_skills: str) -> str:
 
 
 def migrate_related_skills(
-    skill_dir: Path, valid_dirs: set[str], dry_run: bool = False,
+    skill_dir: Path,
+    valid_dirs: set[str],
+    dry_run: bool = False,
 ) -> tuple[bool, str]:
     """Add related-skills metadata to a single skill's frontmatter.
 
@@ -362,9 +362,9 @@ def migrate_skill(skill_dir: Path, dry_run: bool = False) -> tuple[bool, str]:
     new_content = new_frontmatter + body
 
     if dry_run:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"  {skill_name}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(new_frontmatter)
         return True, f"{skill_name}: Would migrate (dry-run)"
 
@@ -397,10 +397,7 @@ def main():
         sys.exit(1)
 
     # Find skill directories
-    skill_dirs = sorted([
-        d for d in SKILLS_DIR.iterdir()
-        if d.is_dir() and not d.name.startswith(".")
-    ])
+    skill_dirs = sorted([d for d in SKILLS_DIR.iterdir() if d.is_dir() and not d.name.startswith(".")])
 
     if args.skill:
         skill_dirs = [d for d in skill_dirs if d.name == args.skill]
@@ -409,10 +406,7 @@ def main():
             sys.exit(1)
 
     # Build set of all valid skill directory names
-    all_skill_dirs = {
-        d.name for d in SKILLS_DIR.iterdir()
-        if d.is_dir() and not d.name.startswith(".")
-    }
+    all_skill_dirs = {d.name for d in SKILLS_DIR.iterdir() if d.is_dir() and not d.name.startswith(".")}
 
     # Related-skills migration pass
     if args.related_skills:
@@ -422,7 +416,9 @@ def main():
 
         for skill_dir in skill_dirs:
             ok, msg = migrate_related_skills(
-                skill_dir, all_skill_dirs, dry_run=args.dry_run,
+                skill_dir,
+                all_skill_dirs,
+                dry_run=args.dry_run,
             )
             if ok:
                 if "skipped" in msg:

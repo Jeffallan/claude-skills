@@ -38,21 +38,82 @@ const DOMAIN_LABELS = {
 
 // ─── Core docs mapping (source relative to ROOT → dest relative to DOCS_DIR)
 const CORE_DOCS = [
-  { src: 'QUICKSTART.md', dest: 'getting-started.md', title: 'Getting Started', description: 'Installation and first steps', category: 'docs' },
-  { src: 'SKILLS_GUIDE.md', dest: 'skills-guide.md', title: 'Skills Guide', description: 'Decision trees and skill combinations for choosing the right skill', category: 'docs' },
-  { src: 'README.md', dest: 'readme.md', title: 'README', description: 'Project overview, architecture, and usage patterns', category: 'project' },
-  { src: 'CONTRIBUTING.md', dest: 'contributing.md', title: 'Contributing', description: 'How to contribute new skills and improve existing ones', category: 'project' },
-  { src: 'CHANGELOG.md', dest: 'changelog.md', title: 'Changelog', description: 'Version history and release notes', category: 'project' },
-  { src: 'ROADMAP.md', dest: 'roadmap.md', title: 'Roadmap', description: 'Planned features and future direction', category: 'project' },
+  {
+    src: 'QUICKSTART.md',
+    dest: 'getting-started.md',
+    title: 'Getting Started',
+    description: 'Installation and first steps',
+    category: 'docs',
+  },
+  {
+    src: 'SKILLS_GUIDE.md',
+    dest: 'skills-guide.md',
+    title: 'Skills Guide',
+    description: 'Decision trees and skill combinations for choosing the right skill',
+    category: 'docs',
+  },
+  {
+    src: 'README.md',
+    dest: 'readme.md',
+    title: 'README',
+    description: 'Project overview, architecture, and usage patterns',
+    category: 'project',
+  },
+  {
+    src: 'CONTRIBUTING.md',
+    dest: 'contributing.md',
+    title: 'Contributing',
+    description: 'How to contribute new skills and improve existing ones',
+    category: 'project',
+  },
+  {
+    src: 'CHANGELOG.md',
+    dest: 'changelog.md',
+    title: 'Changelog',
+    description: 'Version history and release notes',
+    category: 'project',
+  },
+  {
+    src: 'ROADMAP.md',
+    dest: 'roadmap.md',
+    title: 'Roadmap',
+    description: 'Planned features and future direction',
+    category: 'project',
+  },
 ];
 
 // ─── Guide docs mapping ─────────────────────────────────────────────
 const GUIDE_DOCS = [
-  { src: 'docs/WORKFLOW_COMMANDS.md', dest: 'guides/workflow-commands.md', title: 'Workflow Commands', description: 'Project workflow commands for managing development lifecycle' },
-  { src: 'docs/COMMON_GROUND.md', dest: 'guides/common-ground.md', title: 'Common Ground', description: 'Surface and validate hidden assumptions about projects' },
-  { src: 'docs/ATLASSIAN_MCP_SETUP.md', dest: 'guides/atlassian-mcp-setup.md', title: 'Atlassian MCP Setup', description: 'Configure Jira and Confluence MCP integration' },
-  { src: 'docs/local_skill_development.md', dest: 'guides/local-development.md', title: 'Local Development', description: 'Develop and test skills locally' },
-  { src: 'docs/SUPPORTED_AGENTS.md', dest: 'guides/supported-agents.md', title: 'Supported Agents', description: 'Agents and frameworks compatible with the Agent Skills specification' },
+  {
+    src: 'docs/WORKFLOW_COMMANDS.md',
+    dest: 'guides/workflow-commands.md',
+    title: 'Workflow Commands',
+    description: 'Project workflow commands for managing development lifecycle',
+  },
+  {
+    src: 'docs/COMMON_GROUND.md',
+    dest: 'guides/common-ground.md',
+    title: 'Common Ground',
+    description: 'Surface and validate hidden assumptions about projects',
+  },
+  {
+    src: 'docs/ATLASSIAN_MCP_SETUP.md',
+    dest: 'guides/atlassian-mcp-setup.md',
+    title: 'Atlassian MCP Setup',
+    description: 'Configure Jira and Confluence MCP integration',
+  },
+  {
+    src: 'docs/local_skill_development.md',
+    dest: 'guides/local-development.md',
+    title: 'Local Development',
+    description: 'Develop and test skills locally',
+  },
+  {
+    src: 'docs/SUPPORTED_AGENTS.md',
+    dest: 'guides/supported-agents.md',
+    title: 'Supported Agents',
+    description: 'Agents and frameworks compatible with the Agent Skills specification',
+  },
 ];
 
 // ─── Link rewrite map (built during sync) ───────────────────────────
@@ -99,11 +160,7 @@ function buildLinkMap() {
 }
 
 function addLinkVariants(srcPath, siteUrl) {
-  const variants = [
-    srcPath,
-    `./${srcPath}`,
-    path.basename(srcPath),
-  ];
+  const variants = [srcPath, `./${srcPath}`, path.basename(srcPath)];
   for (const v of variants) {
     linkMap.set(v, siteUrl);
   }
@@ -160,7 +217,11 @@ function rewriteLinks(body) {
     // Handle absolute paths that need base path prefix
     if (urlPath.startsWith('/') && !urlPath.startsWith(BASE_PATH)) {
       // Check if it's an internal site path (skills, guides, workflows, etc.)
-      if (urlPath.match(/^\/(skills|guides|workflows|getting-started|skills-guide|readme|contributing|changelog|roadmap)\//)) {
+      if (
+        urlPath.match(
+          /^\/(skills|guides|workflows|getting-started|skills-guide|readme|contributing|changelog|roadmap)\//,
+        )
+      ) {
         return `[${text}](${BASE_PATH}${urlPath}${suffix})`;
       }
     }
@@ -270,8 +331,15 @@ function syncWorkflowDocs() {
     body = stripHtmlCommentTags(body);
     body = rewriteLinks(body);
 
-    const title = h1 || file.replace(/\.md$/, '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-    const firstPara = body.split('\n\n').find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('|') && !p.startsWith('-'));
+    const title =
+      h1 ||
+      file
+        .replace(/\.md$/, '')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+    const firstPara = body
+      .split('\n\n')
+      .find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('|') && !p.startsWith('-'));
     const description = firstPara ? firstPara.trim().replace(/\n/g, ' ').slice(0, 160) : '';
 
     const fm = starlightFrontmatter({ title, description });
@@ -281,7 +349,13 @@ function syncWorkflowDocs() {
     console.log(`  docs/workflow/${file} → workflows/${file}`);
 
     const slug = file.replace(/\.md$/, '');
-    pageManifest.push({ siteUrl: `/workflows/${slug}/`, title, description, category: 'workflows', contentFile: `workflows/${file}` });
+    pageManifest.push({
+      siteUrl: `/workflows/${slug}/`,
+      title,
+      description,
+      category: 'workflows',
+      contentFile: `workflows/${file}`,
+    });
   }
 }
 
@@ -290,9 +364,7 @@ function syncWorkflowDocs() {
 function buildSkillIndex() {
   const index = new Map(); // name → { domain, title }
   const skillsDir = path.join(ROOT, 'skills');
-  const dirs = fs.readdirSync(skillsDir).filter((d) =>
-    fs.statSync(path.join(skillsDir, d)).isDirectory()
-  );
+  const dirs = fs.readdirSync(skillsDir).filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory());
 
   for (const dir of dirs) {
     const skillPath = path.join(skillsDir, dir, 'SKILL.md');
@@ -312,9 +384,7 @@ function buildSkillIndex() {
 
 function syncSkillPages(skillIndex) {
   const skillsDir = path.join(ROOT, 'skills');
-  const dirs = fs.readdirSync(skillsDir).filter((d) =>
-    fs.statSync(path.join(skillsDir, d)).isDirectory()
-  );
+  const dirs = fs.readdirSync(skillsDir).filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory());
 
   let count = 0;
   for (const dir of dirs) {
@@ -357,7 +427,10 @@ function syncSkillPages(skillIndex) {
     // Related skills with links
     let relatedBlock = '';
     if (relatedSkills) {
-      const names = relatedSkills.split(',').map((s) => s.trim()).filter(Boolean);
+      const names = relatedSkills
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
       const links = names.map((name) => {
         const info = skillIndex.get(name);
         if (info) {
@@ -371,17 +444,14 @@ function syncSkillPages(skillIndex) {
     // Rewrite reference table links to GitHub blob URLs
     body = body.replace(
       /`references\/([^`]+)`/g,
-      (_match, refPath) =>
-        `[references/${refPath}](${GITHUB_BLOB}/skills/${dir}/references/${refPath})`
+      (_match, refPath) => `[references/${refPath}](${GITHUB_BLOB}/skills/${dir}/references/${refPath})`,
     );
 
     body = rewriteLinks(body);
 
     // Assemble frontmatter (branded title + description for SEO, skills only)
     const metaTitle = `Agent Skills for Claude Code | ${title}`;
-    const metaDescription = description
-      ? `Claude Skills | ${title} | ${description}`
-      : '';
+    const metaDescription = description ? `Claude Skills | ${title} | ${description}` : '';
     const fm = starlightFrontmatter({
       title: metaTitle,
       description: metaDescription,
@@ -396,7 +466,13 @@ function syncSkillPages(skillIndex) {
     fs.writeFileSync(destPath, page);
     count++;
 
-    pageManifest.push({ siteUrl: `/skills/${domain}/${dir}/`, title, description, category: `skills:${domain}`, contentFile: `skills/${domain}/${dir}.md` });
+    pageManifest.push({
+      siteUrl: `/skills/${domain}/${dir}/`,
+      title,
+      description,
+      category: `skills:${domain}`,
+      contentFile: `skills/${domain}/${dir}.md`,
+    });
   }
 
   console.log(`  ${count} skill pages synced`);
@@ -418,18 +494,35 @@ function cleanGeneratedPublicContent() {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         cleanDir(full);
-        try { fs.rmdirSync(full); } catch { /* not empty, skip */ }
+        try {
+          fs.rmdirSync(full);
+        } catch {
+          /* not empty, skip */
+        }
       } else if (entry.name === 'index.html.md') {
         fs.unlinkSync(full);
       }
     }
   }
 
-  for (const dir of ['getting-started', 'skills-guide', 'skills', 'guides', 'workflows', 'contributing', 'changelog', 'roadmap']) {
+  for (const dir of [
+    'getting-started',
+    'skills-guide',
+    'skills',
+    'guides',
+    'workflows',
+    'contributing',
+    'changelog',
+    'roadmap',
+  ]) {
     cleanDir(path.join(PUBLIC_DIR, dir));
     const full = path.join(PUBLIC_DIR, dir);
     if (fs.existsSync(full)) {
-      try { fs.rmdirSync(full); } catch { /* not empty, skip */ }
+      try {
+        fs.rmdirSync(full);
+      } catch {
+        /* not empty, skip */
+      }
     }
   }
 }
@@ -500,7 +593,9 @@ function generateLlmsTxt() {
 
   const lines = [];
   lines.push('# Claude Skills');
-  lines.push(`> ${versionData.skillCount} specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.`);
+  lines.push(
+    `> ${versionData.skillCount} specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.`,
+  );
   lines.push('');
 
   // Group manifest entries by category

@@ -19,18 +19,19 @@ Exit codes:
     1 = Errors found
 """
 
-import argparse
-import json
-import re
-import sys
 from abc import ABC, abstractmethod
+import argparse
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
+import json
 from pathlib import Path
+import re
+import sys
 
 # Try to import PyYAML, fall back to simple parser if not available
 try:
     import yaml
+
     HAS_PYYAML = True
 except ImportError:
     HAS_PYYAML = False
@@ -71,7 +72,7 @@ def simple_yaml_parse(yaml_str: str) -> dict:
                     collection_type = "list"
                 if collection_type == "list":
                     item = line.strip().lstrip("- ").strip()
-                    current_collection.append(item)
+                    current_collection.append(item)  # type: ignore[union-attr]
             continue
 
         # Check for nested key: value (indented, part of a mapping)
@@ -88,7 +89,7 @@ def simple_yaml_parse(yaml_str: str) -> dict:
                     # Strip surrounding quotes from values
                     if nested_value.startswith('"') and nested_value.endswith('"'):
                         nested_value = nested_value[1:-1]
-                    current_collection[nested_key] = nested_value
+                    current_collection[nested_key] = nested_value  # type: ignore[index]
             continue
 
         # Check for top-level key: value pair
@@ -143,20 +144,42 @@ REQUIRED_METADATA_FIELDS = ["triggers", "role", "scope", "output-format", "domai
 
 # Known domain values (warning, not error, for unknown)
 KNOWN_DOMAINS = {
-    "language", "backend", "frontend", "infrastructure", "api-architecture",
-    "quality", "devops", "security", "data-ml", "platform", "specialized",
+    "language",
+    "backend",
+    "frontend",
+    "infrastructure",
+    "api-architecture",
+    "quality",
+    "devops",
+    "security",
+    "data-ml",
+    "platform",
+    "specialized",
     "workflow",
 }
 
 # Valid enum values for metadata fields
 VALID_SCOPES = {
-    "implementation", "review", "design", "system-design",
-    "analysis", "testing", "infrastructure", "optimization", "architecture",
+    "implementation",
+    "review",
+    "design",
+    "system-design",
+    "analysis",
+    "testing",
+    "infrastructure",
+    "optimization",
+    "architecture",
 }
 
 VALID_OUTPUT_FORMATS = {
-    "code", "document", "report", "architecture",
-    "analysis", "manifests", "specification", "schema",
+    "code",
+    "document",
+    "report",
+    "architecture",
+    "analysis",
+    "manifests",
+    "specification",
+    "schema",
     "analysis-and-code",
 }
 
@@ -204,7 +227,12 @@ MANIFEST_FILE = "commands/workflow-manifest.yaml"
 
 # Required fields in per-command YAML definitions
 REQUIRED_DEFINITION_FIELDS = [
-    "command", "path", "description", "inputs", "outputs", "requires",
+    "command",
+    "path",
+    "description",
+    "inputs",
+    "outputs",
+    "requires",
 ]
 
 # Valid values for workflow definition fields
@@ -220,6 +248,7 @@ VALID_DEPENDENCY_STRENGTHS = {"required", "recommended"}
 # Data Classes
 # =============================================================================
 
+
 class Severity(Enum):
     ERROR = "error"
     WARNING = "warning"
@@ -227,14 +256,16 @@ class Severity(Enum):
 
 class DFSColor(IntEnum):
     """Colors for DFS cycle detection."""
+
     WHITE = 0  # Unvisited
-    GRAY = 1   # In progress
+    GRAY = 1  # In progress
     BLACK = 2  # Completed
 
 
 @dataclass
 class FrontmatterResult:
     """Result of frontmatter extraction."""
+
     frontmatter: dict
     body: str
     skill_md: Path
@@ -243,6 +274,7 @@ class FrontmatterResult:
 @dataclass
 class ValidationIssue:
     """Individual validation issue."""
+
     skill: str
     check: str
     severity: Severity
@@ -262,6 +294,7 @@ class ValidationIssue:
 @dataclass
 class ValidationResult:
     """Per-skill validation results."""
+
     skill: str
     issues: list[ValidationIssue] = field(default_factory=list)
 
@@ -285,6 +318,7 @@ class ValidationResult:
 @dataclass
 class ValidationReport:
     """Full validation report."""
+
     results: list[ValidationResult] = field(default_factory=list)
     count_issues: list[ValidationIssue] = field(default_factory=list)
     workflow_issues: list[ValidationIssue] = field(default_factory=list)
@@ -334,6 +368,7 @@ class ValidationReport:
 # Checker Classes (Strategy Pattern)
 # =============================================================================
 
+
 class BaseChecker(ABC):
     """Abstract base class for skill checkers."""
 
@@ -377,35 +412,41 @@ class YamlChecker(BaseChecker):
         skill_md = skill_path / "SKILL.md"
 
         if not skill_md.exists():
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="Missing SKILL.md file",
-                file=str(skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="Missing SKILL.md file",
+                    file=str(skill_md),
+                )
+            )
             return issues
 
         content = skill_md.read_text()
         if not content.startswith("---"):
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="SKILL.md does not start with YAML frontmatter (---)",
-                file=str(skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="SKILL.md does not start with YAML frontmatter (---)",
+                    file=str(skill_md),
+                )
+            )
             return issues
 
         parts = content.split("---", 2)
         if len(parts) < 3:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="Invalid YAML frontmatter structure (missing closing ---)",
-                file=str(skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="Invalid YAML frontmatter structure (missing closing ---)",
+                    file=str(skill_md),
+                )
+            )
             return issues
 
         try:
@@ -414,13 +455,15 @@ class YamlChecker(BaseChecker):
             else:
                 parse_yaml(parts[1])
         except Exception as e:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message=f"YAML parsing error: {e}",
-                file=str(skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"YAML parsing error: {e}",
+                    file=str(skill_md),
+                )
+            )
 
         return issues
 
@@ -439,13 +482,15 @@ class RequiredFieldsChecker(BaseChecker):
         issues = []
         for fld in REQUIRED_FIELDS:
             if fld not in result.frontmatter:
-                issues.append(ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message=f"Missing required field: {fld}",
-                    file=str(result.skill_md),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Missing required field: {fld}",
+                        file=str(result.skill_md),
+                    )
+                )
 
         return issues
 
@@ -464,23 +509,27 @@ class NameFormatChecker(BaseChecker):
         issues = []
         name = result.frontmatter.get("name", "")
         if name and not NAME_PATTERN.match(name):
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message=f"Invalid name format: '{name}'. Use only letters, numbers, and hyphens.",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Invalid name format: '{name}'. Use only letters, numbers, and hyphens.",
+                    file=str(result.skill_md),
+                )
+            )
 
         # Also check that directory name matches skill name
         if name and name != skill_name:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Directory name '{skill_name}' doesn't match skill name '{name}'",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Directory name '{skill_name}' doesn't match skill name '{name}'",
+                    file=str(result.skill_md),
+                )
+            )
 
         return issues
 
@@ -499,13 +548,15 @@ class DescriptionLengthChecker(BaseChecker):
         issues = []
         description = result.frontmatter.get("description", "")
         if description and len(description) > MAX_DESCRIPTION_LENGTH:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Description exceeds {MAX_DESCRIPTION_LENGTH} chars ({len(description)} chars)",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Description exceeds {MAX_DESCRIPTION_LENGTH} chars ({len(description)} chars)",
+                    file=str(result.skill_md),
+                )
+            )
 
         return issues
 
@@ -524,13 +575,15 @@ class DescriptionFormatChecker(BaseChecker):
         issues = []
         description = result.frontmatter.get("description", "")
         if description and not description.startswith(DESCRIPTION_PREFIX):
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Description should start with '{DESCRIPTION_PREFIX}' (trigger-only format)",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Description should start with '{DESCRIPTION_PREFIX}' (trigger-only format)",
+                    file=str(result.skill_md),
+                )
+            )
 
         return issues
 
@@ -549,89 +602,104 @@ class MetadataFieldsChecker(BaseChecker):
         issues = []
         metadata = result.frontmatter.get("metadata")
         if metadata is None:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="Missing 'metadata' key",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="Missing 'metadata' key",
+                    file=str(result.skill_md),
+                )
+            )
             return issues
 
         if not isinstance(metadata, dict):
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="'metadata' must be a mapping",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="'metadata' must be a mapping",
+                    file=str(result.skill_md),
+                )
+            )
             return issues
 
         for fld in REQUIRED_METADATA_FIELDS:
             if fld not in metadata:
-                issues.append(ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message=f"Missing required metadata field: {fld}",
-                    file=str(result.skill_md),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Missing required metadata field: {fld}",
+                        file=str(result.skill_md),
+                    )
+                )
 
         # Validate triggers is a non-empty string
         triggers = metadata.get("triggers")
-        if triggers is not None:
-            if not isinstance(triggers, str) or not triggers.strip():
-                issues.append(ValidationIssue(
+        if triggers is not None and (not isinstance(triggers, str) or not triggers.strip()):
+            issues.append(
+                ValidationIssue(
                     skill=skill_name,
                     check=self.name,
                     severity=Severity.ERROR,
                     message="'metadata.triggers' must be a non-empty string",
                     file=str(result.skill_md),
-                ))
+                )
+            )
 
         # Validate domain is a known value (warning, not error)
         domain = metadata.get("domain")
         if domain is not None and domain not in KNOWN_DOMAINS:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Unknown domain: '{domain}'. Known: {', '.join(sorted(KNOWN_DOMAINS))}",
-                file=str(result.skill_md),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Unknown domain: '{domain}'. Known: {', '.join(sorted(KNOWN_DOMAINS))}",
+                    file=str(result.skill_md),
+                )
+            )
 
         # Validate related-skills is a non-empty string with valid skill references
         if "related-skills" in metadata:
             related = metadata.get("related-skills")
             if related is None or (isinstance(related, str) and not related.strip()):
-                issues.append(ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.WARNING,
-                    message="'metadata.related-skills' is empty",
-                    file=str(result.skill_md),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message="'metadata.related-skills' is empty",
+                        file=str(result.skill_md),
+                    )
+                )
             elif not isinstance(related, str):
-                issues.append(ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message="'metadata.related-skills' must be a string",
-                    file=str(result.skill_md),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message="'metadata.related-skills' must be a string",
+                        file=str(result.skill_md),
+                    )
+                )
             else:
                 # Validate each comma-separated value resolves to an existing skill directory
                 skills_dir = skill_path.parent
                 for ref in (r.strip() for r in related.split(",")):
                     if ref and not (skills_dir / ref).is_dir():
-                        issues.append(ValidationIssue(
-                            skill=skill_name,
-                            check=self.name,
-                            severity=Severity.WARNING,
-                            message=f"'metadata.related-skills' references non-existent skill: '{ref}'",
-                            file=str(result.skill_md),
-                        ))
+                        issues.append(
+                            ValidationIssue(
+                                skill=skill_name,
+                                check=self.name,
+                                severity=Severity.WARNING,
+                                message=f"'metadata.related-skills' references non-existent skill: '{ref}'",
+                                file=str(result.skill_md),
+                            )
+                        )
 
         return issues
 
@@ -647,21 +715,25 @@ class ReferencesDirectoryChecker(BaseChecker):
         refs_dir = skill_path / "references"
 
         if not refs_dir.exists():
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="Missing references/ directory",
-                file=str(refs_dir),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="Missing references/ directory",
+                    file=str(refs_dir),
+                )
+            )
         elif not refs_dir.is_dir():
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="'references' exists but is not a directory",
-                file=str(refs_dir),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="'references' exists but is not a directory",
+                    file=str(refs_dir),
+                )
+            )
 
         return issues
 
@@ -681,13 +753,15 @@ class ReferenceFileCountChecker(BaseChecker):
 
         ref_files = list(refs_dir.glob("*.md"))
         if len(ref_files) == 0:
-            issues.append(ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message="No reference files found in references/",
-                file=str(refs_dir),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="No reference files found in references/",
+                    file=str(refs_dir),
+                )
+            )
 
         return issues
 
@@ -726,13 +800,15 @@ class NonStandardHeadersChecker(BaseChecker):
                     headers_found.append("'Reference for:'")
                 if has_load_when:
                     headers_found.append("'Load when:'")
-                issues.append(ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message=f"Has non-standard headers ({', '.join(headers_found)}) - must be removed",
-                    file=str(ref_file),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Has non-standard headers ({', '.join(headers_found)}) - must be removed",
+                        file=str(ref_file),
+                    )
+                )
 
         return issues
 
@@ -754,13 +830,15 @@ class MetadataEnumChecker(BaseChecker):
 
         value = metadata.get(self.field_name)
         if value is not None and value not in self.valid_values:
-            return [ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Unknown {self.field_name}: '{value}'. Expected: {', '.join(sorted(self.valid_values))}",
-                file=str(result.skill_md),
-            )]
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Unknown {self.field_name}: '{value}'. Expected: {', '.join(sorted(self.valid_values))}",
+                    file=str(result.skill_md),
+                )
+            ]
         return []
 
 
@@ -796,19 +874,21 @@ class CoreWorkflowStepCountChecker(BaseChecker):
         # Find Core Workflow section
         workflow_match = CORE_WORKFLOW_PATTERN.search(result.body)
         if not workflow_match:
-            return [ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message="Missing '## Core Workflow' section",
-                file=str(result.skill_md),
-            )]
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="Missing '## Core Workflow' section",
+                    file=str(result.skill_md),
+                )
+            ]
 
         # Get section content (up to next H2 or end of file)
         section_start = workflow_match.end()
         next_section = NEXT_SECTION_PATTERN.search(result.body[section_start:])
         if next_section:
-            section_content = result.body[section_start:section_start + next_section.start()]
+            section_content = result.body[section_start : section_start + next_section.start()]
         else:
             section_content = result.body[section_start:]
 
@@ -817,13 +897,15 @@ class CoreWorkflowStepCountChecker(BaseChecker):
         step_count = len(steps)
 
         if step_count != 5:
-            return [ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Core Workflow has {step_count} steps (expected 5)",
-                file=str(result.skill_md),
-            )]
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Core Workflow has {step_count} steps (expected 5)",
+                    file=str(result.skill_md),
+                )
+            ]
 
         return []
 
@@ -849,7 +931,7 @@ class WhenToUseFormatChecker(BaseChecker):
         section_start = section_match.end()
         next_section = NEXT_SECTION_PATTERN.search(result.body[section_start:])
         if next_section:
-            section_content = result.body[section_start:section_start + next_section.start()]
+            section_content = result.body[section_start : section_start + next_section.start()]
         else:
             section_content = result.body[section_start:]
 
@@ -861,20 +943,19 @@ class WhenToUseFormatChecker(BaseChecker):
             return []
 
         # Check if lines use bullet format (- or *)
-        non_bullet_lines = [
-            line for line in content_lines
-            if line.strip() and not BULLET_PATTERN.match(line)
-        ]
+        non_bullet_lines = [line for line in content_lines if line.strip() and not BULLET_PATTERN.match(line)]
 
         # Allow some non-bullet lines (like sub-items or code blocks), but warn if majority is prose
         if len(non_bullet_lines) > len(content_lines) // 2:
-            return [ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message="'When to Use' section should use bullet list format (- or *)",
-                file=str(result.skill_md),
-            )]
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="'When to Use' section should use bullet list format (- or *)",
+                    file=str(result.skill_md),
+                )
+            ]
 
         return []
 
@@ -906,13 +987,15 @@ class SectionOrderChecker(BaseChecker):
             current_idx = CANONICAL_SECTIONS.index(section)
             next_idx = CANONICAL_SECTIONS.index(found_canonical[i + 1])
             if current_idx > next_idx:
-                return [ValidationIssue(
-                    skill=skill_name,
-                    check=self.name,
-                    severity=Severity.WARNING,
-                    message=f"Section order: '{section}' should come after '{found_canonical[i + 1]}'",
-                    file=str(result.skill_md),
-                )]
+                return [
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message=f"Section order: '{section}' should come after '{found_canonical[i + 1]}'",
+                        file=str(result.skill_md),
+                    )
+                ]
 
         return []
 
@@ -933,21 +1016,25 @@ class LineCountChecker(BaseChecker):
         count = len(non_blank_lines)
 
         if count < MIN_NON_BLANK_LINES:
-            return [ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"SKILL.md has {count} non-blank lines (minimum {MIN_NON_BLANK_LINES})",
-                file=str(result.skill_md),
-            )]
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"SKILL.md has {count} non-blank lines (minimum {MIN_NON_BLANK_LINES})",
+                    file=str(result.skill_md),
+                )
+            ]
         elif count > MAX_NON_BLANK_LINES:
-            return [ValidationIssue(
-                skill=skill_name,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"SKILL.md has {count} non-blank lines (maximum {MAX_NON_BLANK_LINES})",
-                file=str(result.skill_md),
-            )]
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"SKILL.md has {count} non-blank lines (maximum {MAX_NON_BLANK_LINES})",
+                    file=str(result.skill_md),
+                )
+            ]
 
         return []
 
@@ -955,6 +1042,7 @@ class LineCountChecker(BaseChecker):
 # =============================================================================
 # Workflow Checkers
 # =============================================================================
+
 
 class WorkflowDefinitionChecker:
     """Validates per-command YAML definition files against the schema."""
@@ -966,26 +1054,27 @@ class WorkflowDefinitionChecker:
         commands_dir = base_path / COMMANDS_DIR_WORKFLOW
 
         if not commands_dir.exists():
-            issues.append(ValidationIssue(
-                skill="__workflow__",
-                check=self.name,
-                severity=Severity.ERROR,
-                message=f"Commands directory not found: {commands_dir}",
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill="__workflow__",
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Commands directory not found: {commands_dir}",
+                )
+            )
             return issues
 
-        yaml_files = sorted([
-            f for f in commands_dir.rglob("*.yaml")
-            if f.name != "workflow-manifest.yaml"
-        ])
+        yaml_files = sorted([f for f in commands_dir.rglob("*.yaml") if f.name != "workflow-manifest.yaml"])
 
         if not yaml_files:
-            issues.append(ValidationIssue(
-                skill="__workflow__",
-                check=self.name,
-                severity=Severity.WARNING,
-                message="No workflow definition YAML files found",
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill="__workflow__",
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="No workflow definition YAML files found",
+                )
+            )
             return issues
 
         for yaml_file in yaml_files:
@@ -994,30 +1083,32 @@ class WorkflowDefinitionChecker:
 
         return issues
 
-    def _validate_definition(
-        self, yaml_file: Path, rel_path: str, base_path: Path
-    ) -> list[ValidationIssue]:
+    def _validate_definition(self, yaml_file: Path, rel_path: str, base_path: Path) -> list[ValidationIssue]:
         issues = []
 
         try:
             data = parse_yaml(yaml_file.read_text())
             if data is None:
-                issues.append(ValidationIssue(
+                issues.append(
+                    ValidationIssue(
+                        skill=rel_path,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message="YAML file is empty",
+                        file=rel_path,
+                    )
+                )
+                return issues
+        except Exception as e:
+            issues.append(
+                ValidationIssue(
                     skill=rel_path,
                     check=self.name,
                     severity=Severity.ERROR,
-                    message="YAML file is empty",
+                    message=f"YAML parse error: {e}",
                     file=rel_path,
-                ))
-                return issues
-        except Exception as e:
-            issues.append(ValidationIssue(
-                skill=rel_path,
-                check=self.name,
-                severity=Severity.ERROR,
-                message=f"YAML parse error: {e}",
-                file=rel_path,
-            ))
+                )
+            )
             return issues
 
         command = data.get("command", "")
@@ -1026,94 +1117,108 @@ class WorkflowDefinitionChecker:
         # Check required fields (phase is optional for utility commands)
         for req_field in REQUIRED_DEFINITION_FIELDS:
             if req_field not in data:
-                issues.append(ValidationIssue(
+                issues.append(
+                    ValidationIssue(
+                        skill=rel_path,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Missing required field: {req_field}",
+                        file=rel_path,
+                    )
+                )
+
+        if not is_utility and "phase" not in data:
+            issues.append(
+                ValidationIssue(
                     skill=rel_path,
                     check=self.name,
                     severity=Severity.ERROR,
-                    message=f"Missing required field: {req_field}",
+                    message="Missing required field: phase (required for phased commands)",
                     file=rel_path,
-                ))
-
-        if not is_utility and "phase" not in data:
-            issues.append(ValidationIssue(
-                skill=rel_path,
-                check=self.name,
-                severity=Severity.ERROR,
-                message="Missing required field: phase (required for phased commands)",
-                file=rel_path,
-            ))
+                )
+            )
 
         # Validate phase value
         phase = data.get("phase", "")
         if phase and phase not in VALID_PHASES:
-            issues.append(ValidationIssue(
-                skill=rel_path,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Non-standard phase: '{phase}'. Expected: {', '.join(sorted(VALID_PHASES))}",
-                file=rel_path,
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Non-standard phase: '{phase}'. Expected: {', '.join(sorted(VALID_PHASES))}",
+                    file=rel_path,
+                )
+            )
 
         # Validate command prefix matches phase
         if command and phase and ":" in command:
             cmd_phase = command.split(":")[0]
             # Allow plural forms (e.g., "retrospectives" phase, "retrospectives:" prefix)
             if cmd_phase != phase and cmd_phase.rstrip("s") != phase.rstrip("s"):
-                issues.append(ValidationIssue(
-                    skill=rel_path,
-                    check=self.name,
-                    severity=Severity.WARNING,
-                    message=f"Command prefix '{cmd_phase}' doesn't match phase '{phase}'",
-                    file=rel_path,
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill=rel_path,
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message=f"Command prefix '{cmd_phase}' doesn't match phase '{phase}'",
+                        file=rel_path,
+                    )
+                )
 
         # Validate status
         status = data.get("status", "existing")
         if status not in VALID_STATUS:
-            issues.append(ValidationIssue(
-                skill=rel_path,
-                check=self.name,
-                severity=Severity.WARNING,
-                message=f"Unknown status: '{status}'. Expected: {', '.join(sorted(VALID_STATUS))}",
-                file=rel_path,
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill=rel_path,
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message=f"Unknown status: '{status}'. Expected: {', '.join(sorted(VALID_STATUS))}",
+                    file=rel_path,
+                )
+            )
 
         # Validate path resolves (when status is existing)
         cmd_path = data.get("path", "")
-        if cmd_path and status == "existing":
-            if not (base_path / cmd_path).exists():
-                issues.append(ValidationIssue(
+        if cmd_path and status == "existing" and not (base_path / cmd_path).exists():
+            issues.append(
+                ValidationIssue(
                     skill=rel_path,
                     check=self.name,
                     severity=Severity.ERROR,
                     message=f"Command file not found: {cmd_path}",
                     file=rel_path,
-                ))
+                )
+            )
 
         # Validate description path resolves
         desc_path = data.get("description", "")
-        if desc_path:
-            if not (base_path / desc_path).exists():
-                issues.append(ValidationIssue(
+        if desc_path and not (base_path / desc_path).exists():
+            issues.append(
+                ValidationIssue(
                     skill=rel_path,
                     check=self.name,
                     severity=Severity.ERROR,
                     message=f"Description file not found: {desc_path}",
                     file=rel_path,
-                ))
+                )
+            )
 
         # Validate requires values
         requires = data.get("requires", [])
         if isinstance(requires, list):
             for req in requires:
                 if req not in VALID_REQUIRES:
-                    issues.append(ValidationIssue(
-                        skill=rel_path,
-                        check=self.name,
-                        severity=Severity.WARNING,
-                        message=f"Unknown requires value: '{req}'. Expected: {', '.join(sorted(VALID_REQUIRES))}",
-                        file=rel_path,
-                    ))
+                    issues.append(
+                        ValidationIssue(
+                            skill=rel_path,
+                            check=self.name,
+                            severity=Severity.WARNING,
+                            message=f"Unknown requires value: '{req}'. Expected: {', '.join(sorted(VALID_REQUIRES))}",
+                            file=rel_path,
+                        )
+                    )
 
         # Validate inputs structure
         inputs = data.get("inputs", [])
@@ -1122,22 +1227,26 @@ class WorkflowDefinitionChecker:
                 if isinstance(inp, dict):
                     for req_field in ["name", "type", "required", "description"]:
                         if req_field not in inp:
-                            issues.append(ValidationIssue(
-                                skill=rel_path,
-                                check=self.name,
-                                severity=Severity.ERROR,
-                                message=f"Input [{i}] missing field: {req_field}",
-                                file=rel_path,
-                            ))
+                            issues.append(
+                                ValidationIssue(
+                                    skill=rel_path,
+                                    check=self.name,
+                                    severity=Severity.ERROR,
+                                    message=f"Input [{i}] missing field: {req_field}",
+                                    file=rel_path,
+                                )
+                            )
                     inp_type = inp.get("type", "")
                     if inp_type and inp_type not in VALID_INPUT_TYPES:
-                        issues.append(ValidationIssue(
-                            skill=rel_path,
-                            check=self.name,
-                            severity=Severity.WARNING,
-                            message=f"Input [{i}] unknown type: '{inp_type}'",
-                            file=rel_path,
-                        ))
+                        issues.append(
+                            ValidationIssue(
+                                skill=rel_path,
+                                check=self.name,
+                                severity=Severity.WARNING,
+                                message=f"Input [{i}] unknown type: '{inp_type}'",
+                                file=rel_path,
+                            )
+                        )
 
         # Validate outputs structure
         outputs = data.get("outputs", [])
@@ -1146,22 +1255,26 @@ class WorkflowDefinitionChecker:
                 if isinstance(out, dict):
                     for req_field in ["name", "type"]:
                         if req_field not in out:
-                            issues.append(ValidationIssue(
-                                skill=rel_path,
-                                check=self.name,
-                                severity=Severity.ERROR,
-                                message=f"Output [{i}] missing field: {req_field}",
-                                file=rel_path,
-                            ))
+                            issues.append(
+                                ValidationIssue(
+                                    skill=rel_path,
+                                    check=self.name,
+                                    severity=Severity.ERROR,
+                                    message=f"Output [{i}] missing field: {req_field}",
+                                    file=rel_path,
+                                )
+                            )
                     out_type = out.get("type", "")
                     if out_type and out_type not in VALID_OUTPUT_TYPES:
-                        issues.append(ValidationIssue(
-                            skill=rel_path,
-                            check=self.name,
-                            severity=Severity.WARNING,
-                            message=f"Output [{i}] unknown type: '{out_type}'",
-                            file=rel_path,
-                        ))
+                        issues.append(
+                            ValidationIssue(
+                                skill=rel_path,
+                                check=self.name,
+                                severity=Severity.WARNING,
+                                message=f"Output [{i}] unknown type: '{out_type}'",
+                                file=rel_path,
+                            )
+                        )
 
         return issues
 
@@ -1176,44 +1289,52 @@ class ManifestDagChecker:
         manifest_path = base_path / MANIFEST_FILE
 
         if not manifest_path.exists():
-            issues.append(ValidationIssue(
-                skill="__manifest__",
-                check=self.name,
-                severity=Severity.ERROR,
-                message=f"Manifest file not found: {MANIFEST_FILE}",
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill="__manifest__",
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Manifest file not found: {MANIFEST_FILE}",
+                )
+            )
             return issues
 
         try:
             data = parse_yaml(manifest_path.read_text())
             if data is None:
-                issues.append(ValidationIssue(
+                issues.append(
+                    ValidationIssue(
+                        skill="__manifest__",
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message="Manifest is empty",
+                        file=str(manifest_path),
+                    )
+                )
+                return issues
+        except Exception as e:
+            issues.append(
+                ValidationIssue(
                     skill="__manifest__",
                     check=self.name,
                     severity=Severity.ERROR,
-                    message="Manifest is empty",
+                    message=f"YAML parse error: {e}",
                     file=str(manifest_path),
-                ))
-                return issues
-        except Exception as e:
-            issues.append(ValidationIssue(
-                skill="__manifest__",
-                check=self.name,
-                severity=Severity.ERROR,
-                message=f"YAML parse error: {e}",
-                file=str(manifest_path),
-            ))
+                )
+            )
             return issues
 
         phases = data.get("phases", {})
         if not phases:
-            issues.append(ValidationIssue(
-                skill="__manifest__",
-                check=self.name,
-                severity=Severity.ERROR,
-                message="No phases defined in manifest",
-                file=str(manifest_path),
-            ))
+            issues.append(
+                ValidationIssue(
+                    skill="__manifest__",
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="No phases defined in manifest",
+                    file=str(manifest_path),
+                )
+            )
             return issues
 
         phase_names = set(phases.keys())
@@ -1221,25 +1342,29 @@ class ManifestDagChecker:
 
         for phase_name, phase_data in phases.items():
             if not isinstance(phase_data, dict):
-                issues.append(ValidationIssue(
-                    skill="__manifest__",
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message=f"Phase '{phase_name}' must be a mapping",
-                    file=str(manifest_path),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill="__manifest__",
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Phase '{phase_name}' must be a mapping",
+                        file=str(manifest_path),
+                    )
+                )
                 continue
 
             # Check description path
             desc = phase_data.get("description", "")
             if desc and not (base_path / desc).exists():
-                issues.append(ValidationIssue(
-                    skill="__manifest__",
-                    check=self.name,
-                    severity=Severity.ERROR,
-                    message=f"Phase '{phase_name}' description not found: {desc}",
-                    file=str(manifest_path),
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill="__manifest__",
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Phase '{phase_name}' description not found: {desc}",
+                        file=str(manifest_path),
+                    )
+                )
 
             # Check dependency references
             depends_on = phase_data.get("depends_on", [])
@@ -1248,22 +1373,26 @@ class ManifestDagChecker:
                     if isinstance(dep, dict):
                         dep_phase = dep.get("phase", "")
                         if dep_phase and dep_phase not in phase_names:
-                            issues.append(ValidationIssue(
-                                skill="__manifest__",
-                                check=self.name,
-                                severity=Severity.ERROR,
-                                message=f"Phase '{phase_name}' depends on undefined phase: '{dep_phase}'",
-                                file=str(manifest_path),
-                            ))
+                            issues.append(
+                                ValidationIssue(
+                                    skill="__manifest__",
+                                    check=self.name,
+                                    severity=Severity.ERROR,
+                                    message=f"Phase '{phase_name}' depends on undefined phase: '{dep_phase}'",
+                                    file=str(manifest_path),
+                                )
+                            )
                         strength = dep.get("strength", "")
                         if strength and strength not in VALID_DEPENDENCY_STRENGTHS:
-                            issues.append(ValidationIssue(
-                                skill="__manifest__",
-                                check=self.name,
-                                severity=Severity.WARNING,
-                                message=f"Phase '{phase_name}' dependency strength '{strength}' not standard",
-                                file=str(manifest_path),
-                            ))
+                            issues.append(
+                                ValidationIssue(
+                                    skill="__manifest__",
+                                    check=self.name,
+                                    severity=Severity.WARNING,
+                                    message=f"Phase '{phase_name}' dependency strength '{strength}' not standard",
+                                    file=str(manifest_path),
+                                )
+                            )
 
             # Check commands
             commands = phase_data.get("commands", [])
@@ -1273,24 +1402,28 @@ class ManifestDagChecker:
                         cmd_name = cmd.get("command", "")
                         if cmd_name:
                             if cmd_name in all_commands:
-                                issues.append(ValidationIssue(
-                                    skill="__manifest__",
-                                    check=self.name,
-                                    severity=Severity.ERROR,
-                                    message=f"Duplicate command: '{cmd_name}'",
-                                    file=str(manifest_path),
-                                ))
+                                issues.append(
+                                    ValidationIssue(
+                                        skill="__manifest__",
+                                        check=self.name,
+                                        severity=Severity.ERROR,
+                                        message=f"Duplicate command: '{cmd_name}'",
+                                        file=str(manifest_path),
+                                    )
+                                )
                             all_commands.add(cmd_name)
 
                         definition = cmd.get("definition", "")
                         if definition and not (base_path / definition).exists():
-                            issues.append(ValidationIssue(
-                                skill="__manifest__",
-                                check=self.name,
-                                severity=Severity.ERROR,
-                                message=f"Command '{cmd_name}' definition not found: {definition}",
-                                file=str(manifest_path),
-                            ))
+                            issues.append(
+                                ValidationIssue(
+                                    skill="__manifest__",
+                                    check=self.name,
+                                    severity=Severity.ERROR,
+                                    message=f"Command '{cmd_name}' definition not found: {definition}",
+                                    file=str(manifest_path),
+                                )
+                            )
 
         # Check utilities
         utilities = data.get("utilities", [])
@@ -1300,32 +1433,34 @@ class ManifestDagChecker:
                     cmd_name = util.get("command", "")
                     if cmd_name:
                         if cmd_name in all_commands:
-                            issues.append(ValidationIssue(
-                                skill="__manifest__",
-                                check=self.name,
-                                severity=Severity.ERROR,
-                                message=f"Duplicate command: '{cmd_name}'",
-                                file=str(manifest_path),
-                            ))
+                            issues.append(
+                                ValidationIssue(
+                                    skill="__manifest__",
+                                    check=self.name,
+                                    severity=Severity.ERROR,
+                                    message=f"Duplicate command: '{cmd_name}'",
+                                    file=str(manifest_path),
+                                )
+                            )
                         all_commands.add(cmd_name)
 
                     definition = util.get("definition", "")
                     if definition and not (base_path / definition).exists():
-                        issues.append(ValidationIssue(
-                            skill="__manifest__",
-                            check=self.name,
-                            severity=Severity.ERROR,
-                            message=f"Utility '{cmd_name}' definition not found: {definition}",
-                            file=str(manifest_path),
-                        ))
+                        issues.append(
+                            ValidationIssue(
+                                skill="__manifest__",
+                                check=self.name,
+                                severity=Severity.ERROR,
+                                message=f"Utility '{cmd_name}' definition not found: {definition}",
+                                file=str(manifest_path),
+                            )
+                        )
 
         # DAG cycle detection
         issues.extend(self._detect_cycles(phases, manifest_path))
 
         # Cross-check: manifest commands match their definition files
-        issues.extend(self._check_definition_consistency(
-            phases, utilities, base_path, manifest_path
-        ))
+        issues.extend(self._check_definition_consistency(phases, utilities, base_path, manifest_path))
 
         return issues
 
@@ -1357,14 +1492,16 @@ class ManifestDagChecker:
                     continue  # Reference to undefined phase (caught elsewhere)
                 if color[neighbor] == DFSColor.GRAY:
                     cycle_start = path.index(neighbor)
-                    cycle = path[cycle_start:] + [neighbor]
-                    issues.append(ValidationIssue(
-                        skill="__manifest__",
-                        check=self.name,
-                        severity=Severity.ERROR,
-                        message=f"DAG cycle detected: {' -> '.join(cycle)}",
-                        file=str(manifest_path),
-                    ))
+                    cycle = [*path[cycle_start:], neighbor]
+                    issues.append(
+                        ValidationIssue(
+                            skill="__manifest__",
+                            check=self.name,
+                            severity=Severity.ERROR,
+                            message=f"DAG cycle detected: {' -> '.join(cycle)}",
+                            file=str(manifest_path),
+                        )
+                    )
                     path.pop()
                     return
                 if color[neighbor] == DFSColor.WHITE:
@@ -1395,16 +1532,18 @@ class ManifestDagChecker:
             try:
                 data = parse_yaml(full_path.read_text())
                 if data and data.get("command", "") != cmd_name:
-                    issues.append(ValidationIssue(
-                        skill="__manifest__",
-                        check=self.name,
-                        severity=Severity.ERROR,
-                        message=(
-                            f"Manifest command '{cmd_name}' doesn't match "
-                            f"definition command '{data.get('command', '')}' in {definition_path}"
-                        ),
-                        file=str(manifest_path),
-                    ))
+                    issues.append(
+                        ValidationIssue(
+                            skill="__manifest__",
+                            check=self.name,
+                            severity=Severity.ERROR,
+                            message=(
+                                f"Manifest command '{cmd_name}' doesn't match "
+                                f"definition command '{data.get('command', '')}' in {definition_path}"
+                            ),
+                            file=str(manifest_path),
+                        )
+                    )
             except Exception:
                 pass  # Parse errors reported elsewhere
 
@@ -1456,13 +1595,15 @@ class WorkflowOrphanChecker:
 
             md_rel = str(md_file.relative_to(base_path))
             if md_rel not in referenced_paths:
-                issues.append(ValidationIssue(
-                    skill="__orphans__",
-                    check=self.name,
-                    severity=Severity.WARNING,
-                    message=f"Command file has no YAML definition: {md_rel}",
-                    file=md_rel,
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill="__orphans__",
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message=f"Command file has no YAML definition: {md_rel}",
+                        file=md_rel,
+                    )
+                )
 
         return issues
 
@@ -1470,6 +1611,7 @@ class WorkflowOrphanChecker:
 # =============================================================================
 # Count Consistency Checker
 # =============================================================================
+
 
 class CountConsistencyChecker:
     """Validates count consistency across documentation files."""
@@ -1479,15 +1621,10 @@ class CountConsistencyChecker:
         base_path = skills_dir.parent
 
         # Count actual skills
-        skill_count = sum(
-            1 for d in skills_dir.iterdir()
-            if d.is_dir() and (d / "SKILL.md").exists()
-        )
+        skill_count = sum(1 for d in skills_dir.iterdir() if d.is_dir() and (d / "SKILL.md").exists())
 
         # Count actual reference files
-        ref_count = sum(
-            1 for ref in skills_dir.rglob("references/*.md")
-        )
+        ref_count = sum(1 for ref in skills_dir.rglob("references/*.md"))
 
         # Check each file for count mentions
         for file_path in COUNT_FILES:
@@ -1508,13 +1645,15 @@ class CountConsistencyChecker:
                 for match in matches:
                     found_count = int(match)
                     if found_count != skill_count:
-                        issues.append(ValidationIssue(
-                            skill="__counts__",
-                            check="count-consistency",
-                            severity=Severity.WARNING,
-                            message=f"Skill count mismatch: file says {found_count}, actual is {skill_count}",
-                            file=str(full_path),
-                        ))
+                        issues.append(
+                            ValidationIssue(
+                                skill="__counts__",
+                                check="count-consistency",
+                                severity=Severity.WARNING,
+                                message=f"Skill count mismatch: file says {found_count}, actual is {skill_count}",
+                                file=str(full_path),
+                            )
+                        )
                         break  # Only report once per file
 
             # Check for reference file count mentions
@@ -1527,13 +1666,15 @@ class CountConsistencyChecker:
                 for match in matches:
                     found_count = int(match)
                     if found_count != ref_count:
-                        issues.append(ValidationIssue(
-                            skill="__counts__",
-                            check="count-consistency",
-                            severity=Severity.WARNING,
-                            message=f"Reference count mismatch: file says {found_count}, actual is {ref_count}",
-                            file=str(full_path),
-                        ))
+                        issues.append(
+                            ValidationIssue(
+                                skill="__counts__",
+                                check="count-consistency",
+                                severity=Severity.WARNING,
+                                message=f"Reference count mismatch: file says {found_count}, actual is {ref_count}",
+                                file=str(full_path),
+                            )
+                        )
                         break
 
         return issues
@@ -1542,6 +1683,7 @@ class CountConsistencyChecker:
 # =============================================================================
 # Cross-Reference Checker
 # =============================================================================
+
 
 class CrossRefChecker:
     """Validates bidirectional related-skills references and detects orphan skills."""
@@ -1598,18 +1740,18 @@ class CrossRefChecker:
                     continue
                 if skill not in graph[ref]:
                     reported.add(pair)
-                    issues.append(ValidationIssue(
-                        skill="__crossrefs__",
-                        check=self.name,
-                        severity=Severity.WARNING,
-                        message=f"'{skill}' references '{ref}' but '{ref}' does not reference '{skill}'",
-                    ))
+                    issues.append(
+                        ValidationIssue(
+                            skill="__crossrefs__",
+                            check=self.name,
+                            severity=Severity.WARNING,
+                            message=f"'{skill}' references '{ref}' but '{ref}' does not reference '{skill}'",
+                        )
+                    )
 
         return issues
 
-    def _check_orphans(
-        self, graph: dict[str, set[str]], skills_dir: Path
-    ) -> list[ValidationIssue]:
+    def _check_orphans(self, graph: dict[str, set[str]], skills_dir: Path) -> list[ValidationIssue]:
         """Warn about skills with no incoming or outgoing references."""
         issues = []
 
@@ -1620,12 +1762,14 @@ class CrossRefChecker:
 
         for skill, refs in sorted(graph.items()):
             if not refs and skill not in referenced:
-                issues.append(ValidationIssue(
-                    skill="__crossrefs__",
-                    check=self.name,
-                    severity=Severity.WARNING,
-                    message=f"Orphan skill: '{skill}' has no related-skills and is not referenced by any other skill",
-                ))
+                issues.append(
+                    ValidationIssue(
+                        skill="__crossrefs__",
+                        check=self.name,
+                        severity=Severity.WARNING,
+                        message=f"Orphan skill: '{skill}' has no related-skills and is not referenced by any other skill",
+                    )
+                )
 
         return issues
 
@@ -1633,6 +1777,7 @@ class CrossRefChecker:
 # =============================================================================
 # Workflow Validator
 # =============================================================================
+
 
 class WorkflowValidator:
     """Orchestrates workflow definition and manifest validation."""
@@ -1655,6 +1800,7 @@ class WorkflowValidator:
 # =============================================================================
 # Formatters
 # =============================================================================
+
 
 class TableFormatter:
     """Human-readable table output."""
@@ -1742,6 +1888,7 @@ class JsonFormatter:
 # Skill Validator
 # =============================================================================
 
+
 class SkillValidator:
     """Main validator that orchestrates skill checks."""
 
@@ -1791,10 +1938,7 @@ class SkillValidator:
             print(f"Error: Skills directory not found: {self.skills_dir}")
             sys.exit(1)
 
-        skill_dirs = sorted([
-            d for d in self.skills_dir.iterdir()
-            if d.is_dir() and not d.name.startswith(".")
-        ])
+        skill_dirs = sorted([d for d in self.skills_dir.iterdir() if d.is_dir() and not d.name.startswith(".")])
 
         # Filter to specific skill if requested
         if self.skill_filter:
@@ -1821,6 +1965,7 @@ class SkillValidator:
 # =============================================================================
 # CLI
 # =============================================================================
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1892,10 +2037,7 @@ Check categories:
         report.crossref_issues = crossref_checker.check(Path(args.skills_dir))
 
     # Format and output
-    if args.format == "json":
-        formatter = JsonFormatter()
-    else:
-        formatter = TableFormatter()
+    formatter = JsonFormatter() if args.format == "json" else TableFormatter()
 
     print(formatter.format(report))
 
