@@ -1,0 +1,6 @@
+*.md
+site/dist/
+site/.astro/
+site/src/content/docs/
+site/public/
+node_modules/

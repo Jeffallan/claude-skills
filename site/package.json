@@ -6,12 +6,18 @@
     "sync": "node scripts/sync-content.mjs",
     "dev": "npm run sync && astro dev",
     "build": "npm run sync && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "lint": "prettier --plugin prettier-plugin-astro --check \"src/**\" \"scripts/**\" astro.config.mjs",
+    "format": "prettier --plugin prettier-plugin-astro --write \"src/**\" \"scripts/**\" astro.config.mjs"
   },
   "dependencies": {
     "astro": "^5.7.10",
     "@astrojs/starlight": "^0.34.1",
     "sharp": "^0.33.5",
     "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.0",
+    "prettier-plugin-astro": "^0.14.0"
   }
 }

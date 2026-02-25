@@ -28,3 +28,19 @@ jobs:
 
       - name: Check docs in sync
         run: python scripts/update-docs.py --check
+
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - run: npm ci --prefix site
+      - uses: pre-commit/action@v3.0.1
+      - name: Check Astro formatting
+        run: cd site && npx prettier --plugin prettier-plugin-astro --check "src/**/*.astro"
