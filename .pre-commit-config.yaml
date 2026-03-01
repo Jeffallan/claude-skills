@@ -1,0 +1,27 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.7
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: prettier --write --ignore-unknown
+        language: node
+        files: ^(site/|assets/).*\.(js|mjs|ts|css)$
+        additional_dependencies:
+          - prettier@3.5.3
+
+      - id: pyright
+        name: pyright type check
+        entry: pyright
+        language: python
+        types: [python]
+        files: ^scripts/.*\.py$
+        pass_filenames: false
+        additional_dependencies:
+          - pyright

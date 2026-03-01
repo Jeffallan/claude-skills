@@ -30,6 +30,7 @@ yarn-error.log*
 
 # Python
 __pycache__/
+.ruff_cache/
 
 # Temporary files
 *.tmp

@@ -290,6 +290,101 @@ const report = await client.callTool({
 });
 ```
 
+### Issue Linking
+
+Use `jira_create_issue_link` to create dependency relationships between issues.
+
+> **The parameter names are counterintuitive.** The naming reflects Jira's internal "inward/outward" link direction, not natural English. Verify every link call against the table below.
+
+#### Parameter Semantics for "Blocks" Links
+
+| Parameter | Role | Meaning |
+|-----------|------|---------|
+| `inward_issue_key` | **Blocker** | This issue blocks the other |
+| `outward_issue_key` | **Blocked** | This issue is blocked by the other |
+
+**Memory aid:** `inward_issue_key` = the issue receiving the inward description ("is blocked by") — but it is the *blocker*. Think: "the inward key is where the arrow points FROM."
+
+#### Single Blocks Link
+
+```typescript
+// Make AUTH-1 block AUTH-2
+// AUTH-1 will show: "blocks AUTH-2"
+// AUTH-2 will show: "is blocked by AUTH-1"
+await client.callTool({
+  name: "jira_create_issue_link",
+  arguments: {
+    link_type: "Blocks",
+    inward_issue_key: "AUTH-1",   // blocker
+    outward_issue_key: "AUTH-2"   // blocked
+  }
+});
+```
+
+#### Linking a Dependency Chain
+
+When creating a chain A → B → C (A blocks B, B blocks C):
+
+```typescript
+const chain = [
+  { blocker: "AUTH-1", blocked: "AUTH-2" },
+  { blocker: "AUTH-2", blocked: "AUTH-3" },
+  { blocker: "AUTH-3", blocked: "AUTH-4" }
+];
+
+for (const dep of chain) {
+  await client.callTool({
+    name: "jira_create_issue_link",
+    arguments: {
+      link_type: "Blocks",
+      inward_issue_key: dep.blocker,
+      outward_issue_key: dep.blocked
+    }
+  });
+
+  // Respect rate limits between link operations
+  await delay(100);
+}
+```
+
+#### Other Link Types
+
+The same `inward`/`outward` pattern applies to all link types:
+
+| Link Type | `inward_issue_key` shows | `outward_issue_key` shows |
+|-----------|--------------------------|---------------------------|
+| `Blocks` | "blocks [outward]" | "is blocked by [inward]" |
+| `Duplicate` | "duplicates [outward]" | "is duplicated by [inward]" |
+| `Relates` | "relates to [outward]" | "relates to [inward]" |
+
+```typescript
+// Mark PROJ-10 as a duplicate of PROJ-5
+await client.callTool({
+  name: "jira_create_issue_link",
+  arguments: {
+    link_type: "Duplicate",
+    inward_issue_key: "PROJ-10",   // the duplicate
+    outward_issue_key: "PROJ-5"    // the original
+  }
+});
+```
+
+#### Anti-Pattern: Reversed Parameters
+
+```typescript
+// WRONG — This makes AUTH-2 block AUTH-1 (backwards!)
+await client.callTool({
+  name: "jira_create_issue_link",
+  arguments: {
+    link_type: "Blocks",
+    inward_issue_key: "AUTH-2",   // accidentally made AUTH-2 the blocker
+    outward_issue_key: "AUTH-1"   // accidentally made AUTH-1 the blocked
+  }
+});
+```
+
+Always verify: after creating a link, the blocker (`inward_issue_key`) should display "blocks [outward]" in its Jira issue view.
+
 ## Pagination Handling
 
 ```typescript

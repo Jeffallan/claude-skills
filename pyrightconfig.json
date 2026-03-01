@@ -1,0 +1,8 @@
+{
+    "include": ["scripts"],
+    "pythonVersion": "3.11",
+    "typeCheckingMode": "basic",
+    "reportMissingImports": "warning",
+    "reportOptionalMemberAccess": "warning",
+    "reportOptionalSubscript": "warning"
+}

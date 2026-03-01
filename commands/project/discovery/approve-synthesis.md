@@ -287,7 +287,9 @@ For each approved ticket:
 
 4. **Link tickets:**
    - Link to discovery epic as "discovered by"
-   - Link dependencies between tickets (using Jira issue links)
+   - Link dependencies between tickets using `jira_create_issue_link`:
+     - `inward_issue_key` = **blocker**, `outward_issue_key` = **blocked**
+     - See `atlassian-mcp/references/jira-queries.md > Issue Linking` for full semantics
    - Link to any relevant existing tickets
 
 5. **Track created tickets:**

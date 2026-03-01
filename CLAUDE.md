@@ -86,6 +86,10 @@ Reference files follow the [Agent Skills specification](https://agentskills.io/s
 - Include "when to use" and "when not to use" guidance
 - Practical patterns over theoretical explanations
 
+### Framework Idiom Principle
+
+Reference files for framework-specific skills must reflect the idiomatic best practices of that framework, not generic patterns applied uniformly across all skills. If a framework provides a built-in mechanism (e.g., global error handling, middleware, dependency injection), reference examples should use it rather than duplicating that behavior manually. Each framework's conventions for error handling, architecture, and code organization take precedence over cross-project consistency.
+
 ---
 
 ### Progressive Disclosure Architecture

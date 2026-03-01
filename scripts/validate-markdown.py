@@ -12,10 +12,10 @@ Usage:
     python scripts/validate-markdown.py [--check] [--path PATH]
 """
 
-from dataclasses import dataclass
-from pathlib import Path
-from enum import StrEnum
 import argparse
+from dataclasses import dataclass
+from enum import StrEnum
+from pathlib import Path
 import re
 import sys
 
@@ -108,7 +108,6 @@ def validate_file(path: Path) -> list[MarkdownIssue]:
 
         # Check for table
         if is_table_row(line):
-            table_start = i
             header_cols = count_columns(line)
 
             # Check next line
@@ -197,9 +196,7 @@ def validate_directory(root: Path) -> list[MarkdownIssue]:
 
 def main() -> int:
     """Main entry point. Returns exit code."""
-    parser = argparse.ArgumentParser(
-        description="Validate markdown files for parsing errors"
-    )
+    parser = argparse.ArgumentParser(description="Validate markdown files for parsing errors")
     parser.add_argument(
         "--check",
         action="store_true",
@@ -224,10 +221,7 @@ def main() -> int:
         print(f"Error: Path does not exist: {args.path}", file=sys.stderr)
         return 1
 
-    if args.path.is_file():
-        issues = validate_file(args.path)
-    else:
-        issues = validate_directory(args.path)
+    issues = validate_file(args.path) if args.path.is_file() else validate_directory(args.path)
 
     if args.format == "json":
         import json

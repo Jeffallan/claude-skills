@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink validate test site-dev site-build
+.PHONY: dev-link dev-unlink validate test site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -53,3 +53,16 @@ site-dev:
 
 site-build:
 	cd site && npm run build
+
+lint:
+	ruff check scripts/
+	ruff format --check scripts/
+	pyright scripts/
+	cd site && npx prettier --plugin prettier-plugin-astro --check "src/**" "scripts/**" astro.config.mjs
+
+format:
+	ruff check --fix scripts/
+	ruff format scripts/
+	cd site && npx prettier --plugin prettier-plugin-astro --write "src/**" "scripts/**" astro.config.mjs
+
+lint-fix: format

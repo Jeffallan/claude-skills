@@ -11,12 +11,12 @@ const path = require('path');
   await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0' });
 
   // Wait for fonts to load
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   await page.screenshot({
     path: path.join(__dirname, 'social-preview.png'),
     type: 'png',
-    clip: { x: 0, y: 0, width: 1280, height: 640 }
+    clip: { x: 0, y: 0, width: 1280, height: 640 },
   });
 
   console.log('Screenshot saved to assets/social-preview.png');
