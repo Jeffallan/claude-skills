@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Standardized README links from HTML to Markdown, improved Quick Start readability (#166)
+
 ### Fixed
 - Fixed stale counts on docs site landing page (65 → 66 skills, 357 → 365 references)
 - Added Astro site files to `update-docs.py` release automation so counts stay in sync
+
+### Contributors
+- @hasan613 — Standardize README links and improve Quick Start section (#166)
 
 ## [0.4.9] - 2026-02-24
 
