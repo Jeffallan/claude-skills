@@ -46,6 +46,8 @@ FILES_TO_UPDATE = {
     "QUICKSTART.md": "markdown",
     "ROADMAP.md": "markdown",
     "assets/social-preview.html": "html",
+    "site/astro.config.mjs": "astro_config",
+    "site/src/content/docs/index.mdx": "astro_landing",
 }
 
 # Marker names for each count type
@@ -211,6 +213,80 @@ def update_json_file(file_path: Path, version: str, counts: dict, dry_run: bool)
 
 
 # =============================================================================
+# Astro Site Updates (anchored patterns - no HTML comments)
+# =============================================================================
+
+
+def update_astro_config(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
+    """Update astro.config.mjs description with skill count."""
+    if not file_path.exists():
+        print(f"  Skipping {file_path} (not found)")
+        return False
+
+    content = file_path.read_text()
+    original = content
+
+    # Update skill count in description string: '65 specialized skills'
+    content = re.sub(
+        r"(\d+)\s+specialized\s+skills",
+        rf"{counts['skillCount']} specialized skills",
+        content,
+    )
+
+    if content != original:
+        if dry_run:
+            print(f"  Would update {file_path}")
+        else:
+            file_path.write_text(content)
+            print(f"  Updated {file_path}")
+        return True
+    return False
+
+
+def update_astro_landing(file_path: Path, version: str, counts: dict, dry_run: bool) -> bool:
+    """Update index.mdx frontmatter description, Card titles, and counts."""
+    if not file_path.exists():
+        print(f"  Skipping {file_path} (not found)")
+        return False
+
+    content = file_path.read_text()
+    original = content
+
+    # Update frontmatter description: 'N specialized skills'
+    content = re.sub(
+        r"(\d+)\s+specialized\s+skills",
+        rf"{counts['skillCount']} specialized skills",
+        content,
+    )
+
+    # Update Card titles: title="N Skills" and title="N References"
+    content = re.sub(
+        r'title="\d+ Skills"',
+        rf'title="{counts["skillCount"]} Skills"',
+        content,
+    )
+    content = re.sub(
+        r'title="\d+ Workflows"',
+        rf'title="{counts["workflowCount"]} Workflows"',
+        content,
+    )
+    content = re.sub(
+        r'title="\d+ References"',
+        rf'title="{counts["referenceFileCount"]} References"',
+        content,
+    )
+
+    if content != original:
+        if dry_run:
+            print(f"  Would update {file_path}")
+        else:
+            file_path.write_text(content)
+            print(f"  Updated {file_path}")
+        return True
+    return False
+
+
+# =============================================================================
 # Main
 # =============================================================================
 
@@ -281,6 +357,8 @@ def main():
         "json": update_json_file,
         "markdown": update_markdown_file,
         "html": update_html_file,
+        "astro_config": update_astro_config,
+        "astro_landing": update_astro_landing,
     }
 
     for file_path, file_type in FILES_TO_UPDATE.items():

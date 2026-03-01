@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Fixed stale counts on docs site landing page (65 → 66 skills, 357 → 365 references)
+- Added Astro site files to `update-docs.py` release automation so counts stay in sync
+
 ## [0.4.9] - 2026-02-24
 
 ### Added
