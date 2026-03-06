@@ -4,7 +4,7 @@ description: Designs and implements production-grade RAG systems by chunking doc
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: data-ml
   triggers: RAG, retrieval-augmented generation, vector search, embeddings, semantic search, vector database, document retrieval, knowledge base, context retrieval, similarity search
   role: architect

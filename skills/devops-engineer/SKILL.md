@@ -4,7 +4,7 @@ description: Creates Dockerfiles, configures CI/CD pipelines, writes Kubernetes 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: devops
   triggers: DevOps, CI/CD, deployment, Docker, Kubernetes, Terraform, GitHub Actions, infrastructure, platform engineering, incident response, on-call, self-service
   role: engineer

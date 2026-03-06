@@ -4,7 +4,7 @@ description: Defines service level objectives, creates error budget policies, de
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: devops
   triggers: SRE, site reliability, SLO, SLI, error budget, incident management, chaos engineering, toil reduction, on-call, MTTR
   role: specialist

@@ -4,7 +4,7 @@ description: Conducts structured requirements workshops to produce feature speci
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: workflow
   triggers: requirements, specification, feature definition, user stories, EARS, planning
   role: specialist

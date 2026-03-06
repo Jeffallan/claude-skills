@@ -4,7 +4,7 @@ description: "Use when building Django web applications or REST APIs with Django
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: backend
   triggers: Django, DRF, Django REST Framework, Django ORM, Django model, serializer, viewset, Python web
   role: specialist

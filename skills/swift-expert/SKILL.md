@@ -4,7 +4,7 @@ description: Builds iOS/macOS/watchOS/tvOS applications, implements SwiftUI view
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: language
   triggers: Swift, SwiftUI, iOS development, macOS development, async/await Swift, Combine, UIKit, Vapor
   role: specialist

@@ -4,7 +4,7 @@ description: Creates and configures NestJS modules, controllers, services, DTOs,
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: backend
   triggers: NestJS, Nest, Node.js backend, TypeScript backend, dependency injection, controller, service, module, guard, interceptor
   role: specialist

@@ -4,7 +4,7 @@ description: Use when building CLI tools, implementing argument parsing, or addi
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: devops
   triggers: CLI, command-line, terminal app, argument parsing, shell completion, interactive prompt, progress bar, commander, click, typer, cobra
   role: specialist

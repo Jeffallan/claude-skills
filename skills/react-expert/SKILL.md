@@ -4,7 +4,7 @@ description: Use when building React 18+ applications in .jsx or .tsx files, Nex
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: frontend
   triggers: React, JSX, hooks, useState, useEffect, useContext, Server Components, React 19, Suspense, TanStack Query, Redux, Zustand, component, frontend
   role: specialist

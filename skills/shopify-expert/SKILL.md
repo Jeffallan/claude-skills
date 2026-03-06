@@ -4,7 +4,7 @@ description: Builds and debugs Shopify themes (.liquid files, theme.json, sectio
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: platform
   triggers: Shopify, Liquid, Storefront API, Shopify Plus, Hydrogen, Shopify app, checkout extensions, Shopify Functions, App Bridge, theme development, e-commerce, Polaris
   role: expert

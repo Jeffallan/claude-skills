@@ -4,7 +4,7 @@ description: Use when implementing infrastructure as code with Terraform across 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: infrastructure
   triggers: Terraform, infrastructure as code, IaC, terraform module, terraform state, AWS provider, Azure provider, GCP provider, terraform plan, terraform apply
   role: specialist

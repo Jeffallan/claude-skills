@@ -4,7 +4,7 @@ description: "Designs and implements production-grade ML pipeline infrastructure
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: data-ml
   triggers: ML pipeline, MLflow, Kubeflow, feature engineering, model training, experiment tracking, feature store, hyperparameter tuning, pipeline orchestration, model registry, training workflow, MLOps, model deployment, data pipeline, model versioning
   role: expert

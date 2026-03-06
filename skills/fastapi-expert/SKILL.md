@@ -4,7 +4,7 @@ description: "Use when building high-performance async Python APIs with FastAPI 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: backend
   triggers: FastAPI, Pydantic, async Python, Python API, REST API Python, SQLAlchemy async, JWT authentication, OpenAPI, Swagger Python
   role: specialist

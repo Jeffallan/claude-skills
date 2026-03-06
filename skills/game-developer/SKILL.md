@@ -4,7 +4,7 @@ description: "Use when building game systems, implementing Unity/Unreal Engine f
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: specialized
   triggers: Unity, Unreal Engine, game development, ECS architecture, game physics, multiplayer networking, game optimization, shader programming, game AI
   role: specialist

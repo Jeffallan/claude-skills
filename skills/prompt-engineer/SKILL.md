@@ -4,7 +4,7 @@ description: Writes, refactors, and evaluates prompts for LLMs — generating op
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: data-ml
   triggers: prompt engineering, prompt optimization, chain-of-thought, few-shot learning, prompt testing, LLM prompts, prompt evaluation, system prompts, structured outputs, prompt design
   role: expert

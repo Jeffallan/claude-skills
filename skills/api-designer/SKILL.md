@@ -4,7 +4,7 @@ description: Use when designing REST or GraphQL APIs, creating OpenAPI specifica
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: api-architecture
   triggers: API design, REST API, OpenAPI, API specification, API architecture, resource modeling, API versioning, GraphQL schema, API documentation
   role: architect
@@ -68,7 +68,7 @@ Load detailed guidance based on context:
 openapi: "3.1.0"
 info:
   title: Example API
-  version: "1.0.0"
+  version: "1.1.0"
 paths:
   /users:
     get:

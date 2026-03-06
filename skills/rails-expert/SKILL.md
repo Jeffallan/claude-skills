@@ -4,7 +4,7 @@ description: Rails 7+ specialist that optimizes Active Record queries with inclu
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: backend
   triggers: Rails, Ruby on Rails, Hotwire, Turbo Frames, Turbo Streams, Action Cable, Active Record, Sidekiq, RSpec Rails
   role: specialist

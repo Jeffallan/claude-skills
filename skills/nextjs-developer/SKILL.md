@@ -4,7 +4,7 @@ description: "Use when building Next.js 14+ applications with App Router, server
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: frontend
   triggers: Next.js, Next.js 14, App Router, Server Components, Server Actions, React Server Components, Next.js deployment, Vercel, Next.js performance
   role: specialist

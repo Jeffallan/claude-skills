@@ -4,7 +4,7 @@ description: Use when building Python 3.11+ applications requiring type safety, 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: language
   triggers: Python development, type hints, async Python, pytest, mypy, dataclasses, Python best practices, Pythonic code
   role: specialist

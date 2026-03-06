@@ -4,7 +4,7 @@ description: Writes, optimizes, and debugs C++ applications using modern C++20/2
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: language
   triggers: C++, C++20, C++23, modern C++, template metaprogramming, systems programming, performance optimization, SIMD, memory management, CMake
   role: specialist

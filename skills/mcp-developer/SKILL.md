@@ -4,7 +4,7 @@ description: Use when building, debugging, or extending MCP servers or clients t
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: api-architecture
   triggers: MCP, Model Context Protocol, MCP server, MCP client, Claude integration, AI tools, context protocol, JSON-RPC
   role: specialist
@@ -47,7 +47,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
-const server = new McpServer({ name: "my-server", version: "1.0.0" });
+const server = new McpServer({ name: "my-server", version: "1.1.0" });
 
 // Register a tool with validated input schema
 server.tool(

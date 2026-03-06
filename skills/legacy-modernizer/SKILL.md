@@ -4,7 +4,7 @@ description: Designs incremental migration strategies, identifies service bounda
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: specialized
   triggers: legacy modernization, strangler fig, incremental migration, technical debt, legacy refactoring, system migration, legacy system, modernize codebase
   role: specialist

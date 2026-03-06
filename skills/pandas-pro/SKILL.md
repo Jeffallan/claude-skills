@@ -4,7 +4,7 @@ description: Performs pandas DataFrame operations for data analysis, manipulatio
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: data-ml
   triggers: pandas, DataFrame, data manipulation, data cleaning, aggregation, groupby, merge, join, time series, data wrangling, pivot table, data transformation
   role: expert

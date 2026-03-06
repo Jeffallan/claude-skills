@@ -4,7 +4,7 @@ description: Use when optimizing PostgreSQL queries, configuring replication, or
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: infrastructure
   triggers: PostgreSQL, Postgres, EXPLAIN ANALYZE, pg_stat, JSONB, streaming replication, logical replication, VACUUM, PostGIS, pgvector
   role: specialist

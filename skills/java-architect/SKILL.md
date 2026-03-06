@@ -4,7 +4,7 @@ description: Use when building, configuring, or debugging enterprise Java applic
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: language
   triggers: Spring Boot, Java, microservices, Spring Cloud, JPA, Hibernate, WebFlux, reactive, Java Enterprise
   role: architect

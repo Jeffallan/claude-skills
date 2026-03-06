@@ -5,7 +5,7 @@ license: MIT
 allowed-tools: Read, Grep, Glob
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: quality
   triggers: code review, PR review, pull request, review code, code quality
   role: specialist

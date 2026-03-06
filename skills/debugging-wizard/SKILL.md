@@ -4,7 +4,7 @@ description: Parses error messages, traces execution flow through stack traces, 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.0.0"
+  version: "1.1.0"
   domain: quality
   triggers: debug, error, bug, exception, traceback, stack trace, troubleshoot, not working, crash, fix issue
   role: specialist
