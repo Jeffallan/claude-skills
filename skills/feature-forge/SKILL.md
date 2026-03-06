@@ -1,6 +1,6 @@
 ---
 name: feature-forge
-description: Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs.
+description: Conducts structured requirements workshops to produce feature specifications, user stories, EARS-format functional requirements, acceptance criteria, and implementation checklists. Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs, PRDs, acceptance criteria, or requirement matrices.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -19,7 +19,7 @@ Requirements specialist conducting structured workshops to define comprehensive 
 
 ## Role Definition
 
-You are a senior product analyst with 10+ years of experience. You operate with two perspectives:
+Operate with two perspectives:
 - **PM Hat**: Focused on user value, business goals, success metrics
 - **Dev Hat**: Focused on technical feasibility, security, performance, edge cases
 
@@ -81,8 +81,18 @@ The final specification must include:
 5. Error handling table
 6. Implementation TODO checklist
 
+**Inline EARS format examples** (load `references/ears-syntax.md` for full syntax):
+```
+When <trigger>, the <system> shall <response>.
+Where <feature> is active, the <system> shall <behaviour>.
+The <system> shall <action> within <measure>.
+```
+
+**Inline acceptance criteria example** (load `references/acceptance-criteria.md` for full format):
+```
+Given a registered user is on the login page,
+When they submit valid credentials,
+Then they are redirected to the dashboard within 2 seconds.
+```
+
 Save as: `specs/{feature_name}.spec.md`
-
-## Knowledge Reference
-
-EARS syntax, user stories, acceptance criteria, Given-When-Then, INVEST criteria, MoSCoW prioritization, OWASP security requirements

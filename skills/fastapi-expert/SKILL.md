@@ -1,6 +1,6 @@
 ---
 name: fastapi-expert
-description: Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke for async SQLAlchemy, JWT authentication, WebSockets, OpenAPI documentation.
+description: "Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke to create REST endpoints, define Pydantic models, implement authentication flows, set up async SQLAlchemy database operations, add JWT authentication, build WebSocket endpoints, or generate OpenAPI documentation. Trigger terms: FastAPI, Pydantic, async Python, Python API, REST API Python, SQLAlchemy async, JWT authentication, OpenAPI, Swagger Python."
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -15,11 +15,7 @@ metadata:
 
 # FastAPI Expert
 
-Senior FastAPI specialist with deep expertise in async Python, Pydantic V2, and production-grade API development.
-
-## Role Definition
-
-You are a senior Python engineer with 10+ years of API development experience. You specialize in FastAPI with Pydantic V2, async SQLAlchemy, and modern Python 3.11+ patterns. You build scalable, type-safe APIs with automatic documentation.
+Deep expertise in async Python, Pydantic V2, and production-grade API development with FastAPI.
 
 ## When to Use This Skill
 
@@ -32,11 +28,116 @@ You are a senior Python engineer with 10+ years of API development experience. Y
 
 ## Core Workflow
 
-1. **Analyze requirements** - Identify endpoints, data models, auth needs
-2. **Design schemas** - Create Pydantic V2 models for validation
-3. **Implement** - Write async endpoints with proper dependency injection
-4. **Secure** - Add authentication, authorization, rate limiting
-5. **Test** - Write async tests with pytest and httpx
+1. **Analyze requirements** — Identify endpoints, data models, auth needs
+2. **Design schemas** — Create Pydantic V2 models for validation
+3. **Implement** — Write async endpoints with proper dependency injection
+4. **Secure** — Add authentication, authorization, rate limiting
+5. **Test** — Write async tests with pytest and httpx; run `pytest` after each endpoint group and verify OpenAPI docs at `/docs`
+
+> **Checkpoint after each step:** confirm schemas validate correctly, endpoints return expected HTTP status codes, and `/docs` reflects the intended API surface before proceeding.
+
+## Minimal Complete Example
+
+Schema + endpoint + dependency injection in one cohesive unit:
+
+```python
+# schemas.py
+from pydantic import BaseModel, EmailStr, field_validator, model_config
+
+class UserCreate(BaseModel):
+    model_config = model_config(str_strip_whitespace=True)
+
+    email: EmailStr
+    password: str
+    name: str | None = None
+
+    @field_validator("password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        return v
+
+class UserResponse(BaseModel):
+    model_config = model_config(from_attributes=True)
+
+    id: int
+    email: EmailStr
+    name: str | None = None
+```
+
+```python
+# routers/users.py
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Annotated
+
+from app.database import get_db
+from app.schemas import UserCreate, UserResponse
+from app import crud
+
+router = APIRouter(prefix="/users", tags=["users"])
+
+DbDep = Annotated[AsyncSession, Depends(get_db)]
+
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def create_user(payload: UserCreate, db: DbDep) -> UserResponse:
+    existing = await crud.get_user_by_email(db, payload.email)
+    if existing:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+    return await crud.create_user(db, payload)
+```
+
+```python
+# crud.py
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.models import User
+from app.schemas import UserCreate
+from app.security import hash_password
+
+async def get_user_by_email(db: AsyncSession, email: str) -> User | None:
+    result = await db.execute(select(User).where(User.email == email))
+    return result.scalar_one_or_none()
+
+async def create_user(db: AsyncSession, payload: UserCreate) -> User:
+    user = User(email=payload.email, hashed_password=hash_password(payload.password), name=payload.name)
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user
+```
+
+## JWT Authentication Snippet
+
+```python
+# security.py
+from datetime import datetime, timedelta, timezone
+from jose import JWTError, jwt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from typing import Annotated
+
+SECRET_KEY = "read-from-env"  # use os.environ / settings
+ALGORITHM = "HS256"
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+def create_access_token(subject: str, expires_delta: timedelta = timedelta(minutes=30)) -> str:
+    payload = {"sub": subject, "exp": datetime.now(timezone.utc) + expires_delta}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> str:
+    try:
+        data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        subject: str | None = data.get("sub")
+        if subject is None:
+            raise ValueError
+        return subject
+    except (JWTError, ValueError):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
+CurrentUser = Annotated[str, Depends(get_current_user)]
+```
 
 ## Reference Guide
 

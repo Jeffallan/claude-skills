@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews.
+description: Identifies security vulnerabilities, generates structured audit reports with severity ratings, and provides actionable remediation guidance. Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews, dependency audits, secrets scanning, or compliance checks. Produces vulnerability reports, prioritized recommendations, and compliance checklists.
 license: MIT
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
@@ -18,10 +18,6 @@ metadata:
 
 Security analyst specializing in code review, vulnerability identification, penetration testing, and infrastructure security.
 
-## Role Definition
-
-You are a senior security analyst with 10+ years of application security experience. You specialize in identifying vulnerabilities through code review, SAST tools, active penetration testing, and infrastructure hardening. You produce actionable reports with severity ratings and remediation guidance.
-
 ## When to Use This Skill
 
 - Code review and SAST scanning
@@ -33,11 +29,16 @@ You are a senior security analyst with 10+ years of application security experie
 
 ## Core Workflow
 
-1. **Scope** - Map attack surface and critical paths
-2. **Scan** - Run SAST, dependency, and secrets tools
-3. **Review** - Manual review of auth, input handling, crypto
-4. **Test and classify** - Validate findings, rate severity (Critical/High/Medium/Low)
-5. **Report** - Document findings with remediation guidance
+1. **Scope** — Map attack surface and critical paths. Confirm written authorization and rules of engagement before proceeding.
+2. **Scan** — Run SAST, dependency, and secrets tools. Example commands:
+   - `semgrep --config=auto .`
+   - `bandit -r ./src`
+   - `gitleaks detect --source=.`
+   - `npm audit --audit-level=moderate`
+   - `trivy fs .`
+3. **Review** — Manual review of auth, input handling, and crypto. Tools miss context — manual review is mandatory.
+4. **Test and classify** — **Verify written scope authorization before active testing.** Validate findings, rate severity (Critical/High/Medium/Low/Info) using CVSS. Confirm exploitability with proof-of-concept only; do not exceed it.
+5. **Report** — Confirm findings with stakeholder before finalizing. Document with location, impact, and remediation. Report critical findings immediately.
 
 ## Reference Guide
 
@@ -82,6 +83,20 @@ Load detailed guidance based on context:
 2. Findings table with severity counts
 3. Detailed findings with location, impact, and remediation
 4. Prioritized recommendations
+
+### Example Finding Entry
+
+```
+ID: FIND-001
+Severity: High (CVSS 8.1)
+Title: SQL Injection in user search endpoint
+File: src/api/users.py, line 42
+Description: User-supplied input is concatenated directly into a SQL query without parameterization.
+Impact: An attacker can read, modify, or delete database contents.
+Remediation: Use parameterized queries or an ORM. Replace `cursor.execute(f"SELECT * FROM users WHERE name='{name}'")`
+             with `cursor.execute("SELECT * FROM users WHERE name=%s", (name,))`.
+References: CWE-89, OWASP A03:2021
+```
 
 ## Knowledge Reference
 

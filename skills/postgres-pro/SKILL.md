@@ -17,10 +17,6 @@ metadata:
 
 Senior PostgreSQL expert with deep expertise in database administration, performance optimization, and advanced PostgreSQL features.
 
-## Role Definition
-
-You are a senior PostgreSQL DBA with 10+ years of production experience. You specialize in query optimization, replication strategies, JSONB operations, extension usage, and database maintenance. You build reliable, high-performance PostgreSQL systems that scale.
-
 ## When to Use This Skill
 
 - Analyzing and optimizing slow queries with EXPLAIN
@@ -33,11 +29,39 @@ You are a senior PostgreSQL DBA with 10+ years of production experience. You spe
 
 ## Core Workflow
 
-1. **Analyze performance** - Use EXPLAIN ANALYZE, pg_stat_statements
-2. **Design indexes** - B-tree, GIN, GiST, BRIN based on workload
-3. **Optimize queries** - Rewrite inefficient queries, update statistics
-4. **Setup replication** - Streaming or logical based on requirements
-5. **Monitor and maintain** - VACUUM, ANALYZE, bloat tracking
+1. **Analyze performance** — Run `EXPLAIN (ANALYZE, BUFFERS)` to identify bottlenecks
+2. **Design indexes** — Choose B-tree, GIN, GiST, or BRIN based on workload; verify with `EXPLAIN` before deploying
+3. **Optimize queries** — Rewrite inefficient queries, run `ANALYZE` to refresh statistics
+4. **Setup replication** — Streaming or logical based on requirements; monitor lag continuously
+5. **Monitor and maintain** — Track VACUUM, bloat, and autovacuum via `pg_stat` views; verify improvements after each change
+
+### End-to-End Example: Slow Query → Fix → Verification
+
+```sql
+-- Step 1: Identify slow queries
+SELECT query, mean_exec_time, calls
+FROM pg_stat_statements
+ORDER BY mean_exec_time DESC
+LIMIT 10;
+
+-- Step 2: Analyze a specific slow query
+EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT * FROM orders WHERE customer_id = 42 AND status = 'pending';
+-- Look for: Seq Scan (bad on large tables), high Buffers hit, nested loops on large sets
+
+-- Step 3: Create a targeted index
+CREATE INDEX CONCURRENTLY idx_orders_customer_status
+  ON orders (customer_id, status)
+  WHERE status = 'pending';  -- partial index reduces size
+
+-- Step 4: Verify the index is used
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM orders WHERE customer_id = 42 AND status = 'pending';
+-- Confirm: Index Scan on idx_orders_customer_status, lower actual time
+
+-- Step 5: Update statistics if needed after bulk changes
+ANALYZE orders;
+```
 
 ## Reference Guide
 
@@ -51,33 +75,74 @@ Load detailed guidance based on context:
 | Replication | `references/replication.md` | Streaming replication, logical replication, failover |
 | Maintenance | `references/maintenance.md` | VACUUM, ANALYZE, pg_stat views, monitoring, bloat |
 
+## Common Patterns
+
+### JSONB — GIN Index and Query
+
+```sql
+-- Create GIN index for containment queries
+CREATE INDEX idx_events_payload ON events USING GIN (payload);
+
+-- Efficient JSONB containment query (uses GIN index)
+SELECT * FROM events WHERE payload @> '{"type": "login", "success": true}';
+
+-- Extract nested value
+SELECT payload->>'user_id', payload->'meta'->>'ip'
+FROM events
+WHERE payload @> '{"type": "login"}';
+```
+
+### VACUUM and Bloat Monitoring
+
+```sql
+-- Check tables with high dead tuple counts
+SELECT relname, n_dead_tup, n_live_tup,
+       round(n_dead_tup::numeric / NULLIF(n_live_tup + n_dead_tup, 0) * 100, 2) AS dead_pct,
+       last_autovacuum
+FROM pg_stat_user_tables
+ORDER BY n_dead_tup DESC
+LIMIT 20;
+
+-- Manually vacuum a high-churn table and verify
+VACUUM (ANALYZE, VERBOSE) orders;
+```
+
+### Replication Lag Monitoring
+
+```sql
+-- On primary: check standby lag
+SELECT client_addr, state, sent_lsn, write_lsn, flush_lsn, replay_lsn,
+       (sent_lsn - replay_lsn) AS replication_lag_bytes
+FROM pg_stat_replication;
+```
+
 ## Constraints
 
 ### MUST DO
-- Use EXPLAIN ANALYZE for query optimization
-- Create appropriate indexes (B-tree, GIN, GiST, BRIN)
-- Update statistics with ANALYZE after bulk changes
-- Monitor autovacuum and tune if needed
+- Use `EXPLAIN (ANALYZE, BUFFERS)` for query optimization
+- Verify indexes are actually used with `EXPLAIN` before and after creation
+- Use `CREATE INDEX CONCURRENTLY` to avoid table locks in production
+- Run `ANALYZE` after bulk data changes to refresh statistics
+- Monitor autovacuum; tune `autovacuum_vacuum_scale_factor` for high-churn tables
 - Use connection pooling (pgBouncer, pgPool)
-- Setup replication for high availability
-- Monitor with pg_stat_statements, pg_stat_user_tables
+- Monitor replication lag via `pg_stat_replication`
 - Use prepared statements to prevent SQL injection
+- Use `uuid` type for UUIDs, not `text`
 
 ### MUST NOT DO
 - Disable autovacuum globally
-- Create indexes without analyzing query patterns
-- Use SELECT * in production queries
-- Ignore replication lag monitoring
+- Create indexes without first analyzing query patterns
+- Use `SELECT *` in production queries
+- Ignore replication lag alerts
 - Skip VACUUM on high-churn tables
-- Use text for UUID storage (use uuid type)
-- Store large BLOBs in database (use object storage)
-- Ignore pg_stat_statements warnings
+- Store large BLOBs in the database (use object storage)
+- Deploy index changes without verifying the planner uses them
 
 ## Output Templates
 
 When implementing PostgreSQL solutions, provide:
-1. Query with EXPLAIN ANALYZE output
-2. Index definitions with rationale
+1. Query with `EXPLAIN (ANALYZE, BUFFERS)` output and interpretation
+2. Index definitions with rationale and pre/post verification
 3. Configuration changes with before/after values
 4. Monitoring queries for ongoing health checks
 5. Brief explanation of performance impact

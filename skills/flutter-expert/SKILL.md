@@ -17,10 +17,6 @@ metadata:
 
 Senior mobile engineer building high-performance cross-platform applications with Flutter 3 and Dart.
 
-## Role Definition
-
-You are a senior Flutter developer with 6+ years of experience. You specialize in Flutter 3.19+, Riverpod 2.0, GoRouter, and building apps for iOS, Android, Web, and Desktop. You write performant, maintainable Dart code with proper state management.
-
 ## When to Use This Skill
 
 - Building cross-platform Flutter applications
@@ -32,11 +28,15 @@ You are a senior Flutter developer with 6+ years of experience. You specialize i
 
 ## Core Workflow
 
-1. **Setup** - Project structure, dependencies, routing
-2. **State** - Riverpod providers or Bloc setup
-3. **Widgets** - Reusable, const-optimized components
-4. **Test** - Widget tests, integration tests
-5. **Optimize** - Profile, reduce rebuilds
+1. **Setup** — Scaffold project, add dependencies (`flutter pub get`), configure routing
+2. **State** — Define Riverpod providers or Bloc/Cubit classes; verify with `flutter analyze`
+   - If `flutter analyze` reports issues: fix all lints and warnings before proceeding; re-run until clean
+3. **Widgets** — Build reusable, const-optimized components; run `flutter test` after each feature
+   - If tests fail: inspect widget tree with Flutter DevTools, fix failing assertions, re-run `flutter test`
+4. **Test** — Write widget and integration tests; confirm with `flutter test --coverage`
+   - If coverage drops or tests fail: identify untested branches, add targeted tests, re-run before merging
+5. **Optimize** — Profile with Flutter DevTools (`flutter run --profile`), eliminate jank, reduce rebuilds
+   - If jank persists: check rebuild counts in the Performance overlay, isolate expensive `build()` calls, apply `const` or move state closer to consumers
 
 ## Reference Guide
 
@@ -51,32 +51,88 @@ Load detailed guidance based on context:
 | Structure | `references/project-structure.md` | Setting up project, architecture |
 | Performance | `references/performance.md` | Optimization, profiling, jank fixes |
 
+## Code Examples
+
+### Riverpod Provider + ConsumerWidget (correct pattern)
+
+```dart
+// provider definition
+final counterProvider = StateNotifierProvider<CounterNotifier, int>(
+  (ref) => CounterNotifier(),
+);
+
+class CounterNotifier extends StateNotifier<int> {
+  CounterNotifier() : super(0);
+  void increment() => state = state + 1; // new instance, never mutate
+}
+
+// consuming widget — use ConsumerWidget, not StatefulWidget
+class CounterView extends ConsumerWidget {
+  const CounterView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    return Text('$count');
+  }
+}
+```
+
+### Before / After — State Management
+
+```dart
+// ❌ WRONG: app-wide state in setState
+class _BadCounterState extends State<BadCounter> {
+  int _count = 0;
+  void _inc() => setState(() => _count++); // causes full subtree rebuild
+}
+
+// ✅ CORRECT: scoped Riverpod consumer
+class GoodCounter extends ConsumerWidget {
+  const GoodCounter({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    return IconButton(
+      onPressed: () => ref.read(counterProvider.notifier).increment(),
+      icon: const Icon(Icons.add), // const on static widgets
+    );
+  }
+}
+```
+
 ## Constraints
 
 ### MUST DO
-- Use const constructors wherever possible
+- Use `const` constructors wherever possible
 - Implement proper keys for lists
-- Use Consumer/ConsumerWidget for state (not StatefulWidget)
+- Use `Consumer`/`ConsumerWidget` for state (not `StatefulWidget`)
 - Follow Material/Cupertino design guidelines
 - Profile with DevTools, fix jank
-- Test widgets with flutter_test
+- Test widgets with `flutter_test`
 
 ### MUST NOT DO
-- Build widgets inside build() method
+- Build widgets inside `build()` method
 - Mutate state directly (always create new instances)
-- Use setState for app-wide state
-- Skip const on static widgets
+- Use `setState` for app-wide state
+- Skip `const` on static widgets
 - Ignore platform-specific behavior
-- Block UI thread with heavy computation (use compute())
+- Block UI thread with heavy computation (use `compute()`)
+
+## Troubleshooting Common Failures
+
+| Symptom | Likely Cause | Recovery |
+|---------|-------------|----------|
+| `flutter analyze` errors | Unresolved imports, missing `const`, type mismatches | Fix flagged lines; run `flutter pub get` if imports are missing |
+| Widget test assertion failures | Widget tree mismatch or async state not settled | Use `tester.pumpAndSettle()` after state changes; verify finder selectors |
+| Build fails after adding package | Incompatible dependency version | Run `flutter pub upgrade --major-versions`; check pub.dev compatibility |
+| Jank / dropped frames | Expensive `build()` calls, uncached widgets, heavy main-thread work | Use `RepaintBoundary`, move heavy work to `compute()`, add `const` |
+| Hot reload not reflecting changes | State held in `StateNotifier` not reset | Use hot restart (`R` in terminal) to reset full app state |
 
 ## Output Templates
 
 When implementing Flutter features, provide:
-1. Widget code with proper const usage
+1. Widget code with proper `const` usage
 2. Provider/Bloc definitions
 3. Route configuration if needed
 4. Test file structure
-
-## Knowledge Reference
-
-Flutter 3.19+, Dart 3.3+, Riverpod 2.0, Bloc 8.x, GoRouter, freezed, json_serializable, Dio, flutter_hooks

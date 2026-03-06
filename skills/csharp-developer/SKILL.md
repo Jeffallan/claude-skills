@@ -1,6 +1,6 @@
 ---
 name: csharp-developer
-description: "Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Invoke for Entity Framework Core, minimal APIs, async patterns, CQRS with MediatR."
+description: "Use when building C# applications with .NET 8+, ASP.NET Core APIs, or Blazor web apps. Builds REST APIs using minimal or controller-based routing, configures database access with Entity Framework Core, implements async patterns and cancellation, structures applications with CQRS via MediatR, and scaffolds Blazor components with state management. Invoke for C#, .NET, ASP.NET Core, Blazor, Entity Framework, EF Core, Minimal API, MAUI, SignalR."
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,10 +17,6 @@ metadata:
 
 Senior C# developer with mastery of .NET 8+ and Microsoft ecosystem. Specializes in high-performance web APIs, cloud-native solutions, and modern C# language features.
 
-## Role Definition
-
-You are a senior C# developer with 10+ years of .NET experience. You specialize in ASP.NET Core, Blazor, Entity Framework Core, and modern C# 12 features. You build scalable, type-safe applications with clean architecture patterns and focus on performance optimization.
-
 ## When to Use This Skill
 
 - Building ASP.NET Core APIs (Minimal or Controller-based)
@@ -32,11 +28,13 @@ You are a senior C# developer with 10+ years of .NET experience. You specialize 
 
 ## Core Workflow
 
-1. **Analyze solution** - Review .csproj files, NuGet packages, architecture
-2. **Design models** - Create domain models, DTOs, validation
-3. **Implement** - Write endpoints, repositories, services with DI
-4. **Optimize** - Apply async patterns, caching, performance tuning
-5. **Test** - Write xUnit tests with TestServer, achieve 80%+ coverage
+1. **Analyze solution** — Review .csproj files, NuGet packages, architecture
+2. **Design models** — Create domain models, DTOs, validation
+3. **Implement** — Write endpoints, repositories, services with DI
+4. **Optimize** — Apply async patterns, caching, performance tuning
+5. **Test** — Write xUnit tests with TestServer; verify 80%+ coverage
+
+> **EF Core checkpoint (after step 3):** Run `dotnet ef migrations add <Name>` and review the generated migration file before applying. Confirm no unintended table/column drops. Roll back with `dotnet ef migrations remove` if needed.
 
 ## Reference Guide
 
@@ -55,17 +53,36 @@ Load detailed guidance based on context:
 ### MUST DO
 - Enable nullable reference types in all projects
 - Use file-scoped namespaces and primary constructors (C# 12)
-- Apply async/await for all I/O operations
+- Apply async/await for all I/O operations — always accept and forward `CancellationToken`:
+  ```csharp
+  // Correct
+  app.MapGet("/items/{id}", async (int id, IItemService svc, CancellationToken ct) =>
+      await svc.GetByIdAsync(id, ct) is { } item ? Results.Ok(item) : Results.NotFound());
+  ```
 - Use dependency injection for all services
 - Include XML documentation for public APIs
-- Implement proper error handling with Result pattern
-- Use strongly-typed configuration with IOptions<T>
+- Implement proper error handling with Result pattern:
+  ```csharp
+  public readonly record struct Result<T>(T? Value, string? Error, bool IsSuccess)
+  {
+      public static Result<T> Ok(T value) => new(value, null, true);
+      public static Result<T> Fail(string error) => new(default, error, false);
+  }
+  ```
+- Use strongly-typed configuration with `IOptions<T>`
 
 ### MUST NOT DO
-- Use blocking calls (.Result, .Wait()) in async code
+- Use blocking calls (`.Result`, `.Wait()`) in async code:
+  ```csharp
+  // Wrong — blocks thread and risks deadlock
+  var data = service.GetDataAsync().Result;
+
+  // Correct
+  var data = await service.GetDataAsync(ct);
+  ```
 - Disable nullable warnings without proper justification
 - Skip cancellation token support in async methods
-- Expose EF Core entities directly in API responses
+- Expose EF Core entities directly in API responses — always map to DTOs
 - Use string-based configuration keys
 - Skip input validation
 - Ignore code analysis warnings
@@ -78,6 +95,30 @@ When implementing .NET features, provide:
 3. Repository/service implementations
 4. Configuration setup (Program.cs, appsettings.json)
 5. Brief explanation of architectural decisions
+
+## Example: Minimal API Endpoint
+
+```csharp
+// Program.cs (file-scoped, .NET 8 minimal API)
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IProductService, ProductService>();
+
+var app = builder.Build();
+
+app.MapGet("/products/{id:int}", async (
+    int id,
+    IProductService service,
+    CancellationToken ct) =>
+{
+    var result = await service.GetByIdAsync(id, ct);
+    return result.IsSuccess ? Results.Ok(result.Value) : Results.NotFound(result.Error);
+})
+.WithName("GetProduct")
+.Produces<ProductDto>()
+.ProducesProblem(404);
+
+app.Run();
+```
 
 ## Knowledge Reference
 

@@ -1,6 +1,6 @@
 ---
 name: fullstack-guardian
-description: Use when implementing features across frontend and backend, building APIs with UI, or creating end-to-end data flows. Invoke for feature implementation, API development, UI building, cross-stack work.
+description: Builds security-focused full-stack web applications by implementing integrated frontend and backend components with layered security at every level. Covers the complete stack from database to UI, enforcing auth, input validation, output encoding, and parameterized queries across all layers. Use when implementing features across frontend and backend, building REST APIs with corresponding UI, connecting frontend components to backend endpoints, creating end-to-end data flows from database to UI, or implementing CRUD operations with UI forms. Distinct from frontend-only, backend-only, or API-only skills in that it simultaneously addresses all three perspectives—Frontend, Backend, and Security—within a single implementation workflow. Invoke for full-stack feature work, web app development, authenticated API routes with views, microservices, real-time features, monorepo architecture, or technology selection decisions.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,25 +17,14 @@ metadata:
 
 Security-focused full-stack developer implementing features across the entire application stack.
 
-## Role Definition
-
-You are a senior full-stack engineer with 12+ years of experience. You think in three layers: **[Frontend]** for user experience, **[Backend]** for data and logic, **[Security]** for protection. You implement features end-to-end with security built-in from the start.
-
-## When to Use This Skill
-
-- Implementing new features across frontend and backend
-- Building APIs with corresponding UI
-- Creating data flows from database to UI
-- Features requiring authentication/authorization
-- Cross-cutting concerns (logging, caching, validation)
-
 ## Core Workflow
 
 1. **Gather requirements** - Understand feature scope and acceptance criteria
 2. **Design solution** - Consider all three perspectives (Frontend/Backend/Security)
 3. **Write technical design** - Document approach in `specs/{feature}_design.md`
-4. **Implement** - Build incrementally, testing as you go
-5. **Hand off** - Pass to Test Master for QA, DevOps for deployment
+4. **Security checkpoint** - Run through `references/security-checklist.md` before writing any code; confirm auth, authz, validation, and output encoding are addressed
+5. **Implement** - Build incrementally, testing each component as you go
+6. **Hand off** - Pass to Test Master for QA, DevOps for deployment
 
 ## Reference Guide
 
@@ -73,6 +62,39 @@ Load detailed guidance based on context:
 - Hardcode credentials or secrets
 - Implement features without acceptance criteria
 - Skip error handling for "happy path only"
+
+## Three-Perspective Example
+
+A minimal authenticated endpoint illustrating all three layers:
+
+**[Backend]** — Authenticated route with parameterized query and scoped response:
+```python
+@router.get("/users/{user_id}/profile", dependencies=[Depends(require_auth)])
+async def get_profile(user_id: int, current_user: User = Depends(get_current_user)):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    # Parameterized query — no raw string interpolation
+    row = await db.fetchone("SELECT id, name, email FROM users WHERE id = ?", (user_id,))
+    if not row:
+        raise HTTPException(status_code=404, detail="Not found")
+    return ProfileResponse(**row)   # explicit schema — no password/token leakage
+```
+
+**[Frontend]** — Component calls the endpoint and handles errors gracefully:
+```typescript
+async function fetchProfile(userId: number): Promise<Profile> {
+  const res = await apiFetch(`/users/${userId}/profile`);   // apiFetch attaches auth header
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+// Client-side input guard (never the only guard)
+if (!Number.isInteger(userId) || userId <= 0) throw new Error("Invalid user ID");
+```
+
+**[Security]**
+- Auth enforced server-side via `require_auth` dependency; client header is a convenience, not the gate.
+- Response schema (`ProfileResponse`) explicitly excludes sensitive fields.
+- 403 returned before any DB access when IDs don't match — no timing leak via 404.
 
 ## Output Templates
 

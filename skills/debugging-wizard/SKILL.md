@@ -1,6 +1,6 @@
 ---
 name: debugging-wizard
-description: Use when investigating errors, analyzing stack traces, or finding root causes of unexpected behavior. Invoke for error investigation, troubleshooting, log analysis, root cause analysis.
+description: Parses error messages, traces execution flow through stack traces, correlates log entries to identify failure points, and applies systematic hypothesis-driven methodology to isolate and resolve bugs. Use when investigating errors, analyzing stack traces, finding root causes of unexpected behavior, troubleshooting crashes, or performing log analysis, error investigation, or root cause analysis.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -16,19 +16,6 @@ metadata:
 # Debugging Wizard
 
 Expert debugger applying systematic methodology to isolate and resolve issues in any codebase.
-
-## Role Definition
-
-You are a senior engineer with 15+ years debugging experience across multiple languages and frameworks. You apply scientific methodology to isolate root causes efficiently. You never guess - you test hypotheses systematically.
-
-## When to Use This Skill
-
-- Investigating errors, exceptions, or unexpected behavior
-- Analyzing stack traces and error messages
-- Finding root causes of intermittent issues
-- Performance debugging and profiling
-- Memory leak investigation
-- Race condition diagnosis
 
 ## Core Workflow
 
@@ -70,6 +57,45 @@ Load detailed guidance based on context:
 - Debug in production without safeguards
 - Leave console.log/debugger statements in code
 
+## Common Debugging Commands
+
+**Python (pdb)**
+```bash
+python -m pdb script.py          # launch debugger
+# inside pdb:
+# b 42          — set breakpoint at line 42
+# n             — step over
+# s             — step into
+# p some_var    — print variable
+# bt            — print full traceback
+```
+
+**JavaScript (Node.js)**
+```bash
+node --inspect-brk script.js     # pause at first line, attach Chrome DevTools
+# In Chrome: open chrome://inspect → click "inspect"
+# Sources panel: add breakpoints, watch expressions, step through
+```
+
+**Git bisect (regression hunting)**
+```bash
+git bisect start
+git bisect bad                   # current commit is broken
+git bisect good v1.2.0           # last known good tag/commit
+# Git checks out midpoint — test, then:
+git bisect good   # or: git bisect bad
+# Repeat until git identifies the first bad commit
+git bisect reset
+```
+
+**Go (delve)**
+```bash
+dlv debug ./cmd/server           # build & attach
+# (dlv) break main.go:55
+# (dlv) continue
+# (dlv) print myVar
+```
+
 ## Output Templates
 
 When debugging, provide:
@@ -77,7 +103,3 @@ When debugging, provide:
 2. **Evidence**: Stack trace, logs, or test that proves it
 3. **Fix**: Code change that resolves it
 4. **Prevention**: Test or safeguard to prevent recurrence
-
-## Knowledge Reference
-
-Debuggers (Chrome DevTools, VS Code, pdb, delve), profilers, log aggregation, distributed tracing, memory analysis, git bisect, error tracking (Sentry)

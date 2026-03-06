@@ -1,6 +1,6 @@
 ---
 name: sql-pro
-description: Use when optimizing SQL queries, designing database schemas, or tuning database performance. Invoke for complex queries, window functions, CTEs, indexing strategies, query plan analysis.
+description: Optimizes SQL queries, designs database schemas, and troubleshoots performance issues. Use when a user asks why their query is slow, needs help writing complex joins or aggregations, mentions database performance issues, or wants to design or migrate a schema. Invoke for complex queries, window functions, CTEs, indexing strategies, query plan analysis, covering index creation, recursive queries, EXPLAIN/ANALYZE interpretation, before/after query benchmarking, or migrating queries between database dialects (PostgreSQL, MySQL, SQL Server, Oracle).
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -15,27 +15,12 @@ metadata:
 
 # SQL Pro
 
-Senior SQL developer with mastery across major database systems, specializing in complex query design, performance optimization, and database architecture.
-
-## Role Definition
-
-You are a senior SQL developer with 10+ years of experience across PostgreSQL, MySQL, SQL Server, and Oracle. You specialize in complex query optimization, advanced SQL patterns (CTEs, window functions, recursive queries), indexing strategies, and performance tuning. You build efficient, scalable database solutions with sub-100ms query targets.
-
-## When to Use This Skill
-
-- Optimizing slow queries and execution plans
-- Designing complex queries with CTEs, window functions, recursive patterns
-- Creating and optimizing database indexes
-- Implementing data warehousing and ETL patterns
-- Migrating queries between database platforms
-- Analyzing and tuning database performance
-
 ## Core Workflow
 
 1. **Schema Analysis** - Review database structure, indexes, query patterns, performance bottlenecks
 2. **Design** - Create set-based operations using CTEs, window functions, appropriate joins
 3. **Optimize** - Analyze execution plans, implement covering indexes, eliminate table scans
-4. **Verify** - Test with production data volume, ensure linear scalability, confirm sub-100ms targets
+4. **Verify** - Run `EXPLAIN ANALYZE` and confirm no sequential scans on large tables; if query does not meet sub-100ms target, iterate on index selection or query rewrite before proceeding
 5. **Document** - Provide query explanations, index rationale, performance metrics
 
 ## Reference Guide
@@ -50,27 +35,89 @@ Load detailed guidance based on context:
 | Database Design | `references/database-design.md` | Normalization, keys, constraints, schemas |
 | Dialect Differences | `references/dialect-differences.md` | PostgreSQL vs MySQL vs SQL Server specifics |
 
+## Quick-Reference Examples
+
+### CTE Pattern
+```sql
+-- Isolate expensive subquery logic for reuse and readability
+WITH ranked_orders AS (
+    SELECT
+        customer_id,
+        order_id,
+        total_amount,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC) AS rn
+    FROM orders
+    WHERE status = 'completed'          -- filter early, before the join
+)
+SELECT customer_id, order_id, total_amount
+FROM ranked_orders
+WHERE rn = 1;                           -- latest completed order per customer
+```
+
+### Window Function Pattern
+```sql
+-- Running total and rank within partition — no self-join required
+SELECT
+    department_id,
+    employee_id,
+    salary,
+    SUM(salary)  OVER (PARTITION BY department_id ORDER BY hire_date) AS running_payroll,
+    RANK()       OVER (PARTITION BY department_id ORDER BY salary DESC) AS salary_rank
+FROM employees;
+```
+
+### EXPLAIN ANALYZE Interpretation
+```sql
+-- PostgreSQL: always use ANALYZE to see actual row counts vs. estimates
+EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT *
+FROM orders o
+JOIN customers c ON c.id = o.customer_id
+WHERE o.created_at > NOW() - INTERVAL '30 days';
+```
+Key things to check in the output:
+- **Seq Scan on large table** → add or fix an index
+- **actual rows ≫ estimated rows** → run `ANALYZE <table>` to refresh statistics
+- **Buffers: shared hit** vs **read** → high `read` count signals missing cache / index
+
+### Before / After Optimization Example
+```sql
+-- BEFORE: correlated subquery, one execution per row (slow)
+SELECT order_id,
+       (SELECT SUM(quantity) FROM order_items oi WHERE oi.order_id = o.id) AS item_count
+FROM orders o;
+
+-- AFTER: single aggregation join (fast)
+SELECT o.order_id, COALESCE(agg.item_count, 0) AS item_count
+FROM orders o
+LEFT JOIN (
+    SELECT order_id, SUM(quantity) AS item_count
+    FROM order_items
+    GROUP BY order_id
+) agg ON agg.order_id = o.id;
+
+-- Supporting covering index (includes all columns touched by the query)
+CREATE INDEX idx_order_items_order_qty
+    ON order_items (order_id)
+    INCLUDE (quantity);
+```
+
 ## Constraints
 
 ### MUST DO
-- Analyze execution plans before optimization
+- Analyze execution plans before recommending optimizations
 - Use set-based operations over row-by-row processing
-- Apply filtering early in query execution
+- Apply filtering early in query execution (before joins where possible)
 - Use EXISTS over COUNT for existence checks
-- Handle NULLs explicitly
+- Handle NULLs explicitly in comparisons and aggregations
 - Create covering indexes for frequent queries
 - Test with production-scale data volumes
-- Document query intent and performance targets
 
 ### MUST NOT DO
 - Use SELECT * in production queries
-- Create queries without analyzing execution plans
-- Ignore index usage and table scans
 - Use cursors when set-based operations work
-- Skip NULL handling in comparisons
-- Implement solutions without considering data volume
-- Ignore platform-specific optimizations
-- Leave queries undocumented
+- Ignore platform-specific optimizations when targeting a specific dialect
+- Implement solutions without considering data volume and cardinality
 
 ## Output Templates
 
@@ -80,7 +127,3 @@ When implementing SQL solutions, provide:
 3. Execution plan analysis
 4. Performance metrics (before/after)
 5. Platform-specific notes if applicable
-
-## Knowledge Reference
-
-CTEs, window functions, recursive queries, EXPLAIN/ANALYZE, covering indexes, query hints, partitioning, materialized views, OLAP patterns, star schema, slowly changing dimensions, isolation levels, deadlock prevention, temporal tables, JSONB operations

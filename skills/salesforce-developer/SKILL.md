@@ -1,6 +1,6 @@
 ---
 name: salesforce-developer
-description: Use when developing Salesforce applications, Apex code, Lightning Web Components, SOQL queries, triggers, integrations, or CRM customizations. Invoke for governor limits, bulk processing, platform events, Salesforce DX.
+description: Writes and debugs Apex code, builds Lightning Web Components, optimizes SOQL queries, implements triggers, batch jobs, platform events, and integrations on the Salesforce platform. Use when developing Salesforce applications, customizing CRM workflows, managing governor limits, bulk processing, or setting up Salesforce DX and CI/CD pipelines.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -15,30 +15,14 @@ metadata:
 
 # Salesforce Developer
 
-Senior Salesforce developer with expertise in Apex, Lightning Web Components, declarative automation, and enterprise CRM integrations built on the Salesforce platform.
-
-## Role Definition
-
-You are a senior Salesforce developer with deep experience building enterprise-grade solutions on the Salesforce platform. You specialize in Apex development, Lightning Web Components, SOQL optimization, governor limit management, integration patterns, and Salesforce DX. You build scalable, maintainable solutions following Salesforce best practices and platform limitations.
-
-## When to Use This Skill
-
-- Building custom Apex classes and triggers
-- Developing Lightning Web Components (LWC)
-- Optimizing SOQL/SOSL queries for performance
-- Implementing platform events and integrations
-- Creating batch, queueable, and scheduled Apex
-- Setting up Salesforce DX and CI/CD pipelines
-- Managing governor limits in bulk operations
-- Integrating Salesforce with external systems
-
 ## Core Workflow
 
 1. **Analyze requirements** - Understand business needs, data model, governor limits, scalability
 2. **Design solution** - Choose declarative vs programmatic, plan bulkification, design integrations
 3. **Implement** - Write Apex classes, LWC components, SOQL queries with best practices
-4. **Test thoroughly** - Write test classes with 90%+ coverage, test bulk scenarios
-5. **Deploy** - Use Salesforce DX, scratch orgs, CI/CD for metadata deployment
+4. **Validate governor limits** - Verify SOQL/DML counts, heap size, and CPU time stay within platform limits before proceeding
+5. **Test thoroughly** - Write test classes with 90%+ coverage, test bulk scenarios (200-record batches)
+6. **Deploy** - Use Salesforce DX, scratch orgs, CI/CD for metadata deployment
 
 ## Reference Guide
 
@@ -55,36 +39,165 @@ Load detailed guidance based on context:
 ## Constraints
 
 ### MUST DO
-- Always bulkify Apex code for governor limit compliance
-- Write test classes with minimum 90% code coverage
-- Use SOQL best practices (selective queries, relationship queries)
-- Handle governor limits (SOQL queries, DML statements, heap size)
-- Follow Lightning Web Components best practices
-- Use appropriate async processing (batch, queueable, future)
-- Implement proper error handling and logging
-- Use Salesforce DX for source-driven development
+- Bulkify Apex code — collect IDs/records before loops, query/DML outside loops
+- Write test classes with minimum 90% code coverage, including bulk scenarios
+- Use selective SOQL queries with indexed fields; leverage relationship queries
+- Use appropriate async processing (batch, queueable, future) for long-running work
+- Implement proper error handling and logging; use `Database.update(scope, false)` for partial success
+- Use Salesforce DX for source-driven development and metadata deployment
 
 ### MUST NOT DO
-- Execute SOQL/DML inside loops (causes governor limit violations)
-- Use hard-coded IDs or credentials in code
-- Skip bulkification in triggers and batch processes
-- Ignore test coverage requirements (<90%)
-- Mix declarative and programmatic solutions unnecessarily
+- Execute SOQL/DML inside loops (governor limit violation — see bulkified trigger pattern below)
+- Hard-code IDs or credentials in code
 - Create recursive triggers without safeguards
 - Skip field-level security and sharing rules checks
 - Use deprecated Salesforce APIs or components
 
-## Output Templates
+## Code Patterns
 
-When implementing Salesforce features, provide:
-1. Apex classes with proper structure and documentation
-2. Trigger handlers following best practices
-3. Lightning Web Components (HTML, JS, meta.xml)
-4. Test classes with comprehensive scenarios
-5. SOQL queries optimized for performance
-6. Integration code with error handling
-7. Brief explanation of governor limit considerations
+### Bulkified Trigger (Correct Pattern)
 
-## Knowledge Reference
+```apex
+// CORRECT: collect IDs, query once outside the loop
+trigger AccountTrigger on Account (before insert, before update) {
+    AccountTriggerHandler.handleBeforeInsert(Trigger.new);
+}
 
-Apex, Lightning Web Components (LWC), SOQL/SOSL, Salesforce DX, Triggers, Batch Apex, Queueable Apex, Platform Events, REST/SOAP APIs, Process Builder, Flow, Visualforce, Governor Limits, Test Classes, Metadata API, Deployment, CI/CD, Jest Testing
+public class AccountTriggerHandler {
+    public static void handleBeforeInsert(List<Account> newAccounts) {
+        Set<Id> parentIds = new Set<Id>();
+        for (Account acc : newAccounts) {
+            if (acc.ParentId != null) parentIds.add(acc.ParentId);
+        }
+        Map<Id, Account> parentMap = new Map<Id, Account>(
+            [SELECT Id, Name FROM Account WHERE Id IN :parentIds]
+        );
+        for (Account acc : newAccounts) {
+            if (acc.ParentId != null && parentMap.containsKey(acc.ParentId)) {
+                acc.Description = 'Child of: ' + parentMap.get(acc.ParentId).Name;
+            }
+        }
+    }
+}
+```
+
+```apex
+// INCORRECT: SOQL inside loop — governor limit violation
+trigger AccountTrigger on Account (before insert) {
+    for (Account acc : Trigger.new) {
+        Account parent = [SELECT Id, Name FROM Account WHERE Id = :acc.ParentId]; // BAD
+        acc.Description = 'Child of: ' + parent.Name;
+    }
+}
+```
+
+### Batch Apex
+
+```apex
+public class ContactBatchUpdate implements Database.Batchable<SObject> {
+    public Database.QueryLocator start(Database.BatchableContext bc) {
+        return Database.getQueryLocator([SELECT Id, Email FROM Contact WHERE Email = null]);
+    }
+    public void execute(Database.BatchableContext bc, List<Contact> scope) {
+        for (Contact c : scope) {
+            c.Email = 'unknown@example.com';
+        }
+        Database.update(scope, false); // partial success allowed
+    }
+    public void finish(Database.BatchableContext bc) {
+        // Send notification or chain next batch
+    }
+}
+// Execute: Database.executeBatch(new ContactBatchUpdate(), 200);
+```
+
+### Test Class
+
+```apex
+@IsTest
+private class AccountTriggerHandlerTest {
+    @TestSetup
+    static void makeData() {
+        Account parent = new Account(Name = 'Parent Co');
+        insert parent;
+        Account child = new Account(Name = 'Child Co', ParentId = parent.Id);
+        insert child;
+    }
+
+    @IsTest
+    static void testBulkInsert() {
+        Account parent = [SELECT Id FROM Account WHERE Name = 'Parent Co' LIMIT 1];
+        List<Account> children = new List<Account>();
+        for (Integer i = 0; i < 200; i++) {
+            children.add(new Account(Name = 'Child ' + i, ParentId = parent.Id));
+        }
+        Test.startTest();
+        insert children;
+        Test.stopTest();
+
+        List<Account> updated = [SELECT Description FROM Account WHERE ParentId = :parent.Id];
+        System.assert(!updated.isEmpty(), 'Children should have descriptions set');
+        System.assert(updated[0].Description.startsWith('Child of:'), 'Description format mismatch');
+    }
+}
+```
+
+### SOQL Best Practices
+
+```apex
+// Selective query — use indexed fields in WHERE clause
+List<Opportunity> opps = [
+    SELECT Id, Name, Amount, StageName
+    FROM Opportunity
+    WHERE AccountId IN :accountIds      // indexed field
+      AND CloseDate >= :Date.today()    // indexed field
+    ORDER BY CloseDate ASC
+    LIMIT 200
+];
+
+// Relationship query to avoid extra round-trips
+List<Account> accounts = [
+    SELECT Id, Name,
+           (SELECT Id, LastName, Email FROM Contacts WHERE Email != null)
+    FROM Account
+    WHERE Id IN :accountIds
+];
+```
+
+### Lightning Web Component (Counter Example)
+
+```html
+<!-- counterComponent.html -->
+<template>
+    <lightning-card title="Counter">
+        <div class="slds-p-around_medium">
+            <p>Count: {count}</p>
+            <lightning-button label="Increment" onclick={handleIncrement}></lightning-button>
+        </div>
+    </lightning-card>
+</template>
+```
+
+```javascript
+// counterComponent.js
+import { LightningElement, track } from 'lwc';
+export default class CounterComponent extends LightningElement {
+    @track count = 0;
+    handleIncrement() {
+        this.count += 1;
+    }
+}
+```
+
+```xml
+<!-- counterComponent.js-meta.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>
+```

@@ -1,6 +1,6 @@
 ---
 name: game-developer
-description: Use when building game systems, implementing Unity/Unreal features, or optimizing game performance. Invoke for Unity, Unreal, game patterns, ECS, physics, networking, performance optimization.
+description: "Use when building game systems, implementing Unity/Unreal Engine features, or optimizing game performance. Invoke to implement ECS architecture, configure physics systems and colliders, set up multiplayer networking with lag compensation, optimize frame rates to 60+ FPS targets, develop shaders, or apply game design patterns such as object pooling and state machines. Trigger keywords: Unity, Unreal Engine, game development, ECS architecture, game physics, multiplayer networking, game optimization, shader programming, game AI."
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -15,28 +15,15 @@ metadata:
 
 # Game Developer
 
-Senior game developer with expertise in creating high-performance gaming experiences across Unity, Unreal, and custom engines.
-
-## Role Definition
-
-You are a senior game developer with 10+ years of experience in game engine programming, graphics optimization, and multiplayer systems. You specialize in Unity C#, Unreal C++, ECS architecture, and cross-platform optimization. You build engaging, performant games that run smoothly across all target platforms.
-
-## When to Use This Skill
-
-- Building game systems (ECS, physics, AI, networking)
-- Implementing Unity or Unreal Engine features
-- Optimizing game performance (60+ FPS targets)
-- Creating multiplayer/networking architecture
-- Developing shaders and graphics pipelines
-- Implementing game design patterns (object pooling, state machines)
-
 ## Core Workflow
 
-1. **Analyze requirements** - Identify genre, platforms, performance targets, multiplayer needs
-2. **Design architecture** - Plan ECS/component systems, optimize for target platforms
-3. **Implement** - Build core mechanics, graphics, physics, AI, networking
-4. **Optimize** - Profile and optimize for 60+ FPS, minimize memory/battery usage
-5. **Test** - Cross-platform testing, performance validation, multiplayer stress tests
+1. **Analyze requirements** — Identify genre, platforms, performance targets, multiplayer needs
+2. **Design architecture** — Plan ECS/component systems, optimize for target platforms
+3. **Implement** — Build core mechanics, graphics, physics, AI, networking
+4. **Optimize** — Profile and optimize for 60+ FPS, minimize memory/battery usage
+   - ✅ **Validation checkpoint:** Run Unity Profiler or Unreal Insights; verify frame time ≤16 ms (60 FPS) before proceeding. Identify and resolve CPU/GPU bottlenecks iteratively.
+5. **Test** — Cross-platform testing, performance validation, multiplayer stress tests
+   - ✅ **Validation checkpoint:** Confirm stable frame rate under stress load; run multiplayer latency/desync tests before shipping.
 
 ## Reference Guide
 
@@ -79,6 +66,96 @@ When implementing game features, provide:
 3. Performance considerations and optimizations
 4. Brief explanation of architecture decisions
 
-## Knowledge Reference
+## Key Code Patterns
 
-Unity C#, Unreal C++, Entity Component System (ECS), object pooling, state machines, command pattern, observer pattern, physics optimization, shader programming (HLSL/GLSL), multiplayer networking, client-server architecture, lag compensation, client prediction, performance profiling, LOD systems, occlusion culling, draw call batching
+### Object Pooling (Unity C#)
+```csharp
+public class ObjectPool<T> where T : Component
+{
+    private readonly Queue<T> _pool = new();
+    private readonly T _prefab;
+    private readonly Transform _parent;
+
+    public ObjectPool(T prefab, int initialSize, Transform parent = null)
+    {
+        _prefab = prefab;
+        _parent = parent;
+        for (int i = 0; i < initialSize; i++)
+            Release(Create());
+    }
+
+    public T Get()
+    {
+        T obj = _pool.Count > 0 ? _pool.Dequeue() : Create();
+        obj.gameObject.SetActive(true);
+        return obj;
+    }
+
+    public void Release(T obj)
+    {
+        obj.gameObject.SetActive(false);
+        _pool.Enqueue(obj);
+    }
+
+    private T Create() => Object.Instantiate(_prefab, _parent);
+}
+```
+
+### Component Caching (Unity C#)
+```csharp
+public class PlayerController : MonoBehaviour
+{
+    // Cache all component references in Awake — never call GetComponent in Update
+    private Rigidbody _rb;
+    private Animator _animator;
+    private PlayerInput _input;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
+        _input = GetComponent<PlayerInput>();
+    }
+
+    private void FixedUpdate()
+    {
+        // Use cached references; use deltaTime for frame-independence
+        Vector3 move = _input.MoveDirection * (speed * Time.fixedDeltaTime);
+        _rb.MovePosition(_rb.position + move);
+    }
+}
+```
+
+### State Machine (Unity C#)
+```csharp
+public abstract class State
+{
+    public abstract void Enter();
+    public abstract void Tick(float deltaTime);
+    public abstract void Exit();
+}
+
+public class StateMachine
+{
+    private State _current;
+
+    public void TransitionTo(State next)
+    {
+        _current?.Exit();
+        _current = next;
+        _current.Enter();
+    }
+
+    public void Tick(float deltaTime) => _current?.Tick(deltaTime);
+}
+
+// Usage example
+public class IdleState : State
+{
+    private readonly Animator _animator;
+    public IdleState(Animator animator) => _animator = animator;
+    public override void Enter() => _animator.SetTrigger("Idle");
+    public override void Tick(float deltaTime) { /* poll transitions */ }
+    public override void Exit() { }
+}
+```

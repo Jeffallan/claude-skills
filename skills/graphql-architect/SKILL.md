@@ -17,26 +17,16 @@ metadata:
 
 Senior GraphQL architect specializing in schema design and distributed graph architectures with deep expertise in Apollo Federation 2.5+, GraphQL subscriptions, and performance optimization.
 
-## Role Definition
-
-You are a senior GraphQL architect with 10+ years of API design experience. You specialize in Apollo Federation, schema-first design, and building type-safe API graphs that scale across teams and services. You master resolvers, DataLoader patterns, and real-time subscriptions.
-
-## When to Use This Skill
-
-- Designing GraphQL schemas and type systems
-- Implementing Apollo Federation architectures
-- Building resolvers with DataLoader optimization
-- Creating real-time GraphQL subscriptions
-- Optimizing query complexity and performance
-- Setting up authentication and authorization
-
 ## Core Workflow
 
 1. **Domain Modeling** - Map business domains to GraphQL type system
 2. **Design Schema** - Create types, interfaces, unions with federation directives
-3. **Implement Resolvers** - Write efficient resolvers with DataLoader patterns
-4. **Secure** - Add query complexity limits, depth limiting, field-level auth
-5. **Optimize** - Performance tune with caching, persisted queries, monitoring
+3. **Validate Schema** - Run schema composition check; confirm all `@key` entities resolve correctly
+   - _If composition fails:_ review entity `@key` directives, check for missing or mismatched type definitions across subgraphs, resolve any `@external` field inconsistencies, then re-run composition
+4. **Implement Resolvers** - Write efficient resolvers with DataLoader patterns
+5. **Secure** - Add query complexity limits, depth limiting, field-level auth; validate complexity thresholds before deployment
+   - _If complexity threshold is exceeded:_ identify the highest-cost fields, add pagination limits, restructure nested queries, or raise the threshold with documented justification
+6. **Optimize** - Performance tune with caching, persisted queries, monitoring
 
 ## Reference Guide
 
@@ -72,6 +62,76 @@ Load detailed guidance based on context:
 - Skip error handling in resolvers
 - Hardcode authorization logic
 - Ignore schema validation
+
+## Code Examples
+
+### Federation Schema (SDL)
+
+```graphql
+# products subgraph
+type Product @key(fields: "id") {
+  id: ID!
+  name: String!
+  price: Float!
+  inStock: Boolean!
+}
+
+# reviews subgraph — extends Product from products subgraph
+type Product @key(fields: "id") {
+  id: ID! @external
+  reviews: [Review!]!
+}
+
+type Review {
+  id: ID!
+  rating: Int!
+  body: String
+  author: User! @shareable
+}
+
+type User @shareable {
+  id: ID!
+  username: String!
+}
+```
+
+### Resolver with DataLoader (N+1 Prevention)
+
+```js
+// context setup — one DataLoader instance per request
+const context = ({ req }) => ({
+  loaders: {
+    user: new DataLoader(async (userIds) => {
+      const users = await db.users.findMany({ where: { id: { in: userIds } } });
+      // return results in same order as input keys
+      return userIds.map((id) => users.find((u) => u.id === id) ?? null);
+    }),
+  },
+});
+
+// resolver — batches all user lookups in a single query
+const resolvers = {
+  Review: {
+    author: (review, _args, { loaders }) => loaders.user.load(review.authorId),
+  },
+};
+```
+
+### Query Complexity Validation
+
+```js
+import { createComplexityRule } from 'graphql-query-complexity';
+
+const server = new ApolloServer({
+  schema,
+  validationRules: [
+    createComplexityRule({
+      maximumComplexity: 1000,
+      onComplete: (complexity) => console.log('Query complexity:', complexity),
+    }),
+  ],
+});
+```
 
 ## Output Templates
 
