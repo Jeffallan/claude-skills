@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Standardized README links from HTML to Markdown, improved Quick Start readability (#166)
+- Narrowed Description Trap from "trigger-only" to "no process steps" — capability verbs now permitted in descriptions per AgentSkills.io spec
+- Updated description format to `[Brief capability statement]. Use when [triggering conditions].`
+- Validator now checks `"Use when" in description` instead of `startswith("Use when")`
 
 ### Fixed
 - Fixed stale counts on docs site landing page (65 → 66 skills, 357 → 365 references)

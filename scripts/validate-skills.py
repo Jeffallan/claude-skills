@@ -136,7 +136,7 @@ def parse_yaml(yaml_str: str) -> dict:
 SKILLS_DIR = "skills"
 REQUIRED_FIELDS = ["name", "description"]
 MAX_DESCRIPTION_LENGTH = 1024
-DESCRIPTION_PREFIX = "Use when"
+DESCRIPTION_TRIGGER = "Use when"
 NAME_PATTERN = re.compile(r"^[a-zA-Z0-9-]+$")
 
 # Required metadata sub-fields (under the metadata key)
@@ -562,7 +562,7 @@ class DescriptionLengthChecker(BaseChecker):
 
 
 class DescriptionFormatChecker(BaseChecker):
-    """Validates description starts with 'Use when'."""
+    """Validates description contains a 'Use when' trigger clause."""
 
     name = "description-format"
     category = "yaml"
@@ -574,13 +574,13 @@ class DescriptionFormatChecker(BaseChecker):
 
         issues = []
         description = result.frontmatter.get("description", "")
-        if description and not description.startswith(DESCRIPTION_PREFIX):
+        if description and DESCRIPTION_TRIGGER not in description:
             issues.append(
                 ValidationIssue(
                     skill=skill_name,
                     check=self.name,
                     severity=Severity.WARNING,
-                    message=f"Description should start with '{DESCRIPTION_PREFIX}' (trigger-only format)",
+                    message=f"Description should contain a '{DESCRIPTION_TRIGGER}' trigger clause (no process steps)",
                     file=str(result.skill_md),
                 )
             )

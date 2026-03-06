@@ -135,12 +135,12 @@ Two-stage review process:
 
 ## The Description Trap (For Skill Authors)
 
-Skill descriptions must be TRIGGER-ONLY.
+Never put process steps or workflow sequences in descriptions. If you do, agents follow the description instead of reading the full skill content.
 
-**Never summarize the workflow in the description.** If you do, agents follow the description instead of reading the full skill content.
+Brief capability statements (what it does) and trigger conditions (when to use it) are both appropriate. Process steps (how it works) are not.
 
 **BAD:** `description: Use for debugging. First investigate root cause, then analyze patterns, test hypotheses, and implement fixes.`
 
-**GOOD:** `description: Use when encountering bugs, errors, or unexpected behavior requiring investigation.`
+**GOOD:** `description: Diagnoses bugs through root cause analysis and pattern matching. Use when encountering errors or unexpected behavior requiring investigation.`
 
-Descriptions tell WHEN to use. The skill body tells HOW.
+Descriptions tell WHAT and WHEN. The skill body tells HOW.

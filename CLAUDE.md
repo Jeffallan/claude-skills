@@ -10,25 +10,25 @@ Skills follow the [Agent Skills specification](https://agentskills.io/specificat
 
 ### The Description Trap
 
-**Critical:** Skill descriptions must be TRIGGER-ONLY. Never summarize the workflow or process.
+**Critical:** Never put process steps or workflow sequences in descriptions. When descriptions contain step-by-step instructions, agents follow the brief description instead of reading the full skill content. This defeats the purpose of detailed skills.
 
-When descriptions contain process steps, agents follow the brief description instead of reading the full skill content. This defeats the purpose of detailed skills.
+Brief capability statements (what it does) and trigger conditions (when to use it) are both appropriate. Process steps (how it works) are not.
 
-**BAD - Process in description:**
+**BAD - Process steps in description:**
 ```yaml
 description: Use for debugging. First investigate root cause, then analyze
 patterns, test hypotheses, and implement fixes with tests.
 ```
 
-**GOOD - Trigger-only:**
+**GOOD - Capability + trigger:**
 ```yaml
-description: Use when encountering bugs, errors, or unexpected behavior
-requiring investigation.
+description: Diagnoses bugs through root cause analysis and pattern matching.
+Use when encountering errors or unexpected behavior requiring investigation.
 ```
 
-**Format:** `Use when [specific triggering conditions]`
+**Format:** `[Brief capability statement]. Use when [triggering conditions].`
 
-Descriptions tell WHEN to use the skill. The SKILL.md body tells HOW.
+Descriptions tell WHAT the skill does and WHEN to use it. The SKILL.md body tells HOW.
 
 ---
 
@@ -39,7 +39,7 @@ Per the [Agent Skills specification](https://agentskills.io/specification), only
 ```yaml
 ---
 name: skill-name-with-hyphens
-description: Use when [triggering conditions] - max 1024 chars
+description: [Brief capability statement]. Use when [triggering conditions] - max 1024 chars
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -55,7 +55,7 @@ metadata:
 
 **Top-level fields (spec-defined):**
 - `name`: Letters, numbers, and hyphens only (no parentheses or special characters)
-- `description`: Maximum 1024 characters, trigger-only format
+- `description`: Maximum 1024 characters. Capability statement + trigger conditions. No process steps.
 - `license`: Always `MIT` for this project
 - `allowed-tools`: Space-delimited tool list (only on skills that restrict tools)
 
@@ -116,7 +116,7 @@ Reference files for framework-specific skills must reflect the idiomatic best pr
 ### When Creating New Skills
 
 1. Check existing skills for overlap
-2. Write SKILL.md with trigger-only description
+2. Write SKILL.md with capability + trigger description (no process steps)
 3. Create reference files for deep content (100+ lines)
 4. Add routing table linking topics to references
 5. Test skill triggers with realistic prompts
@@ -125,7 +125,7 @@ Reference files for framework-specific skills must reflect the idiomatic best pr
 ### When Modifying Skills
 
 1. Read the full current skill before editing
-2. Maintain trigger-only description format
+2. Maintain capability + trigger description format (no process steps)
 3. Preserve progressive disclosure structure
 4. Update related cross-references
 5. Verify routing table accuracy
@@ -228,7 +228,7 @@ python scripts/validate-skills.py
 The script validates:
 - **YAML frontmatter** - Parsing, required fields (name, description, triggers), format
 - **Name format** - Letters, numbers, hyphens only
-- **Description** - Max 1024 chars, starts with "Use when"
+- **Description** - Max 1024 chars, must contain "Use when" trigger clause
 - **References** - Directory exists, has files, proper headers
 - **Count consistency** - Skills/reference counts match across documentation
 
