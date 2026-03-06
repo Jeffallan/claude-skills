@@ -1,6 +1,6 @@
 ---
 name: kubernetes-specialist
-description: Use when deploying or managing Kubernetes workloads requiring cluster configuration, security hardening, or troubleshooting. Invoke for Helm charts, RBAC policies, NetworkPolicies, storage configuration, performance optimization.
+description: Use when deploying or managing Kubernetes workloads. Invoke to create deployment manifests, configure pod security policies, set up service accounts, define network isolation rules, debug pod crashes, analyze resource limits, inspect container logs, or right-size workloads. Use for Helm charts, RBAC policies, NetworkPolicies, storage configuration, performance optimization, GitOps pipelines, and multi-cluster management.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -15,12 +15,6 @@ metadata:
 
 # Kubernetes Specialist
 
-Senior Kubernetes specialist with deep expertise in production cluster management, security hardening, and cloud-native architectures.
-
-## Role Definition
-
-You are a senior Kubernetes engineer with 10+ years of container orchestration experience. You specialize in production-grade K8s deployments, security hardening (RBAC, NetworkPolicies, Pod Security Standards), and performance optimization. You build scalable, reliable, and secure Kubernetes platforms.
-
 ## When to Use This Skill
 
 - Deploying workloads (Deployments, StatefulSets, DaemonSets, Jobs)
@@ -33,11 +27,11 @@ You are a senior Kubernetes engineer with 10+ years of container orchestration e
 
 ## Core Workflow
 
-1. **Analyze requirements** - Understand workload characteristics, scaling needs, security requirements
-2. **Design architecture** - Choose workload types, networking patterns, storage solutions
-3. **Implement manifests** - Create declarative YAML with proper resource limits, health checks
-4. **Secure** - Apply RBAC, NetworkPolicies, Pod Security Standards, least privilege
-5. **Test & validate** - Verify deployments, test failure scenarios, validate security posture
+1. **Analyze requirements** — Understand workload characteristics, scaling needs, security requirements
+2. **Design architecture** — Choose workload types, networking patterns, storage solutions
+3. **Implement manifests** — Create declarative YAML with proper resource limits, health checks
+4. **Secure** — Apply RBAC, NetworkPolicies, Pod Security Standards, least privilege
+5. **Validate** — Run `kubectl rollout status`, `kubectl get pods -w`, and `kubectl describe pod <name>` to confirm health; roll back with `kubectl rollout undo` if needed
 
 ## Reference Guide
 
@@ -80,6 +74,164 @@ Load detailed guidance based on context:
 - Use latest tag for production images
 - Expose unnecessary ports or services
 
+## Common YAML Patterns
+
+### Deployment with resource limits, probes, and security context
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  namespace: my-namespace
+  labels:
+    app: my-app
+    version: "1.2.3"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: "1.2.3"
+    spec:
+      serviceAccountName: my-app-sa   # never use default SA
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+        - name: my-app
+          image: my-registry/my-app:1.2.3   # never use latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          envFrom:
+            - secretRef:
+                name: my-app-secret   # pull credentials from Secret, not ConfigMap
+```
+
+### Minimal RBAC (least privilege)
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-app-sa
+  namespace: my-namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: my-app-role
+  namespace: my-namespace
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]   # grant only what is needed
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: my-app-rolebinding
+  namespace: my-namespace
+subjects:
+  - kind: ServiceAccount
+    name: my-app-sa
+    namespace: my-namespace
+roleRef:
+  kind: Role
+  name: my-app-role
+  apiGroup: rbac.authorization.k8s.io
+```
+
+### NetworkPolicy (default-deny + explicit allow)
+
+```yaml
+# Deny all ingress and egress by default
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: my-namespace
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress", "Egress"]
+---
+# Allow only specific traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-my-app
+  namespace: my-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: my-app
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8080
+```
+
+## Validation Commands
+
+After deploying, verify health and security posture:
+
+```bash
+# Watch rollout complete
+kubectl rollout status deployment/my-app -n my-namespace
+
+# Stream pod events to catch crash loops or image pull errors
+kubectl get pods -n my-namespace -w
+
+# Inspect a specific pod for failures
+kubectl describe pod <pod-name> -n my-namespace
+
+# Check container logs
+kubectl logs <pod-name> -n my-namespace --previous   # use --previous for crashed containers
+
+# Verify resource usage vs. limits
+kubectl top pods -n my-namespace
+
+# Audit RBAC permissions for a service account
+kubectl auth can-i --list --as=system:serviceaccount:my-namespace:my-app-sa
+
+# Roll back a failed deployment
+kubectl rollout undo deployment/my-app -n my-namespace
+```
+
 ## Output Templates
 
 When implementing Kubernetes resources, provide:
@@ -87,7 +239,3 @@ When implementing Kubernetes resources, provide:
 2. RBAC configuration if needed (ServiceAccount, Role, RoleBinding)
 3. NetworkPolicy for network isolation
 4. Brief explanation of design decisions and security considerations
-
-## Knowledge Reference
-
-Kubernetes API, kubectl, Helm 3, Kustomize, RBAC, NetworkPolicies, Pod Security Standards, CNI, CSI, Ingress controllers, Service mesh basics, GitOps principles, monitoring/logging integration

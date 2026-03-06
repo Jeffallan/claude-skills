@@ -1,6 +1,6 @@
 ---
 name: embedded-systems
-description: Use when developing firmware for microcontrollers, implementing RTOS applications, or optimizing power consumption. Invoke for STM32, ESP32, FreeRTOS, bare-metal, power optimization, real-time systems.
+description: Use when developing firmware for microcontrollers, implementing RTOS applications, or optimizing power consumption. Invoke for STM32, ESP32, FreeRTOS, bare-metal, power optimization, real-time systems, configure peripherals, write interrupt handlers, implement DMA transfers, debug timing issues.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,26 +17,14 @@ metadata:
 
 Senior embedded systems engineer with deep expertise in microcontroller programming, RTOS implementation, and hardware-software integration for resource-constrained devices.
 
-## Role Definition
-
-You are a senior embedded systems engineer with 10+ years of firmware development experience. You specialize in ARM Cortex-M, ESP32, FreeRTOS, bare-metal programming, and real-time systems. You build reliable, efficient firmware that meets strict timing, power, and resource constraints.
-
-## When to Use This Skill
-
-- Developing firmware for microcontrollers (STM32, ESP32, Nordic, etc.)
-- Implementing RTOS-based applications (FreeRTOS, Zephyr)
-- Creating hardware drivers and HAL layers
-- Optimizing power consumption and memory usage
-- Building real-time systems with strict timing requirements
-- Implementing communication protocols (I2C, SPI, UART, CAN)
-
 ## Core Workflow
 
 1. **Analyze constraints** - Identify MCU specs, memory limits, timing requirements, power budget
 2. **Design architecture** - Plan task structure, interrupts, peripherals, memory layout
 3. **Implement drivers** - Write HAL, peripheral drivers, RTOS integration
-4. **Optimize resources** - Minimize code size, RAM usage, power consumption
-5. **Test and verify** - Validate timing, test edge cases, measure performance
+4. **Validate implementation** - Compile with `-Wall -Werror`, verify no warnings; run static analysis (e.g. `cppcheck`); confirm correct register bit-field usage against datasheet
+5. **Optimize resources** - Minimize code size, RAM usage, power consumption
+6. **Test and verify** - Validate timing with logic analyzer or oscilloscope; check stack usage with `uxTaskGetStackHighWaterMark()`; measure ISR latency; confirm no missed deadlines under worst-case load; if issues found, return to step 4
 
 ## Reference Guide
 
@@ -54,8 +42,8 @@ Load detailed guidance based on context:
 
 ### MUST DO
 - Optimize for code size and RAM usage
-- Use volatile for hardware registers
-- Implement proper interrupt handling (short ISRs)
+- Use `volatile` for hardware registers and ISR-shared variables
+- Implement proper interrupt handling (short ISRs, defer work to tasks)
 - Add watchdog timer for reliability
 - Use proper synchronization primitives
 - Document resource usage (flash, RAM, power)
@@ -72,6 +60,103 @@ Load detailed guidance based on context:
 - Hardcode hardware-specific values
 - Ignore power consumption requirements
 
+## Code Templates
+
+### Minimal ISR Pattern (ARM Cortex-M / STM32 HAL)
+
+```c
+/* Flag shared between ISR and task — must be volatile */
+static volatile uint8_t g_uart_rx_flag = 0;
+static volatile uint8_t g_uart_rx_byte = 0;
+
+/* Keep ISR short: read hardware, set flag, exit */
+void USART2_IRQHandler(void) {
+    if (USART2->SR & USART_SR_RXNE) {
+        g_uart_rx_byte = (uint8_t)(USART2->DR & 0xFF); /* clears RXNE */
+        g_uart_rx_flag = 1;
+    }
+}
+
+/* Main loop or RTOS task processes the flag */
+void process_uart(void) {
+    if (g_uart_rx_flag) {
+        __disable_irq();                   /* enter critical section */
+        uint8_t byte = g_uart_rx_byte;
+        g_uart_rx_flag = 0;
+        __enable_irq();                    /* exit critical section  */
+        handle_byte(byte);
+    }
+}
+```
+
+### FreeRTOS Task Creation Skeleton
+
+```c
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+#define SENSOR_TASK_STACK  256   /* words */
+#define SENSOR_TASK_PRIO   2
+
+static QueueHandle_t xSensorQueue;
+
+static void vSensorTask(void *pvParameters) {
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xPeriod  = pdMS_TO_TICKS(10); /* 10 ms period */
+
+    for (;;) {
+        /* Periodic, deadline-driven read */
+        uint16_t raw = adc_read_channel(ADC_CH0);
+        xQueueSend(xSensorQueue, &raw, 0); /* non-blocking send */
+
+        /* Check stack headroom in debug builds */
+        configASSERT(uxTaskGetStackHighWaterMark(NULL) > 32);
+
+        vTaskDelayUntil(&xLastWakeTime, xPeriod);
+    }
+}
+
+void app_init(void) {
+    xSensorQueue = xQueueCreate(8, sizeof(uint16_t));
+    configASSERT(xSensorQueue != NULL);
+
+    xTaskCreate(vSensorTask, "Sensor", SENSOR_TASK_STACK,
+                NULL, SENSOR_TASK_PRIO, NULL);
+    vTaskStartScheduler();
+}
+```
+
+### GPIO + Timer-Interrupt Blink (Bare-Metal STM32)
+
+```c
+/* Demonstrates: clock enable, register-level GPIO, TIM2 interrupt */
+#include "stm32f4xx.h"
+
+void TIM2_IRQHandler(void) {
+    if (TIM2->SR & TIM_SR_UIF) {
+        TIM2->SR &= ~TIM_SR_UIF;           /* clear update flag */
+        GPIOA->ODR ^= GPIO_ODR_OD5;        /* toggle LED on PA5  */
+    }
+}
+
+void blink_init(void) {
+    /* GPIO */
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+    GPIOA->MODER |= GPIO_MODER_MODER5_0;  /* PA5 output */
+
+    /* TIM2 @ ~1 Hz (84 MHz APB1 × 2 = 84 MHz timer clock) */
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+    TIM2->PSC  = 8399;   /* /8400  → 10 kHz  */
+    TIM2->ARR  = 9999;   /* /10000 → 1 Hz    */
+    TIM2->DIER |= TIM_DIER_UIE;
+    TIM2->CR1  |= TIM_CR1_CEN;
+
+    NVIC_SetPriority(TIM2_IRQn, 6);
+    NVIC_EnableIRQ(TIM2_IRQn);
+}
+```
+
 ## Output Templates
 
 When implementing embedded features, provide:
@@ -80,7 +165,3 @@ When implementing embedded features, provide:
 3. Application code (RTOS tasks or main loop)
 4. Resource usage summary (flash, RAM, power estimate)
 5. Brief explanation of timing and optimization decisions
-
-## Knowledge Reference
-
-ARM Cortex-M, STM32, ESP32, Nordic nRF, FreeRTOS, Zephyr, bare-metal, interrupts, DMA, timers, ADC/DAC, I2C, SPI, UART, CAN, low-power modes, JTAG/SWD, memory-mapped I/O, bootloaders, OTA updates

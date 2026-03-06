@@ -15,28 +15,13 @@ metadata:
 
 # .NET Core Expert
 
-Senior .NET Core specialist with deep expertise in .NET 8, modern C#, minimal APIs, and cloud-native application development.
-
-## Role Definition
-
-You are a senior .NET engineer with 10+ years of experience building enterprise applications. You specialize in .NET 8, C# 12, minimal APIs, Entity Framework Core, and cloud-native patterns. You build high-performance, scalable applications with clean architecture.
-
-## When to Use This Skill
-
-- Building minimal APIs with .NET 8
-- Implementing clean architecture with CQRS/MediatR
-- Setting up Entity Framework Core with async patterns
-- Creating microservices with cloud-native patterns
-- Implementing JWT authentication and authorization
-- Optimizing performance with AOT compilation
-
 ## Core Workflow
 
-1. **Analyze requirements** - Identify architecture pattern, data models, API design
-2. **Design solution** - Create clean architecture layers with proper separation
-3. **Implement** - Write high-performance code with modern C# features
-4. **Secure** - Add authentication, authorization, and security best practices
-5. **Test** - Write comprehensive tests with xUnit and integration testing
+1. **Analyze requirements** — Identify architecture pattern, data models, API design
+2. **Design solution** — Create clean architecture layers with proper separation
+3. **Implement** — Write high-performance code with modern C# features; run `dotnet build` to verify compilation — if build fails, review errors, fix issues, and rebuild before proceeding
+4. **Secure** — Add authentication, authorization, and security best practices
+5. **Test** — Write comprehensive tests with xUnit and integration testing; run `dotnet test` to confirm all tests pass — if tests fail, diagnose failures, fix the implementation, and re-run before continuing; verify endpoints with `curl` or a REST client
 
 ## Reference Guide
 
@@ -54,23 +39,94 @@ Load detailed guidance based on context:
 
 ### MUST DO
 - Use .NET 8 and C# 12 features
-- Enable nullable reference types
-- Use async/await for all I/O operations
+- Enable nullable reference types: `<Nullable>enable</Nullable>` in the `.csproj`
+- Use async/await for all I/O operations — e.g., `await dbContext.Users.ToListAsync()`
 - Implement proper dependency injection
-- Use record types for DTOs
+- Use record types for DTOs — e.g., `public record UserDto(int Id, string Name);`
 - Follow clean architecture principles
-- Write integration tests with WebApplicationFactory
+- Write integration tests with `WebApplicationFactory<Program>`
 - Configure OpenAPI/Swagger documentation
 
 ### MUST NOT DO
 - Use synchronous I/O operations
 - Expose entities directly in API responses
-- Store secrets in code or appsettings.json
 - Skip input validation
 - Use legacy .NET Framework patterns
-- Ignore compiler warnings
 - Mix concerns across architectural layers
 - Use deprecated EF Core patterns
+
+## Code Examples
+
+### Minimal API Endpoint
+```csharp
+// Program.cs
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.MapGet("/users/{id}", async (int id, ISender sender, CancellationToken ct) =>
+{
+    var result = await sender.Send(new GetUserQuery(id), ct);
+    return result is null ? Results.NotFound() : Results.Ok(result);
+})
+.WithName("GetUser")
+.Produces<UserDto>()
+.ProducesProblem(404);
+
+app.Run();
+```
+
+### MediatR Query Handler
+```csharp
+// Application/Users/GetUserQuery.cs
+public record GetUserQuery(int Id) : IRequest<UserDto?>;
+
+public sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserDto?>
+{
+    private readonly AppDbContext _db;
+
+    public GetUserQueryHandler(AppDbContext db) => _db = db;
+
+    public async Task<UserDto?> Handle(GetUserQuery request, CancellationToken ct) =>
+        await _db.Users
+            .AsNoTracking()
+            .Where(u => u.Id == request.Id)
+            .Select(u => new UserDto(u.Id, u.Name))
+            .FirstOrDefaultAsync(ct);
+}
+```
+
+### EF Core DbContext with Async Query
+```csharp
+// Infrastructure/AppDbContext.cs
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+{
+    public DbSet<User> Users => Set<User>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
+}
+
+// Usage in a service
+public async Task<IReadOnlyList<UserDto>> GetAllAsync(CancellationToken ct) =>
+    await _db.Users
+        .AsNoTracking()
+        .Select(u => new UserDto(u.Id, u.Name))
+        .ToListAsync(ct);
+```
+
+### DTO with Record Type
+```csharp
+public record UserDto(int Id, string Name);
+public record CreateUserRequest(string Name, string Email);
+```
 
 ## Output Templates
 
@@ -80,7 +136,3 @@ When implementing .NET features, provide:
 3. API endpoints or service implementations
 4. Database context and migrations if applicable
 5. Brief explanation of architectural decisions
-
-## Knowledge Reference
-
-.NET 8, C# 12, ASP.NET Core, minimal APIs, Entity Framework Core, MediatR, CQRS, clean architecture, dependency injection, JWT authentication, xUnit, Docker, Kubernetes, AOT compilation, OpenAPI/Swagger

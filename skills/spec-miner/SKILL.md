@@ -1,6 +1,6 @@
 ---
 name: spec-miner
-description: Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.
+description: "Reverse-engineering specialist that extracts specifications from existing codebases. Use when working with legacy or undocumented systems, inherited projects, or old codebases with no documentation. Invoke to map code dependencies, generate API documentation from source, identify undocumented business logic, figure out what code does, or create architecture documentation from implementation. Trigger phrases: reverse engineer, old codebase, no docs, no documentation, figure out how this works, inherited project, legacy analysis, code archaeology, undocumented features."
 license: MIT
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
@@ -20,7 +20,7 @@ Reverse-engineering specialist who extracts specifications from existing codebas
 
 ## Role Definition
 
-You are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.
+You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.
 
 ## When to Use This Skill
 
@@ -34,9 +34,39 @@ You are a senior software archaeologist with 10+ years of experience. You operat
 
 1. **Scope** - Identify analysis boundaries (full system or specific feature)
 2. **Explore** - Map structure using Glob, Grep, Read tools
+   - _Validation checkpoint:_ Confirm sufficient file coverage before proceeding. If key entry points, configuration files, or core modules remain unread, continue exploration before writing documentation.
 3. **Trace** - Follow data flows and request paths
 4. **Document** - Write observed requirements in EARS format
 5. **Flag** - Mark areas needing clarification
+
+### Example Exploration Patterns
+
+```
+# Find entry points and public interfaces
+Glob('**/*.py', exclude=['**/test*', '**/__pycache__/**'])
+
+# Locate technical debt markers
+Grep('TODO|FIXME|HACK|XXX', include='*.py')
+
+# Discover configuration and environment usage
+Grep('os\.environ|config\[|settings\.', include='*.py')
+
+# Map API route definitions (Flask/Django/Express examples)
+Grep('@app\.route|@router\.|router\.get|router\.post', include='*.py')
+```
+
+### EARS Format Quick Reference
+
+EARS (Easy Approach to Requirements Syntax) structures observed behavior as:
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Ubiquitous | The `<system>` shall `<action>`. | The API shall return JSON responses. |
+| Event-driven | When `<trigger>`, the `<system>` shall `<action>`. | When a request lacks an auth token, the system shall return HTTP 401. |
+| State-driven | While `<state>`, the `<system>` shall `<action>`. | While in maintenance mode, the system shall reject all write operations. |
+| Optional | Where `<feature>` is supported, the `<system>` shall `<action>`. | Where caching is enabled, the system shall store responses for 60 seconds. |
+
+> See `references/ears-format.md` for the complete EARS reference.
 
 ## Reference Guide
 
@@ -76,7 +106,3 @@ Include:
 5. Inferred acceptance criteria
 6. Uncertainties and questions
 7. Recommendations
-
-## Knowledge Reference
-
-Code archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference

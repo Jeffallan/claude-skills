@@ -1,6 +1,6 @@
 ---
 name: cli-developer
-description: Use when building CLI tools, implementing argument parsing, or adding interactive prompts. Invoke for CLI design, argument parsing, interactive prompts, progress indicators, shell completions.
+description: Use when building CLI tools, implementing argument parsing, or adding interactive prompts. Invoke for parsing flags and subcommands, displaying progress bars and spinners, generating bash/zsh/fish completion scripts, CLI design, shell completions, and cross-platform terminal applications using commander, click, typer, or cobra.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -15,28 +15,13 @@ metadata:
 
 # CLI Developer
 
-Senior CLI developer with expertise in building intuitive, cross-platform command-line tools with excellent developer experience.
-
-## Role Definition
-
-You are a senior CLI developer with 10+ years of experience building developer tools. You specialize in creating fast, intuitive command-line interfaces across Node.js, Python, and Go ecosystems. You build tools with <50ms startup time, comprehensive shell completions, and delightful UX.
-
-## When to Use This Skill
-
-- Building CLI tools and terminal applications
-- Implementing argument parsing and subcommands
-- Creating interactive prompts and forms
-- Adding progress bars and spinners
-- Implementing shell completions (bash, zsh, fish)
-- Optimizing CLI performance and startup time
-
 ## Core Workflow
 
-1. **Analyze UX** - Identify user workflows, command hierarchy, common tasks
-2. **Design commands** - Plan subcommands, flags, arguments, configuration
-3. **Implement** - Build with appropriate CLI framework for the language
-4. **Polish** - Add completions, help text, error messages, progress indicators
-5. **Test** - Cross-platform testing, performance benchmarks
+1. **Analyze UX** — Identify user workflows, command hierarchy, common tasks. Validate by listing all commands and their expected `--help` output before writing code.
+2. **Design commands** — Plan subcommands, flags, arguments, configuration. Confirm flag naming is consistent and no existing signatures are broken.
+3. **Implement** — Build with the appropriate CLI framework for the language (see Reference Guide below). After wiring up commands, run `<cli> --help` to verify help text renders correctly and `<cli> --version` to confirm version output.
+4. **Polish** — Add completions, help text, error messages, progress indicators. Verify TTY detection for color output and graceful SIGINT handling.
+5. **Test** — Run cross-platform smoke tests; benchmark startup time (target: <50ms).
 
 ## Reference Guide
 
@@ -50,12 +35,40 @@ Load detailed guidance based on context:
 | Go CLIs | `references/go-cli.md` | cobra, viper, bubbletea |
 | UX Patterns | `references/ux-patterns.md` | Progress bars, colors, help text |
 
+## Quick-Start Example
+
+### Node.js (commander)
+
+```js
+#!/usr/bin/env node
+// npm install commander
+const { program } = require('commander');
+
+program
+  .name('mytool')
+  .description('Example CLI')
+  .version('1.0.0');
+
+program
+  .command('greet <name>')
+  .description('Greet a user')
+  .option('-l, --loud', 'uppercase the greeting')
+  .action((name, opts) => {
+    const msg = `Hello, ${name}!`;
+    console.log(opts.loud ? msg.toUpperCase() : msg);
+  });
+
+program.parse();
+```
+
+For Python (click/typer) and Go (cobra) quick-start examples, see `references/python-cli.md` and `references/go-cli.md`.
+
 ## Constraints
 
 ### MUST DO
 - Keep startup time under 50ms
 - Provide clear, actionable error messages
-- Support --help and --version flags
+- Support `--help` and `--version` flags
 - Use consistent flag naming conventions
 - Handle SIGINT (Ctrl+C) gracefully
 - Validate user input early
@@ -63,13 +76,28 @@ Load detailed guidance based on context:
 - Test on Windows, macOS, and Linux
 
 ### MUST NOT DO
-- Block on synchronous I/O unnecessarily
-- Print to stdout if output will be piped
-- Use colors when output is not a TTY
-- Break existing command signatures (breaking changes)
-- Require interactive input in CI/CD environments
-- Hardcode paths or platform-specific logic
-- Ship without shell completions
+
+- **Block on synchronous I/O unnecessarily** — use async reads or stream processing instead.
+- **Print to stdout when output will be piped** — write logs/diagnostics to stderr.
+- **Use colors when output is not a TTY** — detect before applying color:
+  ```js
+  // Node.js
+  const useColor = process.stdout.isTTY;
+  ```
+  ```python
+  # Python
+  import sys
+  use_color = sys.stdout.isatty()
+  ```
+  ```go
+  // Go
+  import "golang.org/x/term"
+  useColor := term.IsTerminal(int(os.Stdout.Fd()))
+  ```
+- **Break existing command signatures** — treat flag/subcommand renames as breaking changes.
+- **Require interactive input in CI/CD environments** — always provide non-interactive fallbacks via flags or env vars.
+- **Hardcode paths or platform-specific logic** — use `os.homedir()` / `os.UserHomeDir()` / `Path.home()` instead.
+- **Ship without shell completions** — all three frameworks above have built-in completion generation.
 
 ## Output Templates
 

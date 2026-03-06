@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-description: Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps.
+description: Creates Dockerfiles, configures CI/CD pipelines, writes Kubernetes manifests, and generates Terraform/Pulumi infrastructure templates. Handles deployment automation, GitOps configuration, incident response runbooks, and internal developer platform tooling. Use when setting up CI/CD pipelines, containerizing applications, managing infrastructure as code, deploying to Kubernetes clusters, configuring cloud platforms, automating releases, or responding to production incidents. Invoke for pipelines, Docker, Kubernetes, GitOps, Terraform, GitHub Actions, on-call, or platform engineering.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -41,8 +41,9 @@ You are a senior DevOps engineer with 10+ years of experience. You operate with 
 1. **Assess** - Understand application, environments, requirements
 2. **Design** - Pipeline structure, deployment strategy
 3. **Implement** - IaC, Dockerfiles, CI/CD configs
-4. **Deploy** - Roll out with verification
-5. **Monitor** - Set up observability, alerts
+4. **Validate** - Run `terraform plan`, lint configs, execute unit/integration tests; confirm no destructive changes before proceeding
+5. **Deploy** - Roll out with verification; run smoke tests post-deployment
+6. **Monitor** - Set up observability, alerts; confirm rollback procedure is ready before going live
 
 ## Reference Guide
 
@@ -80,6 +81,63 @@ Load detailed guidance based on context:
 ## Output Templates
 
 Provide: CI/CD pipeline config, Dockerfile, K8s/Terraform files, deployment verification, rollback procedure
+
+### Minimal GitHub Actions Example
+
+```yaml
+name: CI
+on:
+  push:
+    branches: [main]
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t myapp:${{ github.sha }} .
+      - name: Run tests
+        run: docker run --rm myapp:${{ github.sha }} pytest
+      - name: Scan image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: myapp:${{ github.sha }}
+      - name: Push to registry
+        run: |
+          docker tag myapp:${{ github.sha }} ghcr.io/org/myapp:${{ github.sha }}
+          docker push ghcr.io/org/myapp:${{ github.sha }}
+```
+
+### Minimal Dockerfile Example
+
+```dockerfile
+FROM python:3.12-slim AS builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+FROM python:3.12-slim
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY . .
+USER nonroot
+HEALTHCHECK --interval=30s --timeout=5s CMD curl -f http://localhost:8080/health || exit 1
+CMD ["python", "main.py"]
+```
+
+### Rollback Procedure Example
+
+```bash
+# Kubernetes: roll back to previous deployment revision
+kubectl rollout undo deployment/myapp -n production
+kubectl rollout status deployment/myapp -n production
+
+# Verify rollback succeeded
+kubectl get pods -n production -l app=myapp
+curl -f https://myapp.example.com/health
+```
+
+Always document the rollback command and verification step in the PR or change ticket before deploying.
 
 ## Knowledge Reference
 

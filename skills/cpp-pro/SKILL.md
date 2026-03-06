@@ -1,6 +1,6 @@
 ---
 name: cpp-pro
-description: Use when building C++ applications requiring modern C++20/23 features, template metaprogramming, or high-performance systems. Invoke for concepts, ranges, coroutines, SIMD optimization, memory management.
+description: Writes, optimizes, and debugs C++ applications using modern C++20/23 features, template metaprogramming, and high-performance systems techniques. Use when building or refactoring C++ code requiring concepts, ranges, coroutines, SIMD optimization, or careful memory management — or when addressing performance bottlenecks, concurrency issues, and build system configuration with CMake.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,26 +17,13 @@ metadata:
 
 Senior C++ developer with deep expertise in modern C++20/23, systems programming, high-performance computing, and zero-overhead abstractions.
 
-## Role Definition
-
-You are a senior C++ engineer with 15+ years of systems programming experience. You specialize in modern C++20/23, template metaprogramming, performance optimization, and building production-grade systems with emphasis on safety, efficiency, and maintainability. You follow C++ Core Guidelines and leverage cutting-edge language features.
-
-## When to Use This Skill
-
-- Building high-performance C++ applications
-- Implementing template metaprogramming solutions
-- Optimizing memory-critical systems
-- Developing concurrent and parallel algorithms
-- Creating custom allocators and memory pools
-- Systems programming and embedded development
-
 ## Core Workflow
 
-1. **Analyze architecture** - Review build system, compiler flags, performance requirements
-2. **Design with concepts** - Create type-safe interfaces using C++20 concepts
-3. **Implement zero-cost** - Apply RAII, constexpr, and zero-overhead abstractions
-4. **Verify quality** - Run sanitizers, static analysis, and performance benchmarks
-5. **Optimize** - Profile, measure, and apply targeted optimizations
+1. **Analyze architecture** — Review build system, compiler flags, performance requirements
+2. **Design with concepts** — Create type-safe interfaces using C++20 concepts
+3. **Implement zero-cost** — Apply RAII, constexpr, and zero-overhead abstractions
+4. **Verify quality** — Run sanitizers and static analysis; if AddressSanitizer or UndefinedBehaviorSanitizer report issues, fix all memory and UB errors before proceeding
+5. **Benchmark** — Profile with real workloads; if performance targets are not met, apply targeted optimizations (SIMD, cache layout, move semantics) and re-measure
 
 ## Reference Guide
 
@@ -72,6 +59,52 @@ Load detailed guidance based on context:
 - Ignore undefined behavior
 - Skip move semantics for expensive types
 
+## Key Patterns
+
+### Concept Definition (C++20)
+```cpp
+// Define a reusable, self-documenting constraint
+template<typename T>
+concept Numeric = std::integral<T> || std::floating_point<T>;
+
+template<Numeric T>
+T clamp(T value, T lo, T hi) {
+    return std::clamp(value, lo, hi);
+}
+```
+
+### RAII Resource Wrapper
+```cpp
+// Wraps a raw handle; no manual cleanup needed at call sites
+class FileHandle {
+public:
+    explicit FileHandle(const char* path)
+        : handle_(std::fopen(path, "r")) {
+        if (!handle_) throw std::runtime_error("Cannot open file");
+    }
+    ~FileHandle() { if (handle_) std::fclose(handle_); }
+
+    // Non-copyable, movable
+    FileHandle(const FileHandle&) = delete;
+    FileHandle& operator=(const FileHandle&) = delete;
+    FileHandle(FileHandle&& other) noexcept
+        : handle_(std::exchange(other.handle_, nullptr)) {}
+
+    std::FILE* get() const noexcept { return handle_; }
+private:
+    std::FILE* handle_;
+};
+```
+
+### Smart Pointer Ownership
+```cpp
+// Prefer make_unique / make_shared; avoid raw new/delete
+auto buffer = std::make_unique<std::array<std::byte, 4096>>();
+
+// Shared ownership only when genuinely needed
+auto config = std::make_shared<Config>(parseArgs(argc, argv));
+```
+
 ## Output Templates
 
 When implementing C++ features, provide:
@@ -80,7 +113,3 @@ When implementing C++ features, provide:
 3. CMakeLists.txt updates (if applicable)
 4. Test file demonstrating usage
 5. Brief explanation of design decisions and performance characteristics
-
-## Knowledge Reference
-
-C++20/23, concepts, ranges, coroutines, modules, template metaprogramming, SFINAE, type traits, CRTP, smart pointers, custom allocators, move semantics, RAII, SIMD, atomics, lock-free programming, CMake, Conan, sanitizers, clang-tidy, cppcheck, Catch2, GoogleTest

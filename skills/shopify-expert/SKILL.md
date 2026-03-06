@@ -1,6 +1,6 @@
 ---
 name: shopify-expert
-description: Use when building Shopify themes, apps, custom storefronts, or e-commerce solutions. Invoke for Liquid templating, Storefront API, app development, checkout customization, Shopify Plus features.
+description: Builds and debugs Shopify themes (.liquid files, theme.json, sections), develops custom Shopify apps (shopify.app.toml, OAuth, webhooks), and implements Storefront API integrations for headless storefronts. Use when building or customizing Shopify themes, creating Hydrogen or custom React storefronts, developing Shopify apps, implementing checkout UI extensions or Shopify Functions, optimizing performance, or integrating third-party services. Invoke for Liquid templating, Storefront API, app development, checkout customization, Shopify Plus features, App Bridge, Polaris, or Shopify CLI workflows.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,27 +17,13 @@ metadata:
 
 Senior Shopify developer with expertise in theme development, headless commerce, app architecture, and custom checkout solutions.
 
-## Role Definition
-
-You are a senior Shopify developer with deep e-commerce experience. You specialize in Shopify theme development with Liquid, headless commerce with Storefront API, custom Shopify app development, and checkout extensibility. You build high-performing stores achieving sub-2s load times and conversion-optimized checkout flows.
-
-## When to Use This Skill
-
-- Building or customizing Shopify themes
-- Creating headless storefronts with Hydrogen or custom React
-- Developing Shopify apps with OAuth and webhooks
-- Implementing checkout UI extensions or Shopify Functions
-- Optimizing theme performance and conversion rates
-- Integrating third-party services with Shopify
-- Building Shopify Plus merchant solutions
-
 ## Core Workflow
 
-1. **Requirements analysis** - Identify if theme, app, or headless approach fits needs
-2. **Architecture setup** - Configure theme structure, app scaffolding, or API integration
-3. **Implementation** - Build Liquid templates, GraphQL queries, or app features
-4. **Optimization** - Performance tuning, asset optimization, checkout flow refinement
-5. **Deploy and test** - Theme deployment, app submission, production monitoring
+1. **Requirements analysis** — Identify if theme, app, or headless approach fits needs
+2. **Architecture setup** — Scaffold with `shopify theme init` or `shopify app create`; configure `shopify.app.toml` and theme schema
+3. **Implementation** — Build Liquid templates, write GraphQL queries, or develop app features (see examples below)
+4. **Validation** — Run `shopify theme check` for Liquid linting; if errors are found, fix them and re-run before proceeding. Run `shopify app dev` to verify app locally; test checkout extensions in sandbox. If validation fails at any step, resolve all reported issues before moving to deployment
+5. **Deploy and monitor** — `shopify theme push` for themes; `shopify app deploy` for apps; watch Shopify error logs and performance metrics post-deploy
 
 ## Reference Guide
 
@@ -50,6 +36,114 @@ Load detailed guidance based on context:
 | App Development | `references/app-development.md` | Building Shopify apps, OAuth, webhooks |
 | Checkout Extensions | `references/checkout-customization.md` | Checkout UI extensions, Shopify Functions |
 | Performance | `references/performance-optimization.md` | Theme speed, asset optimization, caching |
+
+## Code Examples
+
+### Liquid — Product template with metafield access
+```liquid
+{% comment %} templates/product.liquid {% endcomment %}
+<h1>{{ product.title }}</h1>
+<p>{{ product.metafields.custom.care_instructions.value }}</p>
+
+{% for variant in product.variants %}
+  <option
+    value="{{ variant.id }}"
+    {% unless variant.available %}disabled{% endunless %}
+  >
+    {{ variant.title }} — {{ variant.price | money }}
+  </option>
+{% endfor %}
+
+{{ product.description | metafield_tag }}
+```
+
+### Liquid — Collection filtering (Online Store 2.0)
+```liquid
+{% comment %} sections/collection-filters.liquid {% endcomment %}
+{% for filter in collection.filters %}
+  <details>
+    <summary>{{ filter.label }}</summary>
+    {% for value in filter.values %}
+      <label>
+        <input
+          type="checkbox"
+          name="{{ value.param_name }}"
+          value="{{ value.value }}"
+          {% if value.active %}checked{% endif %}
+        >
+        {{ value.label }} ({{ value.count }})
+      </label>
+    {% endfor %}
+  </details>
+{% endfor %}
+```
+
+### Storefront API — GraphQL product query
+```graphql
+query ProductByHandle($handle: String!) {
+  product(handle: $handle) {
+    id
+    title
+    descriptionHtml
+    featuredImage {
+      url(transform: { maxWidth: 800, preferredContentType: WEBP })
+      altText
+    }
+    variants(first: 10) {
+      edges {
+        node {
+          id
+          title
+          price { amount currencyCode }
+          availableForSale
+          selectedOptions { name value }
+        }
+      }
+    }
+    metafield(namespace: "custom", key: "care_instructions") {
+      value
+      type
+    }
+  }
+}
+```
+
+### Shopify CLI — Common commands
+```bash
+# Theme development
+shopify theme dev --store=your-store.myshopify.com   # Live preview with hot reload
+shopify theme check                                   # Lint Liquid for errors/warnings
+shopify theme push --only templates/ sections/        # Partial push
+shopify theme pull                                    # Sync remote changes locally
+
+# App development
+shopify app create node                               # Scaffold Node.js app
+shopify app dev                                       # Local dev with ngrok tunnel
+shopify app deploy                                    # Submit app version
+shopify app generate extension                        # Add checkout UI extension
+
+# GraphQL
+shopify app generate graphql                          # Generate typed GraphQL hooks
+```
+
+### App — Authenticated Admin API fetch (TypeScript)
+```typescript
+import { authenticate } from "../shopify.server";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { admin } = await authenticate.admin(request);
+
+  const response = await admin.graphql(`
+    query {
+      shop { name myshopifyDomain plan { displayName } }
+    }
+  `);
+
+  const { data } = await response.json();
+  return data.shop;
+};
+```
 
 ## Constraints
 
@@ -64,6 +158,7 @@ Load detailed guidance based on context:
 - Follow Shopify theme architecture patterns
 - Use TypeScript for app development
 - Test checkout extensions in sandbox
+- Run `shopify theme check` before every theme deployment
 
 ### MUST NOT DO
 - Hardcode API credentials in theme code

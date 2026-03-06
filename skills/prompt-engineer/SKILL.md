@@ -1,6 +1,6 @@
 ---
 name: prompt-engineer
-description: Use when designing prompts for LLMs, optimizing model performance, building evaluation frameworks, or implementing advanced prompting techniques like chain-of-thought, few-shot learning, or structured outputs.
+description: Writes, refactors, and evaluates prompts for LLMs — generating optimized prompt templates, structured output schemas, evaluation rubrics, and test suites. Use when designing prompts for new LLM applications, refactoring existing prompts for better accuracy or token efficiency, implementing chain-of-thought or few-shot learning, creating system prompts with personas and guardrails, building JSON/function-calling schemas, or developing prompt evaluation frameworks to measure and improve model performance.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,10 +17,6 @@ metadata:
 
 Expert prompt engineer specializing in designing, optimizing, and evaluating prompts that maximize LLM performance across diverse use cases.
 
-## Role Definition
-
-You are an expert prompt engineer with deep knowledge of LLM capabilities, limitations, and prompting techniques. You design prompts that achieve reliable, high-quality outputs while considering token efficiency, latency, and cost. You build evaluation frameworks to measure prompt performance and iterate systematically toward optimal results.
-
 ## When to Use This Skill
 
 - Designing prompts for new LLM applications
@@ -34,11 +30,12 @@ You are an expert prompt engineer with deep knowledge of LLM capabilities, limit
 
 ## Core Workflow
 
-1. **Understand requirements** - Define task, success criteria, constraints, edge cases
-2. **Design initial prompt** - Choose pattern (zero-shot, few-shot, CoT), write clear instructions
-3. **Test and evaluate** - Run diverse test cases, measure quality metrics
-4. **Iterate and optimize** - Refine based on failures, reduce tokens, improve reliability
-5. **Document and deploy** - Version prompts, document behavior, monitor production
+1. **Understand requirements** — Define task, success criteria, constraints, and edge cases
+2. **Design initial prompt** — Choose pattern (zero-shot, few-shot, CoT), write clear instructions
+3. **Test and evaluate** — Run diverse test cases, measure quality metrics
+   - **Validation checkpoint:** If accuracy < 80% on the test set, identify failure patterns before iterating (e.g., ambiguous instructions, missing examples, edge case gaps)
+4. **Iterate and optimize** — Make one change at a time; refine based on failures, reduce tokens, improve reliability
+5. **Document and deploy** — Version prompts, document behavior, monitor production
 
 ## Reference Guide
 
@@ -51,6 +48,54 @@ Load detailed guidance based on context:
 | Evaluation | `references/evaluation-frameworks.md` | Metrics, test suites, automated evaluation |
 | Structured Outputs | `references/structured-outputs.md` | JSON mode, function calling, schema design |
 | System Prompts | `references/system-prompts.md` | Persona design, guardrails, context management |
+
+## Prompt Examples
+
+### Zero-shot vs. Few-shot
+
+**Zero-shot (baseline):**
+```
+Classify the sentiment of the following review as Positive, Negative, or Neutral.
+
+Review: {{review}}
+Sentiment:
+```
+
+**Few-shot (improved reliability):**
+```
+Classify the sentiment of the following review as Positive, Negative, or Neutral.
+
+Review: "The battery life is incredible, lasts all day."
+Sentiment: Positive
+
+Review: "Stopped working after two weeks. Very disappointed."
+Sentiment: Negative
+
+Review: "It arrived on time and matches the description."
+Sentiment: Neutral
+
+Review: {{review}}
+Sentiment:
+```
+
+### Before/After Optimization
+
+**Before (vague, inconsistent outputs):**
+```
+Summarize this document.
+
+{{document}}
+```
+
+**After (structured, token-efficient):**
+```
+Summarize the document below in exactly 3 bullet points. Each bullet must be one sentence and start with an action verb. Do not include opinions or information not present in the document.
+
+Document:
+{{document}}
+
+Summary:
+```
 
 ## Constraints
 
@@ -83,6 +128,6 @@ When delivering prompt work, provide:
 4. Performance metrics and comparison with baselines
 5. Known limitations and edge cases
 
-## Knowledge Reference
+## Coverage Note
 
-Prompt engineering techniques, chain-of-thought prompting, few-shot learning, zero-shot prompting, ReAct pattern, tree-of-thoughts, constitutional AI, prompt injection defense, system message design, JSON mode, function calling, structured generation, evaluation metrics, LLM capabilities (GPT-4, Claude, Gemini), token optimization, temperature tuning, output parsing
+Reference files cover major prompting techniques (zero-shot, few-shot, CoT, ReAct, tree-of-thoughts), structured output patterns (JSON mode, function calling), and model-specific guidance for GPT-4, Claude, and Gemini families. Consult the relevant reference before designing for a specific model or pattern.

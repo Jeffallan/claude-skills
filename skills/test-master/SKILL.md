@@ -1,6 +1,6 @@
 ---
 name: test-master
-description: Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing.
+description: Generates test files, creates mocking strategies, analyzes code coverage, designs test architectures, and produces test plans and defect reports across functional, performance, and security testing disciplines. Use when writing unit tests, integration tests, or E2E tests; creating test strategies or automation frameworks; analyzing coverage gaps; performance testing with k6 or Artillery; security testing with OWASP methods; debugging flaky tests; or working on QA, regression, test automation, quality gates, shift-left testing, or test maintenance.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,30 +17,37 @@ metadata:
 
 Comprehensive testing specialist ensuring software quality through functional, performance, and security testing.
 
-## Role Definition
-
-You are a senior QA engineer with 12+ years of testing experience. You think in three testing modes: **[Test]** for functional correctness, **[Perf]** for performance, **[Security]** for vulnerability testing. You ensure features work correctly, perform well, and are secure.
-
-## When to Use This Skill
-
-- Writing unit, integration, or E2E tests
-- Creating test strategies and plans
-- Analyzing test coverage and quality metrics
-- Building test automation frameworks
-- Performance testing and benchmarking
-- Security testing for vulnerabilities
-- Managing defects and test reporting
-- Debugging test failures
-- Manual testing (exploratory, usability, accessibility)
-- Scaling test automation and CI/CD integration
-
 ## Core Workflow
 
-1. **Define scope** - Identify what to test and testing types needed
-2. **Create strategy** - Plan test approach using all three perspectives
-3. **Write tests** - Implement tests with proper assertions
-4. **Execute** - Run tests and collect results
-5. **Report** - Document findings with actionable recommendations
+1. **Define scope** — Identify what to test and which testing types apply
+2. **Create strategy** — Plan the test approach across functional, performance, and security perspectives
+3. **Write tests** — Implement tests with proper assertions (see example below)
+4. **Execute** — Run tests and collect results
+   - If tests fail: classify the failure (assertion error vs. environment/flakiness), fix root cause, re-run
+   - If tests are flaky: isolate ordering dependencies, check async handling, add retry or stabilization logic
+5. **Report** — Document findings with severity ratings and actionable fix recommendations
+   - Verify coverage targets are met before closing; flag gaps explicitly
+
+## Quick-Start Example
+
+A minimal Jest unit test illustrating the key patterns this skill enforces:
+
+```js
+// ✅ Good: meaningful description, specific assertion, isolated dependency
+describe('calculateDiscount', () => {
+  it('applies 10% discount for premium users', () => {
+    const result = calculateDiscount({ price: 100, userTier: 'premium' });
+    expect(result).toBe(90); // specific outcome, not just truthy
+  });
+
+  it('throws on negative price', () => {
+    expect(() => calculateDiscount({ price: -1, userTier: 'standard' }))
+      .toThrow('Price must be non-negative');
+  });
+});
+```
+
+Apply the same structure for pytest (`def test_…`, `assert result == expected`) and other frameworks.
 
 ## Reference Guide
 
@@ -63,9 +70,19 @@ Load detailed guidance based on context:
 
 ## Constraints
 
-**MUST DO**: Test happy paths AND error cases, mock external dependencies, use meaningful descriptions, assert specific outcomes, test edge cases, run in CI/CD, document coverage gaps
+**MUST DO**
+- Test happy paths AND error/edge cases (e.g., empty input, null, boundary values)
+- Mock external dependencies — never call real APIs or databases in unit tests
+- Use meaningful `it('…')` descriptions that read as plain-English specifications
+- Assert specific outcomes (`expect(result).toBe(90)`), not just truthiness
+- Run tests in CI/CD; document and remediate coverage gaps
 
-**MUST NOT**: Skip error testing, use production data, create order-dependent tests, ignore flaky tests, test implementation details, leave debug code
+**MUST NOT**
+- Skip error-path testing (e.g., don't test only the success branch of a try/catch)
+- Use production data in tests — use fixtures or factories instead
+- Create order-dependent tests — each test must be independently runnable
+- Ignore flaky tests — quarantine and fix them; don't just re-run until green
+- Test implementation details (internal method calls) — test observable behaviour
 
 ## Output Templates
 
@@ -75,7 +92,3 @@ When creating test plans, provide:
 3. Coverage analysis
 4. Findings with severity (Critical/High/Medium/Low)
 5. Specific fix recommendations
-
-## Knowledge Reference
-
-Jest, Vitest, pytest, React Testing Library, Supertest, Playwright, Cypress, k6, Artillery, OWASP testing, code coverage, mocking, fixtures, test automation frameworks, CI/CD integration, quality metrics, defect management, BDD, page object model, screenplay pattern, exploratory testing, accessibility (WCAG), usability testing, shift-left testing, quality gates

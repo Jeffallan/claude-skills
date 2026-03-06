@@ -1,6 +1,6 @@
 ---
 name: wordpress-pro
-description: Use when developing WordPress themes, plugins, customizing Gutenberg blocks, implementing WooCommerce features, or optimizing WordPress performance and security.
+description: Develops custom WordPress themes and plugins, creates and registers Gutenberg blocks and block patterns, configures WooCommerce stores, implements WordPress REST API endpoints, applies security hardening (nonces, sanitization, escaping, capability checks), and optimizes performance through caching and query tuning. Use when building WordPress themes, writing plugins, customizing Gutenberg blocks, extending WooCommerce, working with ACF, using the WordPress REST API, applying hooks and filters, or improving WordPress performance and security.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -17,28 +17,14 @@ metadata:
 
 Expert WordPress developer specializing in custom themes, plugins, Gutenberg blocks, WooCommerce, and WordPress performance optimization.
 
-## Role Definition
-
-You are a senior WordPress developer with deep experience building custom themes, plugins, and WordPress solutions. You specialize in modern WordPress development with PHP 8.1+, Gutenberg block development, WooCommerce customization, REST API integration, and performance optimization. You build secure, scalable WordPress sites following WordPress coding standards and best practices.
-
-## When to Use This Skill
-
-- Building custom WordPress themes with template hierarchy
-- Developing WordPress plugins with proper architecture
-- Creating custom Gutenberg blocks and block patterns
-- Customizing WooCommerce functionality
-- Implementing WordPress REST API endpoints
-- Optimizing WordPress performance and security
-- Working with Advanced Custom Fields (ACF)
-- Full Site Editing (FSE) and block themes
-
 ## Core Workflow
 
-1. **Analyze requirements** - Understand WordPress context, existing setup, goals
-2. **Design architecture** - Plan theme/plugin structure, hooks, data flow
-3. **Implement** - Build using WordPress standards, security best practices
-4. **Optimize** - Cache, query optimization, asset optimization
-5. **Test & secure** - Security audit, performance testing, compatibility checks
+1. **Analyze requirements** — Understand WordPress context, existing setup, and goals.
+2. **Design architecture** — Plan theme/plugin structure, hooks, and data flow.
+3. **Implement** — Build using WordPress coding standards and security best practices.
+4. **Validate** — Run `phpcs --standard=WordPress` to catch WPCS violations; verify nonce handling and capability checks manually.
+5. **Optimize** — Apply transient/object caching, query optimization, and asset enqueuing.
+6. **Test & secure** — Confirm sanitization/escaping on all I/O, test across target WordPress versions, and run a security audit checklist.
 
 ## Reference Guide
 
@@ -52,30 +38,101 @@ Load detailed guidance based on context:
 | Hooks & Filters | `references/hooks-filters.md` | Actions, filters, custom hooks, priorities |
 | Performance & Security | `references/performance-security.md` | Caching, optimization, hardening, backups |
 
+## Key Implementation Patterns
+
+### Nonce Verification (form submissions)
+```php
+// Output nonce field in form
+wp_nonce_field( 'my_action', 'my_nonce' );
+
+// Verify on submission — bail early if invalid
+if ( ! isset( $_POST['my_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['my_nonce'] ) ), 'my_action' ) ) {
+    wp_die( esc_html__( 'Security check failed.', 'my-textdomain' ) );
+}
+```
+
+### Sanitization & Escaping
+```php
+// Sanitize input (store)
+$title   = sanitize_text_field( wp_unslash( $_POST['title'] ?? '' ) );
+$content = wp_kses_post( wp_unslash( $_POST['content'] ?? '' ) );
+$url     = esc_url_raw( wp_unslash( $_POST['url'] ?? '' ) );
+
+// Escape output (display)
+echo esc_html( $title );
+echo wp_kses_post( $content );
+echo '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Link', 'my-textdomain' ) . '</a>';
+```
+
+### Enqueuing Scripts & Styles
+```php
+add_action( 'wp_enqueue_scripts', 'my_theme_assets' );
+function my_theme_assets(): void {
+    wp_enqueue_style(
+        'my-theme-style',
+        get_stylesheet_uri(),
+        [],
+        wp_get_theme()->get( 'Version' )
+    );
+    wp_enqueue_script(
+        'my-theme-script',
+        get_template_directory_uri() . '/assets/js/main.js',
+        [ 'jquery' ],
+        '1.0.0',
+        true // load in footer
+    );
+    // Pass server data to JS safely
+    wp_localize_script( 'my-theme-script', 'MyTheme', [
+        'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+        'nonce'   => wp_create_nonce( 'my_ajax_nonce' ),
+    ] );
+}
+```
+
+### Prepared Database Queries
+```php
+global $wpdb;
+$results = $wpdb->get_results(
+    $wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}my_table WHERE user_id = %d AND status = %s",
+        absint( $user_id ),
+        sanitize_text_field( $status )
+    )
+);
+```
+
+### Capability Checks
+```php
+// Always check capabilities before sensitive operations
+if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have permission to do this.', 'my-textdomain' ) );
+}
+```
+
 ## Constraints
 
 ### MUST DO
-- Follow WordPress Coding Standards (WPCS)
-- Use nonces for form submissions
-- Sanitize all user inputs with appropriate functions
-- Escape all outputs (esc_html, esc_url, esc_attr)
-- Use prepared statements for database queries
-- Implement proper capability checks
-- Enqueue scripts/styles properly (wp_enqueue_*)
+- Follow WordPress Coding Standards (WPCS); validate with `phpcs --standard=WordPress`
+- Use nonces for all form submissions and AJAX requests
+- Sanitize all user inputs with appropriate functions (`sanitize_text_field`, `wp_kses_post`, etc.)
+- Escape all outputs (`esc_html`, `esc_url`, `esc_attr`, `wp_kses_post`)
+- Use prepared statements for all database queries (`$wpdb->prepare`)
+- Implement proper capability checks before privileged operations
+- Enqueue scripts/styles via `wp_enqueue_scripts` / `admin_enqueue_scripts` hooks
 - Use WordPress hooks instead of modifying core
-- Write translatable strings with text domains
-- Test across multiple WordPress versions
+- Write translatable strings with text domains (`__()`, `esc_html__()`, etc.)
+- Test across target WordPress versions
 
 ### MUST NOT DO
 - Modify WordPress core files
 - Use PHP short tags or deprecated functions
 - Trust user input without sanitization
 - Output data without escaping
-- Hardcode database table names (use $wpdb->prefix)
+- Hardcode database table names (use `$wpdb->prefix`)
 - Skip capability checks in admin functions
-- Ignore SQL injection vulnerabilities
-- Bundle unnecessary libraries (use WordPress APIs)
-- Create security vulnerabilities through file uploads
+- Ignore SQL injection vectors
+- Bundle unnecessary libraries when WordPress APIs suffice
+- Allow unsafe file upload handling
 - Skip internationalization (i18n)
 
 ## Output Templates
