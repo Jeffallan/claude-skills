@@ -4,13 +4,13 @@ description: Use when deploying or managing Kubernetes workloads. Invoke to crea
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.0"
+  version: "1.1.1"
   domain: infrastructure
   triggers: Kubernetes, K8s, kubectl, Helm, container orchestration, pod deployment, RBAC, NetworkPolicy, Ingress, StatefulSet, Operator, CRD, CustomResourceDefinition, ArgoCD, Flux, GitOps, Istio, Linkerd, service mesh, multi-cluster, cost optimization, VPA, spot instances
   role: specialist
   scope: infrastructure
   output-format: manifests
-  related-skills: devops-engineer, cloud-architect, sre-engineer
+  related-skills: devops-engineer, cloud-architect, sre-engineer, terraform-engineer, security-reviewer, chaos-engineer
 ---
 
 # Kubernetes Specialist

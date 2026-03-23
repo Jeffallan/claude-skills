@@ -4,13 +4,13 @@ description: Builds security-focused full-stack web applications by implementing
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.0"
+  version: "1.1.1"
   domain: security
   triggers: fullstack, implement feature, build feature, create API, frontend and backend, full stack, new feature, implement, microservices, websocket, real-time, deployment pipeline, monorepo, architecture decision, technology selection, end-to-end
   role: expert
   scope: implementation
   output-format: code
-  related-skills: feature-forge, test-master, devops-engineer
+  related-skills: feature-forge, test-master, devops-engineer, secure-code-guardian, architecture-designer, react-expert, typescript-pro
 ---
 
 # Fullstack Guardian

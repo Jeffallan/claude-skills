@@ -5,13 +5,13 @@ license: MIT
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.0"
+  version: "1.1.1"
   domain: security
   triggers: security review, vulnerability scan, SAST, security audit, penetration test, code audit, security analysis, infrastructure security, DevSecOps, cloud security, compliance audit
   role: specialist
   scope: review
   output-format: report
-  related-skills: secure-code-guardian, code-reviewer, devops-engineer, cloud-architect, kubernetes-specialist
+  related-skills: secure-code-guardian, code-reviewer, devops-engineer, cloud-architect, kubernetes-specialist, api-designer, mcp-developer
 ---
 
 # Security Reviewer

@@ -4,13 +4,13 @@ description: Optimizes database queries and improves performance across PostgreS
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.0"
+  version: "1.1.1"
   domain: infrastructure
   triggers: database optimization, slow query, query performance, database tuning, index optimization, execution plan, EXPLAIN ANALYZE, database performance, PostgreSQL optimization, MySQL optimization
   role: specialist
   scope: optimization
   output-format: analysis-and-code
-  related-skills: devops-engineer
+  related-skills: devops-engineer, postgres-pro, graphql-architect
 ---
 
 # Database Optimizer
