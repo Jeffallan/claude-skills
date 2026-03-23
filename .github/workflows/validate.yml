@@ -44,3 +44,5 @@ jobs:
       - uses: pre-commit/action@v3.0.1
       - name: Check Astro formatting
         run: cd site && npx prettier --plugin prettier-plugin-astro --check "src/**/*.astro"
+      - name: Check Markdown formatting
+        run: npx prettier --check "skills/**/*.md" "docs/**/*.md" "*.md" "research/**/*.md"

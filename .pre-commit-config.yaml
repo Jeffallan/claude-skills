@@ -16,6 +16,15 @@ repos:
         additional_dependencies:
           - prettier@3.5.3
 
+      - id: prettier-markdown
+        name: prettier (markdown)
+        entry: prettier --write
+        language: node
+        files: \.md$
+        exclude: ^commands/
+        additional_dependencies:
+          - prettier@3.5.3
+
       - id: pyright
         name: pyright type check
         entry: pyright

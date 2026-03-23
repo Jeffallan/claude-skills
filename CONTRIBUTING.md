@@ -90,6 +90,49 @@ Then create a Pull Request on GitHub with:
 - Description of what changed and why
 - Any relevant issue numbers (e.g., "Fixes #123")
 
+## Linting & Formatting
+
+This is a polyglot repo. All formatting is enforced via pre-commit hooks and CI.
+
+### Setup
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files
+
+# Or use Make targets:
+make lint      # Check all formatting (Python, JS/TS, Markdown, Astro)
+make format    # Auto-fix all formatting
+make validate  # Run skill validation, markdown checks, and docs sync
+```
+
+### Conventions
+
+| Language | Linter | Formatter | Config | Scope |
+|----------|--------|-----------|--------|-------|
+| Python | ruff | ruff-format | `ruff.toml` | `scripts/*.py` |
+| Python | pyright | — | `pyrightconfig.json` | `scripts/*.py` |
+| JS/TS/CSS | — | prettier | `.prettierrc` | `site/`, `assets/` |
+| Markdown | — | prettier | `.prettierrc` | `skills/`, `docs/`, `*.md` (excludes `commands/`) |
+| Astro | — | prettier + prettier-plugin-astro | — | `site/src/**/*.astro` |
+
+### Key settings
+
+- **Line length:** 120 (Python and Prettier)
+- **Python target:** 3.11+
+- **Quote style:** double (Python), single (JS/TS)
+- **Markdown in `commands/`** is excluded from formatting — these are prompt templates where whitespace may be intentional
+
+### CI
+
+The `validate.yml` workflow runs pre-commit and Prettier checks on all PRs. Your PR will fail if formatting doesn't pass.
+
 ## Skill Writing Guidelines
 
 ### Frontmatter Schema

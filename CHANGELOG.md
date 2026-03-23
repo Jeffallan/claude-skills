@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Bumped 7 hub skills from v1.1.0 → v1.1.1 (cross-reference updates)
+- Added Prettier markdown formatting to pre-commit hooks, CI, and Makefile — covers `skills/`, `docs/`, and root `.md` files; excludes `commands/` (prompt templates) (#158)
+- Documented linting and formatting conventions in CONTRIBUTING.md with Make targets (#158)
 
 ## [0.4.11] - 2026-03-23
 
