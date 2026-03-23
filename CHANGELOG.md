@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Curated cross-references for 7 hub skills: 22 back-references added for agent routing quality (closes #68)
+  - `devops-engineer`: terraform-engineer, kubernetes-specialist, sre-engineer, monitoring-expert, security-reviewer
+  - `fullstack-guardian`: secure-code-guardian, architecture-designer, react-expert, typescript-pro
+  - `test-master`: debugging-wizard, code-reviewer, feature-forge
+  - `database-optimizer`: postgres-pro, graphql-architect
+  - `security-reviewer`: api-designer, mcp-developer
+  - `architecture-designer`: microservices-architect, code-reviewer
+  - `kubernetes-specialist`: terraform-engineer, security-reviewer, chaos-engineer
+
+### Changed
+- Bumped 7 hub skills from v1.1.0 → v1.1.1 (cross-reference updates)
+
 ## [0.4.11] - 2026-03-23
 
 ### Added
