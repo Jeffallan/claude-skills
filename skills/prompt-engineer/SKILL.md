@@ -4,13 +4,13 @@ description: Writes, refactors, and evaluates prompts for LLMs — generating op
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.0"
+  version: "1.2.0"
   domain: data-ml
-  triggers: prompt engineering, prompt optimization, chain-of-thought, few-shot learning, prompt testing, LLM prompts, prompt evaluation, system prompts, structured outputs, prompt design
+  triggers: prompt engineering, prompt optimization, chain-of-thought, few-shot learning, prompt testing, LLM prompts, prompt evaluation, system prompts, structured outputs, prompt design, context management, lost-in-the-middle, context degradation, token optimization, attention budget
   role: expert
   scope: design
   output-format: document
-  related-skills: test-master
+  related-skills: test-master, rag-architect, debugging-wizard
 ---
 
 # Prompt Engineer
@@ -47,7 +47,8 @@ Load detailed guidance based on context:
 | Optimization | `references/prompt-optimization.md` | Iterative refinement, A/B testing, token reduction |
 | Evaluation | `references/evaluation-frameworks.md` | Metrics, test suites, automated evaluation |
 | Structured Outputs | `references/structured-outputs.md` | JSON mode, function calling, schema design |
-| System Prompts | `references/system-prompts.md` | Persona design, guardrails, context management |
+| System Prompts | `references/system-prompts.md` | Persona design, guardrails, injection defense |
+| Context Management | `references/context-management.md` | Attention budget, degradation patterns, context optimization |
 
 ## Prompt Examples
 
@@ -130,4 +131,4 @@ When delivering prompt work, provide:
 
 ## Coverage Note
 
-Reference files cover major prompting techniques (zero-shot, few-shot, CoT, ReAct, tree-of-thoughts), structured output patterns (JSON mode, function calling), and model-specific guidance for GPT-4, Claude, and Gemini families. Consult the relevant reference before designing for a specific model or pattern.
+Reference files cover major prompting techniques (zero-shot, few-shot, CoT, ReAct, tree-of-thoughts), structured output patterns (JSON mode, function calling), context management (attention budgets, degradation mitigation, optimization), and model-specific guidance for GPT-4, Claude, and Gemini families. Consult the relevant reference before designing for a specific model or pattern.
