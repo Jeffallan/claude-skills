@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.11] - 2026-03-23
+
 ### Added
 - Context management reference (`prompt-engineer/references/context-management.md`) covering attention budgets, lost-in-the-middle mitigation, four-bucket context tiering, KV-cache optimization, observation masking, and degradation metrics (#168)
 
 ### Changed
 - Updated `prompt-engineer` skill (v1.1.0 → v1.2.0): added context management routing, expanded triggers, added `rag-architect` and `debugging-wizard` to related skills
+- Total reference files: 365 → 366
 
 ### Contributors
 - @Genius-apple — Context management content adapted from the context-engineer skill submission (#168)
@@ -408,6 +411,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.11]: https://github.com/jeffallan/claude-skills/compare/v0.4.10...v0.4.11
 [0.4.10]: https://github.com/jeffallan/claude-skills/compare/v0.4.9...v0.4.10
 [0.4.9]: https://github.com/jeffallan/claude-skills/compare/v0.4.8...v0.4.9
 [0.4.8]: https://github.com/jeffallan/claude-skills/compare/v0.4.7...v0.4.8
