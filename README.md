@@ -88,7 +88,7 @@ Surface and validate Claude's hidden assumptions about your project with `/commo
 
 ## Related Projects
 
-- [**Claude Code SDK**](https://github.com/SeifBenayed/claude-code-sdk) — Open-source single-file CLIs (Node.js, Python, Go, Rust) that implement the full Claude Code tool loop without the binary. Provider-agnostic, zero dependencies, loads and runs skills natively.
+- [**Claude Code SDK**](https://github.com/SeifBenayed/claude-code-sdk) — Open-source, provider-agnostic SDK (Node.js, Python, Go, Rust) implementing the Claude Code tool loop. Works with any LLM provider — zero dependencies, loads and runs skills natively.
 
 ## Contributing
 
