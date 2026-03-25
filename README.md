@@ -86,6 +86,10 @@ Surface and validate Claude's hidden assumptions about your project with `/commo
 - **skills/\*/SKILL.md** - Individual skill documentation
 - **skills/\*/references/** - Deep-dive reference materials
 
+## Related Projects
+
+- [**Claude Code SDK**](https://github.com/SeifBenayed/claude-code-sdk) — Open-source, provider-agnostic SDK (Node.js, Python, Go, Rust) implementing the Claude Code tool loop. Works with any LLM provider — zero dependencies, loads and runs skills natively.
+
 ## Contributing
 
 See [**Contributing**](CONTRIBUTING.md) for guidelines on adding skills, writing references, and submitting pull requests.
