@@ -1,4 +1,5 @@
 ---
+name: approve-synthesis
 description: Approve synthesis findings and create implementation tickets from discovery
 argument-hint: <synthesis-url> [--decision=<id>:<value>...]
 ---
