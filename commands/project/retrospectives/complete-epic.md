@@ -1,4 +1,5 @@
 ---
+name: complete-epic
 description: Complete an epic after all tickets are executed, generate report, and close in Jira
 argument-hint: <epic-key>
 ---

@@ -1,4 +1,5 @@
 ---
+name: complete-sprint
 description: Generate comprehensive sprint retrospective from completed epics
 argument-hint: <sprint-number-or-folder-path>
 ---
