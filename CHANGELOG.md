@@ -21,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped 7 hub skills from v1.1.0 → v1.1.1 (cross-reference updates)
 - Added Prettier markdown formatting to pre-commit hooks, CI, and Makefile — covers `skills/`, `docs/`, and root `.md` files; excludes `commands/` (prompt templates) (#158)
 - Documented linting and formatting conventions in CONTRIBUTING.md with Make targets (#158)
+- Added explicit `name:` frontmatter to 9 workflow commands across `retrospectives/`, `discovery/`, `planning/`, and `execution/` directories — documents intent and protects against filename renames (filename-derived fallback was already working correctly) (#182, #183, #184, #185)
+
+### Fixed
+- README: restored the broken link to the Workflow Commands Reference docs. The paragraph began with `<!-- WORKFLOW_COUNT -->`, which CommonMark parses as an HTML block and disables inline markdown, causing the embedded link to render as literal text (#180)
+- `commands/common-ground/COMMAND.md`: added explicit `name: common-ground` so the slash command registers as `/common-ground`. Without it, Claude Code derived the name from the filename (`COMMAND.md`) and registered it as `/COMMAND` (#186)
+
+### Contributors
+- @modir — Fix broken Workflow Commands docs link in README (#180)
+- @xiaolai — Add missing `name:` frontmatter fields across workflow commands (#182, #183, #184, #185, #186)
 
 ## [0.4.11] - 2026-03-23
 
