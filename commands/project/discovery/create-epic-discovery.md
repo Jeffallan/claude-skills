@@ -1,4 +1,5 @@
 ---
+name: create-epic-discovery
 description: Create a discovery document for research/customer discovery epics
 argument-hint: <epic-key>
 ---

@@ -1,4 +1,5 @@
 ---
+name: synthesize-discovery
 description: Synthesize discovery findings into a consolidated analysis document with proposed tickets
 argument-hint: <source-url> [source-url...] [--target=<epic-key>]
 ---
