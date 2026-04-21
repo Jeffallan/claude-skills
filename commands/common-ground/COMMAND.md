@@ -1,4 +1,5 @@
 ---
+name: common-ground
 description: Surface and validate Claude's hidden assumptions about the project for user confirmation
 argument-hint: "[--list] [--check] [--graph]"
 ---
