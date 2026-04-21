@@ -1,4 +1,5 @@
 ---
+name: create-epic-plan
 description: Create an epic planning document by analyzing Jira tickets and codebase
 argument-hint: <epic-key>
 ---
