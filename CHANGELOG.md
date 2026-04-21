@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.12] - 2026-04-21
+
 ### Added
 - Curated cross-references for 7 hub skills: 22 back-references added for agent routing quality (closes #68)
   - `devops-engineer`: terraform-engineer, kubernetes-specialist, sre-engineer, monitoring-expert, security-reviewer
@@ -435,6 +437,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.12]: https://github.com/jeffallan/claude-skills/compare/v0.4.11...v0.4.12
 [0.4.11]: https://github.com/jeffallan/claude-skills/compare/v0.4.10...v0.4.11
 [0.4.10]: https://github.com/jeffallan/claude-skills/compare/v0.4.9...v0.4.10
 [0.4.9]: https://github.com/jeffallan/claude-skills/compare/v0.4.8...v0.4.9
