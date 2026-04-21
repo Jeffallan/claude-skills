@@ -1,4 +1,5 @@
 ---
+name: execute-ticket
 description: Execute a Jira ticket following its implementation plan
 argument-hint: <ticket-key>
 ---
