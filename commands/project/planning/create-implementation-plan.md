@@ -1,4 +1,5 @@
 ---
+name: create-implementation-plan
 description: Generate an implementation plan from a planning document
 argument-hint: <overview-doc-url>
 ---
