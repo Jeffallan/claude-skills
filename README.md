@@ -27,6 +27,8 @@
 /plugin install fullstack-dev-skills@jeffallan
 ```
 
+For Chinese users who want a searchable marketplace for Skills across Claude Code, OpenCode, and more, try [Skills宝 (skilery.com)](https://skilery.com).
+
 For all installation methods and first steps, see the [**Quick Start Guide**](QUICKSTART.md).
 
 **Full documentation:** [jeffallan.github.io/claude-skills](https://jeffallan.github.io/claude-skills)
