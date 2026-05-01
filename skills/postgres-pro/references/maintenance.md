@@ -149,16 +149,16 @@ WHERE tablename = 'users';
 -- Approximate bloat calculation
 SELECT
   schemaname,
-  tablename,
-  pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as total_size,
-  pg_size_pretty(pg_relation_size(schemaname||'.'||tablename)) as table_size,
-  round(100 * pg_relation_size(schemaname||'.'||tablename)::numeric /
-        NULLIF(pg_total_relation_size(schemaname||'.'||tablename), 0), 2) as table_pct,
+  relname,
+  pg_size_pretty(pg_total_relation_size(format('%I.%I', schemaname, relname))) as total_size,
+  pg_size_pretty(pg_relation_size(format('%I.%I', schemaname, relname))) as table_size,
+  round(100 * pg_relation_size(format('%I.%I', schemaname, relname))::numeric /
+        NULLIF(pg_total_relation_size(format('%I.%I', schemaname, relname)), 0), 2) as table_pct,
   n_dead_tup,
   round(100.0 * n_dead_tup / NULLIF(n_live_tup + n_dead_tup, 0), 2) as dead_pct
 FROM pg_stat_user_tables
-WHERE pg_total_relation_size(schemaname||'.'||tablename) > 10485760  -- > 10MB
-ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+WHERE pg_total_relation_size(format('%I.%I', schemaname, relname)) > 10485760  -- > 10MB
+ORDER BY pg_total_relation_size(format('%I.%I', schemaname, relname)) DESC;
 ```
 
 ### Detect Index Bloat
@@ -167,8 +167,8 @@ ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
 -- Unused indexes
 SELECT
   schemaname,
-  tablename,
-  indexname,
+  relname,
+  indexrelname,
   idx_scan,
   pg_size_pretty(pg_relation_size(indexrelid)) as index_size
 FROM pg_stat_user_indexes
@@ -179,16 +179,16 @@ ORDER BY pg_relation_size(indexrelid) DESC;
 -- Index size vs table size
 SELECT
   schemaname,
-  tablename,
-  pg_size_pretty(pg_relation_size(schemaname||'.'||tablename)) as table_size,
-  pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename) -
-                 pg_relation_size(schemaname||'.'||tablename)) as indexes_size,
-  round(100.0 * (pg_total_relation_size(schemaname||'.'||tablename) -
-                 pg_relation_size(schemaname||'.'||tablename))::numeric /
-        NULLIF(pg_relation_size(schemaname||'.'||tablename), 0), 2) as index_ratio_pct
+  relname,
+  pg_size_pretty(pg_relation_size(format('%I.%I', schemaname, relname))) as table_size,
+  pg_size_pretty(pg_total_relation_size(format('%I.%I', schemaname, relname)) -
+                 pg_relation_size(format('%I.%I', schemaname, relname))) as indexes_size,
+  round(100.0 * (pg_total_relation_size(format('%I.%I', schemaname, relname)) -
+                 pg_relation_size(format('%I.%I', schemaname, relname)))::numeric /
+        NULLIF(pg_relation_size(format('%I.%I', schemaname, relname)), 0), 2) as index_ratio_pct
 FROM pg_stat_user_tables
-WHERE pg_total_relation_size(schemaname||'.'||tablename) > 10485760
-ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+WHERE pg_total_relation_size(format('%I.%I', schemaname, relname)) > 10485760
+ORDER BY pg_total_relation_size(format('%I.%I', schemaname, relname)) DESC;
 ```
 
 ### Remove Bloat
@@ -306,8 +306,8 @@ ORDER BY seq_scan DESC;  -- Tables with most sequential scans
 -- Index usage efficiency
 SELECT
   schemaname,
-  tablename,
-  indexname,
+  relname,
+  indexrelname,
   idx_scan,
   idx_tup_read,
   idx_tup_fetch,
@@ -318,8 +318,8 @@ ORDER BY idx_scan;  -- Low idx_scan = potentially unused index
 -- Index hit ratio
 SELECT
   schemaname,
-  tablename,
-  indexname,
+  relname,
+  indexrelname,
   idx_scan,
   idx_tup_read,
   idx_tup_fetch,
@@ -415,7 +415,7 @@ ORDER BY age(relfrozenxid) DESC
 LIMIT 20;
 
 -- Prevent wraparound: VACUUM FREEZE
-VACUUM FREEZE;  -- All databases
+VACUUM FREEZE;  -- Current database
 VACUUM FREEZE users;  -- Specific table
 ```
 
