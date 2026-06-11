@@ -4,7 +4,7 @@ description: Build and configure Laravel 10+ applications, including creating El
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.0"
+  version: "1.2.0"
   domain: backend
   triggers: Laravel, Eloquent, PHP framework, Laravel API, Artisan, Blade templates, Laravel queues, Livewire, Laravel testing, Sanctum, Horizon
   role: specialist
@@ -36,6 +36,17 @@ Load detailed guidance based on context:
 | Queue System | `references/queues.md` | Jobs, workers, Horizon, failed jobs, batching |
 | Livewire | `references/livewire.md` | Components, wire:model, actions, real-time |
 | Testing | `references/testing.md` | Feature tests, factories, mocking, Pest PHP |
+| Blade & View Components | `references/view-components.md` | Blade templates, components, slots, composers |
+| Events & Listeners | `references/events.md` | Events, listeners, queued listeners, subscribers, event testing |
+| Sanctum / Auth | `references/sanctum.md` | API tokens, SPA auth, token abilities, mobile auth |
+| Validation | `references/validation.md` | Form requests, rules, custom validation, error messages |
+| Authorization | `references/authorization.md` | Gates, policies, `@can`, middleware authorization |
+| Notifications | `references/notifications.md` | Mail, database, broadcast, Slack, SMS, on-demand |
+| Broadcasting | `references/broadcasting.md` | WebSockets, Echo, Reverb, Pusher, Ably, channels |
+| Service Container | `references/container.md` | Binding, resolution, contextual attributes, `#[Singleton]` |
+| Artisan Console | `references/artisan.md` | Custom commands, I/O, scheduling, signals |
+| Collections | `references/collections.md` | `collect()`, filtering, mapping, sorting, reducing, lazy collections |
+| Helpers | `references/helpers.md` | `Arr`, `Str`, `Number`, URLs, `dispatch()`, `throw_if()` |
 
 ## Constraints
 
@@ -243,6 +254,77 @@ it('queues a publish job when a draft is submitted', function (): void {
 
     Queue::assertPushed(PublishPost::class, fn ($job) => $job->post->is($post));
 });
+```
+
+### Blade Component
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\View\Components;
+
+use Illuminate\View\Component;
+use Illuminate\View\View;
+
+final class Alert extends Component
+{
+    public function __construct(
+        public string $type = 'info',
+        public string $message = '',
+    ) {}
+
+    public function render(): View
+    {
+        return view('components.alert');
+    }
+}
+```
+
+```blade
+{{-- resources/views/components/alert.blade.php --}}
+@props(['type' => 'info', 'message' => ''])
+
+<div class="alert alert-{{ $type }}" {{ $attributes }}>
+    {{ $message }}
+    {{ $slot }}
+</div>
+```
+
+### View Composer
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\View\Composers;
+
+use App\Repositories\UserRepository;
+use Illuminate\View\View;
+
+final class ProfileComposer
+{
+    public function __construct(
+        private readonly UserRepository $users,
+    ) {}
+
+    public function compose(View $view): void
+    {
+        $view->with('count', $this->users->count());
+    }
+}
+```
+
+```php
+// Register in AppServiceProvider
+use Illuminate\Support\Facades\View;
+
+public function boot(): void
+{
+    View::composer('profile', ProfileComposer::class);
+}
 ```
 
 ## Validation Checkpoints
