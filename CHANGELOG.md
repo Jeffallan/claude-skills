@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- New skill: `django-storages-s3` — production AWS S3 file storage for Django with `django-storages` and `boto3`. Covers the Django 4.2+ `STORAGES` dict, public/private custom backends, presigned GET/POST URLs, CloudFront integration, a least-privilege IAM policy, and S3 mocking (`InMemoryStorage`/`moto`). Cross-referenced with `django-expert`.
+
 ## [0.4.15] - 2026-05-20
 
 ### Fixed
