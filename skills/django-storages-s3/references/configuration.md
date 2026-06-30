@@ -26,10 +26,12 @@ AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
 
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
 AWS_DEFAULT_ACL = None           # Recommended: let bucket policy control access
 AWS_S3_FILE_OVERWRITE = False    # Avoid overwriting files with the same name
-AWS_QUERYSTRING_AUTH = False     # True for private files (presigned URLs)
+AWS_QUERYSTRING_AUTH = False     # Global default. Private backends must set
+                                 # querystring_auth=True in their STORAGES
+                                 # OPTIONS (below) to get presigned .url() links.
 ```
 
 **When not to set keys:** On AWS infrastructure (EC2, ECS, Lambda), omit
@@ -49,7 +51,7 @@ STORAGES = {
         },
     },
     "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticS3Storage",
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
         "OPTIONS": {
             "bucket_name": AWS_STORAGE_BUCKET_NAME,
             "location": "static",
@@ -65,7 +67,7 @@ STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
 ```python
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3StaticS3Storage"
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3StaticStorage"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 ```
@@ -102,7 +104,7 @@ STORAGES = {
         },
     },
     "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticS3Storage",
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
         "OPTIONS": {
             "bucket_name": AWS_STORAGE_BUCKET_NAME,
             "custom_domain": AWS_S3_CUSTOM_DOMAIN,

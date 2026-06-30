@@ -73,7 +73,8 @@ from django.http import JsonResponse
 
 def upload_url_view(request):
     key = f"uploads/{request.GET['filename']}"
-    return JsonResponse(get_presigned_upload_url(key, request.GET.get("type")))
+    content_type = request.GET.get("type", "application/octet-stream")
+    return JsonResponse(get_presigned_upload_url(key, content_type))
 ```
 
 ### Client-side upload (sketch)

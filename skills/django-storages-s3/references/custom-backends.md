@@ -130,7 +130,7 @@ def upload_view(request):
     if request.method == "POST":
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
-            instance = Document(file=form.cleaned_data["file"])
+            instance = Document(contract=form.cleaned_data["file"])
             instance.save()  # uploads to S3 via the field's storage backend
             return redirect("success")
     else:

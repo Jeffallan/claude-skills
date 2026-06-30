@@ -48,7 +48,7 @@ Load detailed guidance based on context:
 
 ## Minimal Working Example
 
-The snippet below demonstrates the core MUST DO constraints: env-loaded credentials, `STORAGES` dict, separate media/static locations, and `default_acl=None`.
+The snippet below demonstrates the core MUST DO constraints: env-loaded credentials, `STORAGES` dict, separate media/static locations, and `default_acl=None` on the media backend.
 
 ```python
 # settings.py
@@ -56,7 +56,7 @@ import os
 
 AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
 # On EC2/ECS/Lambda, omit keys entirely — boto3 uses the attached IAM role.
 
 STORAGES = {
@@ -71,7 +71,7 @@ STORAGES = {
         },
     },
     "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticS3Storage",
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
         "OPTIONS": {
             "bucket_name": AWS_STORAGE_BUCKET_NAME,
             "location": "static",
@@ -110,7 +110,7 @@ class Document(models.Model):
 
 ## Knowledge Reference
 
-django-storages, S3Boto3Storage, S3StaticS3Storage, boto3, STORAGES dict, presigned URLs, generate_presigned_post, CloudFront, IAM policy, InMemoryStorage, moto
+django-storages, S3Boto3Storage, S3StaticStorage, boto3, STORAGES dict, presigned URLs, generate_presigned_post, CloudFront, IAM policy, InMemoryStorage, moto
 
 ## Related Skills
 
