@@ -117,3 +117,58 @@ STORAGES = {
 > A backend that serves through CloudFront should **not** also set
 > `querystring_auth=True` for plain presigned S3 URLs — see
 > `presigned-urls.md` and the conflict note in `testing-storages.md`.
+
+### Signed CloudFront URLs (private distributions)
+
+When `AWS_CLOUDFRONT_KEY_ID` and `AWS_CLOUDFRONT_KEY` are set and `custom_domain`
+points at the CloudFront domain, django-storages signs URLs **automatically** —
+`.url()` returns a signed CloudFront URL, no manual boto3 call:
+
+```python
+AWS_CLOUDFRONT_KEY_ID = os.environ["AWS_CLOUDFRONT_KEY_ID"]   # public key ID
+AWS_CLOUDFRONT_KEY = os.environ["AWS_CLOUDFRONT_KEY"]         # PEM private key
+AWS_QUERYSTRING_EXPIRE = 3600                                  # signature lifetime
+
+doc.contract.url   # → https://d123.cloudfront.net/...?Expires=...&Signature=...&Key-Pair-Id=...
+```
+
+Signing requires the `cryptography` package (`pip install django-storages[cloudfront]`);
+without it django-storages cannot build the signature and falls back to an
+unsigned URL, so private objects return `403`.
+
+If you do **not** need signed access (public distribution), omit both
+`AWS_CLOUDFRONT_KEY*` vars entirely — setting them only matters for private
+distributions. This is distinct from S3 presigning (`presigned-urls.md`), which
+signs against S3 directly rather than CloudFront.
+
+## Per-Environment Backends
+
+Layer storage by environment so tests and local dev never touch S3. With
+split settings modules, override `STORAGES` per environment.
+
+**Every override must define _both_ `default` and `staticfiles`.** Django does
+not merge your `STORAGES` with the defaults — it uses your dict verbatim
+(`settings.STORAGES.copy()`), so omitting `staticfiles` makes the `{% static %}`
+tag, `collectstatic`, and admin CSS raise
+`InvalidStorageError: Could not find config for 'staticfiles'`.
+
+```python
+_STATIC = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}
+
+# settings/dev.py — local filesystem
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": _STATIC,
+}
+
+# settings/test.py — in-memory, nothing persists
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.InMemoryStorage"},
+    "staticfiles": _STATIC,
+}
+
+# settings/prod.py — S3 (the full STORAGES dict shown above, with both keys)
+```
+
+Keep the S3 backend confined to production (and staging); see
+`testing-storages.md` for the `override_settings` equivalent in individual tests.

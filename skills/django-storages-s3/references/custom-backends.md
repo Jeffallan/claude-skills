@@ -16,8 +16,9 @@ STORAGES = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
             "bucket_name": "mybucket-public",
-            "default_acl": "public-read",
-            "querystring_auth": False,
+            "region_name": AWS_S3_REGION_NAME,
+            "default_acl": None,        # public access via bucket policy, not ACLs
+            "querystring_auth": False,  # clean, unsigned URLs
             "file_overwrite": False,
             "location": "media/public",
         },
@@ -26,7 +27,8 @@ STORAGES = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
             "bucket_name": "mybucket-private",
-            "default_acl": "private",
+            "region_name": AWS_S3_REGION_NAME,
+            "default_acl": None,        # access controlled by presigning, not ACLs
             "querystring_auth": True,   # .url() returns presigned URLs automatically
             "custom_domain": None,      # MUST be None for presigning to work
             "file_overwrite": False,
@@ -35,6 +37,15 @@ STORAGES = {
     },
 }
 ```
+
+> **Do not use `default_acl="public-read"` / `"private"` here.** Since April 2023,
+> new S3 buckets ship with Object Ownership = *Bucket owner enforced*, which
+> **disables ACLs** — any `default_acl` value other than `None` raises
+> `AccessControlListNotSupported` at upload time. Make the *public* bucket public
+> with a bucket policy (`s3:GetObject` on `media/public/*`) and keep the *private*
+> bucket locked down, gating access through presigned URLs (`querystring_auth=True`).
+> ACL string values only work on legacy buckets that explicitly re-enable ACLs
+> (Object Ownership = *ACLs enabled*).
 
 Reference a named backend on a model field:
 
@@ -61,7 +72,8 @@ PUBLIC_IMAGE_BACKEND = {
     "class": "storages.backends.s3boto3.S3Boto3Storage",
     "options": {
         "bucket_name": "mybucket-public",
-        "default_acl": "public-read",
+        "region_name": AWS_S3_REGION_NAME,
+        "default_acl": None,        # public access via bucket policy, not ACLs
         "querystring_auth": False,
         "file_overwrite": False,
         "location": "media/public",
@@ -72,7 +84,8 @@ PRIVATE_FILE_BACKEND = {
     "class": "storages.backends.s3boto3.S3Boto3Storage",
     "options": {
         "bucket_name": "mybucket-private",
-        "default_acl": "private",
+        "region_name": AWS_S3_REGION_NAME,
+        "default_acl": None,        # access controlled by presigning, not ACLs
         "querystring_auth": True,   # .url() returns presigned URLs automatically
         "custom_domain": None,      # Must be None for presigned URLs to work
         "file_overwrite": False,

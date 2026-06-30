@@ -94,6 +94,12 @@ this to a role over creating long-lived access keys.
   are deprecated in Django 4.2+. Use the `STORAGES` dict.
 - **Large uploads timing out** — For files > 100 MB, use presigned upload URLs for
   direct browser-to-S3 uploads to bypass the Django server.
+- **`file_overwrite=False` orphans replaced files** — With overwrite disabled, a
+  re-upload to the same field writes a *new* suffixed key (`avatar_a1b2c3.png`)
+  and the previous object is **not** deleted — S3 grows unbounded. You own the
+  cleanup: capture the old name before saving and delete it after, e.g.
+  `old = instance.avatar.name; ...; instance.avatar.storage.delete(old)`. This
+  is a silent storage-cost leak, not an error.
 - **Missing `Content-Type`** — S3 may default to `binary/octet-stream`.
   django-storages detects content type automatically by default; only override
   via `AWS_S3_OBJECT_PARAMETERS` if you need to force it.

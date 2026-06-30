@@ -94,4 +94,11 @@ await fetch(url, { method: "POST", body: form });
 - **Clock skew** → presigned URLs are time-sensitive; ensure server time (NTP)
   is correct or signatures fail with `403`.
 - **Wrong region** → a URL signed for the wrong region returns
-  `AuthorizationHeaderMalformed`. Pass the bucket's actual region.
+  `AuthorizationHeaderMalformed`. Pass the bucket's actual region. Set
+  `region_name` in each backend's `OPTIONS` rather than relying only on the
+  global `AWS_S3_REGION_NAME`, so per-backend signing always uses the right region.
+- **Caching a presigned URL past its expiry** → a presigned GET is only valid for
+  `AWS_QUERYSTRING_EXPIRE` seconds. Serializing `.url()` into a DRF/HTML response
+  that is cached (CDN, `cache_page`, client) longer than that window means the
+  embedded links silently start returning `403` once they expire. Generate the URL
+  per request, or keep the response TTL shorter than the signature lifetime.

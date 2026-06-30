@@ -91,6 +91,20 @@ class Document(models.Model):
     file = models.FileField(upload_to="docs/")  # uses STORAGES["default"]
 ```
 
+## Auditing an Existing Configuration
+
+When reviewing a project that already uses S3 (not greenfield), walk this
+checklist — each item is a constraint below rephrased as "find X, confirm Y":
+
+1. **Credentials** — `grep -rn "AWS_SECRET_ACCESS_KEY\|aws_secret" settings/` → confirm values come from `os.environ`/`django-environ` or an IAM role, never literals committed to the repo.
+2. **ACLs** — `grep -rn "default_acl\|AWS_DEFAULT_ACL" .` → on buckets created after April 2023, every value must be `None`. Any `"public-read"`/`"private"` will raise `AccessControlListNotSupported`; public access belongs in a bucket policy.
+3. **Storage backend** — confirm Django 4.2+ uses the `STORAGES` dict, not deprecated `DEFAULT_FILE_STORAGE`/`STATICFILES_STORAGE`; confirm the static class is `S3StaticStorage`, not a fabricated name.
+4. **Locations** — confirm `default` (media) and `staticfiles` have distinct `location` prefixes or buckets so `collectstatic` never collides with uploads.
+5. **Region** — confirm `region_name` (or the global `AWS_S3_REGION_NAME`) matches the bucket's real region and that `AWS_S3_CUSTOM_DOMAIN` includes the region segment for non-`us-east-1` buckets.
+6. **Presigning** — for private backends, confirm `querystring_auth=True` **and** `custom_domain=None`; confirm presigned `.url()` results aren't cached past `AWS_QUERYSTRING_EXPIRE`.
+7. **Overwrite cleanup** — where `file_overwrite=False`, confirm replaced files are explicitly deleted (otherwise superseded objects leak).
+8. **IAM** — confirm the policy grants only `Get/Put/Delete/ListBucket` on the bucket ARN, not broader S3 access.
+
 ## Constraints
 
 ### MUST DO
