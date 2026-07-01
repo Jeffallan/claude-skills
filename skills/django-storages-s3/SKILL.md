@@ -98,7 +98,7 @@ checklist — each item is a constraint below rephrased as "find X, confirm Y":
 
 1. **Credentials** — `grep -rn "AWS_SECRET_ACCESS_KEY\|aws_secret" settings/` → confirm values come from `os.environ`/`django-environ` or an IAM role, never literals committed to the repo.
 2. **ACLs** — `grep -rn "default_acl\|AWS_DEFAULT_ACL" .` → on buckets created after April 2023, every value must be `None`. Any `"public-read"`/`"private"` will raise `AccessControlListNotSupported`; public access belongs in a bucket policy.
-3. **Storage backend** — confirm Django 4.2+ uses the `STORAGES` dict, not deprecated `DEFAULT_FILE_STORAGE`/`STATICFILES_STORAGE`; confirm the static class is `S3StaticStorage`, not a fabricated name.
+3. **Storage backend** — confirm Django 4.2+ uses the `STORAGES` dict, not `DEFAULT_FILE_STORAGE`/`STATICFILES_STORAGE` (removed in Django 5.1, so silently ignored on 5.1/5.2/6.0); confirm the static class is `S3StaticStorage`, not a fabricated name.
 4. **Locations** — confirm `default` (media) and `staticfiles` have distinct `location` prefixes or buckets so `collectstatic` never collides with uploads.
 5. **Region** — confirm `region_name` (or the global `AWS_S3_REGION_NAME`) matches the bucket's real region and that `AWS_S3_CUSTOM_DOMAIN` includes the region segment for non-`us-east-1` buckets.
 6. **Presigning** — for private backends, confirm `querystring_auth=True` **and** `custom_domain=None`; confirm presigned `.url()` results aren't cached past `AWS_QUERYSTRING_EXPIRE`.
@@ -111,7 +111,7 @@ checklist — each item is a constraint below rephrased as "find X, confirm Y":
 - Load AWS credentials from environment variables or an attached IAM role
 - Set `default_acl=None` so bucket policies (not object ACLs) control access
 - Give static and media files separate `location` prefixes or separate buckets
-- Use the `STORAGES` dict on Django 4.2+; reserve `DEFAULT_FILE_STORAGE` for < 4.2
+- Use the `STORAGES` dict on Django 4.2+ (same config through 5.2 LTS and 6.0); `DEFAULT_FILE_STORAGE`/`STATICFILES_STORAGE` were removed in 5.1, so reserve them for < 4.2 only
 - Set `custom_domain=None` on any backend that issues presigned URLs
 - Mock S3 (`InMemoryStorage` or `moto`) in tests instead of hitting real buckets
 

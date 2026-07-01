@@ -63,6 +63,10 @@ MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 ```
 
+The `STORAGES` dict is unchanged across Django 4.2, 5.x, and 6.0 — the same
+config above is correct on every release from 4.2 onward. Nothing extra is
+needed for Django 5.2 LTS or 6.0.
+
 ## Django < 4.2 (legacy)
 
 ```python
@@ -72,8 +76,11 @@ MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 ```
 
-`DEFAULT_FILE_STORAGE` and `STATICFILES_STORAGE` are deprecated in Django 4.2+.
-Use the `STORAGES` dict on any project running 4.2 or newer.
+`DEFAULT_FILE_STORAGE` and `STATICFILES_STORAGE` were deprecated in Django 4.2
+and **removed in Django 5.1**. They still function on 4.2 and 5.0 only — on 5.1,
+5.2 LTS, and 6.0 they are gone and silently ignored, so the `STORAGES` dict is
+mandatory there. Use `STORAGES` on any project running 4.2 or newer; only reach
+for these settings on Django < 4.2.
 
 **Always** use separate `location` prefixes (e.g. `media/` and `static/`) or
 separate buckets so that static and media files are never mixed — otherwise

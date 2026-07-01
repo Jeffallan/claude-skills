@@ -23,8 +23,10 @@ class FileUploadTests(TestCase):
         self.assertIn("test", obj.file.name)
 ```
 
-For Django < 4.2, use
-`@override_settings(DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage")`.
+The `override_settings(STORAGES=...)` form above works on Django 4.2 through 6.0.
+For Django < 4.2 only, use
+`@override_settings(DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage")`
+— that setting was removed in Django 5.1, so it has no effect on 5.1+.
 
 ### `moto` — mock the S3 API itself
 
@@ -90,8 +92,9 @@ this to a role over creating long-lived access keys.
   backend has `location="static"` so it never mixes with media.
 - **Credentials in `settings.py`** — Always load via env vars or IAM roles; never
   hardcode or commit secrets.
-- **Deprecated storage settings** — `DEFAULT_FILE_STORAGE` and `STATICFILES_STORAGE`
-  are deprecated in Django 4.2+. Use the `STORAGES` dict.
+- **Removed storage settings** — `DEFAULT_FILE_STORAGE` and `STATICFILES_STORAGE`
+  were deprecated in Django 4.2 and **removed in Django 5.1**. They are silently
+  ignored on 5.1, 5.2 LTS, and 6.0. Use the `STORAGES` dict on 4.2+.
 - **Large uploads timing out** — For files > 100 MB, use presigned upload URLs for
   direct browser-to-S3 uploads to bypass the Django server.
 - **`file_overwrite=False` orphans replaced files** — With overwrite disabled, a
