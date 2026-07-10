@@ -4,7 +4,7 @@ description: Creates Dockerfiles, configures CI/CD pipelines, writes Kubernetes 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
-  version: "1.1.1"
+  version: "1.2.0"
   domain: devops
   triggers: DevOps, CI/CD, deployment, Docker, Kubernetes, Terraform, GitHub Actions, infrastructure, platform engineering, incident response, on-call, self-service
   role: engineer
@@ -52,6 +52,7 @@ Load detailed guidance based on context:
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
 | GitHub Actions | `references/github-actions.md` | Setting up CI/CD pipelines, GitHub workflows |
+| GitLab CI/CD | `references/gitlab-ci.md` | Setting up GitLab pipelines, `.gitlab-ci.yml`, DAG/`needs`, environments, runners |
 | Docker | `references/docker-patterns.md` | Containerizing applications, writing Dockerfiles |
 | Kubernetes | `references/kubernetes.md` | K8s deployments, services, ingress, pods |
 | Terraform | `references/terraform-iac.md` | Infrastructure as code, AWS/GCP provisioning |
