@@ -52,6 +52,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Microservices Architect](https://jeffallan.github.io/claude-skills/skills/api-architecture/microservices-architect/)**: Microservices patterns, service mesh, distributed systems
 - **[MCP Developer](https://jeffallan.github.io/claude-skills/skills/api-architecture/mcp-developer/)**: Model Context Protocol development and integration
 - **[Architecture Designer](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/)**: System design, choosing architectures, ADRs
+- **[Software Graph Analyst](https://github.com/0xsarwagya/ontoly/tree/main/skills)**: Ontoly Software Graph analysis, request tracing, dependency impact, configuration lookup
 - **[Feature Forge](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)**: Creating new features, gathering requirements, writing specs
 - **[Spec Miner](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)**: Analyzing existing code, reverse-engineering specifications
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=66%20Skills%20%E2%80%A2%209%20Workflows%20%E2%80%A2%20Built%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=67%20Skills%20%E2%80%A2%209%20Workflows%20%E2%80%A2%20Built%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@ For all installation methods and first steps, see the [**Quick Start Guide**](QU
 
 ## Skills
 
-<!-- SKILL_COUNT -->66<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
+<!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
 
 See [**Skills Guide**](SKILLS_GUIDE.md) for the full list, decision trees, and workflow combinations.
 
@@ -122,4 +122,4 @@ Fullstack engineering, security engineering, compliance, and technical due dilig
 
 ---
 
-**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->366<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->66<!-- /SKILL_COUNT --> Skills**
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->366<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> Skills**
