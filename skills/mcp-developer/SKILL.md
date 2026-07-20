@@ -10,7 +10,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: fastapi-expert, typescript-pro, security-reviewer, devops-engineer
+  related-skills: fastapi-expert, typescript-pro, security-reviewer, devops-engineer, xquik-social-data
 ---
 
 # MCP Developer
@@ -141,5 +141,9 @@ When implementing MCP features, provide:
 2. Schema definitions (tools, resources, prompts)
 3. Configuration file (transport, auth, etc.)
 4. Brief explanation of design decisions
+
+## Related Skills
+
+- `xquik-social-data` for Xquik's remote Streamable HTTP server. Not affiliated with X Corp.
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/api-architecture/mcp-developer/)

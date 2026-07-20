@@ -1077,6 +1077,16 @@ class WorkflowDefinitionChecker:
             )
             return issues
 
+        if not HAS_PYYAML:
+            return [
+                ValidationIssue(
+                    skill="__workflow__",
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="PyYAML not installed; skipping workflow definition content validation",
+                )
+            ]
+
         for yaml_file in yaml_files:
             rel_path = str(yaml_file.relative_to(base_path))
             issues.extend(self._validate_definition(yaml_file, rel_path, base_path))
@@ -1298,6 +1308,16 @@ class ManifestDagChecker:
                 )
             )
             return issues
+
+        if not HAS_PYYAML:
+            return [
+                ValidationIssue(
+                    skill="__manifest__",
+                    check=self.name,
+                    severity=Severity.WARNING,
+                    message="PyYAML not installed; skipping workflow manifest content validation",
+                )
+            ]
 
         try:
             data = parse_yaml(manifest_path.read_text())
