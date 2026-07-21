@@ -1,124 +1,102 @@
 ---
-name: golang-pro
-description: Implements concurrent Go patterns using goroutines and channels, designs and builds microservices with gRPC or REST, optimizes Go application performance with pprof, and enforces idiomatic Go with generics, interfaces, and robust error handling. Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration, CLI tools, benchmarks, or table-driven testing.
+name: api-architecture-auditor
+description: Audits any API or backend codebase — REST, GraphQL, gRPC, WebSocket, raw TCP/UDP protocol servers, or message-queue-driven services — for architectural separation, data-layer integrity, authentication/authorization coverage, secrets hygiene, and live runtime behavior. Use this whenever the user asks to review, audit, assess, or check the security/architecture/quality of an API, backend, server, or microservice codebase — even if they don't say "API" explicitly (e.g. "review this backend," "is this service secure," "check this codebase before we ship it," "audit my server's endpoints"). Do not assume the target is REST-over-HTTP with a relational database; discover the actual shape of the system first.
 license: MIT
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.1.0"
-  domain: language
-  triggers: Go, Golang, goroutines, channels, gRPC, microservices Go, Go generics, concurrent programming, Go interfaces
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: devops-engineer, microservices-architect, test-master
+  domain: security-and-architecture
+  role: auditor
+  scope: analysis
+  output-format: report
 ---
 
-# Golang Pro
+# API Architecture & Security Auditor
 
-Senior Go developer with deep expertise in Go 1.21+, concurrent programming, and cloud-native microservices. Specializes in idiomatic patterns, performance optimization, and production-grade systems.
+## Why discovery comes first
 
-## Core Workflow
+APIs take wildly different shapes. An HTTP+JSON CRUD service backed by Postgres looks nothing like a fleet of raw-TCP device-protocol handlers writing to DynamoDB and a time-series store, which looks nothing like a gRPC microservice mesh authenticated by mTLS. A checklist that silently assumes "REST + ORM + JWT login" will run to completion and produce a confident-looking report — while missing the entire attack surface and architecture of anything that doesn't fit that mold.
 
-1. **Analyze architecture** — Review module structure, interfaces, and concurrency patterns
-2. **Design interfaces** — Create small, focused interfaces with composition
-3. **Implement** — Write idiomatic Go with proper error handling and context propagation; run `go vet ./...` before proceeding
-4. **Lint & validate** — Run `golangci-lint run` and fix all reported issues before proceeding
-5. **Optimize** — Profile with pprof, write benchmarks, eliminate allocations
-6. **Test** — Table-driven tests with `-race` flag, fuzzing, 80%+ coverage; confirm race detector passes before committing
+So before applying any checklist, spend one pass understanding what's actually in front of you. Every step below is conditional on what you find in Step 0 — skip the parts that don't apply, and say explicitly that you skipped them and why, rather than silently ignoring them or forcing a fit.
 
-## Reference Guide
+## Step 0: Discover the shape of the system
 
-Load detailed guidance based on context:
+Read the entry point(s) (main function, server bootstrap, routing setup) and the top-level directory structure, and answer:
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Concurrency | `references/concurrency.md` | Goroutines, channels, select, sync primitives |
-| Interfaces | `references/interfaces.md` | Interface design, io.Reader/Writer, composition |
-| Generics | `references/generics.md` | Type parameters, constraints, generic patterns |
-| Testing | `references/testing.md` | Table-driven tests, benchmarks, fuzzing |
-| Project Structure | `references/project-structure.md` | Module layout, internal packages, go.mod |
+- **Transport protocols.** What does this system actually expose, and on what ports/routes? A single codebase can run several transports at once (e.g. an HTTP health endpoint alongside a WebSocket server and several raw TCP listeners) — list every one you find, don't stop at the first.
+- **Data stores.** What backs persistence, and what kind is each — relational/ORM, document/NoSQL, key-value, time-series, in-memory cache, event log? Note which data lives in which store; systems commonly split "live state" from "history" across two different technologies.
+- **Auth mechanism(s).** Session/token, JWT, OAuth2, API key, mTLS/client certificate, HMAC-signed payloads, a device identifier such as an IMEI or serial number, or genuinely none (common for internal-only services). Don't assume a login flow exists just because most tutorials have one.
+- **Configuration and secrets.** Where do credentials and connection strings come from — environment variables, a config file, a secrets manager, or (worth checking explicitly) hardcoded directly in source or in a committed deploy/compose file?
 
-## Core Pattern Example
+Write these findings down explicitly before continuing. They determine which parts of Steps 1–6 apply.
 
-Goroutine with proper context cancellation and error propagation:
+## Step 1: Structural & architectural separation
 
-```go
-// worker runs until ctx is cancelled or an error occurs.
-// Errors are returned via the errCh channel; the caller must drain it.
-func worker(ctx context.Context, jobs <-chan Job, errCh chan<- error) {
-    for {
-        select {
-        case <-ctx.Done():
-            errCh <- fmt.Errorf("worker cancelled: %w", ctx.Err())
-            return
-        case job, ok := <-jobs:
-            if !ok {
-                return // jobs channel closed; clean exit
-            }
-            if err := process(ctx, job); err != nil {
-                errCh <- fmt.Errorf("process job %v: %w", job.ID, err)
-                return
-            }
-        }
-    }
-}
+Check for a clean separation between the layer that talks to the outside world, the layer that holds business logic, and the layer that touches storage — but interpret "the outside world" using whatever Step 0 found. For an HTTP service that's routes/controllers; for a socket server it's the protocol frame decoder and connection handlers; for a queue-driven service it's the message consumer. Confirm the business logic doesn't know or care which transport invoked it, and that storage access is isolated behind a repository/service layer rather than scattered through handler code.
 
-func runPipeline(ctx context.Context, jobs []Job) error {
-    ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
-    defer cancel()
+## Step 2: Data layer review — branch by store type
 
-    jobCh := make(chan Job, len(jobs))
-    errCh := make(chan error, 1)
+Apply the check that matches each store found in Step 0, not a single relational template:
 
-    go worker(ctx, jobCh, errCh)
+- **Relational (SQL/ORM):** primary keys and audit metadata (created/updated/deleted timestamps), foreign keys and whether cardinality (1:1, 1:N, N:N) matches the real-world relationship, indexes on frequently-queried columns, and whether migrations match the live schema.
+- **Document/NoSQL:** partition/sort key design and whether it matches actual query patterns, whether "relationships" are resolved in application code rather than the database, TTL and versioning behavior.
+- **Key-value / cache:** expiry policy, what happens on a cache miss, and whether stale cached data could be served as if it were live.
+- **Event-sourced / message-driven:** whether consumers are idempotent (does replaying the same message twice double-apply an effect?), ordering guarantees, and dead-letter/retry handling.
 
-    for _, j := range jobs {
-        jobCh <- j
-    }
-    close(jobCh)
+## Step 3: Authentication & authorization — branch by mechanism
 
-    select {
-    case err := <-errCh:
-        return err
-    case <-ctx.Done():
-        return fmt.Errorf("pipeline timed out: %w", ctx.Err())
-    }
-}
+Whatever Step 0 found, confirm:
+
+- Public endpoints/handlers are public on purpose — list them and ask whether each one should really have no auth.
+- Protected endpoints actually enforce the mechanism in practice, not just that a security library is imported somewhere in the project.
+- Privileged or write operations enforce role/permission checks specifically, not just "any authenticated user."
+- For non-HTTP mechanisms — device serials, HMAC signatures, mutual TLS — confirm an unknown or invalid identity is actually rejected. The equivalent of a 401 here might be "connection closed," "message silently dropped," or "handshake never completes" — find out which, and confirm it happens.
+
+## Step 4: Secrets & configuration hygiene
+
+This is consistently the highest-value, easiest-to-verify finding in real audits: a single search can catch a live cloud credential sitting in a file that's already committed to version control.
+
+- Search the repo and any compose/deploy/CI files for patterns like cloud access-key prefixes, `api_key=`, `password=`, private-key headers, or connection strings with embedded credentials.
+- Confirm secrets are actually sourced from environment variables or a secrets manager rather than literals, even where the code appears to reference an env var name — check that no fallback default hardcodes a real-looking value.
+- Check that `.gitignore` actually excludes local secret files.
+- Flag anything found with an exact file and line reference so it can be rotated immediately — this is often the single most actionable line in the whole report.
+
+## Step 5: Transport & network-level checks
+
+- CORS or WebSocket origin validation — is it actually restrictive, or does it unconditionally allow every origin?
+- Where is TLS terminated — by the app itself, by a proxy in front of it, or nowhere?
+- Is there rate limiting or throttling on public or expensive endpoints?
+- Is input validated before it reaches a query, shell command, or file path?
+
+## Step 6: Dynamic verification — only if a live instance is reachable
+
+Static review tells you what the code says it does; running it tells you what it actually does. But not every audit has a runnable environment, valid credentials, or reachable network on hand. If none of that is available, say so explicitly and move to Step 7 rather than guessing at behavior you can't observe.
+
+If you can run it, test whatever mechanisms Step 0 identified:
+
+- **HTTP:** request the health endpoint (expect success), request a protected route with no credentials (expect a rejection), then authenticate and retry (expect success), and confirm relational responses return populated related data rather than bare foreign keys.
+- **WebSocket:** connect without a token (expect rejection or immediate close), then with a valid token, and confirm an origin check genuinely rejects an unexpected `Origin` header rather than accepting everything.
+- **gRPC:** use a generic client (e.g. grpcurl) or the service's own client the same way — unauthenticated call should fail, authenticated call should succeed.
+- **Raw TCP/UDP protocol servers:** open a raw socket and send a malformed or unrecognized frame (the server should reject or disconnect, not hang or crash); then send a valid handshake/login frame and confirm the expected acknowledgement.
+- **Message-queue-triggered logic:** publish a test message and confirm it's consumed idempotently — publishing the same message twice shouldn't double-apply its effect.
+
+## Step 7: Report the findings
+
+Always structure the output this way, regardless of what kind of system was audited — this keeps reports comparable across completely different codebases:
+
+```markdown
+# API Audit — [project name]
+
+## System shape
+[what Step 0 found: transports, stores, auth mechanisms, config/secrets source]
+
+## Findings
+[grouped by severity — Critical / High / Medium / Low / Info — each with file:line,
+what's wrong, why it matters, and a suggested fix]
+
+## Not testable
+[which dynamic checks were skipped, and why — e.g. no live environment, no seeded credentials]
+
+## Coverage
+[which of Steps 1–6 applied to this system, which were skipped as not applicable, and why]
 ```
 
-Key properties demonstrated: bounded goroutine lifetime via `ctx`, error propagation with `%w`, no goroutine leak on cancellation.
-
-## Constraints
-
-### MUST DO
-- Use gofmt and golangci-lint on all code
-- Add context.Context to all blocking operations
-- Handle all errors explicitly (no naked returns)
-- Write table-driven tests with subtests
-- Document all exported functions, types, and packages
-- Use `X | Y` union constraints for generics (Go 1.18+)
-- Propagate errors with fmt.Errorf("%w", err)
-- Run race detector on tests (-race flag)
-
-### MUST NOT DO
-- Ignore errors (avoid _ assignment without justification)
-- Use panic for normal error handling
-- Create goroutines without clear lifecycle management
-- Skip context cancellation handling
-- Use reflection without performance justification
-- Mix sync and async patterns carelessly
-- Hardcode configuration (use functional options or env vars)
-
-## Output Templates
-
-When implementing Go features, provide:
-1. Interface definitions (contracts first)
-2. Implementation files with proper package structure
-3. Test file with table-driven tests
-4. Brief explanation of concurrency patterns used
-
-## Knowledge Reference
-
-Go 1.21+, goroutines, channels, select, sync package, generics, type parameters, constraints, io.Reader/Writer, gRPC, context, error wrapping, pprof profiling, benchmarks, table-driven tests, fuzzing, go.mod, internal packages, functional options
-
-[Documentation](https://jeffallan.github.io/claude-skills/skills/language/golang-pro/)
+The "Coverage" section matters as much as the findings — it tells the reader whether a quiet section means "nothing wrong here" or "this system doesn't have that kind of component at all."
