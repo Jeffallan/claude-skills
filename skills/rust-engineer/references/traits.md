@@ -399,6 +399,45 @@ const fn compute() -> i32 {
 }
 ```
 
+## Blanket Impls for Smart Pointers with `auto_impl`
+
+When a trait should work transparently through `&T`, `Box<T>`, and `Arc<T>`, use the [`auto_impl`](https://crates.io/crates/auto_impl) crate instead of writing three identical blanket impls by hand.
+
+```rust
+// ❌ Without auto_impl — repetitive boilerplate:
+trait Logger {
+    fn log(&self, msg: &str);
+}
+
+impl<T: Logger> Logger for &T     { fn log(&self, msg: &str) { (**self).log(msg) } }
+impl<T: Logger> Logger for Box<T> { fn log(&self, msg: &str) { (**self).log(msg) } }
+impl<T: Logger> Logger for Arc<T> { fn log(&self, msg: &str) { (**self).log(msg) } }
+
+// ✅ With auto_impl — one attribute generates all three:
+#[auto_impl::auto_impl(&, Box, Arc)]
+trait Logger {
+    fn log(&self, msg: &str);
+}
+```
+
+For traits with **static methods** (no `self` receiver), add `where Self: Sized` so `auto_impl` can delegate to the inner type:
+
+```rust
+#[auto_impl::auto_impl(&, Box, Arc)]
+trait Protocol {
+    /// Returns the protocol version — e.g. `MyProtocol::version()`.
+    fn version() -> u32 where Self: Sized;
+    fn send(&self, payload: &[u8]);
+}
+```
+
+`auto_impl` supports `&`, `&mut`, `Box`, `Rc`, `Arc`, and `Fn`/`FnMut`/`FnOnce`. Add it to `Cargo.toml`:
+
+```toml
+[dependencies]
+auto_impl = "1"
+```
+
 ## Best Practices
 
 - Prefer associated types when there's one clear type per implementation
@@ -408,6 +447,7 @@ const fn compute() -> i32 {
 - Document trait requirements and invariants
 - Use marker traits for compile-time guarantees
 - Prefer static dispatch for performance, dynamic dispatch for flexibility
-- Use #[derive] when possible instead of manual implementations
+- Use `#[derive]` when possible instead of manual implementations
 - Implement standard traits (Debug, Clone, etc.) for better ecosystem integration
 - Use sealed traits to prevent external implementations when needed
+- Use `#[auto_impl::auto_impl(&, Box, Arc)]` on traits that should work through reference-like wrappers — avoids repetitive blanket impl boilerplate
