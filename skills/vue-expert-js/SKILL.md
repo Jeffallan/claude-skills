@@ -37,9 +37,9 @@ Load detailed guidance based on context:
 | Testing | `references/testing-patterns.md` | Vitest, component testing, mocking |
 
 **For shared Vue concepts, defer to vue-expert:**
-- `vue-expert/references/composition-api.md` - Core reactivity patterns
-- `vue-expert/references/components.md` - Props, emits, slots
-- `vue-expert/references/state-management.md` - Pinia stores
+- `../vue-expert/references/composition-api.md` - Core reactivity patterns
+- `../vue-expert/references/components.md` - Props, emits, slots
+- `../vue-expert/references/state-management.md` - Pinia stores
 
 ## Code Patterns
 
