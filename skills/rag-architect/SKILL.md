@@ -128,10 +128,14 @@ def hybrid_search(query: str, tenant_id: str, top_k: int = 20) -> list:
 
 ### 4. Reranking Top-K Results
 
+Load provider API keys from environment variables or a secrets manager; never commit them to source code.
+
 ```python
+import os
+
 import cohere
 
-co = cohere.Client("YOUR_API_KEY")
+co = cohere.Client(os.environ["COHERE_API_KEY"])
 
 def rerank(query: str, results: list, top_n: int = 5) -> list:
     docs = [r.payload.get("text", "") for r in results]
