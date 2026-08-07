@@ -23,6 +23,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 ### Backend Frameworks
 - **[NestJS Expert](https://jeffallan.github.io/claude-skills/skills/backend/nestjs-expert/)**: Building TypeScript backend APIs with NestJS
 - **[Django Expert](https://jeffallan.github.io/claude-skills/skills/backend/django-expert/)**: Building Python web apps with Django/DRF
+- **[Django Storages S3](https://jeffallan.github.io/claude-skills/skills/backend/django-storages-s3/)**: Production AWS S3 file storage with django-storages and boto3
 - **[FastAPI Expert](https://jeffallan.github.io/claude-skills/skills/backend/fastapi-expert/)**: Building async Python APIs with FastAPI
 - **[Spring Boot Engineer](https://jeffallan.github.io/claude-skills/skills/backend/spring-boot-engineer/)**: Java enterprise applications with Spring Boot
 - **[Laravel Specialist](https://jeffallan.github.io/claude-skills/skills/backend/laravel-specialist/)**: PHP web applications with Laravel

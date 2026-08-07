@@ -8,7 +8,7 @@ export default defineConfig({
     starlight({
       title: 'Claude Skills',
       description:
-        '66 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
+        '67 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
       customCss: ['./src/styles/custom.css'],
       head: [
         {

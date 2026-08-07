@@ -10,7 +10,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: fullstack-guardian, fastapi-expert, test-master
+  related-skills: fullstack-guardian, fastapi-expert, test-master, django-storages-s3
 ---
 
 # Django Expert

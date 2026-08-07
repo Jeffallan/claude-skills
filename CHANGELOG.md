@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- New skill: `django-storages-s3` — production AWS S3 file storage for Django with `django-storages` and `boto3`. Covers the Django 4.2+ `STORAGES` dict, public/private custom backends, presigned GET/POST URLs, CloudFront integration, a least-privilege IAM policy, and S3 mocking (`InMemoryStorage`/`moto`). Cross-referenced with `django-expert` (#218)
 - `ReferencePathChecker` in `scripts/validate-skills.py`: validates that file paths cited in skill markdown (backtick paths and markdown links) resolve relative to the containing file or the skill root. Broken paths previously failed silently when an agent tried to load deferred reference content; this class of bug has now recurred across several releases and is guarded automatically in CI and `make validate`
 - `devops-engineer`: new `references/gitlab-ci.md` covering GitLab CI/CD best practices (pipeline dedup via `workflow:rules`, `needs:` DAG, cache vs artifacts, CI/CD components, environments, OIDC secrets, runner isolation, MR-widget reporting) plus a routing-table row; the GitLab counterpart to the existing GitHub Actions reference (#219)
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
 - @chgreer1070 — Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
 - @kasymovpost — GitLab CI/CD best-practices reference for devops-engineer (#219)
+- @awais786 — New `django-storages-s3` skill: production S3 file storage for Django (#218)
 
 ## [0.4.15] - 2026-05-20
 
