@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nestjs-expert/references/migration-from-express.md`: cross-reference to legacy-modernizer's strangler-fig reference was a hardcoded contributor-machine absolute path (`/Users/.../claude-skills/skills/...`); corrected to `../legacy-modernizer/references/strangler-fig-pattern.md`. Caught by `ReferencePathChecker` on CI's clean runner; the checker now rejects absolute paths unconditionally so a stale local clone can never mask one
 
 - `site/package-lock.json`: applied `npm audit fix` to clear docs-site dependency vulnerabilities (14 findings down to 9; the remainder stem from advisories published after the fix was cut). Verified via clean `npm ci`, `npm audit`, and a successful 98-page site build before merge (#220)
+- `site/package-lock.json`: follow-up fresh `npm audit fix` clearing post-July advisories (9 findings down to 5). The remaining 5 require a semver-major Astro 7 upgrade (cascading @astrojs/starlight and @astrojs/mdx majors) and are dev-server/SSR-context advisories with low exposure for a statically built site; tracked as separate upgrade work
 
 ### Contributors
 - @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
