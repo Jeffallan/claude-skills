@@ -924,7 +924,7 @@ export default async function UserProfile({ params }: { params: { id: string } }
 - SEO-critical content? → Server Component
 - Large dependencies? → Server Component (smaller client bundle)
 
-See reference: `react-expert/references/server-components.md`
+See reference: `references/server-components.md`
 
 ---
 
