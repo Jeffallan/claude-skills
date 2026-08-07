@@ -9,19 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `ReferencePathChecker` in `scripts/validate-skills.py`: validates that file paths cited in skill markdown (backtick paths and markdown links) resolve relative to the containing file or the skill root. Broken paths previously failed silently when an agent tried to load deferred reference content; this class of bug has now recurred across several releases and is guarded automatically in CI and `make validate`
+- `devops-engineer`: new `references/gitlab-ci.md` covering GitLab CI/CD best practices (pipeline dedup via `workflow:rules`, `needs:` DAG, cache vs artifacts, CI/CD components, environments, OIDC secrets, runner isolation, MR-widget reporting) plus a routing-table row; the GitLab counterpart to the existing GitHub Actions reference (#219)
+
+### Changed
+- `devops-engineer/references/gitlab-ci.md`: post-merge patch replacing the kaniko build example with BuildKit rootless (`moby/buildkit:rootless` + `buildctl-daemonless.sh` with registry cache) and noting kaniko's archived status in the core principles; kaniko is unmaintained and should not be the recommended build path
 
 ### Fixed
 - `vue-expert-js/SKILL.md`: three shared-Vue reference paths pointed at `vue-expert/references/*.md`, which does not resolve from the skill directory; corrected to `../vue-expert/references/*.md` (#225)
 - `react-expert/references/migration-class-to-modern.md`: self-referencing path `react-expert/references/server-components.md` corrected to `references/server-components.md` (#225)
 - `fastapi-expert/references/migration-from-django.md`: cross-reference to legacy-modernizer used an absolute-style path (`/skills/legacy-modernizer/...`) that resolves nowhere; corrected to `../legacy-modernizer/references/migration-strategies.md`. Found by the new `ReferencePathChecker` audit
 - `nestjs-expert/references/migration-from-express.md`: cross-reference to legacy-modernizer's strangler-fig reference was a hardcoded contributor-machine absolute path (`/Users/.../claude-skills/skills/...`); corrected to `../legacy-modernizer/references/strangler-fig-pattern.md`. Caught by `ReferencePathChecker` on CI's clean runner; the checker now rejects absolute paths unconditionally so a stale local clone can never mask one
-
 - `site/package-lock.json`: applied `npm audit fix` to clear docs-site dependency vulnerabilities (14 findings down to 9; the remainder stem from advisories published after the fix was cut). Verified via clean `npm ci`, `npm audit`, and a successful 98-page site build before merge (#220)
 - `site/package-lock.json`: follow-up fresh `npm audit fix` clearing post-July advisories (9 findings down to 5). The remaining 5 require a semver-major Astro 7 upgrade (cascading @astrojs/starlight and @astrojs/mdx majors) and are dev-server/SSR-context advisories with low exposure for a statically built site; tracked as separate upgrade work
 
 ### Contributors
 - @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
 - @chgreer1070 — Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
+- @kasymovpost — GitLab CI/CD best-practices reference for devops-engineer (#219)
 
 ## [0.4.15] - 2026-05-20
 

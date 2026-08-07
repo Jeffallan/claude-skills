@@ -54,15 +54,23 @@ build-image:
   stage: build
   needs: [unit-test]
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: moby/buildkit:rootless
     entrypoint: [""]
+  variables:
+    BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
+  before_script:
+    - mkdir -p ~/.docker
+    - AUTH=$(echo -n "$CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')
+    - printf '{"auths":{"%s":{"auth":"%s"}}}' "$CI_REGISTRY" "$AUTH" > ~/.docker/config.json
   script:
     - >
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
-      --cache=true
+      buildctl-daemonless.sh build
+      --frontend dockerfile.v0
+      --local context="${CI_PROJECT_DIR}"
+      --local dockerfile="${CI_PROJECT_DIR}"
+      --output type=image,name="${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}",push=true
+      --export-cache type=registry,ref="${CI_REGISTRY_IMAGE}:buildcache"
+      --import-cache type=registry,ref="${CI_REGISTRY_IMAGE}:buildcache"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -94,7 +102,7 @@ deploy-production:
 5. **Environments are first-class objects** — declare `environment:name/url/deployment_tier`, use `on_stop`/`auto_stop_in` for ephemeral review apps, `resource_group` to serialize deploys to the same target, and protected environments + `manual_confirmation` for production.
 6. **Secrets never live in CI/CD variables for anything sensitive** — prefer OIDC to cloud providers over static keys; use HashiCorp Vault integration with scoped roles, bound claims, and short TTLs. Be careful with `CI_JOB_TOKEN` scope (limit the allow-list) and treat MRs from forks as untrusted.
 7. **Runner blast radius** — register runners at the narrowest scope that works (project < group < instance). Docker executor without `privileged` mode is the default; privileged/DinD only on isolated, ephemeral runners. Split protected and unprotected jobs onto separate runner pools/tags.
-8. **Build images without long-lived root daemons** — prefer BuildKit rootless or Kaniko over classic privileged DinD; pass secrets via mount-type (`--mount=type=secret`), not `ARG`/`ENV`; tag by commit SHA, never `latest`; generate SBOM and sign images (cosign/notation) after build.
+8. **Build images without long-lived root daemons** — prefer BuildKit rootless over classic privileged DinD (kaniko is archived and unmaintained; plan a migration if pipelines still use it); pass secrets via mount-type (`--mount=type=secret`), not `ARG`/`ENV`; tag by commit SHA, never `latest`; generate SBOM and sign images (cosign/notation) after build.
 9. **MR pipelines are where checks matter** — prefer merged-results pipelines (test the merge of source+target, not just source) and merge trains for high-throughput repos, over relying on branch pipelines.
 10. **Report everything GitLab can render** — `artifacts:reports:junit` for test results, `coverage_report` (Cobertura) for MR diff coverage annotations vs the `coverage:` regex for the summary badge, Code Quality reports, and screenshots/videos/logs as artifacts for UI/E2E failures. The MR widget is the primary feedback surface — optimize for it.
 
