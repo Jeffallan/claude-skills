@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `ReferencePathChecker` in `scripts/validate-skills.py`: validates that file paths cited in skill markdown (backtick paths and markdown links) resolve relative to the containing file or the skill root. Broken paths previously failed silently when an agent tried to load deferred reference content; this class of bug has now recurred across several releases and is guarded automatically in CI and `make validate`
+
+### Fixed
+- `vue-expert-js/SKILL.md`: three shared-Vue reference paths pointed at `vue-expert/references/*.md`, which does not resolve from the skill directory; corrected to `../vue-expert/references/*.md` (#225)
+- `react-expert/references/migration-class-to-modern.md`: self-referencing path `react-expert/references/server-components.md` corrected to `references/server-components.md` (#225)
+- `fastapi-expert/references/migration-from-django.md`: cross-reference to legacy-modernizer used an absolute-style path (`/skills/legacy-modernizer/...`) that resolves nowhere; corrected to `../legacy-modernizer/references/migration-strategies.md`. Found by the new `ReferencePathChecker` audit
+
+### Contributors
+- @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
+
 ## [0.4.15] - 2026-05-20
 
 ### Fixed

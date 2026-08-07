@@ -813,6 +813,62 @@ class NonStandardHeadersChecker(BaseChecker):
         return issues
 
 
+class ReferencePathChecker(BaseChecker):
+    """Validates that relative file paths cited in skill markdown resolve.
+
+    Skill files cite paths to deferred content in backticks (e.g.
+    `references/testing.md` in routing tables) and markdown links. Agents
+    resolve these relative to the containing file or the skill root; a path
+    that resolves from neither base fails silently when an agent tries to
+    load it. Cross-skill references must use the ../other-skill/ form so
+    they resolve from those same bases.
+    """
+
+    name = "reference-paths"
+    category = "references"
+
+    BACKTICK_REF = re.compile(r"`([^`\s]+\.md)`")
+    MARKDOWN_LINK_REF = re.compile(r"\]\(([^)\s#]+\.md)(?:#[^)]*)?\)")
+    FENCED_CODE_BLOCK = re.compile(r"^\s*```.*?^\s*```[^\n]*", re.MULTILINE | re.DOTALL)
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        issues = []
+        for md_file in sorted(skill_path.rglob("*.md")):
+            text = md_file.read_text()
+            # Fenced code blocks may cite hypothetical example paths; real
+            # cross-references live in prose, bullets, and routing tables.
+            prose = self.FENCED_CODE_BLOCK.sub("", text)
+            refs = set(self.BACKTICK_REF.findall(prose)) | set(self.MARKDOWN_LINK_REF.findall(prose))
+            lines = text.split("\n")
+            for ref in sorted(refs):
+                if self._is_exempt(ref):
+                    continue
+                if (md_file.parent / ref).exists() or (skill_path / ref).exists():
+                    continue
+                lineno = next((i for i, line in enumerate(lines, 1) if ref in line), None)
+                location = f" (line {lineno})" if lineno else ""
+                issues.append(
+                    ValidationIssue(
+                        skill=skill_name,
+                        check=self.name,
+                        severity=Severity.ERROR,
+                        message=f"Unresolvable file reference '{ref}'{location} - "
+                        "path must resolve relative to the containing file or the skill root",
+                        file=str(md_file),
+                    )
+                )
+        return issues
+
+    @staticmethod
+    def _is_exempt(ref: str) -> bool:
+        """Skip URLs, bare filenames, and template placeholders."""
+        if ref.startswith(("http://", "https://")):
+            return True
+        if "/" not in ref:
+            return True
+        return any(c in ref for c in "{<*")
+
+
 class MetadataEnumChecker(BaseChecker):
     """Generic checker for metadata enum fields."""
 
@@ -2001,6 +2057,7 @@ class SkillValidator:
             ReferencesDirectoryChecker(),
             ReferenceFileCountChecker(),
             NonStandardHeadersChecker(),
+            ReferencePathChecker(),
         ]
 
         # Filter by category if specified

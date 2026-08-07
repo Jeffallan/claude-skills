@@ -961,7 +961,7 @@ async def create_user(user: UserCreate, db: AsyncSession):
 ## Cross-Reference
 
 For comprehensive migration strategies and modernization patterns:
-- **Legacy Modernizer**: `/skills/legacy-modernizer/references/migration-strategies.md`
+- **Legacy Modernizer**: `../legacy-modernizer/references/migration-strategies.md`
   - Strangler pattern implementation
   - Feature flag strategies
   - Rollback procedures

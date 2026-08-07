@@ -254,6 +254,7 @@ The script validates:
 - **Name format** - Letters, numbers, hyphens only
 - **Description** - Max 1024 chars, must contain "Use when" trigger clause
 - **References** - Directory exists, has files, proper headers
+- **Reference paths** - File paths cited in skill markdown resolve relative to the containing file or the skill root
 - **Count consistency** - Skills/reference counts match across documentation
 
 **Options:**
