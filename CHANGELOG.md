@@ -16,8 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fastapi-expert/references/migration-from-django.md`: cross-reference to legacy-modernizer used an absolute-style path (`/skills/legacy-modernizer/...`) that resolves nowhere; corrected to `../legacy-modernizer/references/migration-strategies.md`. Found by the new `ReferencePathChecker` audit
 - `nestjs-expert/references/migration-from-express.md`: cross-reference to legacy-modernizer's strangler-fig reference was a hardcoded contributor-machine absolute path (`/Users/.../claude-skills/skills/...`); corrected to `../legacy-modernizer/references/strangler-fig-pattern.md`. Caught by `ReferencePathChecker` on CI's clean runner; the checker now rejects absolute paths unconditionally so a stale local clone can never mask one
 
+- `site/package-lock.json`: applied `npm audit fix` to clear docs-site dependency vulnerabilities (14 findings down to 9; the remainder stem from advisories published after the fix was cut). Verified via clean `npm ci`, `npm audit`, and a successful 98-page site build before merge (#220)
+
 ### Contributors
 - @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
+- @chgreer1070 — Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
 
 ## [0.4.15] - 2026-05-20
 
