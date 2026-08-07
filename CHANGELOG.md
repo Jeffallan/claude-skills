@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.16] - 2026-08-07
+
 ### Added
 - New skill: `django-storages-s3` — production AWS S3 file storage for Django with `django-storages` and `boto3`. Covers the Django 4.2+ `STORAGES` dict, public/private custom backends, presigned GET/POST URLs, CloudFront integration, a least-privilege IAM policy, and S3 mocking (`InMemoryStorage`/`moto`). Cross-referenced with `django-expert` (#218)
 - `ReferencePathChecker` in `scripts/validate-skills.py`: validates that file paths cited in skill markdown (backtick paths and markdown links) resolve relative to the containing file or the skill root. Broken paths previously failed silently when an agent tried to load deferred reference content; this class of bug has now recurred across several releases and is guarded automatically in CI and `make validate`
@@ -489,6 +491,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.16]: https://github.com/jeffallan/claude-skills/compare/v0.4.15...v0.4.16
 [0.4.15]: https://github.com/jeffallan/claude-skills/compare/v0.4.14...v0.4.15
 [0.4.14]: https://github.com/jeffallan/claude-skills/compare/v0.4.13...v0.4.14
 [0.4.13]: https://github.com/jeffallan/claude-skills/compare/v0.4.12...v0.4.13
