@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `site/package-lock.json`: follow-up fresh `npm audit fix` clearing post-July advisories (9 findings down to 5). The remaining 5 require a semver-major Astro 7 upgrade (cascading @astrojs/starlight and @astrojs/mdx majors) and are dev-server/SSR-context advisories with low exposure for a statically built site; tracked as separate upgrade work
 - `rag-architect/SKILL.md`: reranking example instantiated the Cohere client with a hard-coded `"YOUR_API_KEY"` placeholder; now reads `COHERE_API_KEY` from the environment with a note on secrets handling, closing #210 (#216)
 - `terraform-engineer/SKILL.md`: core workflow allowed proceeding from `terraform plan` straight to `terraform apply`; now requires presenting a plan summary (highlighting destructive actions) and receiving explicit user approval before apply, refusing when approval is withheld, closing #211 (#213)
+- `devops-engineer/SKILL.md`: the "never deploy to production without explicit approval" constraint was not operationalized in the core workflow; the deploy step now determines the target environment and, for production or customer-facing targets, presents the deployment summary and rollback plan and requires explicit user approval before running deployment commands, closing #196 and #212
 
 ### Contributors
 - @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
@@ -32,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - @awais786 — New `django-storages-s3` skill: production S3 file storage for Django (#218)
 - @snvtac — Replaced hard-coded Cohere API key placeholder in `rag-architect` with environment lookup (#216)
 - @SergiuLupaiescu — Added user-approval gate between `terraform plan` and `apply` in `terraform-engineer` (#213)
-- @specterslient95-lgtm — Reported the missing plan/apply approval gate (#211)
+- @specterslient95-lgtm — Reported the missing plan/apply approval gate (#211) and the non-operationalized production-deploy constraint (#196, #212)
 
 ## [0.4.15] - 2026-05-20
 
