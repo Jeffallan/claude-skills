@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `vue-expert-js/SKILL.md`: three shared-Vue reference paths pointed at `vue-expert/references/*.md`, which does not resolve from the skill directory; corrected to `../vue-expert/references/*.md` (#225)
 - `react-expert/references/migration-class-to-modern.md`: self-referencing path `react-expert/references/server-components.md` corrected to `references/server-components.md` (#225)
 - `fastapi-expert/references/migration-from-django.md`: cross-reference to legacy-modernizer used an absolute-style path (`/skills/legacy-modernizer/...`) that resolves nowhere; corrected to `../legacy-modernizer/references/migration-strategies.md`. Found by the new `ReferencePathChecker` audit
+- `nestjs-expert/references/migration-from-express.md`: cross-reference to legacy-modernizer's strangler-fig reference was a hardcoded contributor-machine absolute path (`/Users/.../claude-skills/skills/...`); corrected to `../legacy-modernizer/references/strangler-fig-pattern.md`. Caught by `ReferencePathChecker` on CI's clean runner; the checker now rejects absolute paths unconditionally so a stale local clone can never mask one
 
 ### Contributors
 - @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)

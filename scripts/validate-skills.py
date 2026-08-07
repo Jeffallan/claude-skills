@@ -843,7 +843,10 @@ class ReferencePathChecker(BaseChecker):
             for ref in sorted(refs):
                 if self._is_exempt(ref):
                     continue
-                if (md_file.parent / ref).exists() or (skill_path / ref).exists():
+                # Absolute paths are never portable, and joining them onto a
+                # base dir returns them unchanged - they would "resolve"
+                # against whatever happens to exist on the local machine.
+                if not Path(ref).is_absolute() and ((md_file.parent / ref).exists() or (skill_path / ref).exists()):
                     continue
                 lineno = next((i for i, line in enumerate(lines, 1) if ref in line), None)
                 location = f" (line {lineno})" if lineno else ""
