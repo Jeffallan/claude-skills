@@ -127,6 +127,13 @@ def update_markdown_file(file_path: Path, version: str, counts: dict, dry_run: b
     # Also update version badge URL (no marker needed - URL pattern is unique)
     content = re.sub(r"version-[\d.]+-blue\.svg", f"version-{version}-blue.svg", content)
 
+    # Update counts embedded in the capsule-render banner URL (URL-encoded, no marker possible)
+    content = re.sub(
+        r"desc=\d+%20Skills%20%E2%80%A2%20\d+%20Workflows",
+        f"desc={counts['skillCount']}%20Skills%20%E2%80%A2%20{counts['workflowCount']}%20Workflows",
+        content,
+    )
+
     # Update "Last updated" version reference (e.g., in ROADMAP.md)
     content = re.sub(r"(Last updated:.*?\(v)[\d.]+(\))", rf"\g<1>{version}\2", content)
 
