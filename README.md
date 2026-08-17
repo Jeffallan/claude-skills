@@ -118,7 +118,7 @@ Fullstack engineering, security engineering, compliance, and technical due dilig
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Jeffallan/claude-skills&type=date&legend=top-left)](https://www.star-history.com/#Jeffallan/claude-skills&type=date&legend=top-left)
+[![Star History Chart](https://star-history.dera.page/svg?repos=Jeffallan/claude-skills&type=date&legend=top-left)](https://star-history.dera.page/#Jeffallan/claude-skills&type=date&legend=top-left)
 
 ---
 
