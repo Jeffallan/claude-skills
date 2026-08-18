@@ -251,6 +251,7 @@ python scripts/validate-skills.py
 
 The script validates:
 - **YAML frontmatter** - Parsing, required fields (name, description, triggers), format
+- **Documentation backlinks** - Canonical domain/skill URL, uniqueness, and last-line placement
 - **Name format** - Letters, numbers, hyphens only
 - **Description** - Max 1024 chars, must contain "Use when" trigger clause
 - **References** - Directory exists, has files, proper headers

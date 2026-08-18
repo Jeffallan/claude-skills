@@ -1098,6 +1098,67 @@ class LineCountChecker(BaseChecker):
         return []
 
 
+class DocumentationBacklinkChecker(BaseChecker):
+    """Validates the canonical docs backlink at the end of SKILL.md."""
+
+    name = "documentation-backlink"
+    category = "references"
+    LINK_PATTERN = re.compile(r"^\[Documentation\]\([^)]+\)$")
+
+    def check(self, skill_path: Path, skill_name: str) -> list[ValidationIssue]:
+        result = self._extract_frontmatter(skill_path)
+        if result is None:
+            return []
+
+        metadata = result.frontmatter.get("metadata")
+        if not isinstance(metadata, dict):
+            return []  # MetadataFieldsChecker reports missing or invalid metadata.
+
+        domain = metadata.get("domain")
+        if not isinstance(domain, str) or not domain:
+            return []  # MetadataFieldsChecker reports missing or invalid metadata.
+
+        expected = f"[Documentation](https://jeffallan.github.io/claude-skills/skills/{domain}/{skill_name}/)"
+        lines = result.skill_md.read_text().splitlines()
+        non_blank_lines = [line.strip() for line in lines if line.strip()]
+        backlinks = [line for line in non_blank_lines if self.LINK_PATTERN.fullmatch(line)]
+
+        if not backlinks:
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Canonical Documentation backlink is missing; expected: {expected}",
+                    file=str(result.skill_md),
+                )
+            ]
+
+        if len(backlinks) != 1 or backlinks[0] != expected:
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message=f"Documentation backlink must appear once and match expected URL: {expected}",
+                    file=str(result.skill_md),
+                )
+            ]
+
+        if non_blank_lines[-1] != expected:
+            return [
+                ValidationIssue(
+                    skill=skill_name,
+                    check=self.name,
+                    severity=Severity.ERROR,
+                    message="Documentation backlink must be the last non-blank line",
+                    file=str(result.skill_md),
+                )
+            ]
+
+        return []
+
+
 # =============================================================================
 # Workflow Checkers
 # =============================================================================
@@ -2061,6 +2122,7 @@ class SkillValidator:
             ReferenceFileCountChecker(),
             NonStandardHeadersChecker(),
             ReferencePathChecker(),
+            DocumentationBacklinkChecker(),
         ]
 
         # Filter by category if specified
