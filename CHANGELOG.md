@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- New skill: `accessibility-engineer` — WCAG 2.2 implementation and audit guidance covering semantic HTML, ARIA interaction patterns, keyboard and screen-reader testing, automated regression checks, and evidence-based remediation
+
 ### Fixed
 - README banner (capsule-render URL) still displayed 66 skills after the v0.4.16 release; the counts are URL-encoded inside the image URL where no `<!-- SKILL_COUNT -->` marker can live, so `update-docs.py` never touched them. The script now rewrites the banner's `desc=` parameter from computed counts
 

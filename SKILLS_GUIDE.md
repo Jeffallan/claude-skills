@@ -57,6 +57,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Spec Miner](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)**: Analyzing existing code, reverse-engineering specifications
 
 ### Quality & Testing
+- **[Accessibility Engineer](https://jeffallan.github.io/claude-skills/skills/quality/accessibility-engineer/)**: WCAG 2.2 implementation, audits, remediation, and assistive-technology testing
 - **[Test Master](https://jeffallan.github.io/claude-skills/skills/quality/test-master/)**: Overall testing strategy (unit, integration, E2E, performance, security)
 - **[Playwright Expert](https://jeffallan.github.io/claude-skills/skills/quality/playwright-expert/)**: Browser automation and E2E testing
 - **[Code Reviewer](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/)**: Conducting thorough code reviews
@@ -187,6 +188,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **Jira/Confluence** → Atlassian MCP
 
 ### Testing
+- **Accessibility Implementation & Audits** → Accessibility Engineer
 - **E2E Browser Tests** → Playwright Expert
 - **All Other Testing** → Test Master
 
