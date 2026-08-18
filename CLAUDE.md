@@ -137,12 +137,13 @@ Every `SKILL.md` MUST end with a single canonical Documentation link pointing ba
 ### When Creating New Skills
 
 1. Check existing skills for overlap
-2. Write SKILL.md with capability + trigger description (no process steps)
-3. Create reference files for deep content (100+ lines)
-4. Add routing table linking topics to references
-5. Append the canonical Documentation backlink as the last line (see Documentation Backlink above)
-6. Test skill triggers with realistic prompts
-7. Update SKILLS_GUIDE.md if adding new domain
+2. Run `python scripts/create-skill.py --help` and scaffold the skill with its domain, author, and capability + trigger description
+3. Replace every scaffold `TODO`; keep process steps out of the description
+4. Create reference files for deep content (100+ lines)
+5. Add routing table linking topics to references
+6. Keep the generated canonical Documentation backlink as the last line (see Documentation Backlink above)
+7. Test skill triggers with realistic prompts
+8. Update SKILLS_GUIDE.md if adding new domain
 
 ### When Modifying Skills
 
