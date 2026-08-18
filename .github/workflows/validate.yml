@@ -23,6 +23,9 @@ jobs:
       - name: Validate skills
         run: python scripts/validate-skills.py
 
+      - name: Test skill validators
+        run: python -m unittest scripts/test_validate_skills.py
+
       - name: Validate markdown
         run: python scripts/validate-markdown.py --check
 
