@@ -24,7 +24,7 @@
 ```
 **Then, install the skills:**
 ```bash
-/plugin install fullstack-dev-skills@jeffallan
+/plugin install fullstack-dev-skills@fullstack-dev-skills
 ```
 
 For all installation methods and first steps, see the [**Quick Start Guide**](QUICKSTART.md).

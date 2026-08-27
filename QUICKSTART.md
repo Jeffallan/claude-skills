@@ -10,7 +10,7 @@ Get up and running with the Fullstack Dev Skills Plugin.
 /plugin marketplace add jeffallan/claude-skills
 
 # Install the plugin
-/plugin install fullstack-dev-skills@jeffallan
+/plugin install fullstack-dev-skills@fullstack-dev-skills
 
 # Restart Claude Code when prompted
 ```
