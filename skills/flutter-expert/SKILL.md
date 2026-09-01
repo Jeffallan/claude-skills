@@ -56,13 +56,12 @@ Load detailed guidance based on context:
 ### Riverpod Provider + ConsumerWidget (correct pattern)
 
 ```dart
-// provider definition
-final counterProvider = StateNotifierProvider<CounterNotifier, int>(
-  (ref) => CounterNotifier(),
-);
+// provider definition — Notifier, not the legacy StateNotifier
+final counterProvider = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
 
-class CounterNotifier extends StateNotifier<int> {
-  CounterNotifier() : super(0);
+class CounterNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
   void increment() => state = state + 1; // new instance, never mutate
 }
 
@@ -127,7 +126,7 @@ class GoodCounter extends ConsumerWidget {
 | Widget test assertion failures | Widget tree mismatch or async state not settled | Use `tester.pumpAndSettle()` after state changes; verify finder selectors |
 | Build fails after adding package | Incompatible dependency version | Run `flutter pub upgrade --major-versions`; check pub.dev compatibility |
 | Jank / dropped frames | Expensive `build()` calls, uncached widgets, heavy main-thread work | Use `RepaintBoundary`, move heavy work to `compute()`, add `const` |
-| Hot reload not reflecting changes | State held in `StateNotifier` not reset | Use hot restart (`R` in terminal) to reset full app state |
+| Hot reload not reflecting changes | State held in `Notifier` not reset | Use hot restart (`R` in terminal) to reset full app state |
 
 ## Output Templates
 
