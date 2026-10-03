@@ -120,7 +120,7 @@ Include relevant information:
 ### Skills Not Loading After Install
 1. Verify the plugin is installed: `/plugin list`
 2. Check for conflicting skill names in `~/.claude/skills/`
-3. Try reinstalling: `/plugin uninstall fullstack-dev-skills@jeffallan` then reinstall
+3. Try reinstalling: `/plugin uninstall fullstack-dev-skills@fullstack-dev-skills` then reinstall
 
 ### How to Update
 ```bash
