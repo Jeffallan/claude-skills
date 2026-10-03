@@ -1,0 +1,22 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+---
+
+<Default {...Astro.props}><slot /></Default>
+
+<p class="maintainer-credit">
+  Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at
+  <a href="https://synergetic.solutions">Synergetic Solutions</a>
+</p>
+
+<style>
+  .maintainer-credit {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+  .maintainer-credit a {
+    color: inherit;
+  }
+</style>

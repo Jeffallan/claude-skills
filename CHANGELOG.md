@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.17] - 2026-10-03
 
 ### Added
+- Docs site footer: every page now ends with "Maintained by @jeffallan, Principal Consultant at Synergetic Solutions", linking to the GitHub profile and https://synergetic.solutions, via a Starlight `Footer` override that wraps the default footer
 - `plugin` distribution branch: `scripts/build-plugin-dist.sh` assembles only what the plugin ships (`.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `README.md`, `LICENSE`) from committed HEAD, and `.github/workflows/publish-plugin.yml` rebuilds the `plugin` branch from it on release tags. The repo root previously shipped as the plugin, including the docs site, scripts, research, and contributor files, which the Claude plugin directory held for review. `main` keeps its layout so external links into `skills/` keep working. Covered by `scripts/test-build-plugin-dist.sh`, now run in CI and `make test` (#242)
 - `CLAUDE.md`: "When Accepting Contributions" section documenting the maintainer procedure for external issues and PRs (the `gratitude` label on every contribution, fit discussion before merge, squash-merge subject format, separate changelog commit under `[Unreleased]`, count sync in the same push, and the `### Contributors` credit format at release). Previously this lived only in git history
 
