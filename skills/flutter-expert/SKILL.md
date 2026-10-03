@@ -4,6 +4,7 @@ description: Use when building cross-platform applications with Flutter 3+ and D
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: frontend
   triggers: Flutter, Dart, widget, Riverpod, Bloc, GoRouter, cross-platform
@@ -135,5 +136,7 @@ When implementing Flutter features, provide:
 2. Provider/Bloc definitions
 3. Route configuration if needed
 4. Test file structure
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/frontend/flutter-expert/)

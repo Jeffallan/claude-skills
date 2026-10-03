@@ -4,6 +4,7 @@ description: Conducts structured requirements workshops to produce feature speci
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: workflow
   triggers: requirements, specification, feature definition, user stories, EARS, planning
@@ -96,5 +97,7 @@ Then they are redirected to the dashboard within 2 seconds.
 ```
 
 Save as: `specs/{feature_name}.spec.md`
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)

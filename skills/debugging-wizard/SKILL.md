@@ -4,6 +4,7 @@ description: Parses error messages, traces execution flow through stack traces, 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: quality
   triggers: debug, error, bug, exception, traceback, stack trace, troubleshoot, not working, crash, fix issue
@@ -103,5 +104,7 @@ When debugging, provide:
 2. **Evidence**: Stack trace, logs, or test that proves it
 3. **Fix**: Code change that resolves it
 4. **Prevention**: Test or safeguard to prevent recurrence
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)

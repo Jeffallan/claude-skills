@@ -5,6 +5,7 @@ license: MIT
 allowed-tools: Read, Grep, Glob
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: quality
   triggers: code review, PR review, pull request, review code, code quality
@@ -117,5 +118,7 @@ Code review report must include:
 ## Knowledge Reference
 
 SOLID, DRY, KISS, YAGNI, design patterns, OWASP Top 10, language idioms, testing patterns
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/)

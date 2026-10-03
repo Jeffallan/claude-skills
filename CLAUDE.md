@@ -43,6 +43,7 @@ description: [Brief capability statement]. Use when [triggering conditions] - ma
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.0.0"
   domain: frontend
   triggers: keyword1, keyword2, keyword3
@@ -61,6 +62,7 @@ metadata:
 
 **Metadata fields (project-specific):**
 - `author`: GitHub profile URL of the skill author
+- `company`: Optional. URL of the author's company (`https://synergetic.solutions` on skills authored by @jeffallan); omit for contributed skills unless the contributor supplies one
 - `version`: Semantic version string (quoted, e.g., `"1.0.0"`)
 - `domain`: Category from the domain list below
 - `triggers`: Comma-separated searchable keywords
@@ -110,6 +112,20 @@ Every `SKILL.md` MUST end with a single canonical Documentation link pointing ba
 - The docs site itself would render this line as a self-link, which is redundant. `syncSkillPages` in `site/scripts/sync-content.mjs` strips the line at build time so the docs site, public markdown mirrors, `llms.txt`, and `llms-full.txt` never show it.
 
 **When adding or renaming a skill:** update both the directory name (which becomes `{skill-name}`) and the `metadata.domain` consistently with this URL formula, otherwise the backlink will 404.
+
+### Company Backlink
+
+Skills authored by @jeffallan (those with `metadata.company: https://synergetic.solutions`) carry one more line, directly above the Documentation backlink, separated by a blank line:
+
+```
+[Synergetic Solutions](https://synergetic.solutions)
+
+[Documentation](https://jeffallan.github.io/claude-skills/skills/{domain}/{skill-name}/)
+```
+
+- The Documentation backlink stays the last line
+- Contributed skills do not get this line unless their `metadata.company` is set to the same URL
+- `syncSkillPages` strips it at build time alongside the Documentation backlink, so the docs site, markdown mirrors, and `llms` files never show it
 
 ---
 

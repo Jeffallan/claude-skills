@@ -4,6 +4,7 @@ description: "Use when writing E2E tests with Playwright, setting up test infras
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: quality
   triggers: Playwright, E2E test, end-to-end, browser testing, automation, UI testing, visual testing
@@ -167,5 +168,7 @@ When implementing Playwright tests, provide:
 ## Knowledge Reference
 
 Playwright, Page Object Model, auto-waiting, locators, fixtures, API mocking, trace viewer, visual comparisons, parallel execution, CI/CD integration
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/quality/playwright-expert/)

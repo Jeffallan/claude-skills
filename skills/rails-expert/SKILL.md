@@ -4,6 +4,7 @@ description: Rails 7+ specialist that optimizes Active Record queries with inclu
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: backend
   triggers: Rails, Ruby on Rails, Hotwire, Turbo Frames, Turbo Streams, Action Cable, Active Record, Sidekiq, RSpec Rails
@@ -152,5 +153,7 @@ When implementing Rails features, provide:
 4. View files or Hotwire setup
 5. Spec files for models and requests
 6. Brief explanation of architectural decisions
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/backend/rails-expert/)

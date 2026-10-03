@@ -5,6 +5,7 @@ license: MIT
 allowed-tools: Read, Grep, Glob
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: workflow
   triggers: reverse engineer, legacy code, code analysis, undocumented, understand codebase, existing system
@@ -106,5 +107,7 @@ Include:
 5. Inferred acceptance criteria
 6. Uncertainties and questions
 7. Recommendations
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)

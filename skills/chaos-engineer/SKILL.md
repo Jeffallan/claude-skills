@@ -4,6 +4,7 @@ description: Designs chaos experiments, creates failure injection frameworks, an
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: devops
   triggers: chaos engineering, resilience testing, failure injection, game day, blast radius, chaos experiment, fault injection, Chaos Monkey, Litmus Chaos, antifragile
@@ -180,5 +181,7 @@ chaos:
 # Apply and trigger a manual kill for testing
 chaos-monkey --app my-service --account staging --dry-run false
 ```
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/devops/chaos-engineer/)

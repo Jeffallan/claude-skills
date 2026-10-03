@@ -4,6 +4,7 @@ description: Builds iOS/macOS/watchOS/tvOS applications, implements SwiftUI view
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: language
   triggers: Swift, SwiftUI, iOS development, macOS development, async/await Swift, Combine, UIKit, Vapor
@@ -161,5 +162,7 @@ When implementing Swift features, provide:
 3. View implementations (SwiftUI) or view controllers
 4. Tests demonstrating usage
 5. Brief explanation of architectural decisions
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/language/swift-expert/)

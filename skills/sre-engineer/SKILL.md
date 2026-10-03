@@ -4,6 +4,7 @@ description: Defines service level objectives, creates error budget policies, de
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: devops
   triggers: SRE, site reliability, SLO, SLI, error budget, incident management, chaos engineering, toil reduction, on-call, MTTR
@@ -179,5 +180,7 @@ if __name__ == "__main__":
     else:
         print("Within SLO threshold — no action required")
 ```
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/devops/sre-engineer/)
