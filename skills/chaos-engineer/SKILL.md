@@ -182,6 +182,6 @@ chaos:
 chaos-monkey --app my-service --account staging --dry-run false
 ```
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/devops/chaos-engineer/)

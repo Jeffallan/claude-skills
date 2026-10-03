@@ -455,10 +455,13 @@ function syncSkillPages(skillIndex) {
       '',
     );
 
-    // Strip the company backlink that sits just above it: like the
-    // documentation backlink, it is there for aggregators, not for every
-    // page of the docs site.
-    body = body.replace(/\n+\[Synergetic Solutions\]\(https:\/\/synergetic\.solutions\/?\)\s*$/, '');
+    // Strip the maintainer credit that sits just above it: like the
+    // documentation backlink, it is there for aggregators; the docs site
+    // shows the same credit once in its footer.
+    body = body.replace(
+      /\n+Maintained by \[@jeffallan\]\(https:\/\/github\.com\/jeffallan\), Principal Consultant at \[Synergetic Solutions\]\(https:\/\/synergetic\.solutions\/?\)\s*$/,
+      '',
+    );
 
     body = rewriteLinks(body);
 

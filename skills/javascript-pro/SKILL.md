@@ -132,6 +132,6 @@ When implementing JavaScript features, provide:
 3. JSDoc documentation for public APIs
 4. Brief explanation of patterns used
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/language/javascript-pro/)

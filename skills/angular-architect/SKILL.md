@@ -152,6 +152,6 @@ When implementing Angular features, provide:
 4. Test file with comprehensive test cases
 5. Brief explanation of architectural decisions
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/frontend/angular-architect/)

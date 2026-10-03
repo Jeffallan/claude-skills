@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Maintainer credit in skills authored by @jeffallan: the bare `[Synergetic Solutions](https://synergetic.solutions)` line above the Documentation backlink now reads "Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)", matching the docs site footer. `syncSkillPages` strips the new line; CLAUDE.md's "Company Backlink" section is now "Maintainer Credit"
+
 ## [0.4.17] - 2026-10-03
 
 ### Added

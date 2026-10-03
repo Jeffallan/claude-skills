@@ -108,6 +108,6 @@ Include:
 6. Uncertainties and questions
 7. Recommendations
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)

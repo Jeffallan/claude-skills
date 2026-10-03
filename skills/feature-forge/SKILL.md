@@ -98,6 +98,6 @@ Then they are redirected to the dashboard within 2 seconds.
 
 Save as: `specs/{feature_name}.spec.md`
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)
