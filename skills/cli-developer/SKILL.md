@@ -113,4 +113,6 @@ When implementing CLI features, provide:
 
 CLI frameworks (commander, yargs, oclif, click, typer, argparse, cobra, viper), terminal UI (chalk, inquirer, rich, bubbletea), testing (snapshot testing, E2E), distribution (npm, pip, homebrew, releases), performance optimization
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/devops/cli-developer/)

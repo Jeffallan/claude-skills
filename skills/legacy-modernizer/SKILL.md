@@ -137,4 +137,6 @@ When implementing modernization, provide:
 
 Strangler fig pattern, branch by abstraction, characterization testing, incremental migration, feature flags, canary deployments, API versioning, database refactoring, microservices extraction, technical debt reduction, zero-downtime deployment
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/specialized/legacy-modernizer/)

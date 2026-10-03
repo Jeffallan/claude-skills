@@ -143,4 +143,6 @@ When implementing MCP features, provide:
 3. Configuration file (transport, auth, etc.)
 4. Brief explanation of design decisions
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/api-architecture/mcp-developer/)

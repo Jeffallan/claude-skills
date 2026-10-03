@@ -134,4 +134,6 @@ When delivering prompt work, provide:
 
 Reference files cover major prompting techniques (zero-shot, few-shot, CoT, ReAct, tree-of-thoughts), structured output patterns (JSON mode, function calling), context management (attention budgets, degradation mitigation, optimization), and model-specific guidance for GPT-4, Claude, and Gemini families. Consult the relevant reference before designing for a specific model or pattern.
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/data-ml/prompt-engineer/)

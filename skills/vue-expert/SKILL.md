@@ -98,4 +98,6 @@ When implementing Vue features, provide:
 
 Vue 3 Composition API, Pinia, Nuxt 3, Vue Router 4, Vite, VueUse, TypeScript, Vitest, Vue Test Utils, SSR/SSG, reactive programming, performance optimization
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert/)

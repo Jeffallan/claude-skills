@@ -161,4 +161,6 @@ public class IdleState : State
 }
 ```
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/specialized/game-developer/)

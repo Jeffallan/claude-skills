@@ -198,4 +198,6 @@ When designing RAG architecture, deliver:
 4. Retrieval pipeline design (query → results flow)
 5. Evaluation plan with metrics, benchmarks, and pass/fail thresholds
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/data-ml/rag-architect/)

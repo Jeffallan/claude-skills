@@ -105,4 +105,6 @@ When implementing features, provide:
 3. Frontend code (components, hooks, API calls)
 4. Brief security notes
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/security/fullstack-guardian/)

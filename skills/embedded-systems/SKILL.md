@@ -167,4 +167,6 @@ When implementing embedded features, provide:
 4. Resource usage summary (flash, RAM, power estimate)
 5. Brief explanation of timing and optimization decisions
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/specialized/embedded-systems/)

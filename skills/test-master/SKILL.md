@@ -94,4 +94,6 @@ When creating test plans, provide:
 4. Findings with severity (Critical/High/Medium/Low)
 5. Specific fix recommendations
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/quality/test-master/)

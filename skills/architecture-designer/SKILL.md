@@ -116,4 +116,6 @@ Use PostgreSQL as the primary datastore for the Order Service.
 Consistency and query flexibility are prioritised over unlimited horizontal write scalability.
 ```
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/)

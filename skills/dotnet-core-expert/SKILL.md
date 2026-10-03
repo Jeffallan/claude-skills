@@ -138,4 +138,6 @@ When implementing .NET features, provide:
 4. Database context and migrations if applicable
 5. Brief explanation of architectural decisions
 
+[Synergetic Solutions](https://synergetic.solutions)
+
 [Documentation](https://jeffallan.github.io/claude-skills/skills/backend/dotnet-core-expert/)

@@ -455,6 +455,11 @@ function syncSkillPages(skillIndex) {
       '',
     );
 
+    // Strip the company backlink that sits just above it: like the
+    // documentation backlink, it is there for aggregators, not for every
+    // page of the docs site.
+    body = body.replace(/\n+\[Synergetic Solutions\]\(https:\/\/synergetic\.solutions\/?\)\s*$/, '');
+
     body = rewriteLinks(body);
 
     // Assemble frontmatter (branded title + description for SEO, skills only)

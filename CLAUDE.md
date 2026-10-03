@@ -113,6 +113,20 @@ Every `SKILL.md` MUST end with a single canonical Documentation link pointing ba
 
 **When adding or renaming a skill:** update both the directory name (which becomes `{skill-name}`) and the `metadata.domain` consistently with this URL formula, otherwise the backlink will 404.
 
+### Company Backlink
+
+Skills authored by @jeffallan (those with `metadata.company: https://synergetic.solutions`) carry one more line, directly above the Documentation backlink, separated by a blank line:
+
+```
+[Synergetic Solutions](https://synergetic.solutions)
+
+[Documentation](https://jeffallan.github.io/claude-skills/skills/{domain}/{skill-name}/)
+```
+
+- The Documentation backlink stays the last line
+- Contributed skills do not get this line unless their `metadata.company` is set to the same URL
+- `syncSkillPages` strips it at build time alongside the Documentation backlink, so the docs site, markdown mirrors, and `llms` files never show it
+
 ---
 
 ### Progressive Disclosure Architecture
