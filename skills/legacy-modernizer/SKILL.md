@@ -10,7 +10,7 @@ metadata:
   triggers: legacy modernization, strangler fig, incremental migration, technical debt, legacy refactoring, system migration, legacy system, modernize codebase
   role: specialist
   scope: architecture
-  output-format: code+analysis
+  output-format: analysis-and-code
   related-skills: test-master, devops-engineer
 ---
 

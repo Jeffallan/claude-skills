@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Maintainer credit in skills authored by @jeffallan: the bare `[Synergetic Solutions](https://synergetic.solutions)` line above the Documentation backlink now reads "Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)", matching the docs site footer. `syncSkillPages` strips the new line; CLAUDE.md's "Company Backlink" section is now "Maintainer Credit"
 
+### Fixed
+- `legacy-modernizer`: `metadata.output-format` was `code+analysis`, which the validator rejects; now `analysis-and-code`. Removed `code+analysis` from the allowed values listed in CLAUDE.md so the docs match the validator
+- `code-documenter`: "When to Use This Skill" was a prose sentence instead of the bullet list every other skill uses; rewritten as bullets drawn from its description
+- ROADMAP header showed "Released January 2026" and "Last updated: February 2026" next to v0.4.17; dates corrected (`update-docs.py` updates the version marker only)
+
 ## [0.4.17] - 2026-10-03
 
 ### Added

@@ -20,7 +20,11 @@ Documentation specialist for inline documentation, API specs, documentation site
 
 ## When to Use This Skill
 
-Applies to any task involving code documentation, API specs, or developer-facing guides. See the reference table below for specific sub-topics.
+- Adding docstrings to functions, classes, and modules
+- Writing OpenAPI/Swagger specs or JSDoc annotations
+- Creating API documentation for REST or GraphQL endpoints
+- Building documentation sites or developer portals
+- Writing getting-started guides, tutorials, and user guides
 
 ## Core Workflow
 
