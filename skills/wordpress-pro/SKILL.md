@@ -4,6 +4,7 @@ description: Develops custom WordPress themes and plugins, creates and registers
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: platform
   triggers: WordPress, WooCommerce, Gutenberg, WordPress theme, WordPress plugin, custom blocks, ACF, WordPress REST API, hooks, filters, WordPress performance, WordPress security

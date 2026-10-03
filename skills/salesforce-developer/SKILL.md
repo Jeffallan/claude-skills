@@ -4,6 +4,7 @@ description: Writes and debugs Apex code, builds Lightning Web Components, optim
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: platform
   triggers: Salesforce, Apex, Lightning Web Components, LWC, SOQL, SOSL, Visualforce, Salesforce DX, governor limits, triggers, platform events, CRM integration, Sales Cloud, Service Cloud

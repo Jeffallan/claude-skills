@@ -4,6 +4,7 @@ description: Writes, refactors, and evaluates prompts for LLMs — generating op
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.2.0"
   domain: data-ml
   triggers: prompt engineering, prompt optimization, chain-of-thought, few-shot learning, prompt testing, LLM prompts, prompt evaluation, system prompts, structured outputs, prompt design, context management, lost-in-the-middle, context degradation, token optimization, attention budget

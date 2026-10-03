@@ -4,6 +4,7 @@ description: Integrates with Atlassian products to manage project tracking and d
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: platform
   triggers: Jira, Confluence, Atlassian, MCP, tickets, issues, wiki, JQL, CQL, sprint, backlog, project management

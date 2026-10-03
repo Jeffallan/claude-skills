@@ -4,6 +4,7 @@ description: "Use when building C# applications with .NET 8+, ASP.NET Core APIs,
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: language
   triggers: C#, .NET, ASP.NET Core, Blazor, Entity Framework, EF Core, Minimal API, MAUI, SignalR

@@ -4,6 +4,7 @@ description: Use when building PHP applications with modern PHP 8.3+ features, L
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: language
   triggers: PHP, Laravel, Symfony, Composer, PHPStan, PSR, PHP API, Eloquent, Doctrine

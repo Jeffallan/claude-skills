@@ -4,6 +4,7 @@ description: Use when writing Spark jobs, debugging performance issues, or confi
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: data-ml
   triggers: Apache Spark, PySpark, Spark SQL, distributed computing, big data, DataFrame API, RDD, Spark Streaming, structured streaming, data partitioning, Spark performance, cluster computing, data processing pipeline

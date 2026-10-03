@@ -43,6 +43,7 @@ description: [Brief capability statement]. Use when [triggering conditions] - ma
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.0.0"
   domain: frontend
   triggers: keyword1, keyword2, keyword3
@@ -61,6 +62,7 @@ metadata:
 
 **Metadata fields (project-specific):**
 - `author`: GitHub profile URL of the skill author
+- `company`: Optional. URL of the author's company (`https://synergetic.solutions` on skills authored by @jeffallan); omit for contributed skills unless the contributor supplies one
 - `version`: Semantic version string (quoted, e.g., `"1.0.0"`)
 - `domain`: Category from the domain list below
 - `triggers`: Comma-separated searchable keywords

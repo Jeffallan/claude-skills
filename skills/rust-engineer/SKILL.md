@@ -4,6 +4,7 @@ description: Writes, reviews, and debugs idiomatic Rust code with memory safety 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: language
   triggers: Rust, Cargo, ownership, borrowing, lifetimes, async Rust, tokio, zero-cost abstractions, memory safety, systems programming

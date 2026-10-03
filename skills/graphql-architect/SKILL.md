@@ -4,6 +4,7 @@ description: Use when designing GraphQL schemas, implementing Apollo Federation,
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: api-architecture
   triggers: GraphQL, Apollo Federation, GraphQL schema, API graph, GraphQL subscriptions, Apollo Server, schema design, GraphQL resolvers, DataLoader

@@ -4,6 +4,7 @@ description: Use when designing REST or GraphQL APIs, creating OpenAPI specifica
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: api-architecture
   triggers: API design, REST API, OpenAPI, API specification, API architecture, resource modeling, API versioning, GraphQL schema, API documentation

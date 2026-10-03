@@ -4,6 +4,7 @@ description: Builds, optimizes, and debugs cross-platform mobile applications wi
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: frontend
   triggers: React Native, Expo, mobile app, iOS, Android, cross-platform, native module

@@ -4,6 +4,7 @@ description: Use when building .NET 8 applications with minimal APIs, clean arch
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: backend
   triggers: .NET Core, .NET 8, ASP.NET Core, C# 12, minimal API, Entity Framework Core, microservices .NET, CQRS, MediatR

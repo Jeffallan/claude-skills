@@ -5,6 +5,7 @@ license: MIT
 allowed-tools: Read, Grep, Glob
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.1"
   domain: security
   triggers: security review, vulnerability scan, SAST, security audit, penetration test, code audit, security analysis, infrastructure security, DevSecOps, cloud security, compliance audit
