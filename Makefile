@@ -48,6 +48,7 @@ validate:
 
 test:
 	bash scripts/test-makefile.sh
+	bash scripts/test-build-plugin-dist.sh
 
 site-dev:
 	cd site && npm run dev

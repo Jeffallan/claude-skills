@@ -29,6 +29,9 @@ jobs:
       - name: Check docs in sync
         run: python scripts/update-docs.py --check
 
+      - name: Test plugin distribution build
+        run: bash scripts/test-build-plugin-dist.sh
+
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest

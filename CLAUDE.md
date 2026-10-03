@@ -320,6 +320,14 @@ After running validation, manually verify:
 grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
 ```
 
+### 8. Plugin Branch
+
+The plugin ships from the `plugin` branch, not from `main`. Pushing the `vX.Y.Z` tag runs `.github/workflows/publish-plugin.yml`, which rebuilds that branch from `scripts/build-plugin-dist.sh` (only `.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `README.md`, `LICENSE`). Both the marketplace entry and the Claude plugin directory read from it.
+
+- Never edit the `plugin` branch by hand; the next publish overwrites it
+- After the tag push, confirm the workflow succeeded and the branch's latest commit names the new tag
+- A file the plugin needs at runtime must live under one of the shipped paths, or it will be missing from installs
+
 ---
 
 ## Attribution

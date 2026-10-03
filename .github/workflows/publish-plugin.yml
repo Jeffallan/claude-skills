@@ -1,0 +1,69 @@
+name: Publish Plugin Branch
+
+# Rebuilds the `plugin` branch, which holds only the files the plugin ships
+# (see scripts/build-plugin-dist.sh). The marketplace entry and the Claude
+# plugin directory both read from that branch. Runs on release tags only,
+# not on every push to main, because the directory auto-publishes each new
+# version it sees on the tracked branch.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-plugin
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yml
+
+  publish:
+    name: Publish plugin branch
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Build distribution tree
+        run: bash scripts/build-plugin-dist.sh "$RUNNER_TEMP/dist"
+
+      - name: Commit and push to plugin branch
+        env:
+          SOURCE_REF: ${{ github.ref_name }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          WT="$RUNNER_TEMP/plugin-branch"
+          if git ls-remote --exit-code --heads origin plugin >/dev/null; then
+            git fetch origin plugin
+            git worktree add -B plugin "$WT" origin/plugin
+          else
+            git worktree add --detach "$WT"
+            git -C "$WT" checkout --orphan plugin
+          fi
+
+          cd "$WT"
+          git rm -rq --cached --ignore-unmatch .
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$RUNNER_TEMP/dist/." .
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "plugin branch already matches ${SOURCE_REF}; nothing to publish"
+            exit 0
+          fi
+
+          git commit -m "Publish plugin from ${SOURCE_REF} (${SOURCE_SHA})"
+          git push origin plugin
