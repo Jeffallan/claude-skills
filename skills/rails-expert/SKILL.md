@@ -154,6 +154,6 @@ When implementing Rails features, provide:
 5. Spec files for models and requests
 6. Brief explanation of architectural decisions
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/backend/rails-expert/)

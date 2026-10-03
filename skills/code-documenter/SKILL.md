@@ -20,7 +20,11 @@ Documentation specialist for inline documentation, API specs, documentation site
 
 ## When to Use This Skill
 
-Applies to any task involving code documentation, API specs, or developer-facing guides. See the reference table below for specific sub-topics.
+- Adding docstrings to functions, classes, and modules
+- Writing OpenAPI/Swagger specs or JSDoc annotations
+- Creating API documentation for REST or GraphQL endpoints
+- Building documentation sites or developer portals
+- Writing getting-started guides, tutorials, and user guides
 
 ## Core Workflow
 
@@ -147,6 +151,6 @@ Depending on the task, provide:
 
 Google/NumPy/Sphinx docstrings, JSDoc, OpenAPI 3.0/3.1, AsyncAPI, gRPC/protobuf, FastAPI, Django, NestJS, Express, GraphQL, Docusaurus, MkDocs, VitePress, Swagger UI, Redoc, Stoplight
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/quality/code-documenter/)

@@ -147,6 +147,6 @@ When optimizing database performance, provide:
 5. Validation queries to measure improvement
 6. Monitoring recommendations
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/infrastructure/database-optimizer/)

@@ -216,6 +216,6 @@ When designing cloud architecture, provide:
 4. Cost estimation and optimization strategy
 5. Deployment approach and rollback plan
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/infrastructure/cloud-architect/)

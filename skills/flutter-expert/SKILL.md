@@ -137,6 +137,6 @@ When implementing Flutter features, provide:
 3. Route configuration if needed
 4. Test file structure
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/frontend/flutter-expert/)

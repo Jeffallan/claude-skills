@@ -105,6 +105,6 @@ When debugging, provide:
 3. **Fix**: Code change that resolves it
 4. **Prevention**: Test or safeguard to prevent recurrence
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)

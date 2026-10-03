@@ -124,6 +124,6 @@ When implementing Atlassian MCP features, provide:
 4. Authentication setup instructions
 5. Brief explanation of permission requirements
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/platform/atlassian-mcp/)

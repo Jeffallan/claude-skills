@@ -10,7 +10,7 @@ metadata:
   triggers: legacy modernization, strangler fig, incremental migration, technical debt, legacy refactoring, system migration, legacy system, modernize codebase
   role: specialist
   scope: architecture
-  output-format: code+analysis
+  output-format: analysis-and-code
   related-skills: test-master, devops-engineer
 ---
 
@@ -137,6 +137,6 @@ When implementing modernization, provide:
 
 Strangler fig pattern, branch by abstraction, characterization testing, incremental migration, feature flags, canary deployments, API versioning, database refactoring, microservices extraction, technical debt reduction, zero-downtime deployment
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/specialized/legacy-modernizer/)

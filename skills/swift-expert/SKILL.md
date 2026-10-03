@@ -163,6 +163,6 @@ When implementing Swift features, provide:
 4. Tests demonstrating usage
 5. Brief explanation of architectural decisions
 
-[Synergetic Solutions](https://synergetic.solutions)
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/language/swift-expert/)
