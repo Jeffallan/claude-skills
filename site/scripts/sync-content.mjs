@@ -576,7 +576,7 @@ Transform Claude Code into your expert pair programmer across the entire develop
 \`\`\`
 
 \`\`\`bash
-/plugin install fullstack-dev-skills@jeffallan
+/plugin install fullstack-dev-skills@fullstack-dev-skills
 \`\`\`
 
 ## Stats
