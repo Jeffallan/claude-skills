@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.17] - 2026-10-03
+
 ### Added
 - `plugin` distribution branch: `scripts/build-plugin-dist.sh` assembles only what the plugin ships (`.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `README.md`, `LICENSE`) from committed HEAD, and `.github/workflows/publish-plugin.yml` rebuilds the `plugin` branch from it on release tags. The repo root previously shipped as the plugin, including the docs site, scripts, research, and contributor files, which the Claude plugin directory held for review. `main` keeps its layout so external links into `skills/` keep working. Covered by `scripts/test-build-plugin-dist.sh`, now run in CI and `make test` (#242)
 - `CLAUDE.md`: "When Accepting Contributions" section documenting the maintainer procedure for external issues and PRs (the `gratitude` label on every contribution, fit discussion before merge, squash-merge subject format, separate changelog commit under `[Unreleased]`, count sync in the same push, and the `### Contributors` credit format at release). Previously this lived only in git history
@@ -21,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `flutter-expert/SKILL.md`: the Riverpod provider example used `StateNotifierProvider`/`StateNotifier`, legacy since Riverpod 2.0 and contradicting the skill's own `references/riverpod-state.md`; replaced with the equivalent `NotifierProvider`/`Notifier` pattern and updated the troubleshooting table to match (#237)
 - Plugin install commands in README, QUICKSTART, the docs site landing page, and generated `llms.txt` used `fullstack-dev-skills@jeffallan`, which fails because the marketplace is declared as `fullstack-dev-skills`; corrected to `fullstack-dev-skills@fullstack-dev-skills`, including the QUICKSTART uninstall troubleshooting step, closing #234 (#236)
 - README banner (capsule-render URL) still displayed 66 skills after the v0.4.16 release; the counts are URL-encoded inside the image URL where no `<!-- SKILL_COUNT -->` marker can live, so `update-docs.py` never touched them. The script now rewrites the banner's `desc=` parameter from computed counts
+
+### Contributors
+- @shijian0-eng — Corrected the marketplace name in plugin install commands across the README, QUICKSTART, and docs site (#236)
+- @johnjehiel — Reported the failing plugin install command (#234)
+- @KoreaMango — Replaced the legacy Riverpod `StateNotifier` example in `flutter-expert` with the modern `Notifier` pattern (#237)
 
 ## [0.4.16] - 2026-08-07
 
@@ -506,6 +513,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.17]: https://github.com/jeffallan/claude-skills/compare/v0.4.16...v0.4.17
 [0.4.16]: https://github.com/jeffallan/claude-skills/compare/v0.4.15...v0.4.16
 [0.4.15]: https://github.com/jeffallan/claude-skills/compare/v0.4.14...v0.4.15
 [0.4.14]: https://github.com/jeffallan/claude-skills/compare/v0.4.13...v0.4.14
