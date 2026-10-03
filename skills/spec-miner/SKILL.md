@@ -2,7 +2,7 @@
 name: spec-miner
 description: "Reverse-engineering specialist that extracts specifications from existing codebases. Use when working with legacy or undocumented systems, inherited projects, or old codebases with no documentation. Invoke to map code dependencies, generate API documentation from source, identify undocumented business logic, figure out what code does, or create architecture documentation from implementation. Trigger phrases: reverse engineer, old codebase, no docs, no documentation, figure out how this works, inherited project, legacy analysis, code archaeology, undocumented features."
 license: MIT
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob
 metadata:
   author: https://github.com/Jeffallan
   version: "1.1.0"

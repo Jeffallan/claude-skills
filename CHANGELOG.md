@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `CLAUDE.md`: "When Accepting Contributions" section documenting the maintainer procedure for external issues and PRs (the `gratitude` label on every contribution, fit discussion before merge, squash-merge subject format, separate changelog commit under `[Unreleased]`, count sync in the same push, and the `### Contributors` credit format at release). Previously this lived only in git history
 
+### Changed
+- `security-reviewer` and `spec-miner`: removed `Bash` from `allowed-tools`. An unscoped `Bash` entry pre-approves every shell command while the skill is active, which the Claude plugin directory holds for policy review. spec-miner never runs shell commands; security-reviewer's scanners (and active tools such as nmap and sqlmap) now go through normal per-command user approval, closing #243
+
 ### Fixed
 - `flutter-expert/SKILL.md`: the Riverpod provider example used `StateNotifierProvider`/`StateNotifier`, legacy since Riverpod 2.0 and contradicting the skill's own `references/riverpod-state.md`; replaced with the equivalent `NotifierProvider`/`Notifier` pattern and updated the troubleshooting table to match (#237)
 - Plugin install commands in README, QUICKSTART, the docs site landing page, and generated `llms.txt` used `fullstack-dev-skills@jeffallan`, which fails because the marketplace is declared as `fullstack-dev-skills`; corrected to `fullstack-dev-skills@fullstack-dev-skills`, including the QUICKSTART uninstall troubleshooting step, closing #234 (#236)
