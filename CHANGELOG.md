@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- `MODELCLAUDE.md`: ported the Subagent Briefs, Writing Style Constraints, and Change Discipline sections from the maintainer's global CLAUDE.md, synced the 1% Rule wording, added the new attributions, and replaced personal examples with generic ones, closing #239
 - Maintainer credit in skills authored by @jeffallan: the bare `[Synergetic Solutions](https://synergetic.solutions)` line above the Documentation backlink now reads "Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)", matching the docs site footer. `syncSkillPages` strips the new line; CLAUDE.md's "Company Backlink" section is now "Maintainer Credit"
 
 ### Fixed
