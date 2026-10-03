@@ -3,8 +3,10 @@
   "version": "0.4.16",
   "description": "Comprehensive skill pack with 67 specialized skills for full-stack developers: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 10 backend frameworks, 6 frontend/mobile, plus infrastructure, DevOps, security, and testing. Features progressive disclosure architecture for 50% faster loading.",
   "author": {
-        "name": "Jeffallan"
-      },
+    "name": "jeffallan",
+    "url": "https://github.com/jeffallan"
+  },
+  "homepage": "https://jeffallan.github.io/claude-skills/",
   "license": "MIT",
   "repository": "https://github.com/jeffallan/claude-skills",
   "keywords": [
