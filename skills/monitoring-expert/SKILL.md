@@ -4,6 +4,7 @@ description: Configures monitoring systems, implements structured logging pipeli
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: devops
   triggers: monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana, DataDog, APM, performance testing, load testing, profiling, capacity planning, bottleneck
@@ -174,5 +175,7 @@ Load detailed guidance based on context:
 - Alert on every error (alert fatigue)
 - Use string interpolation in logs (use structured fields)
 - Skip correlation IDs in distributed systems
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/devops/monitoring-expert/)

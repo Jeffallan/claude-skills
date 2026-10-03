@@ -4,6 +4,7 @@ description: Designs and implements production-grade RAG systems by chunking doc
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: data-ml
   triggers: RAG, retrieval-augmented generation, vector search, embeddings, semantic search, vector database, document retrieval, knowledge base, context retrieval, similarity search
@@ -196,5 +197,7 @@ When designing RAG architecture, deliver:
 3. Chunking strategy with examples and rationale
 4. Retrieval pipeline design (query → results flow)
 5. Evaluation plan with metrics, benchmarks, and pass/fail thresholds
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/data-ml/rag-architect/)

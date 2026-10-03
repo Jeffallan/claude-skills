@@ -4,6 +4,7 @@ description: Use when designing new high-level system architecture, reviewing ex
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.1"
   domain: api-architecture
   triggers: architecture, system design, design pattern, microservices, scalability, ADR, technical design, infrastructure
@@ -114,5 +115,7 @@ Use PostgreSQL as the primary datastore for the Order Service.
 ## Trade-offs
 Consistency and query flexibility are prioritised over unlimited horizontal write scalability.
 ```
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/)

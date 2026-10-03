@@ -4,6 +4,7 @@ description: Generates Angular 17+ standalone components, configures advanced ro
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: frontend
   triggers: Angular, Angular 17, standalone components, signals, RxJS, NgRx, Angular performance, Angular routing, Angular testing
@@ -150,5 +151,7 @@ When implementing Angular features, provide:
 3. State management files if using NgRx
 4. Test file with comprehensive test cases
 5. Brief explanation of architectural decisions
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/frontend/angular-architect/)

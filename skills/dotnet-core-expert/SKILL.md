@@ -4,6 +4,7 @@ description: Use when building .NET 8 applications with minimal APIs, clean arch
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: backend
   triggers: .NET Core, .NET 8, ASP.NET Core, C# 12, minimal API, Entity Framework Core, microservices .NET, CQRS, MediatR
@@ -136,5 +137,7 @@ When implementing .NET features, provide:
 3. API endpoints or service implementations
 4. Database context and migrations if applicable
 5. Brief explanation of architectural decisions
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/backend/dotnet-core-expert/)

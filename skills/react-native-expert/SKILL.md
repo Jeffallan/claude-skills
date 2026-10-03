@@ -4,6 +4,7 @@ description: Builds, optimizes, and debugs cross-platform mobile applications wi
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: frontend
   triggers: React Native, Expo, mobile app, iOS, Android, cross-platform, native module
@@ -183,5 +184,7 @@ When implementing React Native features, deliver:
 ## Knowledge Reference
 
 React Native 0.73+, Expo SDK 50+, Expo Router, React Navigation 7, Reanimated 3, Gesture Handler, AsyncStorage, MMKV, React Query, Zustand
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/frontend/react-native-expert/)

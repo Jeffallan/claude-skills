@@ -4,6 +4,7 @@ description: "Use when building game systems, implementing Unity/Unreal Engine f
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: specialized
   triggers: Unity, Unreal Engine, game development, ECS architecture, game physics, multiplayer networking, game optimization, shader programming, game AI
@@ -159,5 +160,7 @@ public class IdleState : State
     public override void Exit() { }
 }
 ```
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/specialized/game-developer/)

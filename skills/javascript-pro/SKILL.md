@@ -4,6 +4,7 @@ description: Writes, debugs, and refactors JavaScript code using modern ES2023+ 
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
   version: "1.1.0"
   domain: language
   triggers: JavaScript, ES2023, async await, Node.js, vanilla JavaScript, Web Workers, Fetch API, browser API, module system
@@ -130,5 +131,7 @@ When implementing JavaScript features, provide:
 2. Test file with comprehensive coverage
 3. JSDoc documentation for public APIs
 4. Brief explanation of patterns used
+
+[Synergetic Solutions](https://synergetic.solutions)
 
 [Documentation](https://jeffallan.github.io/claude-skills/skills/language/javascript-pro/)
