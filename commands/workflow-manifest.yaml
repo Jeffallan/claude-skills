@@ -1,0 +1,67 @@
+version: "1.0"
+
+phases:
+  intake:
+    description: docs/workflow/intake-phase.md
+    depends_on: []
+    run_once: true
+    commands:
+      - command: "intake:document-codebase"
+        definition: commands/intake/document-codebase.yaml
+      - command: "intake:capture-behavior"
+        definition: commands/intake/capture-behavior.yaml
+      - command: "intake:create-system-description"
+        definition: commands/intake/create-system-description.yaml
+
+  discovery:
+    description: docs/workflow/discovery-phase.md
+    depends_on:
+      - phase: intake
+        strength: recommended
+    optional: true
+    external_skills:
+      - skill: feature-forge
+        role: prerequisite
+    commands:
+      - command: "discovery:create"
+        definition: commands/project/discovery/create.yaml
+      - command: "discovery:synthesize"
+        definition: commands/project/discovery/synthesize.yaml
+      - command: "discovery:approve"
+        definition: commands/project/discovery/approve.yaml
+
+  planning:
+    description: docs/workflow/planning-phase.md
+    depends_on:
+      - phase: discovery
+        strength: required
+    commands:
+      - command: "planning:epic-plan"
+        definition: commands/project/planning/epic-plan.yaml
+      - command: "planning:impl-plan"
+        definition: commands/project/planning/impl-plan.yaml
+
+  execution:
+    description: docs/workflow/execution-phase.md
+    depends_on:
+      - phase: planning
+        strength: required
+    commands:
+      - command: "execution:execute-ticket"
+        definition: commands/project/execution/execute-ticket.yaml
+      - command: "execution:complete-ticket"
+        definition: commands/project/execution/complete-ticket.yaml
+
+  retrospectives:
+    description: docs/workflow/retrospective-phase.md
+    depends_on:
+      - phase: execution
+        strength: required
+    commands:
+      - command: "retrospectives:complete-epic"
+        definition: commands/project/retrospectives/complete-epic.yaml
+
+utilities:
+  - command: common-ground
+    definition: commands/common-ground/common-ground.yaml
+    invocation: on-demand

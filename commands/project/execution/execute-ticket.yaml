@@ -1,0 +1,18 @@
+command: "execution:execute-ticket"
+phase: execution
+path: commands/project/execution/execute-ticket.md
+description: docs/workflow/execution-execute-ticket.md
+inputs:
+  - name: ticket-key
+    type: string
+    required: true
+    description: Jira ticket key to execute (e.g., CC-123)
+outputs:
+  - name: completion-summary
+    type: report
+    description: Implementation summary with changes made, files modified, tests added, deviations, and suggested commit message
+requires:
+  - ticketing
+status: existing
+argument-hint: "<ticket-key>"
+repeat: true

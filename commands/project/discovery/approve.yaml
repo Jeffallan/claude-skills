@@ -1,0 +1,23 @@
+command: "discovery:approve"
+phase: discovery
+path: commands/project/discovery/approve-synthesis.md
+description: docs/workflow/discovery-approve.md
+inputs:
+  - name: synthesis-url
+    type: url
+    required: true
+    description: Confluence URL of the synthesis document to approve
+  - name: decisions
+    type: list[string]
+    required: false
+    description: Pre-resolved blocking decisions (e.g., --decision=D1:B --decision=D2:Y)
+outputs:
+  - name: created-tickets
+    type: tickets
+    description: Jira tickets created in target implementation epics from approved synthesis
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "<synthesis-url> [--decision=<id>:<value>...]"
+repeat: false

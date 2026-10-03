@@ -1,0 +1,20 @@
+command: "planning:epic-plan"
+phase: planning
+path: commands/project/planning/create-epic-plan.md
+description: docs/workflow/planning-epic-plan.md
+inputs:
+  - name: epic-key
+    type: string
+    required: true
+    description: Jira epic key to create a planning document for (e.g., CC-62)
+outputs:
+  - name: overview-document
+    type: url
+    path: "/epics/In Progress/{epic-key}/"
+    description: Published Confluence overview document with requirements, risk assessment, codebase analysis, and testing strategy
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "<epic-key>"
+repeat: false

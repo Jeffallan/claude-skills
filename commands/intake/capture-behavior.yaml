@@ -1,0 +1,20 @@
+command: "intake:capture-behavior"
+phase: intake
+path: commands/intake/capture-behavior.md
+description: docs/workflow/intake-capture-behavior.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to scan for untested behavior (defaults to project root)
+outputs:
+  - name: characterization-tests
+    type: file
+    description: Characterization test files asserting current behavior
+  - name: coverage-report
+    type: report
+    description: Summary of behavior captured and test coverage added
+requires: []
+status: planned
+argument-hint: "[directory]"
+repeat: false

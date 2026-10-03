@@ -1,0 +1,22 @@
+command: "planning:impl-plan"
+phase: planning
+path: commands/project/planning/create-implementation-plan.md
+description: docs/workflow/planning-impl-plan.md
+inputs:
+  - name: overview-doc-url
+    type: url
+    required: true
+    description: Confluence URL of the overview document produced by planning:epic-plan
+outputs:
+  - name: implementation-plan
+    type: url
+    description: Published Confluence implementation plan with execution order, parallel waves, and agent recommendations
+  - name: updated-tickets
+    type: tickets
+    description: Jira tickets updated with self-contained implementation details, file paths, test code, and acceptance criteria
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "<overview-doc-url>"
+repeat: false

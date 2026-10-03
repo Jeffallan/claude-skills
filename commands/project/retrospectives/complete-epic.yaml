@@ -1,0 +1,26 @@
+command: "retrospectives:complete-epic"
+phase: retrospective
+path: commands/project/retrospectives/complete-epic.md
+description: docs/workflow/retrospective-complete-epic.md
+inputs:
+  - name: epic-key
+    type: string
+    required: true
+    description: Jira epic key to complete (e.g., CC-62)
+outputs:
+  - name: completion-report
+    type: report
+    description: Comprehensive epic completion report covering deliverables, quality metrics, lessons learned, and risk review
+  - name: closed-epic
+    type: tickets
+    description: Epic closed in Jira with status "Done" and resolution "Completed"
+  - name: updated-system-description
+    type: file
+    path: "docs/system-description.md"
+    description: System description updated with holistic post-epic review of architecture, APIs, and dependencies
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "<epic-key>"
+repeat: false

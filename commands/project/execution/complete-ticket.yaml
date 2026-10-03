@@ -1,0 +1,22 @@
+command: "execution:complete-ticket"
+phase: execution
+path: commands/project/execution/complete-ticket.md
+description: docs/workflow/execution-complete-ticket.md
+inputs:
+  - name: ticket-key
+    type: string
+    required: false
+    description: Jira ticket key to complete. Optional if context is available from a prior execute-ticket invocation.
+outputs:
+  - name: transitioned-ticket
+    type: tickets
+    description: Jira ticket transitioned to "In Review" status
+  - name: updated-plan
+    type: url
+    description: Implementation plan updated with completion details, status tables, and execution notes
+requires:
+  - ticketing
+  - documentation
+status: existing
+argument-hint: "[ticket-key]"
+repeat: true
