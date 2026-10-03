@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `CLAUDE.md`: "When Accepting Contributions" section documenting the maintainer procedure for external issues and PRs (the `gratitude` label on every contribution, fit discussion before merge, squash-merge subject format, separate changelog commit under `[Unreleased]`, count sync in the same push, and the `### Contributors` credit format at release). Previously this lived only in git history
+
 ### Fixed
 - README banner (capsule-render URL) still displayed 66 skills after the v0.4.16 release; the counts are URL-encoded inside the image URL where no `<!-- SKILL_COUNT -->` marker can live, so `update-docs.py` never touched them. The script now rewrites the banner's `desc=` parameter from computed counts
 

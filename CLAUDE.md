@@ -152,6 +152,26 @@ Every `SKILL.md` MUST end with a single canonical Documentation link pointing ba
 4. Update related cross-references
 5. Verify routing table accuracy
 
+### When Accepting Contributions
+
+Every external contribution (issue or PR) gets the `gratitude` label, whatever its outcome.
+
+For each PR:
+
+1. Discuss fit with project goals before any merge decision (scope, overlap with existing skills, promotional content), then verify the content
+2. Squash-merge with subject `type(scope): title (#N)`
+   - Conflicted fork PRs: squash locally (`git merge --squash`), add `Co-authored-by:` with the contributor's commit email, then close the PR with a comment pointing at the commit
+3. Record it in a separate commit, `docs(changelog): record #N <summary> under Unreleased`, adding an entry under `[Unreleased]` → Added/Changed/Fixed that ends with `(#N)` (append `closing #ISSUE` when it resolves one)
+4. If skill or reference counts changed, run `python scripts/update-docs.py` in the same push, otherwise `update-docs.py --check` fails CI on main
+5. Post-merge corrections go in their own commit with their own `### Changed` entry
+
+At release time, credit contributors (including issue reporters) in a `### Contributors` section of the version entry:
+
+```markdown
+### Contributors
+- @handle — What they contributed (#N)
+```
+
 ---
 
 ## Release Checklist
