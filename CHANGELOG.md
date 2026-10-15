@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - CI: third-party GitHub Actions in `validate.yml`, `release.yml`, and `publish-plugin.yml` are pinned to full commit SHAs, with the release tag in a trailing comment, instead of mutable tags like `actions/checkout@v6`. Each pin resolves to the commit its tag pointed to, so workflow behavior is unchanged
+- CI: merged the first Dependabot updates for GitHub Actions: `actions/checkout` 6.1.0 → 7.0.1 (#255), `actions/setup-node` 6.5.0 → 7.1.0 (#258), `actions/upload-pages-artifact` 4.0.0 → 5.0.0 (#256), `actions/deploy-pages` 4.0.5 → 5.0.1 (#254), and `softprops/action-gh-release` 2.6.2 → 3.0.3 (#257). None of their breaking changes apply here: the workflows never check out fork PRs under `pull_request_target`, never publish to npm, and run on GitHub-hosted runners that support the Node 24 runtime
 
 ## [0.4.18] - 2026-10-03
 
