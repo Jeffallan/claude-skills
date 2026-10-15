@@ -20,7 +20,7 @@ host replication replicator 10.0.0.0/24 scram-sha-256
 
 ```sql
 -- Create replication user
-CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'secure_password';
+CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD '<replication-password>';
 
 -- Create replication slot (prevents WAL deletion)
 SELECT * FROM pg_create_physical_replication_slot('replica_1');
@@ -47,7 +47,7 @@ pg_basebackup -h primary-host -D /var/lib/postgresql/14/main \
 ```sql
 -- standby.signal file created by pg_basebackup -R
 -- recovery parameters in postgresql.auto.conf:
-primary_conninfo = 'host=primary-host port=5432 user=replicator password=secure_password'
+primary_conninfo = 'host=primary-host port=5432 user=replicator password=<replication-password>'
 primary_slot_name = 'replica_1'
 ```
 
@@ -134,7 +134,7 @@ SELECT * FROM pg_publication_tables;
 ```sql
 -- Create subscription (creates replication slot on publisher)
 CREATE SUBSCRIPTION my_subscription
-CONNECTION 'host=publisher-host port=5432 dbname=mydb user=replicator password=pass'
+CONNECTION 'host=publisher-host port=5432 dbname=mydb user=replicator password=<replication-password>'
 PUBLICATION my_publication;
 
 -- Subscription options
@@ -293,10 +293,10 @@ postgresql:
   authentication:
     replication:
       username: replicator
-      password: repl_password
+      password: <replication-password>
     superuser:
       username: postgres
-      password: postgres_password
+      password: <superuser-password>
 ```
 
 ## Connection Pooling for HA

@@ -175,7 +175,7 @@ localStorage.removeItem('theme');
 localStorage.clear();
 
 // SessionStorage (per-tab)
-sessionStorage.setItem('token', 'abc123');
+sessionStorage.setItem('token', '<token>');
 
 // IndexedDB (asynchronous, larger storage)
 const openDB = () => {

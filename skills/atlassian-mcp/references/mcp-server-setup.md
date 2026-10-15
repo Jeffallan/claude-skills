@@ -89,10 +89,10 @@ Edit your Claude Desktop config file:
       "env": {
         "CONFLUENCE_URL": "https://your-company.atlassian.net/wiki",
         "CONFLUENCE_USERNAME": "your-email@company.com",
-        "CONFLUENCE_API_TOKEN": "your-api-token",
+        "CONFLUENCE_API_TOKEN": "<confluence-api-token>",
         "JIRA_URL": "https://your-company.atlassian.net",
         "JIRA_USERNAME": "your-email@company.com",
-        "JIRA_API_TOKEN": "your-api-token"
+        "JIRA_API_TOKEN": "<jira-api-token>"
       }
     }
   }
@@ -108,9 +108,9 @@ Edit your Claude Desktop config file:
       "args": ["mcp-atlassian"],
       "env": {
         "JIRA_URL": "https://jira.internal.company.com",
-        "JIRA_PERSONAL_TOKEN": "your-personal-access-token",
+        "JIRA_PERSONAL_TOKEN": "<jira-personal-access-token>",
         "CONFLUENCE_URL": "https://confluence.internal.company.com",
-        "CONFLUENCE_PERSONAL_TOKEN": "your-personal-access-token"
+        "CONFLUENCE_PERSONAL_TOKEN": "<confluence-personal-access-token>"
       }
     }
   }
@@ -240,11 +240,11 @@ echo $HTTP_PROXY $HTTPS_PROXY
 **"Authentication failed" error:**
 ```bash
 # Verify API token is valid (cloud)
-curl -u "email@company.com:API_TOKEN" \
+curl -u "<email>:<api-token>" \
   "https://your-company.atlassian.net/rest/api/3/myself"
 
 # Verify PAT is valid (server)
-curl -H "Authorization: Bearer YOUR_PAT" \
+curl -H "Authorization: Bearer <personal-access-token>" \
   "https://jira.internal.company.com/rest/api/2/myself"
 ```
 

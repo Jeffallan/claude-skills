@@ -202,8 +202,8 @@ const newPage = await client.callTool({
         <ac:parameter ac:name="language">bash</ac:parameter>
         <ac:plain-text-body><![CDATA[curl -X POST https://api.example.com/oauth/token \\
   -d "grant_type=client_credentials" \\
-  -d "client_id=YOUR_CLIENT_ID" \\
-  -d "client_secret=YOUR_SECRET"]]></ac:plain-text-body>
+  -d "client_id=<client-id>" \\
+  -d "client_secret=<client-secret>"]]></ac:plain-text-body>
       </ac:structured-macro>
 
       <h2>API Tokens</h2>

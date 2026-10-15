@@ -21,7 +21,7 @@ class UserServiceTest {
         // Given
         UserCreateRequest request = new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );
@@ -54,7 +54,7 @@ class UserServiceTest {
         // Given
         UserCreateRequest request = new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );
@@ -97,7 +97,7 @@ class UserIntegrationTest {
         // Given
         UserCreateRequest request = new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );
@@ -188,7 +188,7 @@ class UserControllerTest {
         // Given
         UserCreateRequest request = new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );
@@ -247,7 +247,7 @@ class UserRepositoryTest {
         // Given
         User user = User.builder()
             .email("test@example.com")
-            .password("password")
+            .password("<test-password>")
             .username("testuser")
             .active(true)
             .build();
@@ -268,7 +268,7 @@ class UserRepositoryTest {
         // Given
         User user = User.builder()
             .email("test@example.com")
-            .password("password")
+            .password("<test-password>")
             .username("testuser")
             .active(true)
             .build();
@@ -291,7 +291,7 @@ class UserRepositoryTest {
 
         User user = User.builder()
             .email("admin@example.com")
-            .password("password")
+            .password("<test-password>")
             .username("admin")
             .active(true)
             .roles(Set.of(adminRole))
@@ -323,7 +323,7 @@ class UserServiceIntegrationTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
         .withDatabaseName("testdb")
         .withUsername("test")
-        .withPassword("test");
+        .withPassword("<test-db-password>");
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -349,7 +349,7 @@ class UserServiceIntegrationTest {
         // Given
         UserCreateRequest request = new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );
@@ -412,7 +412,7 @@ class UserReactiveControllerTest {
         // Given
         UserCreateRequest request = new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );
@@ -463,7 +463,7 @@ spring:
   security:
     user:
       name: test
-      password: test
+      password: <test-password>
 
 logging:
   level:
@@ -510,7 +510,7 @@ public class TestDataFactory {
     public static UserCreateRequest createUserRequest() {
         return new UserCreateRequest(
             "test@example.com",
-            "Password123",
+            "<test-password>",
             "testuser",
             25
         );

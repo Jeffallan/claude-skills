@@ -41,7 +41,7 @@ describe('UsersService', () => {
 ```typescript
 describe('create', () => {
   it('should create user', async () => {
-    const dto = { email: 'test@test.com', password: 'pass', name: 'Test' };
+    const dto = { email: 'test@test.com', password: '<test-password>', name: 'Test' };
     const user = { id: '1', ...dto };
 
     repo.create.mockReturnValue(user as User);
@@ -97,7 +97,7 @@ describe('UsersController', () => {
   });
 
   it('should create user', async () => {
-    const dto = { email: 'test@test.com', password: 'pass', name: 'Test' };
+    const dto = { email: 'test@test.com', password: '<test-password>', name: 'Test' };
     const user = { id: '1', ...dto };
     service.create.mockResolvedValue(user as User);
 
@@ -129,7 +129,7 @@ describe('UsersController (e2e)', () => {
     // Get auth token
     const response = await request(app.getHttpServer())
       .post('/auth/login')
-      .send({ email: 'test@test.com', password: 'password' });
+      .send({ email: 'test@test.com', password: '<test-password>' });
     authToken = response.body.access_token;
   });
 
@@ -139,7 +139,7 @@ describe('UsersController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/users')
       .set('Authorization', `Bearer ${authToken}`)
-      .send({ email: 'new@test.com', password: 'Test1234', name: 'New' })
+      .send({ email: 'new@test.com', password: '<test-password>', name: 'New' })
       .expect(201)
       .expect((res) => {
         expect(res.body.email).toBe('new@test.com');

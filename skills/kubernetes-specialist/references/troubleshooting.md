@@ -195,7 +195,7 @@ kubectl run test-pull --image=myregistry.io/myapp:v1.2.0 \
 kubectl create secret docker-registry registry-credentials \
   --docker-server=myregistry.io \
   --docker-username=myuser \
-  --docker-password=mypassword \
+  --docker-password=<registry-password> \
   --docker-email=user@example.com \
   -n production
 ```

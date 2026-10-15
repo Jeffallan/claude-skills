@@ -39,9 +39,9 @@ describe('UserService', () => {
   it('should create user with hashed password', async () => {
     const user = await userService.create({
       email: 'test@example.com',
-      password: 'SecurePass123!',
+      password: '<test-password>',
     });
-    expect(user.password).not.toBe('SecurePass123!');
+    expect(user.password).not.toBe('<test-password>');
     expect(user.email).toBe('test@example.com');
   });
 });
@@ -64,7 +64,7 @@ describe('POST /api/users', () => {
   it('should create user and return 201', async () => {
     const response = await request(app)
       .post('/api/users')
-      .send({ email: 'new@example.com', password: 'Pass123!' });
+      .send({ email: 'new@example.com', password: '<test-password>' });
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
@@ -76,7 +76,7 @@ describe('POST /api/users', () => {
 
     const response = await request(app)
       .post('/api/users')
-      .send({ email: 'existing@example.com', password: 'Pass123!' });
+      .send({ email: 'existing@example.com', password: '<test-password>' });
 
     expect(response.status).toBe(422);
     expect(response.body.error.code).toBe('DUPLICATE_EMAIL');
@@ -90,7 +90,7 @@ describe('POST /api/users', () => {
 test('complete user registration flow', async ({ page }) => {
   await page.goto('/register');
   await page.fill('[name="email"]', 'newuser@example.com');
-  await page.fill('[name="password"]', 'SecurePass123!');
+  await page.fill('[name="password"]', '<test-password>');
   await page.click('button[type="submit"]');
 
   await expect(page).toHaveURL('/dashboard');
@@ -124,7 +124,7 @@ Request:
 {
   "email": "user@example.com",
   "name": "John Doe",
-  "password": "SecurePass123!"
+  "password": "<password>"
 }
 
 Response (201):
@@ -305,7 +305,7 @@ export const WithLongName: Story = {
 - Redis 7+
 
 ### Environment Variables
-DATABASE_URL=postgresql://user:pass@host:5432/dbname
+DATABASE_URL=postgresql://<db-user>:<db-password>@host:5432/dbname
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=<generate-secure-secret>
 API_PORT=3000

@@ -46,7 +46,7 @@ describe('Protected endpoints', () => {
   beforeAll(async () => {
     const response = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'test@test.com', password: 'password' });
+      .send({ email: 'test@test.com', password: '<test-password>' });
     authToken = response.body.token;
   });
 

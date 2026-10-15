@@ -550,7 +550,7 @@ def write_to_database(batch_df, batch_id):
         .option("url", "jdbc:postgresql://host:5432/db") \
         .option("dbtable", "output_table") \
         .option("user", "user") \
-        .option("password", "password") \
+        .option("password", "<db-password>") \
         .mode("append") \
         .save()
 

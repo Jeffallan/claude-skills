@@ -180,7 +180,7 @@ public class NotificationController(
 // appsettings.json
 {
   "JwtSettings": {
-    "Secret": "your-secret-key",
+    "Secret": "<jwt-signing-secret>",
     "Issuer": "your-app",
     "Audience": "your-audience",
     "ExpiryMinutes": 60

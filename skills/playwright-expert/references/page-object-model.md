@@ -48,7 +48,7 @@ test('successful login redirects to dashboard', async ({ page }) => {
   const loginPage = new LoginPage(page);
 
   await loginPage.goto();
-  await loginPage.login('user@test.com', 'password123');
+  await loginPage.login('user@test.com', '<test-password>');
 
   await expect(page).toHaveURL(/dashboard/);
 });
@@ -57,7 +57,7 @@ test('invalid credentials show error', async ({ page }) => {
   const loginPage = new LoginPage(page);
 
   await loginPage.goto();
-  await loginPage.login('user@test.com', 'wrongpassword');
+  await loginPage.login('user@test.com', '<wrong-password>');
 
   await expect(loginPage.errorMessage).toBeVisible();
 });
@@ -89,7 +89,7 @@ export const test = base.extend<Fixtures>({
   authenticatedPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('user@test.com', 'password123');
+    await loginPage.login('user@test.com', '<test-password>');
     await page.waitForURL(/dashboard/);
     await use(page);
   },

@@ -379,7 +379,7 @@ class ApplicationTest {
 
         val response = client.post("/api/v1/users") {
             contentType(ContentType.Application.Json)
-            setBody(CreateUserRequest("test@example.com", "Test User", "password123"))
+            setBody(CreateUserRequest("test@example.com", "Test User", "<test-password>"))
         }
 
         assertEquals(HttpStatusCode.Created, response.status)

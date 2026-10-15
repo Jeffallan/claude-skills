@@ -54,7 +54,7 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'strongPassword123', minLength: 8 })
+  @ApiProperty({ example: '<password>', minLength: 8 })
   @IsString()
   @MinLength(8)
   password: string;
@@ -168,7 +168,7 @@ describe('UsersService', () => {
   it('throws ConflictException when email already exists', async () => {
     mockRepo.findOneBy.mockResolvedValue({ id: 1, email: 'user@example.com' });
     await expect(
-      service.create({ email: 'user@example.com', password: 'pass1234' }),
+      service.create({ email: 'user@example.com', password: '<test-password>' }),
     ).rejects.toThrow(ConflictException);
   });
 });

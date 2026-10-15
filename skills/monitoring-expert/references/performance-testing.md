@@ -161,7 +161,7 @@ class WebsiteUser(HttpUser):
         # Login or setup
         self.client.post("/login", json={
             "username": "test",
-            "password": "test"
+            "password": "<test-password>"
         })
 ```
 

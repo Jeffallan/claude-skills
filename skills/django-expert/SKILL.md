@@ -114,7 +114,7 @@ from django.contrib.auth.models import User
 
 class ArticleAPITest(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user("alice", password="pass")
+        self.user = User.objects.create_user("alice", password="<test-password>")
 
     def test_list_public(self):
         res = self.client.get("/api/articles/")

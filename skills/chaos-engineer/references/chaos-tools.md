@@ -186,7 +186,7 @@ class GremlinClient:
         return response.json()
 
 # Example usage
-gremlin = GremlinClient(api_key="...", team_id="...")
+gremlin = GremlinClient(api_key="<gremlin-api-key>", team_id="<gremlin-team-id>")
 
 # CPU attack on specific containers
 gremlin.create_cpu_attack(

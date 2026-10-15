@@ -68,7 +68,7 @@ import http from 'k6/http';
 export function setup() {
   const loginRes = http.post('http://localhost:3000/api/login', {
     email: 'test@test.com',
-    password: 'password',
+    password: '<test-password>',
   });
   return { token: loginRes.json('token') };
 }

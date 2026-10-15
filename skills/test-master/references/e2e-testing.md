@@ -22,8 +22,8 @@ test.describe('User Registration Flow', () => {
     await page.goto('/register');
 
     await page.getByLabel('Email').fill('new@example.com');
-    await page.getByLabel('Password').fill('SecurePass123!');
-    await page.getByLabel('Confirm Password').fill('SecurePass123!');
+    await page.getByLabel('Password').fill('<test-password>');
+    await page.getByLabel('Confirm Password').fill('<test-password>');
     await page.getByRole('button', { name: 'Register' }).click();
 
     await expect(page).toHaveURL(/dashboard/);
@@ -75,11 +75,11 @@ test.describe('Checkout Flow', () => {
 export const testUsers = {
   standard: {
     email: 'standard@test.com',
-    password: 'TestPass123!',
+    password: '<test-password>',
   },
   admin: {
     email: 'admin@test.com',
-    password: 'AdminPass123!',
+    password: '<admin-test-password>',
   },
 };
 

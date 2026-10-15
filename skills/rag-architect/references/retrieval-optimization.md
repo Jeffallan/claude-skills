@@ -133,7 +133,7 @@ results = index.query(
 ```python
 import cohere
 
-co = cohere.Client(api_key="your-api-key")
+co = cohere.Client(api_key="<cohere-api-key>")
 
 def rerank_results(
     query: str,

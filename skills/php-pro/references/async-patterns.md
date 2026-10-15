@@ -109,7 +109,7 @@ Coroutine\run(function () {
         'host' => '127.0.0.1',
         'port' => 3306,
         'user' => 'root',
-        'password' => 'password',
+        'password' => '<db-password>',
         'database' => 'test',
     ]);
 
@@ -226,7 +226,7 @@ use React\MySQL\QueryResult;
 
 $factory = new Factory();
 
-$connection = $factory->createLazyConnection('root:password@localhost/database');
+$connection = $factory->createLazyConnection('root:<db-password>@localhost/database');
 
 $connection->query('SELECT * FROM users WHERE active = 1')
     ->then(

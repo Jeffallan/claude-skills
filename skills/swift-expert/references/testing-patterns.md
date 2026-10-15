@@ -269,7 +269,7 @@ final class AppUITests: XCTestCase {
 
         let passwordField = app.secureTextFields["Password"]
         passwordField.tap()
-        passwordField.typeText("password123")
+        passwordField.typeText("<test-password>")
 
         app.buttons["Login"].tap()
 

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `kubernetes-specialist`: `references/configuration.md` Secret examples used realistic-looking literals (`sk-1234567890abcdef`, PEM and OpenSSH private-key blocks, a registry `auth` string, sample passwords), which the Claude plugin directory blocked as "Secret in a shipped file". They are now obvious placeholders such as `<db-password>` and `<PEM-encoded private key>`
+- Skill references: replaced 149 credential-like literals across 63 files in 31 skills with angle-bracket placeholders, so example code cannot be mistaken for real secrets. This covers connection strings with embedded passwords (`postgres://user:pass@`), sample secrets such as `YourStrong@Passw0rd`, AWS's documented example keys and `ghp_`/`xoxb-`/`sk_live_` samples in `security-reviewer`, CLI flags with literal credentials, test-fixture passwords (`'Test1234'`, `'SecurePass123!'`), and older placeholder styles (`"your-api-key"`, `YOUR_API_KEY`). Paired values, such as a fixture password and the login that uses it, share one placeholder. Spring `${VAR:default}` fallbacks for the database password and JWT secret now have no default
 
 ## [0.4.18] - 2026-10-03
 

@@ -97,7 +97,7 @@ val dbConfig = database {
     host = "db.example.com"
     port = 3306
     username = "admin"
-    password = "secret"
+    password = "<password>"
     database = "myapp"
 }
 
