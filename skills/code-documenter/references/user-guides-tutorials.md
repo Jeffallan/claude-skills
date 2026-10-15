@@ -24,7 +24,7 @@ npm install @myapi/sdk
 ```typescript
 import { Client } from '@myapi/sdk';
 
-const client = new Client({ apiKey: 'your_key' });
+const client = new Client({ apiKey: '<api-key>' });
 const users = await client.users.list();
 console.log(users);
 ```
@@ -252,7 +252,7 @@ Only .jpg, .png, .gif are allowed. Check the file extension.
 API keys are the simplest way to authenticate.
 
 ```typescript
-const client = new Client({ apiKey: 'your_key' });
+const client = new Client({ apiKey: '<api-key>' });
 ```
 
 **When to use:** Scripts, internal tools, testing

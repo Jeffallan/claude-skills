@@ -51,8 +51,8 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=MyApp;User=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
-      - JwtSettings__Secret=your-super-secret-key-minimum-32-characters
+      - ConnectionStrings__DefaultConnection=Server=db;Database=MyApp;User=sa;Password=<sa-password>;TrustServerCertificate=true
+      - JwtSettings__Secret=<jwt-signing-secret>
     depends_on:
       - db
       - redis
@@ -63,7 +63,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=YourStrong@Passw0rd
+      - SA_PASSWORD=<sa-password>
     ports:
       - "1433:1433"
     volumes:

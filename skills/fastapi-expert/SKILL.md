@@ -119,7 +119,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
 
-SECRET_KEY = "read-from-env"  # use os.environ / settings
+SECRET_KEY = "<jwt-secret>"  # use os.environ / settings
 ALGORITHM = "HS256"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 

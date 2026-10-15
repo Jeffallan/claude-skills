@@ -73,7 +73,7 @@ $(whoami)
 
 ```bash
 # Decode JWT
-echo "eyJ..." | base64 -d
+echo "<jwt>" | base64 -d
 
 # Test none algorithm
 # Modify header: {"alg": "none"}
@@ -87,7 +87,7 @@ hashcat -m 16500 jwt.txt wordlist.txt
 ```bash
 # Test rate limits
 for i in {1..1000}; do
-  curl https://api.target.com/login -d "user=test&pass=test"
+  curl https://api.target.com/login -d "user=<username>&pass=<password>"
 done
 
 # Check for excessive data exposure

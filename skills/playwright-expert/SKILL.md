@@ -116,12 +116,12 @@ test.describe('Login', () => {
   });
 
   test('successful login redirects to dashboard', async ({ page }) => {
-    await loginPage.login('user@example.com', 'correct-password');
+    await loginPage.login('user@example.com', '<test-password>');
     await expect(page).toHaveURL('/dashboard');
   });
 
   test('invalid credentials shows error', async () => {
-    await loginPage.login('user@example.com', 'wrong-password');
+    await loginPage.login('user@example.com', '<wrong-password>');
     await expect(loginPage.errorMessage).toBeVisible();
     await expect(loginPage.errorMessage).toContainText('Invalid credentials');
   });

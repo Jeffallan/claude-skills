@@ -120,7 +120,7 @@ Missing or invalid authentication credentials.
 
 ```http
 GET /users/123
-Authorization: Bearer invalid_token
+Authorization: Bearer <invalid-access-token>
 
 Response: 401 Unauthorized
 WWW-Authenticate: Bearer realm="api", error="invalid_token"
@@ -149,7 +149,7 @@ Authenticated but not authorized to perform action.
 
 ```http
 DELETE /users/123
-Authorization: Bearer valid_token
+Authorization: Bearer <access-token>
 
 Response: 403 Forbidden
 {

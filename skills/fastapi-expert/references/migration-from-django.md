@@ -569,7 +569,7 @@ from pydantic import BaseModel
 from typing import Annotated
 
 # Configuration
-SECRET_KEY = "your-secret-key"  # Use environment variable
+SECRET_KEY = "<jwt-secret>"  # Use environment variable
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -683,7 +683,7 @@ def api_client():
 
 @pytest.fixture
 def user(db):
-    return User.objects.create_user(username='test', password='test123')
+    return User.objects.create_user(username='test', password='<test-password>')
 
 @pytest.mark.django_db
 def test_create_post(api_client, user):
@@ -745,14 +745,14 @@ async def client(db_session):
 async def auth_headers(client, db_session):
     # Create test user
     user = User(username="test", email="test@example.com")
-    user.hashed_password = get_password_hash("test123")
+    user.hashed_password = get_password_hash("<test-password>")
     db_session.add(user)
     await db_session.commit()
 
     # Get token
     response = await client.post("/auth/token", data={
         "username": "test",
-        "password": "test123"
+        "password": "<test-password>"
     })
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}

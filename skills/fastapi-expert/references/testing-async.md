@@ -51,7 +51,7 @@ async def test_create_user(client: AsyncClient):
     response = await client.post("/api/v1/users/", json={
         "email": "test@example.com",
         "username": "testuser",
-        "password": "Test1234"
+        "password": "<test-password>"
     })
     assert response.status_code == 201
     data = response.json()
@@ -78,7 +78,7 @@ async def test_user(db: AsyncSession) -> User:
     user = User(
         email="auth@test.com",
         username="authuser",
-        hashed_password=hash_password("Test1234"),
+        hashed_password=hash_password("<test-password>"),
     )
     db.add(user)
     await db.commit()
@@ -109,7 +109,7 @@ async def test_create_user_service(db: AsyncSession):
     user_in = UserCreate(
         email="service@test.com",
         username="serviceuser",
-        password="Test1234"
+        password="<test-password>"
     )
     user = await create_user_db(db, user_in)
 
@@ -123,11 +123,11 @@ async def test_get_user_not_found_service(db: AsyncSession):
 
 @pytest.mark.asyncio
 async def test_duplicate_email(db: AsyncSession):
-    user_in = UserCreate(email="dup@test.com", username="user1", password="Test1234")
+    user_in = UserCreate(email="dup@test.com", username="user1", password="<test-password>")
     await create_user_db(db, user_in)
 
     with pytest.raises(IntegrityError):
-        user_in2 = UserCreate(email="dup@test.com", username="user2", password="Test1234")
+        user_in2 = UserCreate(email="dup@test.com", username="user2", password="<test-password>")
         await create_user_db(db, user_in2)
 ```
 

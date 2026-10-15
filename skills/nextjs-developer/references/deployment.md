@@ -57,8 +57,8 @@ vercel --prod
 
 ```bash
 # .env.local (not committed)
-DATABASE_URL="postgresql://user:pass@localhost:5432/db"
-NEXTAUTH_SECRET="your-secret"
+DATABASE_URL="postgresql://<db-user>:<db-password>@localhost:5432/db"
+NEXTAUTH_SECRET="<nextauth-secret>"
 
 # .env.production (committed, public vars only)
 NEXT_PUBLIC_API_URL="https://api.example.com"
@@ -175,9 +175,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp
+      - DATABASE_URL=postgresql://postgres:<db-password>@db:5432/myapp
       - NEXTAUTH_URL=http://localhost:3000
-      - NEXTAUTH_SECRET=your-secret
+      - NEXTAUTH_SECRET=<nextauth-secret>
     depends_on:
       - db
     restart: unless-stopped
@@ -186,7 +186,7 @@ services:
     image: postgres:16-alpine
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=<db-password>
       - POSTGRES_DB=myapp
     volumes:
       - postgres_data:/var/lib/postgresql/data

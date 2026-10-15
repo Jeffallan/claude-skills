@@ -418,7 +418,7 @@ public class UserSecurityService {
 
 ```yaml
 jwt:
-  secret: ${JWT_SECRET:your-256-bit-secret-key-here-change-in-production}
+  secret: ${JWT_SECRET}
   expiration: 86400000  # 24 hours
   refresh-expiration: 604800000  # 7 days
 

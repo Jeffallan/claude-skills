@@ -770,7 +770,7 @@ jobs:
 
 ```bash
 # Login to registry
-helm registry login myregistry.io -u user -p token
+helm registry login myregistry.io -u <username> -p <registry-token>
 
 # Push chart to OCI registry
 helm push mychart-1.2.0.tgz oci://myregistry.io/charts

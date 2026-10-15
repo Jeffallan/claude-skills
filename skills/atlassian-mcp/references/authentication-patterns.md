@@ -184,7 +184,7 @@ const response = await fetch('https://your-site.atlassian.net/rest/api/3/myself'
 const config = {
   JIRA_URL: 'https://your-site.atlassian.net',
   JIRA_USERNAME: 'your-email@company.com',
-  JIRA_API_TOKEN: 'your-api-token',
+  JIRA_API_TOKEN: '<jira-api-token>',
 };
 ```
 
@@ -253,7 +253,7 @@ const response = await fetch('https://jira.internal.company.com/rest/api/2/mysel
 // MCP server configuration
 const config = {
   JIRA_URL: 'https://jira.internal.company.com',
-  JIRA_PERSONAL_TOKEN: 'your-personal-access-token',
+  JIRA_PERSONAL_TOKEN: '<jira-personal-access-token>',
 };
 ```
 

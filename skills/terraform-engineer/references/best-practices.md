@@ -229,7 +229,7 @@ route_tables.tf
 ```hcl
 # Bad - Secrets in plain text
 variable "db_password" {
-  default = "SuperSecret123!"  # NEVER DO THIS
+  default = "<db-password>"  # NEVER DO THIS
 }
 
 # Good - Use sensitive variables

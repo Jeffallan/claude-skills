@@ -191,7 +191,7 @@ spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/demo
     username: demo
-    password: demo
+    password: <db-password>
     pool:
       initial-size: 10
       max-size: 20

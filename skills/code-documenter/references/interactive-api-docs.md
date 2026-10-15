@@ -410,7 +410,7 @@ message User {
 ```python
 from myapi import Client
 
-client = Client(api_key="your_key")
+client = Client(api_key="<api-key>")
 user = client.users.create(
     name="John Doe",
     email="john@example.com"
@@ -422,7 +422,7 @@ print(user.id)
 ```typescript
 import { Client } from '@myapi/sdk';
 
-const client = new Client({ apiKey: 'your_key' });
+const client = new Client({ apiKey: '<api-key>' });
 const user = await client.users.create({
   name: 'John Doe',
   email: 'john@example.com',
@@ -434,7 +434,7 @@ console.log(user.id);
 ```go
 import "github.com/myapi/sdk-go"
 
-client := sdk.NewClient("your_key")
+client := sdk.NewClient("<api-key>")
 user, err := client.Users.Create(ctx, &sdk.CreateUserInput{
     Name:  "John Doe",
     Email: "john@example.com",
@@ -449,7 +449,7 @@ fmt.Println(user.ID)
 ```ruby
 require 'myapi'
 
-client = MyAPI::Client.new(api_key: 'your_key')
+client = MyAPI::Client.new(api_key: '<api-key>')
 user = client.users.create(
   name: 'John Doe',
   email: 'john@example.com'

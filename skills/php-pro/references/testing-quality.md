@@ -34,7 +34,7 @@ final class UserServiceTest extends TestCase
     public function testCreateUserSuccessfully(): void
     {
         $email = 'test@example.com';
-        $password = 'SecurePass123!';
+        $password = '<test-password>';
 
         $this->userRepository
             ->expects($this->once())
@@ -65,7 +65,7 @@ final class UserServiceTest extends TestCase
             ->method('findByEmail')
             ->willReturn($this->createUser('test@example.com'));
 
-        $this->userService->createUser('test@example.com', 'password');
+        $this->userService->createUser('test@example.com', '<test-password>');
     }
 
     private function createUser(string $email): User
@@ -73,7 +73,7 @@ final class UserServiceTest extends TestCase
         return new User(
             id: 1,
             email: $email,
-            password: password_hash('password', PASSWORD_ARGON2ID),
+            password: password_hash('<test-password>', PASSWORD_ARGON2ID),
         );
     }
 }
@@ -220,7 +220,7 @@ beforeEach(function () {
 it('creates a user successfully', function () {
     $user = $this->userService->createUser(
         email: 'test@example.com',
-        password: 'SecurePass123!'
+        password: '<test-password>'
     );
 
     expect($user)

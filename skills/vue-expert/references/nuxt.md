@@ -149,7 +149,7 @@ const { data } = await useFetch('/api/users', {
   method: 'POST',
   body: { name: 'John' },
   headers: {
-    'Authorization': 'Bearer token'
+    'Authorization': 'Bearer <access-token>'
   },
   query: { page: 1, limit: 10 },
   // Transform response

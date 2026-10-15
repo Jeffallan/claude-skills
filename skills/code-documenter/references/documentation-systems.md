@@ -36,7 +36,7 @@ module.exports = {
 
     // Algolia search
     algolia: {
-      apiKey: 'YOUR_API_KEY',
+      apiKey: '<algolia-search-api-key>',
       indexName: 'your_index',
       contextualSearch: true,
     },
@@ -189,8 +189,8 @@ client = Client(api_key=api_key)  # Pass in constructor
 <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 <script>
   docsearch({
-    appId: 'YOUR_APP_ID',
-    apiKey: 'YOUR_API_KEY',
+    appId: '<algolia-app-id>',
+    apiKey: '<algolia-search-api-key>',
     indexName: 'your_index',
     container: '#docsearch',
   });

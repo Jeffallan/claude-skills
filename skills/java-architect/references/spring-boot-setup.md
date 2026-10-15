@@ -128,7 +128,7 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/demo}
     username: ${DATABASE_USER:demo}
-    password: ${DATABASE_PASSWORD:demo}
+    password: ${DATABASE_PASSWORD}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5

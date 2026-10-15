@@ -94,7 +94,7 @@ When to Avoid:
 from pinecone import Pinecone, ServerlessSpec
 
 # Initialize client
-pc = Pinecone(api_key="your-api-key")
+pc = Pinecone(api_key="<pinecone-api-key>")
 
 # Create index with serverless
 pc.create_index(
@@ -164,7 +164,7 @@ from weaviate.classes.config import Configure, Property, DataType
 # Connect to Weaviate Cloud
 client = weaviate.connect_to_weaviate_cloud(
     cluster_url="https://your-cluster.weaviate.network",
-    auth_credentials=weaviate.auth.AuthApiKey("your-api-key")
+    auth_credentials=weaviate.auth.AuthApiKey("<weaviate-api-key>")
 )
 
 # Or self-hosted
@@ -236,7 +236,7 @@ from qdrant_client.models import (
 # Connect to Qdrant Cloud
 client = QdrantClient(
     url="https://your-cluster.qdrant.io",
-    api_key="your-api-key"
+    api_key="<qdrant-api-key>"
 )
 
 # Or local
@@ -322,7 +322,7 @@ client = chromadb.PersistentClient(
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 
 embedding_fn = OpenAIEmbeddingFunction(
-    api_key="your-openai-key",
+    api_key="<openai-api-key>",
     model_name="text-embedding-3-small"
 )
 

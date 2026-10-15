@@ -25,7 +25,7 @@
 
 ```typescript
 // Storefront API uses public access tokens (safe for client-side)
-const STOREFRONT_ACCESS_TOKEN = 'your-storefront-access-token';
+const STOREFRONT_ACCESS_TOKEN = '<storefront-access-token>';
 const SHOP_DOMAIN = 'your-store.myshopify.com';
 const API_VERSION = '2024-10'; // Use latest stable version
 

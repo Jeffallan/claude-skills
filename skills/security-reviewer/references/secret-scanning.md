@@ -59,11 +59,11 @@ grep -rn "eyJ[A-Za-z0-9_-]*\.eyJ[A-Za-z0-9_-]*\." .
 
 | Type | Pattern | Example |
 |------|---------|---------|
-| AWS Access Key | `AKIA[0-9A-Z]{16}` | AKIAIOSFODNN7EXAMPLE |
-| AWS Secret Key | 40 char base64 | wJalrXUtnFEMI/K7MDENG... |
-| GitHub Token | `ghp_[A-Za-z0-9]{36}` | ghp_xxxxxxxxxxxx |
-| Slack Token | `xox[baprs]-` | xoxb-xxx-xxx |
-| Stripe Key | `sk_live_[A-Za-z0-9]{24}` | sk_live_xxxx |
+| AWS Access Key | `AKIA[0-9A-Z]{16}` | `<aws-access-key-id>` |
+| AWS Secret Key | 40 char base64 | `<aws-secret-access-key>` |
+| GitHub Token | `ghp_[A-Za-z0-9]{36}` | `<github-token>` |
+| Slack Token | `xox[baprs]-` | `<slack-bot-token>` |
+| Stripe Key | `sk_live_[A-Za-z0-9]{24}` | `<stripe-secret-key>` |
 | Private Key | `-----BEGIN.*PRIVATE KEY-----` | RSA/EC keys |
 | JWT | `eyJ[A-Za-z0-9_-]*\.eyJ` | Encoded tokens |
 

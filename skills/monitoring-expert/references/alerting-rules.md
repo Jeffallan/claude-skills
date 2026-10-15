@@ -96,7 +96,7 @@ groups:
 ```yaml
 # alertmanager.yml
 global:
-  slack_api_url: 'https://hooks.slack.com/...'
+  slack_api_url: '<slack-webhook-url>'
 
 route:
   receiver: 'slack-notifications'
@@ -121,7 +121,7 @@ receivers:
 
   - name: 'pagerduty'
     pagerduty_configs:
-      - service_key: 'your-key'
+      - service_key: '<pagerduty-service-key>'
 ```
 
 ## Quick Reference

@@ -252,7 +252,7 @@ import { test, expect } from '@playwright/test';
 test('should login successfully', async ({ page }) => {
   await page.goto('/login');
   await page.fill('[name="email"]', 'test@example.com');
-  await page.fill('[name="password"]', 'password123');
+  await page.fill('[name="password"]', '<test-password>');
   await page.click('button[type="submit"]');
 
   await page.waitForResponse(res =>

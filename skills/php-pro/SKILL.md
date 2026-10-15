@@ -152,7 +152,7 @@ final class UserServiceTest extends TestCase
 
     public function testCreateHashesPassword(): void
     {
-        $dto  = new CreateUserDTO('Alice', 'alice@example.com', 'secret');
+        $dto  = new CreateUserDTO('Alice', 'alice@example.com', '<test-password>');
         $user = new User(['name' => 'Alice', 'email' => 'alice@example.com']);
 
         $this->users

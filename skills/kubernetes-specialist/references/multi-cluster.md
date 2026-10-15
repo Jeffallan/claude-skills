@@ -438,7 +438,7 @@ helm install rancher rancher-stable/rancher \
   --namespace cattle-system \
   --create-namespace \
   --set hostname=rancher.example.com \
-  --set bootstrapPassword=admin
+  --set bootstrapPassword=<rancher-bootstrap-password>
 ```
 
 ### Kubeconfig Management
@@ -471,10 +471,10 @@ contexts:
 users:
   - name: admin-us-west
     user:
-      token: ...
+      token: <cluster-token>
   - name: admin-us-east
     user:
-      token: ...
+      token: <cluster-token>
 current-context: us-west
 ```
 

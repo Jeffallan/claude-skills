@@ -12,7 +12,7 @@ class ProductAPITest(APITestCase):
         self.user = User.objects.create_user(
             email='test@example.com',
             username='testuser',
-            password='testpass123'
+            password='<test-password>'
         )
         self.category = Category.objects.create(name='Tech', slug='tech')
         self.product = Product.objects.create(
@@ -64,7 +64,7 @@ class ProductModelTest(TestCase):
         self.user = User.objects.create_user(
             email='test@example.com',
             username='test',
-            password='pass'
+            password='<test-password>'
         )
         self.category = Category.objects.create(name='Tech', slug='tech')
 
@@ -136,7 +136,7 @@ class UserFactory(DjangoModelFactory):
 
     email = factory.Sequence(lambda n: f'user{n}@example.com')
     username = factory.Sequence(lambda n: f'user{n}')
-    password = factory.PostGenerationMethodCall('set_password', 'testpass')
+    password = factory.PostGenerationMethodCall('set_password', '<test-password>')
 
 class ProductFactory(DjangoModelFactory):
     class Meta:
@@ -162,13 +162,13 @@ class JWTAuthTest(APITestCase):
         self.user = User.objects.create_user(
             email='test@example.com',
             username='test',
-            password='testpass123'
+            password='<test-password>'
         )
 
     def test_obtain_token(self):
         response = self.client.post('/api/token/', {
             'email': 'test@example.com',
-            'password': 'testpass123'
+            'password': '<test-password>'
         })
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -178,7 +178,7 @@ class JWTAuthTest(APITestCase):
     def test_access_protected_endpoint(self):
         response = self.client.post('/api/token/', {
             'email': 'test@example.com',
-            'password': 'testpass123'
+            'password': '<test-password>'
         })
         token = response.data['access']
 

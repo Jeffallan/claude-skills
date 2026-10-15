@@ -152,7 +152,7 @@ sf org login web --alias mysandbox --instance-url https://test.salesforce.com
 
 # Login with JWT (CI/CD)
 sf org login jwt \
-  --client-id YOUR_CONNECTED_APP_CLIENT_ID \
+  --client-id <connected-app-client-id> \
   --jwt-key-file server.key \
   --username admin@mycompany.com \
   --set-default-dev-hub \

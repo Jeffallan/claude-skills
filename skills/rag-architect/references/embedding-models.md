@@ -98,7 +98,7 @@ When to Avoid:
 ```python
 from openai import OpenAI
 
-client = OpenAI(api_key="your-api-key")
+client = OpenAI(api_key="<openai-api-key>")
 
 def get_embedding(
     text: str,
@@ -158,7 +158,7 @@ reduced_embedding = get_embedding(
 ```python
 import cohere
 
-co = cohere.Client(api_key="your-api-key")
+co = cohere.Client(api_key="<cohere-api-key>")
 
 # Document embeddings (for indexing)
 doc_embeddings = co.embed(
@@ -207,7 +207,7 @@ compressed = co.embed(
 ```python
 import voyageai
 
-vo = voyageai.Client(api_key="your-api-key")
+vo = voyageai.Client(api_key="<voyage-api-key>")
 
 # General embeddings
 result = vo.embed(

@@ -22,7 +22,7 @@ class Login implements Task {
 }
 
 // Clear, maintainable test code
-await new Actor(page).attemptsTo(new Login('user@test.com', 'pass'));
+await new Actor(page).attemptsTo(new Login('user@test.com', '<test-password>'));
 ```
 
 ### Keyword-Driven Testing

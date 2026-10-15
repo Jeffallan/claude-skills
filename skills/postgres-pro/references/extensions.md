@@ -228,12 +228,12 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Hash passwords (use bcrypt)
 INSERT INTO users (email, password_hash)
-VALUES ('user@example.com', crypt('password123', gen_salt('bf', 10)));
+VALUES ('user@example.com', crypt('<password>', gen_salt('bf', 10)));
 
 -- Verify password
 SELECT * FROM users
 WHERE email = 'user@example.com'
-  AND password_hash = crypt('password123', password_hash);
+  AND password_hash = crypt('<password>', password_hash);
 
 -- Generate random values
 SELECT gen_random_uuid();
@@ -263,7 +263,7 @@ OPTIONS (host 'remote-host', port '5432', dbname 'remote_db');
 -- User mapping
 CREATE USER MAPPING FOR current_user
 SERVER remote_db
-OPTIONS (user 'remote_user', password 'remote_password');
+OPTIONS (user 'remote_user', password '<remote-db-password>');
 
 -- Import foreign schema
 IMPORT FOREIGN SCHEMA public

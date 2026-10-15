@@ -181,7 +181,7 @@ vault operator init
 vault secrets enable -path=secret kv-v2
 
 # Store secrets
-vault kv put secret/app/config api_key="secret123"
+vault kv put secret/app/config api_key="<api-key>"
 
 # Dynamic database credentials
 vault secrets enable database
@@ -189,7 +189,7 @@ vault write database/config/postgresql \
   plugin_name=postgresql-database-plugin \
   allowed_roles="app" \
   connection_url="postgresql://{{username}}:{{password}}@localhost:5432/" \
-  username="vault" password="vaultpass"
+  username="vault" password="<db-password>"
 
 vault write database/roles/app \
   db_name=postgresql \

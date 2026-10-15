@@ -236,7 +236,7 @@ FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
     username { Faker::Internet.username(specifier: 3..50) }
-    password { "Password123!" }
+    password { "<test-password>" }
 
     trait :admin do
       role { :admin }

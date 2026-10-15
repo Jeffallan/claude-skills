@@ -103,7 +103,7 @@ metadata:
   name: app-secrets
 type: Opaque
 stringData:
-  database-url: "postgres://user:pass@host:5432/db"
+  database-url: "postgres://<db-user>:<db-password>@host:5432/db"
 ```
 
 ## Horizontal Pod Autoscaler

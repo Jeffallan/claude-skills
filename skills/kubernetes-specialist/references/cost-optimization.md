@@ -338,7 +338,7 @@ helm repo add kubecost https://kubecost.github.io/cost-analyzer/
 helm install kubecost kubecost/cost-analyzer \
   --namespace kubecost \
   --create-namespace \
-  --set kubecostToken="YOUR_TOKEN"
+  --set kubecostToken="<kubecost-token>"
 ```
 
 ### Prometheus Cost Metrics

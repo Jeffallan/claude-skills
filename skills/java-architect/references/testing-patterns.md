@@ -145,7 +145,7 @@ class UserIntegrationTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
         .withDatabaseName("testdb")
         .withUsername("test")
-        .withPassword("test");
+        .withPassword("<test-db-password>");
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {

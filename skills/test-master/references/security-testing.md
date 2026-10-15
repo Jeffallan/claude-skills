@@ -7,7 +7,7 @@ describe('Authentication Security', () => {
   it('rejects invalid credentials', async () => {
     await request(app)
       .post('/api/login')
-      .send({ email: 'user@test.com', password: 'wrong' })
+      .send({ email: 'user@test.com', password: '<wrong-password>' })
       .expect(401);
   });
 
@@ -31,12 +31,12 @@ describe('Authentication Security', () => {
     for (let i = 0; i < 6; i++) {
       await request(app)
         .post('/api/login')
-        .send({ email: 'user@test.com', password: 'wrong' });
+        .send({ email: 'user@test.com', password: '<wrong-password>' });
     }
 
     await request(app)
       .post('/api/login')
-      .send({ email: 'user@test.com', password: 'correct' })
+      .send({ email: 'user@test.com', password: '<test-password>' })
       .expect(429);
   });
 });
