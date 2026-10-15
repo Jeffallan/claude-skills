@@ -400,7 +400,7 @@ final class NotificationServiceTest extends TestCase
 
     private function createUser(string $email): User
     {
-        return new User(id: 1, email: $email, password: 'hashed');
+        return new User(id: 1, email: $email, password: '<password-hash>');
     }
 }
 ```

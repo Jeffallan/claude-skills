@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Skill references: replaced 15 remaining value stand-ins with angle-bracket placeholders, since the Claude plugin directory still blocked `kubernetes-specialist/references/configuration.md` after 0.4.19. Covers SealedSecret ciphertext stubs in `kubernetes-specialist` (`<sealed-ciphertext>`), the dummy vLLM `api_key`, mock password encodings and hashes in `spring-boot-engineer` and `php-pro`, a mock Shopify webhook HMAC, base64 pagination cursors in `api-designer`, and a sample SHA-256 in `legacy-modernizer`. The detection regexes in `security-reviewer/references/secret-scanning.md` are unchanged
+
 ## [0.4.19] - 2026-10-15
 
 ### Added

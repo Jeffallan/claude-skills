@@ -854,7 +854,7 @@ describe("Webhook handlers", () => {
       headers: {
         "X-Shopify-Topic": "products/create",
         "X-Shopify-Shop-Domain": "test-shop.myshopify.com",
-        "X-Shopify-Hmac-Sha256": "valid-hmac",
+        "X-Shopify-Hmac-Sha256": "<webhook-hmac-signature>",
       },
       body: JSON.stringify({
         id: 123456789,
