@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `.github/dependabot.yml`: weekly Dependabot updates for GitHub Actions, which keep the SHA pins and their version comments current
+
+### Changed
+- CI: third-party GitHub Actions in `validate.yml`, `release.yml`, and `publish-plugin.yml` are pinned to full commit SHAs, with the release tag in a trailing comment, instead of mutable tags like `actions/checkout@v6`. Each pin resolves to the commit its tag pointed to, so workflow behavior is unchanged
+
 ## [0.4.18] - 2026-10-03
 
 ### Changed
