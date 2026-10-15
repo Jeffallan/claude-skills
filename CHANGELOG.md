@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.19] - 2026-10-15
+
 ### Added
 - `.github/dependabot.yml`: weekly Dependabot updates for GitHub Actions, which keep the SHA pins and their version comments current
 
@@ -537,6 +539,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.19]: https://github.com/jeffallan/claude-skills/compare/v0.4.18...v0.4.19
 [0.4.18]: https://github.com/jeffallan/claude-skills/compare/v0.4.17...v0.4.18
 [0.4.17]: https://github.com/jeffallan/claude-skills/compare/v0.4.16...v0.4.17
 [0.4.16]: https://github.com/jeffallan/claude-skills/compare/v0.4.15...v0.4.16
