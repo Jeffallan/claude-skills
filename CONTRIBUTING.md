@@ -43,11 +43,13 @@ git checkout -b fix/your-bug-fix
 
 **For New Skills:**
 ```bash
-# Create skill directory
-mkdir -p skills/my-new-skill
-
-# Create SKILL.md following the structure below
+python scripts/create-skill.py my-new-skill \
+  --domain backend \
+  --author your-github-username \
+  --description "Builds production-ready integrations. Use when implementing or reviewing X."
 ```
+
+The generator creates the repository-standard `SKILL.md` skeleton and an initial reference file. Use `--dry-run` to preview the generated files. Replace every `TODO`, add focused reference content, and update metadata before validation.
 
 #### 4. Test Your Changes
 ```bash
@@ -373,5 +375,4 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 Contributors will be recognized in:
 - [GitHub contributors page](https://github.com/Jeffallan/claude-skills/graphs/contributors)
 - Release notes for significant contributions
-
 
