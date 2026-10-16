@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.20] - 2026-10-16
+
 ### Changed
 - `execute-ticket`: Phase 2 and the Execution Checklist now run test-first. The agent writes a failing test for the ticket's acceptance criteria before touching production code, records that it fails for the reason the ticket describes (a test that passes early or fails for another reason is rewritten), makes it pass, then refactors with tests green. Tests live in the repo and run in CI; ad hoc scripts count only as extra evidence. Tickets with no code name a stand-in check (validator, grep, fixture run) and record its RED result too. The completion summary lists each test's RED result, and `docs/WORKFLOW_COMMANDS.md` and `docs/workflow/execution-execute-ticket.md` match the new order, closing #252
 
@@ -545,6 +547,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[0.4.20]: https://github.com/jeffallan/claude-skills/compare/v0.4.19...v0.4.20
 [0.4.19]: https://github.com/jeffallan/claude-skills/compare/v0.4.18...v0.4.19
 [0.4.18]: https://github.com/jeffallan/claude-skills/compare/v0.4.17...v0.4.18
 [0.4.17]: https://github.com/jeffallan/claude-skills/compare/v0.4.16...v0.4.17
