@@ -417,8 +417,8 @@ metadata:
   namespace: production
 spec:
   encryptedData:
-    username: AgBy8h...encrypted...
-    password: AgCtr2...encrypted...
+    username: <sealed-ciphertext>
+    password: <sealed-ciphertext>
   template:
     type: Opaque
     metadata:

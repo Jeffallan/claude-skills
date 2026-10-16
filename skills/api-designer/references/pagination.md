@@ -104,7 +104,7 @@ Uses an opaque cursor (pointer) to the next set of results.
 **Request:**
 ```http
 GET /users?limit=10
-GET /users?cursor=eyJpZCI6MTIzfQ&limit=10
+GET /users?cursor=<cursor>&limit=10
 ```
 
 **Response:**
@@ -115,13 +115,13 @@ GET /users?cursor=eyJpZCI6MTIzfQ&limit=10
     {"id": 22, "name": "User 22"}
   ],
   "pagination": {
-    "next_cursor": "eyJpZCI6MzB9",
-    "prev_cursor": "eyJpZCI6MjB9",
+    "next_cursor": "<next-cursor>",
+    "prev_cursor": "<prev-cursor>",
     "has_more": true
   },
   "links": {
-    "next": "/users?cursor=eyJpZCI6MzB9&limit=10",
-    "prev": "/users?cursor=eyJpZCI6MjB9&limit=10"
+    "next": "/users?cursor=<next-cursor>&limit=10",
+    "prev": "/users?cursor=<prev-cursor>&limit=10"
   }
 }
 ```

@@ -33,7 +33,7 @@ class UserServiceTest {
             .build();
 
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
-        when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(request.password())).thenReturn("<encoded-password>");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         // When
@@ -499,7 +499,7 @@ public class TestDataFactory {
     public static User createUser(String email, String username) {
         return User.builder()
             .email(email)
-            .password("encodedPassword")
+            .password("<encoded-password>")
             .username(username)
             .active(true)
             .createdAt(LocalDateTime.now())

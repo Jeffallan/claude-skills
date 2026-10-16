@@ -315,8 +315,8 @@ metadata:
   namespace: production
 spec:
   encryptedData:
-    db-password: AgBj8xK5...encrypted...base64
-    api-key: AgCY9mL2...encrypted...base64
+    db-password: <sealed-ciphertext>
+    api-key: <sealed-ciphertext>
   template:
     metadata:
       name: app-secrets

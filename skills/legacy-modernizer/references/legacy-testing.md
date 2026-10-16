@@ -100,7 +100,7 @@ class TestMonthlyReportGoldenMaster:
         report_hash = hashlib.sha256(report.encode()).hexdigest()
 
         # Known good hash
-        expected_hash = "a3f5b2c8d9e1f4a7b6c5d8e9f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0"
+        expected_hash = "<expected-sha256>"
         assert report_hash == expected_hash
 
 # Approval testing library

@@ -361,7 +361,7 @@ python -m vllm.entrypoints.openai.api_server \
 # Client usage
 from openai import OpenAI
 
-client = OpenAI(base_url="http://localhost:8000/v1", api_key="not-needed")
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="<unused-api-key>")
 
 response = client.chat.completions.create(
     model="./merged-model",
