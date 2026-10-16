@@ -432,11 +432,12 @@ flowchart LR
         FT["Fetch Ticket"]
         RP["Read Plan<br/>(Wave Context)"]
         PC["Parallel Check"]
-        IM["Implement"]
-        TS["Run Tests"]
+        FT2["Write Failing Test<br/>(RED)"]
+        IM["Implement<br/>(GREEN)"]
+        RF["Refactor"]
         PS["Present Summary"]
 
-        FT --> RP --> PC --> IM --> TS --> PS
+        FT --> RP --> PC --> FT2 --> IM --> RF --> PS
     end
 
     subgraph Complete["complete-ticket"]
@@ -477,8 +478,8 @@ flowchart LR
 3. Reads implementation plan for wave/dependency context
 4. Checks for parallel execution opportunities
 5. Updates Jira status to "In Progress"
-6. Executes implementation steps
-7. Writes required tests
+6. Writes failing tests for the acceptance criteria and records the RED result
+7. Executes implementation steps until the tests pass, then refactors with tests green
 8. Verifies acceptance criteria
 9. Presents completion summary with commit message
 

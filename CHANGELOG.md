@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `execute-ticket`: Phase 2 and the Execution Checklist now run test-first. The agent writes a failing test for the ticket's acceptance criteria before touching production code, records that it fails for the reason the ticket describes (a test that passes early or fails for another reason is rewritten), makes it pass, then refactors with tests green. Tests live in the repo and run in CI; ad hoc scripts count only as extra evidence. Tickets with no code name a stand-in check (validator, grep, fixture run) and record its RED result too. The completion summary lists each test's RED result, and `docs/WORKFLOW_COMMANDS.md` and `docs/workflow/execution-execute-ticket.md` match the new order, closing #252
+
 ### Fixed
 - Skill references: replaced 15 remaining value stand-ins with angle-bracket placeholders, since the Claude plugin directory still blocked `kubernetes-specialist/references/configuration.md` after 0.4.19. Covers SealedSecret ciphertext stubs in `kubernetes-specialist` (`<sealed-ciphertext>`), the dummy vLLM `api_key`, mock password encodings and hashes in `spring-boot-engineer` and `php-pro`, a mock Shopify webhook HMAC, base64 pagination cursors in `api-designer`, and a sample SHA-256 in `legacy-modernizer`. The detection regexes in `security-reviewer/references/secret-scanning.md` are unchanged
 

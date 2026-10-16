@@ -96,15 +96,22 @@ After reading the implementation plan, check for a **Parallel Execution Strategy
 
 6. **CHECKPOINT:** Confirm ticket selection and approach with user
 7. Update Jira status to "In Progress"
-8. Execute implementation steps from the plan
-9. Write required tests (unit, integration, E2E as needed)
-10. Verify all acceptance criteria are met
+8. **Write a failing test for the ticket's acceptance criteria** (unit, integration, E2E as needed) before touching production code
+   - Tests live in the repo and run in CI. Ad hoc scripts and manual runs are extra evidence, never the test
+9. **Record the RED result:** run the new tests and confirm each one fails for the reason the ticket describes
+   - A test that passes before the change, or fails for another reason (import error, typo, missing fixture), is rewritten until it fails correctly
+   - Keep the failure output for the completion summary
+10. **Make the tests pass:** execute the implementation steps from the plan until the new tests and the existing suite are green
+11. **Refactor** with the tests green
+12. Verify all acceptance criteria are met
+
+**Tickets with no code** (docs, prompts, configuration): name the check that stands in for the test (a validator, a grep, a fixture run) and record its RED result before making the change, the same way.
 
 ---
 
 ## Phase 3: Completion
 
-11. Present implementation summary and commit message for user review (see Output format below)
+13. Present implementation summary and commit message for user review (see Output format below)
 
 **Note:** The user will handle git commit and PR creation. When ready to finalize, the user runs `/complete-ticket` to transition Jira and update the implementation plan.
 
@@ -130,13 +137,14 @@ After reading the implementation plan, check for a **Parallel Execution Strategy
 - [ ] Move ticket to "In Progress" in Jira
 
 ### During Implementation
-- [ ] Follow implementation steps exactly as documented in the plan
 - [ ] Reference existing codebase patterns
-- [ ] Create/modify files as specified
-- [ ] Write all required tests:
+- [ ] Write failing tests for the acceptance criteria first:
   - Unit tests for new functions/components
   - Integration tests for API/service interactions
   - E2E tests for user flows (if applicable)
+- [ ] Record RED: each new test fails for the reason the ticket describes
+- [ ] Create/modify files as specified, following the plan's implementation steps, until the tests pass
+- [ ] Refactor with the tests green
 
 ### Before Marking Complete
 - [ ] Pre-commit hooks pass (linting, formatting, type checks)
@@ -242,7 +250,7 @@ When complete, provide a summary:
 - `path/to/file.ts` - Description of changes
 
 ### Tests Added
-- `path/to/test.spec.ts` - What it tests
+- `path/to/test.spec.ts` - What it tests (RED: the failure it showed before the change)
 
 ### Deviations from Implementation Plan
 - [Any approved deviations with justification, or "None"]
