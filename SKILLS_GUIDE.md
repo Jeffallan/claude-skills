@@ -91,6 +91,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Legacy Modernizer](https://jeffallan.github.io/claude-skills/skills/specialized/legacy-modernizer/)**: Legacy code modernization, migration strategies
 - **[Embedded Systems](https://jeffallan.github.io/claude-skills/skills/specialized/embedded-systems/)**: Embedded development, IoT, firmware, real-time systems
 - **[Game Developer](https://jeffallan.github.io/claude-skills/skills/specialized/game-developer/)**: Game development, game engines, graphics, physics
+- **[Party Planning](https://jeffallan.github.io/claude-skills/skills/specialized/party-planning/)**: Party planning: game recommendations with rules plus tested food & drink portion calculators (pizza, drinks, ice, taco bar), powered by HostPartyPlay data.
 
 ### Workflow
 - **[Debugging Wizard](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)**: Systematic debugging across all languages
