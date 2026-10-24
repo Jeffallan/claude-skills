@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `golang-pro`, `websocket-engineer`, `kubernetes-specialist`: corrected eight examples. A successful Go pipeline no longer waits for its timeout; fan-out/fan-in and pipeline stages stop on cancellation while idle; `generics.md` uses `cmp.Ordered` and `golang.org/x/exp/constraints` in place of a nonexistent `constraints` import; the WebSocket inactivity timer restarts on each message; presence, queue and scaling examples use the JWT-verified `socket.userId`; the CoreDNS `cluster2.local` server block is top-level; the helm-unittest replica example disables autoscaling and lists the templates it needs; NetworkPolicy troubleshooting no longer deletes every production policy (#268, closing #266)
+
 ### Changed
 - CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
 
