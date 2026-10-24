@@ -152,8 +152,8 @@ function buildLinkMap() {
     linkMap.set(`/${slug}/`, `${BASE_PATH}/${slug}/`);
   }
   // Map command source files to their doc site equivalents
-  linkMap.set('../commands/common-ground/COMMAND.md', `${BASE_PATH}/guides/common-ground/`);
-  linkMap.set('commands/common-ground/COMMAND.md', `${BASE_PATH}/guides/common-ground/`);
+  linkMap.set('../commands/common-ground.md', `${BASE_PATH}/guides/common-ground/`);
+  linkMap.set('commands/common-ground.md', `${BASE_PATH}/guides/common-ground/`);
   // Map source-only files to GitHub
   linkMap.set('LICENSE', `${GITHUB_BLOB}/LICENSE`);
   linkMap.set('docs/v0.5.0-plan.md', `${GITHUB_BLOB}/docs/v0.5.0-plan.md`);
