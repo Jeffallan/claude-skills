@@ -57,6 +57,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Spec Miner](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)**: Analyzing existing code, reverse-engineering specifications
 
 ### Quality & Testing
+- **[agent-qa](https://jeffallan.github.io/claude-skills/skills/quality/agent-qa/)**: Natural-language web and mobile testing with agent-qa, recorded evidence, and memidex knowledge
 - **[Test Master](https://jeffallan.github.io/claude-skills/skills/quality/test-master/)**: Overall testing strategy (unit, integration, E2E, performance, security)
 - **[Playwright Expert](https://jeffallan.github.io/claude-skills/skills/quality/playwright-expert/)**: Browser automation and E2E testing
 - **[Code Reviewer](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/)**: Conducting thorough code reviews
@@ -187,6 +188,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **Jira/Confluence** → Atlassian MCP
 
 ### Testing
+- **agent-qa Tests, Recorded Runs, or memidex Knowledge** → agent-qa
 - **E2E Browser Tests** → Playwright Expert
 - **All Other Testing** → Test Master
 
