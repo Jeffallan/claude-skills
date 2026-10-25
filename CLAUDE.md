@@ -158,7 +158,7 @@ Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant a
 4. Add routing table linking topics to references
 5. Append the canonical Documentation backlink as the last line (see Documentation Backlink above)
 6. Test skill triggers with realistic prompts
-7. Update SKILLS_GUIDE.md if adding new domain
+7. Add the skill to SKILLS_GUIDE.md in its category
 
 ### When Modifying Skills
 
@@ -258,7 +258,6 @@ Add version comparison link at bottom:
 
 **For new commands:**
 - Add to `docs/WORKFLOW_COMMANDS.md`
-- Add to `README.md` Project Workflow Commands table
 - Run `python scripts/update-docs.py` to update counts
 
 **For modified skills/commands:**
