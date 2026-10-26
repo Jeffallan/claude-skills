@@ -54,6 +54,7 @@ skill-lint:
 test:
 	bash scripts/test-makefile.sh
 	bash scripts/test-build-plugin-dist.sh
+	bash scripts/test-llms-txt.sh
 
 site-dev:
 	cd site && npm run dev

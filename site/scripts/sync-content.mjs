@@ -615,7 +615,7 @@ Transform Claude Code into your expert pair programmer across the entire develop
 - **${versionData.workflowCount}** project workflow commands
 - **${versionData.referenceFileCount}** deep-dive reference files
 
-See the [Getting Started guide](/getting-started/) for all installation methods and first steps.
+See the [Getting Started guide](${BASE_PATH}/getting-started/) for all installation methods and first steps.
 `;
 
   const destPath = path.join(PUBLIC_DIR, 'index.html.md');
@@ -647,7 +647,7 @@ function generateLlmsTxt() {
   if (groups['docs']?.length) {
     lines.push('## Docs');
     for (const { siteUrl, title, description } of groups['docs']) {
-      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+      lines.push(`- [${title}](${BASE_PATH}${siteUrl}index.html.md): ${description}`);
     }
     lines.push('');
   }
@@ -656,7 +656,7 @@ function generateLlmsTxt() {
   if (groups['guides']?.length) {
     lines.push('## Guides');
     for (const { siteUrl, title, description } of groups['guides']) {
-      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+      lines.push(`- [${title}](${BASE_PATH}${siteUrl}index.html.md): ${description}`);
     }
     lines.push('');
   }
@@ -667,7 +667,7 @@ function generateLlmsTxt() {
     if (groups[key]?.length) {
       lines.push(`## Skills: ${label}`);
       for (const { siteUrl, title, description } of groups[key]) {
-        lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+        lines.push(`- [${title}](${BASE_PATH}${siteUrl}index.html.md): ${description}`);
       }
       lines.push('');
     }
@@ -677,7 +677,7 @@ function generateLlmsTxt() {
   if (groups['workflows']?.length) {
     lines.push('## Workflows');
     for (const { siteUrl, title, description } of groups['workflows']) {
-      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+      lines.push(`- [${title}](${BASE_PATH}${siteUrl}index.html.md): ${description}`);
     }
     lines.push('');
   }
@@ -686,7 +686,7 @@ function generateLlmsTxt() {
   if (groups['project']?.length) {
     lines.push('## Optional');
     for (const { siteUrl, title, description } of groups['project']) {
-      lines.push(`- [${title}](${siteUrl}index.html.md): ${description}`);
+      lines.push(`- [${title}](${BASE_PATH}${siteUrl}index.html.md): ${description}`);
     }
     lines.push('');
   }
