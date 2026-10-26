@@ -53,3 +53,12 @@ header.header {
   max-width: 100%;
   height: auto;
 }
+
+/* Shared site menu (site-nav) in Starlight's colors, for both themes */
+:root {
+  --site-nav-menu-bg: var(--sl-color-bg-nav);
+  --site-nav-menu-fg: var(--sl-color-white);
+  --site-nav-menu-border: var(--sl-color-hairline-shade);
+  --site-nav-menu-hover: var(--sl-color-gray-6);
+  --site-nav-accent: var(--sl-color-accent);
+}
