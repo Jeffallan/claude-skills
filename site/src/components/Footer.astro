@@ -2,10 +2,12 @@
 import Default from '@astrojs/starlight/components/Footer.astro';
 ---
 
-<Default {...Astro.props}><slot /></Default>
+<Default {...Astro.props}>
+  <slot />
+</Default>
 
 <p class="maintainer-credit">
-  Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at
+  Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at{' '}
   <a href="https://synergetic.solutions">Synergetic Solutions</a>
 </p>
 
