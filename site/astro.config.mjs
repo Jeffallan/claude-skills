@@ -60,7 +60,11 @@ export default defineConfig({
                 div.className = 'mermaid';
                 div.id = 'mermaid-' + i;
                 div.textContent = code;
-                pre.closest('.expressive-code').replaceWith(div);
+                const block = pre.closest('.expressive-code');
+                // Expressive Code puts its one stylesheet and script inside the first
+                // code block on the page. Keep them when that block is a diagram.
+                block.querySelectorAll('link, script').forEach((el) => document.head.append(el));
+                block.replaceWith(div);
               });
               mermaid.run();
             }
