@@ -1,0 +1,128 @@
+---
+// Call to action that opens Jeff's contact form in a dialog on the same
+// page. Comes from the handbook's personal-sites/site-contact; change it
+// there, not in the project. Each site passes its own line of text.
+import ContactForm from './ContactForm.astro';
+
+interface Props {
+  /** Site the page is on, e.g. 'claude-skills'. */
+  site: string;
+  /** The line of text beside the button. */
+  text: string;
+  /** Which call to action this is, recorded with the message. */
+  cta?: string;
+  /** Button label. */
+  label?: string;
+}
+
+const { site, text, cta = 'page-end', label = 'Contact' } = Astro.props;
+---
+
+<aside class="site-cta" aria-label="Contact">
+  <p class="site-cta-text">{text}</p>
+  <button type="button" class="site-cta-button" data-site-cta-open>
+    {label}
+  </button>
+
+  <dialog class="site-cta-dialog" aria-labelledby={`site-cta-title-${cta}`}>
+    <div class="site-cta-head">
+      <h2 id={`site-cta-title-${cta}`}>Get in touch</h2>
+      <button type="button" class="site-cta-close" data-site-cta-close aria-label="Close">
+        ×
+      </button>
+    </div>
+    <ContactForm site={site} cta={cta} />
+  </dialog>
+</aside>
+
+<script>
+  for (const cta of document.querySelectorAll<HTMLElement>('.site-cta')) {
+    const dialog = cta.querySelector<HTMLDialogElement>('dialog');
+    if (!dialog) continue;
+    cta.querySelector('[data-site-cta-open]')?.addEventListener('click', () => {
+      dialog.showModal();
+    });
+    dialog.querySelector('[data-site-cta-close]')?.addEventListener('click', () => dialog.close());
+    // A click on the backdrop (the dialog element itself, outside its box) closes it.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>
+
+<style>
+  .site-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 2.5rem 0 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--site-accent-soft, #e3f4f7);
+    border-left: 3px solid var(--site-accent, #17a2b8);
+    border-radius: 12px;
+  }
+
+  .site-cta-text {
+    margin: 0;
+    font-family: var(--site-font-heading, inherit);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--site-text, inherit);
+  }
+
+  .site-cta-button {
+    padding: 0.6rem 1.5rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--site-bg, #fff);
+    background: var(--site-accent-ui, #127c8d);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .site-cta-button:hover,
+  .site-cta-button:focus-visible {
+    background: var(--site-accent-strong, #0a5a5a);
+  }
+
+  .site-cta-dialog {
+    width: min(32rem, calc(100vw - 2rem));
+    padding: 1.5rem;
+    color: var(--site-text, inherit);
+    background: var(--site-bg, #fff);
+    border: 1px solid var(--site-border, #e0e6e8);
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .site-cta-dialog::backdrop {
+    background: rgba(15, 26, 30, 0.6);
+  }
+
+  .site-cta-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .site-cta-head h2 {
+    margin: 0;
+    font-family: var(--site-font-heading, inherit);
+    font-size: 1.4rem;
+    color: var(--site-text, inherit);
+  }
+
+  .site-cta-close {
+    padding: 0 0.4rem;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--site-text-2, inherit);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+</style>
