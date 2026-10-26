@@ -285,6 +285,8 @@ This creates `assets/social-preview.png` from `assets/social-preview.html`.
 python scripts/validate-skills.py
 ```
 
+**skill-linter (being adopted):** CI also runs [skill-linter](https://pypi.org/project/skill-linter/) as a report-only job, configured in `pyproject.toml`. Run it locally with `make skill-lint`. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once the findings it reports today are fixed; until then those scripts stay the blocking checks.
+
 The script validates:
 - **YAML frontmatter** - Parsing, required fields (name, description, triggers), format
 - **Name format** - Letters, numbers, hyphens only
