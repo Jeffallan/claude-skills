@@ -185,7 +185,7 @@ At release time, credit contributors (including issue reporters) in a `### Contr
 
 ```markdown
 ### Contributors
-- @handle — What they contributed (#N)
+- @handle: What they contributed (#N)
 ```
 
 ---
