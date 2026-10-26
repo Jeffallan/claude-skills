@@ -72,9 +72,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README banner (capsule-render URL) still displayed 66 skills after the v0.4.16 release; the counts are URL-encoded inside the image URL where no `<!-- SKILL_COUNT -->` marker can live, so `update-docs.py` never touched them. The script now rewrites the banner's `desc=` parameter from computed counts
 
 ### Contributors
-- @shijian0-eng — Corrected the marketplace name in plugin install commands across the README, QUICKSTART, and docs site (#236)
-- @johnjehiel — Reported the failing plugin install command (#234)
-- @KoreaMango — Replaced the legacy Riverpod `StateNotifier` example in `flutter-expert` with the modern `Notifier` pattern (#237)
+- @shijian0-eng: Corrected the marketplace name in plugin install commands across the README, QUICKSTART, and docs site (#236)
+- @johnjehiel: Reported the failing plugin install command (#234)
+- @KoreaMango: Replaced the legacy Riverpod `StateNotifier` example in `flutter-expert` with the modern `Notifier` pattern (#237)
 
 ## [0.4.16] - 2026-08-07
 
@@ -98,13 +98,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `devops-engineer/SKILL.md`: the "never deploy to production without explicit approval" constraint was not operationalized in the core workflow; the deploy step now determines the target environment and, for production or customer-facing targets, presents the deployment summary and rollback plan and requires explicit user approval before running deployment commands, closing #196 and #212
 
 ### Contributors
-- @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
-- @chgreer1070 — Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
-- @kasymovpost — GitLab CI/CD best-practices reference for devops-engineer (#219)
-- @awais786 — New `django-storages-s3` skill: production S3 file storage for Django (#218)
-- @snvtac — Replaced hard-coded Cohere API key placeholder in `rag-architect` with environment lookup (#216)
-- @SergiuLupaiescu — Added user-approval gate between `terraform plan` and `apply` in `terraform-engineer` (#213)
-- @specterslient95-lgtm — Reported the missing plan/apply approval gate (#211) and the non-operationalized production-deploy constraint (#196, #212)
+- @vasugarg09: Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
+- @chgreer1070: Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
+- @kasymovpost: GitLab CI/CD best-practices reference for devops-engineer (#219)
+- @awais786: New `django-storages-s3` skill: production S3 file storage for Django (#218)
+- @snvtac: Replaced hard-coded Cohere API key placeholder in `rag-architect` with environment lookup (#216)
+- @SergiuLupaiescu: Added user-approval gate between `terraform plan` and `apply` in `terraform-engineer` (#213)
+- @specterslient95-lgtm: Reported the missing plan/apply approval gate (#211) and the non-operationalized production-deploy constraint (#196, #212)
 
 ## [0.4.15] - 2026-05-20
 
@@ -115,7 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CommandFrontmatterChecker` in `scripts/validate-skills.py`: strict-parses YAML frontmatter on every `commands/**/*.md` with PyYAML (no fallback to the lenient simple parser, which had been masking these bugs). Runs as part of the workflow validation pass.
 
 ### Contributors
-- @rlex — Reported broken YAML frontmatter in `complete-ticket.md` after the `0.4.14` release surfaced the parse error in oh-my-pi (#193)
+- @rlex: Reported broken YAML frontmatter in `complete-ticket.md` after the `0.4.14` release surfaced the parse error in oh-my-pi (#193)
 
 ## [0.4.14] - 2026-05-01
 
@@ -123,7 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `postgres-pro` reference docs: corrected invalid column references in `pg_stat_user_tables` and `pg_stat_user_indexes` query examples (`tablename` → `relname`, `indexname` → `indexrelname`) so the snippets actually run. Hardened identifier assembly with `format('%I.%I', schemaname, relname)` for safety against quoted/case-sensitive identifiers. Clarified the `VACUUM FREEZE` comment to note it operates on the current database, not the entire cluster (#191)
 
 ### Contributors
-- @sobstel — Fix invalid `pg_stat_*` column references and `VACUUM FREEZE` scope comment in `postgres-pro` references (#191)
+- @sobstel: Fix invalid `pg_stat_*` column references and `VACUUM FREEZE` scope comment in `postgres-pro` references (#191)
 
 ## [0.4.13] - 2026-04-28
 
@@ -153,8 +153,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `commands/common-ground/COMMAND.md`: added explicit `name: common-ground` so the slash command registers as `/common-ground`. Without it, Claude Code derived the name from the filename (`COMMAND.md`) and registered it as `/COMMAND` (#186)
 
 ### Contributors
-- @modir — Fix broken Workflow Commands docs link in README (#180)
-- @xiaolai — Add missing `name:` frontmatter fields across workflow commands (#182, #183, #184, #185, #186)
+- @modir: Fix broken Workflow Commands docs link in README (#180)
+- @xiaolai: Add missing `name:` frontmatter fields across workflow commands (#182, #183, #184, #185, #186)
 
 ## [0.4.11] - 2026-03-23
 
@@ -166,7 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Total reference files: 365 → 366
 
 ### Contributors
-- @Genius-apple — Context management content adapted from the context-engineer skill submission (#168)
+- @Genius-apple: Context management content adapted from the context-engineer skill submission (#168)
 
 ## [0.4.10] - 2026-03-06
 
@@ -188,8 +188,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Astro site files to `update-docs.py` release automation so counts stay in sync
 
 ### Contributors
-- @popey — Improve skill quality across 65 skills via Tessl review (#172)
-- @hasan613 — Standardize README links and improve Quick Start section (#166)
+- @popey: Improve skill quality across 65 skills via Tessl review (#172)
+- @hasan613: Standardize README links and improve Quick Start section (#166)
 
 ## [0.4.9] - 2026-02-24
 
@@ -206,9 +206,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed nested code block rendering in `prompt-engineer` skill's CoT example (#160)
 
 ### Contributors
-- @wiretail — Report and document reversed Jira issue link semantics (#163)
-- @Big-Shark — Update console example in symfony-patterns (#164)
-- @fiberproduct — Fix nested code block formatting in prompt-patterns.md (#160)
+- @wiretail: Report and document reversed Jira issue link semantics (#163)
+- @Big-Shark: Update console example in symfony-patterns (#164)
+- @fiberproduct: Fix nested code block formatting in prompt-patterns.md (#160)
 
 ## [0.4.8] - 2026-02-17
 
@@ -227,10 +227,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed incorrect Python/Pydantic V1 reference from `php-pro` skill MUST NOT DO section (#154)
 
 ### Contributors
-- @salmanmkc — Upgrade GitHub Actions for Node 24 compatibility (#146)
-- @salmanmkc — Upgrade GitHub Actions to latest versions (#147)
-- @Karanjot786 — Add Agent Skills CLI installation method (#151)
-- @Aivanaso — Remove copy-paste error from php-pro skill (#154)
+- @salmanmkc: Upgrade GitHub Actions for Node 24 compatibility (#146)
+- @salmanmkc: Upgrade GitHub Actions to latest versions (#147)
+- @Karanjot786: Add Agent Skills CLI installation method (#151)
+- @Aivanaso: Remove copy-paste error from php-pro skill (#154)
 
 ## [0.4.7] - 2026-02-08
 
@@ -278,9 +278,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Escaped pipe character in `php-pro/modern-php-features.md` table
 
 ### Contributors
-- @hesreallyhim — Featured in Awesome Claude Code (#138)
-- @hesreallyhim — Fix formatting and links in README.md (#139)
-- @hesreallyhim — fix: minor syntax error in .md yaml frontmatter (#137)
+- @hesreallyhim: Featured in Awesome Claude Code (#138)
+- @hesreallyhim: Fix formatting and links in README.md (#139)
+- @hesreallyhim: fix: minor syntax error in .md yaml frontmatter (#137)
 
 ## [0.4.4] - 2026-02-03
 
@@ -298,7 +298,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added AdaL CLI (SylphAI) to supported agents table (#135)
 
 ### Contributors
-- @liyin2015 — docs: add AdaL CLI to supported agents (#135)
+- @liyin2015: docs: add AdaL CLI to supported agents (#135)
 
 ## [0.4.3] - 2026-02-03
 
@@ -362,9 +362,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Missing version comparison link for v0.4.1 in CHANGELOG (#116)
 
 ### Contributors
-- @thomassamoul — feat: add bloc state management to flutter expert (#117)
-- @Coopyrightdmin — fix: add missing version link for v0.4.1 (#116)
-- @Chidwan3578 — docs: clarify npx add-skill installation (#96)
+- @thomassamoul: feat: add bloc state management to flutter expert (#117)
+- @Coopyrightdmin: fix: add missing version link for v0.4.1 (#116)
+- @Chidwan3578: docs: clarify npx add-skill installation (#96)
 
 ## [0.4.1] - 2026-01-19
 
