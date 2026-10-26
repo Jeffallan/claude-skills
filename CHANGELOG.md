@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
 
+### Contributors
+- @s1ngh-code — Reported the `common-ground` command registering as `/fullstack-dev-skills:common-ground:COMMAND` (#264)
+- @felipecrs — Reported that the official Atlassian Rovo MCP Server was missing from `atlassian-mcp` (#265)
+- @CBEPX — Reported the Go, WebSocket and Kubernetes example bugs (#266)
+
 ## [0.4.20] - 2026-10-16
 
 ### Changed
