@@ -141,12 +141,13 @@ const id = `contact-${cta}`;
     white-space: nowrap;
   }
 
-  /* Defaults with no specificity (:where), so a host's classes win. */
-  :where(.site-contact-group) {
+  /* Defaults with no specificity (global :where, so Astro adds no scoping
+     attribute), so a host's classes win. */
+  :global(:where(.site-contact-group)) {
     margin-bottom: 1rem;
   }
 
-  :where(.site-contact-form) :where(input, select, textarea) {
+  :global(:where(.site-contact-form) :where(input, select, textarea)) {
     display: block;
     width: 100%;
     padding: 0.7rem 0.9rem;
@@ -157,12 +158,12 @@ const id = `contact-${cta}`;
     border-radius: 10px;
   }
 
-  :where(.site-contact-form) :where(input, select, textarea):focus {
+  :global(:where(.site-contact-form) :where(input, select, textarea):focus) {
     border-color: var(--site-accent-ui, #127c8d);
     outline: none;
   }
 
-  :where(.site-contact-submit) {
+  :global(:where(.site-contact-submit)) {
     padding: 0.6rem 1.5rem;
     font: inherit;
     font-weight: 600;
