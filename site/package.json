@@ -11,10 +11,12 @@
     "format": "prettier --plugin prettier-plugin-astro --write \"src/**\" \"scripts/**\" astro.config.mjs"
   },
   "dependencies": {
-    "astro": "^7.4.0",
     "@astrojs/starlight": "^0.42.6",
-    "sharp": "^0.35.5",
-    "js-yaml": "^4.3.2"
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@fontsource-variable/source-sans-3": "^5.3.1",
+    "astro": "^7.4.0",
+    "js-yaml": "^4.3.2",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "prettier": "^3.9.10",

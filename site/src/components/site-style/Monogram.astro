@@ -1,0 +1,44 @@
+---
+// Jeff's "JS" monogram, linking to the hub. Comes from the handbook's
+// personal-sites/site-style; change it there, not in the project.
+//
+// The image is public/site-style/monogram.png (outside src/, so the docs
+// repos' Prettier lint doesn't see it). It is white on transparent and used
+// as a CSS mask, so the mark takes the text color of the active theme.
+import sites from '../site-nav/sites.json';
+
+interface Props {
+  /** Height and width of the mark. */
+  size?: string;
+}
+
+const { size = '2rem' } = Astro.props;
+const home = sites.find((site) => site.home);
+const monogram = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}site-style/monogram.png`;
+---
+
+<a class="site-monogram" href={home?.url} aria-label={home?.name} title={home?.name}>
+  <span style={`--site-monogram: url(${monogram}); --site-monogram-size: ${size}`}></span>
+</a>
+
+<style>
+  .site-monogram {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .site-monogram span {
+    display: block;
+    width: var(--site-monogram-size);
+    height: var(--site-monogram-size);
+    background-color: var(--site-text, currentColor);
+    mask: var(--site-monogram) center / contain no-repeat;
+    transition: background-color 0.2s ease;
+  }
+
+  .site-monogram:hover span,
+  .site-monogram:focus-visible span {
+    background-color: var(--site-accent-ui, currentColor);
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+import Default from '@astrojs/starlight/components/Hero.astro';
+
+import ContactCTA from './site-contact/ContactCTA.astro';
+import { ctaText } from './cta-text';
+---
+
+<Default {...Astro.props}>
+  <slot />
+</Default>
+
+<ContactCTA text={ctaText} cta="hero" />

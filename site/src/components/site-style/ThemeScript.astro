@@ -1,0 +1,15 @@
+---
+// Sets data-theme on <html> before the page paints, from the same
+// 'starlight-theme' key Starlight uses, so the light/dark choice is shared
+// across Jeff's sites. For sites without Starlight; put it in <head>.
+// Comes from the handbook's personal-sites/site-style.
+---
+
+<script is:inline>
+  (() => {
+    const stored = typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+    const theme =
+      stored || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+  })();
+</script>

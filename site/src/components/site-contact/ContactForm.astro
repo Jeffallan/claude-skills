@@ -1,0 +1,185 @@
+---
+// Jeff's contact form, shared by every site. Comes from the handbook's
+// personal-sites/site-contact; change it there, not in the project.
+//
+// It posts to one Formspree form in the background and shows the result in
+// place. Hidden fields record where the message came from: `from` (the
+// site), `page` (the path it was sent from) and `cta` (which button opened
+// it); `_subject` puts the site and page in the email subject.
+// Without JavaScript it falls back to a normal Formspree POST.
+interface Props {
+  /** Site the form is on, e.g. 'hub' or 'claude-skills'. */
+  site: string;
+  /** Which call to action opened the form, e.g. 'page-end'. */
+  cta: string;
+  /** Classes so the fields can match the host's form styles. */
+  groupClass?: string;
+  fieldClass?: string;
+  buttonClass?: string;
+}
+
+const { site, cta, groupClass = '', fieldClass = '', buttonClass = '' } = Astro.props;
+const id = `contact-${cta}`;
+---
+
+<form
+  class="site-contact-form"
+  action="https://formspree.io/f/mbljyvwl"
+  method="POST"
+  data-site={site}
+>
+  <input type="hidden" name="from" value={site} />
+  <input type="hidden" name="cta" value={cta} />
+  <input type="hidden" name="page" value="" />
+  <input type="hidden" name="_subject" value={`[${site}] Contact`} />
+  <input class="site-contact-trap" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+
+  <div class={`site-contact-group ${groupClass}`}>
+    <label class="site-contact-label" for={`${id}-name`}>
+      Name
+    </label>
+    <input
+      class={fieldClass}
+      id={`${id}-name`}
+      type="text"
+      name="name"
+      placeholder="Name"
+      required
+    />
+  </div>
+  <div class={`site-contact-group ${groupClass}`}>
+    <label class="site-contact-label" for={`${id}-email`}>
+      Email
+    </label>
+    <input
+      class={fieldClass}
+      id={`${id}-email`}
+      type="email"
+      name="email"
+      placeholder="Email"
+      required
+    />
+  </div>
+  <div class={`site-contact-group ${groupClass}`}>
+    <label class="site-contact-label" for={`${id}-about`}>
+      What's this about?
+    </label>
+    <select class={fieldClass} id={`${id}-about`} name="about">
+      <option value="">What's this about? (optional)</option>
+      <option>Consulting</option>
+      <option>Help with one of my projects</option>
+      <option>Speaking or writing</option>
+      <option>Something else</option>
+    </select>
+  </div>
+  <div class={`site-contact-group ${groupClass}`}>
+    <label class="site-contact-label" for={`${id}-message`}>
+      Message
+    </label>
+    <textarea
+      class={fieldClass}
+      id={`${id}-message`}
+      name="message"
+      rows="4"
+      placeholder="Message"
+      required
+    ></textarea>
+  </div>
+  <button type="submit" class={`site-contact-submit ${buttonClass}`}>
+    Send
+  </button>
+  <p class="site-contact-status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  // Fill the page fields, then send in the background and report in place.
+  for (const form of document.querySelectorAll<HTMLFormElement>('form.site-contact-form')) {
+    const path = location.pathname;
+    const slug = path.split('/').filter(Boolean).pop() ?? 'home';
+    const site = form.dataset.site ?? '';
+    form.elements.namedItem('page')?.setAttribute('value', path);
+    form
+      .querySelector<HTMLInputElement>('input[name="_subject"]')
+      ?.setAttribute('value', `[${site}] Contact from ${slug}`);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const status = form.querySelector<HTMLElement>('.site-contact-status');
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (button) button.disabled = true;
+      if (status) status.textContent = 'Sending…';
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.reset();
+        form.dataset.sent = 'true';
+        if (status) status.textContent = 'Thanks, your message is on its way. I’ll reply by email.';
+        form.dispatchEvent(new CustomEvent('site-contact:sent', { bubbles: true }));
+      } catch {
+        if (status) {
+          status.textContent = 'That didn’t send. Please try again in a moment.';
+        }
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-contact-trap,
+  .site-contact-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Defaults with no specificity (global :where, so Astro adds no scoping
+     attribute), so a host's classes win. */
+  :global(:where(.site-contact-group)) {
+    margin-bottom: 1rem;
+  }
+
+  :global(:where(.site-contact-form) :where(input, select, textarea)) {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    font: inherit;
+    color: var(--site-text, inherit);
+    background: var(--site-surface, #fff);
+    border: 2px solid var(--site-border, #ced4da);
+    border-radius: 10px;
+  }
+
+  :global(:where(.site-contact-form) :where(input, select, textarea):focus) {
+    border-color: var(--site-accent-ui, #127c8d);
+    outline: none;
+  }
+
+  :global(:where(.site-contact-submit)) {
+    padding: 0.6rem 1.5rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--site-bg, #fff);
+    background: var(--site-accent-ui, #127c8d);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .site-contact-status:empty {
+    display: none;
+  }
+
+  .site-contact-status {
+    margin: 0.75rem 0 0;
+    color: var(--site-text-2, inherit);
+  }
+</style>

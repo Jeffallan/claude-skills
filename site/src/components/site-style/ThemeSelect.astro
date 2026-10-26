@@ -1,0 +1,66 @@
+---
+// Auto / Light / Dark switch for sites without Starlight. Stores the choice
+// under Starlight's 'starlight-theme' key, so it carries across Jeff's sites.
+// Needs ThemeScript.astro in <head>. Comes from the handbook's
+// personal-sites/site-style; change it there, not in the project.
+interface Props {
+  /** Class for the <select>, so it can match the host's nav. */
+  selectClass?: string;
+}
+
+const { selectClass = '' } = Astro.props;
+---
+
+<site-theme-select>
+  <label>
+    <span class="site-theme-label">Theme</span>
+    <select class={selectClass}>
+      <option value="auto">Auto</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </label>
+</site-theme-select>
+
+<script>
+  type Theme = 'auto' | 'light' | 'dark';
+  const storageKey = 'starlight-theme';
+
+  const parse = (value: unknown): Theme => (value === 'light' || value === 'dark' ? value : 'auto');
+  const load = (): Theme => parse(localStorage.getItem(storageKey));
+  const system = (): 'light' | 'dark' =>
+    matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
+  function apply(theme: Theme): void {
+    document.documentElement.dataset.theme = theme === 'auto' ? system() : theme;
+    localStorage.setItem(storageKey, theme === 'auto' ? '' : theme);
+    for (const select of document.querySelectorAll<HTMLSelectElement>('site-theme-select select')) {
+      select.value = theme;
+    }
+  }
+
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (load() === 'auto') apply('auto');
+  });
+
+  class SiteThemeSelect extends HTMLElement {
+    connectedCallback() {
+      const select = this.querySelector('select');
+      if (!select) return;
+      select.value = load();
+      select.addEventListener('change', () => apply(parse(select.value)));
+    }
+  }
+  customElements.define('site-theme-select', SiteThemeSelect);
+</script>
+
+<style>
+  .site-theme-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

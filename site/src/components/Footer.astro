@@ -1,24 +1,21 @@
 ---
 import Default from '@astrojs/starlight/components/Footer.astro';
+
+import ContactCTA from './site-contact/ContactCTA.astro';
+import SiteFooter from './site-footer/SiteFooter.astro';
+import { ctaFor } from './cta-text';
+
+// The hero (Hero.astro) and most docs pages (middleware.ts) place the call
+// to action higher up; reference pages have none (see cta-text.ts).
+const splash = Astro.locals.starlightRoute.entry.data.template === 'splash';
+const placement = ctaFor(Astro.url.pathname);
+const atEnd = !splash && placement.where === 'end';
 ---
+
+{atEnd && <ContactCTA text={placement.text} cta="page-end" />}
 
 <Default {...Astro.props}>
   <slot />
 </Default>
 
-<p class="maintainer-credit">
-  Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at{' '}
-  <a href="https://synergetic.solutions">Synergetic Solutions</a>
-</p>
-
-<style>
-  .maintainer-credit {
-    margin-top: 1.5rem;
-    text-align: center;
-    font-size: var(--sl-text-xs);
-    color: var(--sl-color-gray-3);
-  }
-  .maintainer-credit a {
-    color: inherit;
-  }
-</style>
+<SiteFooter />
