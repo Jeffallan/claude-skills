@@ -5,8 +5,13 @@
 ```go
 package main
 
+import (
+    "cmp" // cmp.Ordered is in the standard library since Go 1.21
+    "fmt"
+)
+
 // Generic function with type parameter
-func Max[T constraints.Ordered](a, b T) T {
+func Max[T cmp.Ordered](a, b T) T {
     if a > b {
         return a
     }
@@ -37,9 +42,9 @@ func main() {
 ## Type Constraints
 
 ```go
-import "constraints"
+// Integer and Float are not in the standard library: go get golang.org/x/exp
+import "golang.org/x/exp/constraints"
 
-// Built-in constraints
 type Number interface {
     constraints.Integer | constraints.Float
 }
@@ -320,7 +325,7 @@ result := Identity(42)          // T inferred as int
 str := Identity("hello")        // T inferred as string
 
 // Type inference with constraints
-func Min[T constraints.Ordered](a, b T) T {
+func Min[T cmp.Ordered](a, b T) T {
     if a < b {
         return a
     }
@@ -437,6 +442,6 @@ func Serialize[T Serializable](data T) []byte {
 | Constraint | `func F[T Constraint]()` | Restricted types |
 | Multiple params | `func F[T, U any]()` | Multiple type variables |
 | Comparable | `func F[T comparable]()` | Types supporting == and != |
-| Ordered | `func F[T constraints.Ordered]()` | Types supporting <, >, <=, >= |
+| Ordered | `func F[T cmp.Ordered]()` | Types supporting <, >, <=, >= |
 | Union | `T interface{int \| string}` | Either type |
 | Approximate | `~int` | Include type aliases |
