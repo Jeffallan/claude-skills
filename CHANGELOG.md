@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
+
 ### Fixed
 - `common-ground` command: moved `commands/common-ground/COMMAND.md` to `commands/common-ground.md` (and its YAML beside it) so Claude Code registers it as `/fullstack-dev-skills:common-ground` instead of `/fullstack-dev-skills:common-ground:COMMAND`. Claude Code names plugin commands after their path under `commands/`; the `name` frontmatter added in #186 only adds a second label (#267, closing #264)
 - `golang-pro`, `websocket-engineer`, `kubernetes-specialist`: corrected eight examples. A successful Go pipeline no longer waits for its timeout; fan-out/fan-in and pipeline stages stop on cancellation while idle; `generics.md` uses `cmp.Ordered` and `golang.org/x/exp/constraints` in place of a nonexistent `constraints` import; the WebSocket inactivity timer restarts on each message; presence, queue and scaling examples use the JWT-verified `socket.userId`; the CoreDNS `cluster2.local` server block is top-level; the helm-unittest replica example disables autoscaling and lists the templates it needs; NetworkPolicy troubleshooting no longer deletes every production policy (#268, closing #266)
