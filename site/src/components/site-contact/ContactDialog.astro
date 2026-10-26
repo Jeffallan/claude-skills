@@ -85,6 +85,9 @@ const site = base || 'hub';
   .site-cta-dialog {
     /* margin: auto centers the modal; some resets (Starlight's) set margin: 0 */
     margin: auto;
+    /* It renders inside the footer: don't inherit its centered, smaller text */
+    font-size: 1rem;
+    text-align: left;
     width: min(32rem, calc(100vw - 2rem));
     max-height: calc(100dvh - 2rem);
     overflow: auto;
