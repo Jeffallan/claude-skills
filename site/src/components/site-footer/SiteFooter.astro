@@ -3,8 +3,8 @@
 // social profiles, copyright and a privacy link. Comes from the handbook's
 // personal-sites/site-footer; change it there, not in the project.
 //
-// Sites come from site-nav's sites.json; the name, role and profiles from
-// profile.json beside this file. Colors use the site-style tokens, with
+// Sites come from site-nav's sites.json; the name (linking to Jeff's GitHub
+// profile), role and profiles from profile.json beside this file. Colors use the site-style tokens, with
 // plain fallbacks.
 import sites from '../site-nav/sites.json';
 import profile from './profile.json';
@@ -51,7 +51,10 @@ const year = new Date().getFullYear();
   </div>
 
   <p class="site-footer-credit">
-    {profile.name}, {profile.role} at{' '}
+    <a class="site-footer-link" href={profile.url}>
+      {profile.name}
+    </a>
+    , {profile.role} at{' '}
     <a class="site-footer-link" href={profile.org.url}>
       {profile.org.name}
     </a>
