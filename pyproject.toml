@@ -1,0 +1,87 @@
+# skill-linter configuration (https://pypi.org/project/skill-linter/).
+# CI runs it as a report-only job while its current findings are fixed; until then
+# scripts/validate-skills.py, validate-markdown.py and update-docs.py stay the blocking checks.
+
+[tool.skill-linter]
+skills_dir = "skills"
+commands_dir = "commands"
+manifest = "commands/workflow-manifest.yaml"
+workflow_glob = "project/**/*.md"
+docs_url = "https://jeffallan.github.io/claude-skills/skills/{domain}/{name}/"
+index_files = ["SKILLS_GUIDE.md"]
+ship = ["skills", "commands", "references", ".claude-plugin", "README.md", "LICENSE"]
+domains = [
+  { id = "language", label = "Language" },
+  { id = "backend", label = "Backend Frameworks" },
+  { id = "frontend", label = "Frontend & Mobile" },
+  { id = "infrastructure", label = "Infrastructure & Cloud" },
+  { id = "api-architecture", label = "API & Architecture" },
+  { id = "quality", label = "Quality & Testing" },
+  { id = "devops", label = "DevOps & Operations" },
+  { id = "security", label = "Security" },
+  { id = "data-ml", label = "Data & ML" },
+  { id = "platform", label = "Platform" },
+  { id = "specialized", label = "Specialized" },
+  { id = "workflow", label = "Workflow Skills" },
+]
+
+[tool.skill-linter.credit]
+text = "Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)"
+when = { "metadata.company" = "https://synergetic.solutions" }
+
+[tool.skill-linter.allowed_values]
+role = ["specialist", "expert", "architect", "engineer"]
+scope = ["implementation", "review", "design", "system-design", "analysis", "testing", "infrastructure", "optimization", "architecture"]
+output-format = ["code", "document", "report", "architecture", "analysis", "manifests", "specification", "schema", "analysis-and-code"]
+phases = ["intake", "discovery", "planning", "execution", "retrospective"]
+requires = ["ticketing", "documentation"]
+input-types = ["string", "url", "list[url]", "list[string]", "flag", "file[]"]
+output-types = ["url", "document", "tickets", "report", "file", "directory"]
+
+[tool.skill-linter.policy]
+section_order = ["Role Definition", "When to Use This Skill", "Core Workflow", "Reference Guide", "Constraints", "Output Templates", "Knowledge Reference", "Related Skills"]
+workflow_steps = [5, 5]
+body_lines = [80, 100]
+license = "MIT"
+reciprocal_related_skills = true
+resolve_relative_paths = true
+
+[tool.skill-linter.changelog]
+since = "0.4.21"  # first release under the changelog convention; older entries stay as published
+
+[tool.skill-linter.severity]
+section-order = "warning"
+workflow-step-count = "warning"
+body-line-count = "warning"
+related-skills-reciprocal = "warning"
+plugin-icon = "off"  # #245: keep the GitHub avatar as the listing icon
+
+[[tool.skill-linter.stamp.files]]
+path = "README.md"
+patterns = [{ key = "version", regex = 'version-([\d.]+)-blue\.svg' }]
+[[tool.skill-linter.stamp.files]]
+path = "QUICKSTART.md"
+[[tool.skill-linter.stamp.files]]
+path = "ROADMAP.md"
+patterns = [{ key = "version", regex = 'Last updated:.*?\(v([\d.]+)\)' }]
+[[tool.skill-linter.stamp.files]]
+path = "assets/social-preview.html"
+[[tool.skill-linter.stamp.files]]
+path = ".claude-plugin/plugin.json"
+json = { "/version" = "version" }
+patterns = [{ key = "skillCount", regex = '(\d+) specialized skills' }]
+[[tool.skill-linter.stamp.files]]
+path = ".claude-plugin/marketplace.json"
+json = { "/metadata/version" = "version", "/plugins/0/version" = "version" }
+patterns = [{ key = "skillCount", regex = '(\d+) specialized skills' }]
+[[tool.skill-linter.stamp.files]]
+path = "site/astro.config.mjs"
+patterns = [{ key = "skillCount", regex = '(\d+) specialized skills' }]
+[[tool.skill-linter.stamp.files]]
+path = "site/src/content/docs/index.mdx"
+patterns = [
+  { key = "skillCount", regex = '(\d+) specialized skills' },
+  { key = "skillCount", regex = 'title="(\d+) Skills"' },
+  { key = "workflowCount", regex = 'title="(\d+) Workflows"' },
+  { key = "referenceFileCount", regex = 'title="(\d+) References"' },
+]

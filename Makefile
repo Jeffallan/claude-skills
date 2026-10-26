@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink validate test site-dev site-build lint format lint-fix
+.PHONY: skill-lint dev-link dev-unlink validate test site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -45,6 +45,11 @@ validate:
 	python scripts/validate-skills.py
 	python scripts/validate-markdown.py --check
 	python scripts/update-docs.py --check
+
+# Report-only for now; replaces the three scripts above once its findings are fixed
+skill-lint:
+	uvx skill-linter@0.2.0 release
+	uvx skill-linter@0.2.0 stamp --check
 
 test:
 	bash scripts/test-makefile.sh
