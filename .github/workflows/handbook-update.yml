@@ -1,0 +1,57 @@
+# Delivered by the handbook (Copier). Opens a PR when a new handbook version is available.
+# Triggered by the handbook's publish workflow, with a weekly check in case a push is missed.
+# Needs the handbook GitHub App: variable HANDBOOK_APP_ID and secret HANDBOOK_APP_PRIVATE_KEY.
+# Until HANDBOOK_APP_ID is set, the job is skipped instead of failing.
+name: Handbook update
+
+on:
+  repository_dispatch:
+    types: [handbook-updated]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    if: vars.HANDBOOK_APP_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v2
+        id: app
+        with:
+          app-id: ${{ vars.HANDBOOK_APP_ID }}
+          private-key: ${{ secrets.HANDBOOK_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            handbook
+            ${{ github.event.repository.name }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app.outputs.token }}
+      - uses: astral-sh/setup-uv@v5
+      - name: Let git read the private handbook
+        run: git config --global url."https://x-access-token:${{ steps.app.outputs.token }}@github.com/".insteadOf "https://github.com/"
+      - name: Check for a new handbook version
+        id: check
+        run: |
+          uvx copier check-update --output-format json > check.json
+          echo "available=$(jq -r .update_available check.json)" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r .latest_version check.json)" >> "$GITHUB_OUTPUT"
+          rm check.json
+      - name: Update from the handbook
+        if: steps.check.outputs.available == 'true'
+        run: uvx copier update --defaults
+      - name: Open the update PR
+        if: steps.check.outputs.available == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app.outputs.token }}
+          branch: handbook/update
+          commit-message: "chore: update handbook to v${{ steps.check.outputs.version }}"
+          title: "Update handbook to v${{ steps.check.outputs.version }}"
+          body: |
+            Copier update from the handbook, v${{ steps.check.outputs.version }}.
+            Conflict markers, if any, mark places where a local edit and the handbook changed the same lines.

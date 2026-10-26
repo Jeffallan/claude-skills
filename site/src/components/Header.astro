@@ -7,6 +7,8 @@ import SiteTitle from 'virtual:starlight/components/SiteTitle';
 import SocialIcons from 'virtual:starlight/components/SocialIcons';
 import ThemeSelect from 'virtual:starlight/components/ThemeSelect';
 
+import SitesMenu from './site-nav/SitesMenu.astro';
+
 const shouldRenderSearch =
   config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
 
@@ -19,6 +21,9 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
     <SiteTitle />
   </div>
   <div class="sl-flex print:hidden">{shouldRenderSearch && <Search />}</div>
+  <div class="sl-flex print:hidden sites-menu">
+    <SitesMenu label="Sites" buttonClass="sites-button" />
+  </div>
   <div class="sl-hidden md:sl-flex print:hidden right-group">
     <div class="sl-flex social-icons">
       <SocialIcons />
@@ -48,6 +53,15 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
       padding: 0.25rem;
       margin: -0.25rem;
       min-width: 0;
+    }
+
+    .sites-menu :global(.sites-button) {
+      color: var(--sl-color-gray-2);
+      font-size: var(--sl-text-sm);
+      font-weight: 600;
+    }
+    .sites-menu :global(.sites-button:hover) {
+      color: var(--sl-color-white);
     }
 
     .right-group,
@@ -85,6 +99,7 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
             auto
           )
           1fr
+          auto
           auto;
         align-content: center;
       }
