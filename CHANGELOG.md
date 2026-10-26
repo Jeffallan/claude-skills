@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- `atlassian-mcp`: documented the hosted Atlassian Rovo MCP Server (`https://mcp.atlassian.com/v2/mcp`) as the official option, with Claude Code, Claude Desktop, `mcp-remote` and API-token setup; kept sooperset `mcp-atlassian` for Server/Data Center. Removed the nonexistent `@anthropic/mcp-atlassian` and `@sooperset/mcp-atlassian` packages, corrected the xuanxt package to `@xuandev/atlassian-mcp`, and replaced invented environment variables with the ones sooperset reads (#269, closing #265)
-
 ### Changed
 - CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
 
