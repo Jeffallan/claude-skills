@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Docs site: the header has a Sites menu linking Jeff Smolinski's site (About the Author) and both docs sites, with the current one marked. The menu comes from the handbook's `site-nav` through Copier (`.copier-answers.yml`), and `handbook-update.yml` opens a PR when it changes (#283)
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Fixed
