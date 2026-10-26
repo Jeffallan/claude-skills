@@ -3,7 +3,7 @@ title: Privacy Policy
 description: How the Fullstack Dev Skills Plugin and its documentation site handle information
 ---
 
-**Effective:** May 1, 2026
+**Effective:** October 26, 2026
 
 This privacy policy describes how the **Fullstack Dev Skills Plugin** (`claude-skills`) and its companion documentation site at `https://jeffallan.github.io/claude-skills/` handle information.
 
@@ -39,8 +39,10 @@ The documentation site at `https://jeffallan.github.io/claude-skills/` uses the 
 | Service                             | Purpose                                                         | Data involved                                                                                                                                                                       |
 | ----------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GitHub Pages                        | Static site hosting                                             | IP addresses logged in standard server access logs, governed by [GitHub's privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
-| Google Analytics 4 (`G-QVMEHEZBXE`) | Aggregate page-view and session metrics                         | Cookies, page URL, referrer, approximate geolocation derived from IP, browser/device info; governed by [Google's privacy policy](https://policies.google.com/privacy)               |
+| Google Analytics 4 (`G-QS4KFCN3S4`) | Aggregate page-view and session metrics                         | Cookies, page URL, referrer, approximate geolocation derived from IP, browser/device info; governed by [Google's privacy policy](https://policies.google.com/privacy)               |
 | jsDelivr CDN                        | Loads the Mermaid diagram library on pages that render diagrams | IP address logged in CDN access logs; governed by [jsDelivr's privacy policy](https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net)                                           |
+
+The Google Analytics property is shared by every site under `https://jeffallan.github.io/`, including the maintainer's personal site and the other project documentation sites, so page views from all of them are counted together.
 
 To opt out of Google Analytics, you can use the [Google Analytics opt-out browser add-on](https://tools.google.com/dlpage/gaoptout), enable browser privacy features such as Do Not Track, or use any standard ad/tracker blocker. The site functions normally with these enabled.
 
