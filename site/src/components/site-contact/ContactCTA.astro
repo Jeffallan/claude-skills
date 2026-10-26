@@ -41,6 +41,7 @@ const { site, text, cta = 'page-end', label = 'Contact' } = Astro.props;
     if (!dialog) continue;
     cta.querySelector('[data-site-cta-open]')?.addEventListener('click', () => {
       dialog.showModal();
+      dialog.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
     });
     dialog.querySelector('[data-site-cta-close]')?.addEventListener('click', () => dialog.close());
     // A click on the backdrop (the dialog element itself, outside its box) closes it.
@@ -89,7 +90,11 @@ const { site, text, cta = 'page-end', label = 'Contact' } = Astro.props;
   }
 
   .site-cta-dialog {
+    /* margin: auto centers the modal; some resets (Starlight's) set margin: 0 */
+    margin: auto;
     width: min(32rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
     padding: 1.5rem;
     color: var(--site-text, inherit);
     background: var(--site-bg, #fff);
