@@ -149,7 +149,7 @@ phases:
 # Utility commands not tied to a specific phase
 utilities:
   - command: common-ground
-    definition: commands/common-ground/common-ground.yaml
+    definition: commands/common-ground.yaml
     invocation: on-demand      # Can be invoked at any point
 ```
 

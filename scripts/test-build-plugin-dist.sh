@@ -79,6 +79,9 @@ assert_exists "$OUT/.claude-plugin/plugin.json" "ships plugin.json"
 assert_exists "$OUT/skills" "ships skills/"
 assert_exists "$OUT/commands" "ships commands/"
 assert_exists "$OUT/references/common-ground" "ships references/common-ground/"
+# Claude Code names a command after its path, so this registers as /fullstack-dev-skills:common-ground
+assert_exists "$OUT/commands/common-ground.md" "ships commands/common-ground.md"
+assert_equal "$(find "$OUT/commands" -name 'COMMAND.md' | wc -l | tr -d ' ')" "0" "ships no commands named COMMAND"
 assert_exists "$OUT/README.md" "ships README.md"
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
