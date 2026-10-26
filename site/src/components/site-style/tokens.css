@@ -1,0 +1,71 @@
+/*
+ * Shared design tokens for Jeff's sites. Comes from the handbook's
+ * personal-sites/site-style; change it there, not in the project.
+ *
+ * Light values come from the hub (jeffallan.github.io); dark values are the
+ * teal-based dark theme agreed on 2026-10-26. Every site sets
+ * data-theme="dark" on <html> in dark mode (Starlight does this itself;
+ * the hub uses ThemeScript.astro), and both themes share the
+ * 'starlight-theme' key in localStorage. tests/contrast.py checks the
+ * text/background pairs against WCAG AA.
+ */
+
+:root {
+  --site-font-heading: 'Outfit Variable', 'Outfit', system-ui, sans-serif;
+  --site-font-body: 'Source Sans 3 Variable', 'Source Sans 3', system-ui, sans-serif;
+
+  /* Teal. accent is the brand fill (bars, borders, icons); accent-ui is the
+     same hue dark enough for text and for buttons with light labels. */
+  --site-accent: #17a2b8;
+  --site-accent-ui: #127c8d;
+  --site-accent-strong: #0a5a5a;
+  --site-accent-soft: #e3f4f7;
+  --site-warm: #e8a54b;
+
+  --site-text: #1a2e35;
+  --site-text-2: #4a5c63;
+  --site-text-3: #7a8f96;
+  --site-bg: #f8f9fa;
+  --site-surface: #ffffff;
+  --site-border: #e0e6e8;
+
+  /* Grey scale, strongest to faintest, for sites that need more steps
+     (Starlight maps gray-1 to gray-7 from these). */
+  --site-gray-1: #2c4148;
+  --site-gray-2: #4a5c63;
+  --site-gray-3: #7a8f96;
+  --site-gray-4: #a7b6bb;
+  --site-gray-5: #cfd9dc;
+  --site-gray-6: #e3eaec;
+  --site-gray-7: #f0f4f5;
+
+  /* site-nav menu */
+  --site-nav-menu-bg: var(--site-surface);
+  --site-nav-menu-fg: var(--site-text);
+  --site-nav-menu-border: var(--site-border);
+  --site-nav-menu-hover: var(--site-accent-soft);
+  --site-nav-accent: var(--site-accent-ui);
+}
+
+:root[data-theme='dark'] {
+  --site-accent: #20c5dc;
+  --site-accent-ui: #20c5dc;
+  --site-accent-strong: #8ee3ef;
+  --site-accent-soft: #0a3a40;
+  --site-warm: #f5c77e;
+
+  --site-text: #e6f1f3;
+  --site-text-2: #a9bfc5;
+  --site-text-3: #7f969d;
+  --site-bg: #0f1a1e;
+  --site-surface: #16262b;
+  --site-border: #2a3d43;
+
+  --site-gray-1: #cfdde1;
+  --site-gray-2: #a9bfc5;
+  --site-gray-3: #7f969d;
+  --site-gray-4: #4f656c;
+  --site-gray-5: #2f444a;
+  --site-gray-6: #1d2f35;
+  --site-gray-7: #142227;
+}

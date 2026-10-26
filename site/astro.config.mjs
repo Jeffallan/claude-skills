@@ -9,7 +9,13 @@ export default defineConfig({
       title: 'Claude Skills',
       description:
         '67 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
-      customCss: ['./src/styles/custom.css'],
+      customCss: [
+        '@fontsource-variable/outfit',
+        '@fontsource-variable/source-sans-3',
+        './src/components/site-style/tokens.css',
+        './src/components/site-style/starlight.css',
+        './src/styles/custom.css',
+      ],
       head: [
         {
           tag: 'meta',

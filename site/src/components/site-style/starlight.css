@@ -1,0 +1,37 @@
+/*
+ * Maps the shared tokens (tokens.css) onto Starlight's variables, for both
+ * themes. Comes from the handbook's personal-sites/site-style; change it
+ * there, not in the project. Load after tokens.css in customCss.
+ */
+
+:root,
+:root[data-theme='light'],
+:root[data-theme='dark'] {
+  --sl-color-accent-low: var(--site-accent-soft);
+  --sl-color-accent: var(--site-accent-ui);
+  --sl-color-accent-high: var(--site-accent-strong);
+  --sl-color-white: var(--site-text);
+  --sl-color-gray-1: var(--site-gray-1);
+  --sl-color-gray-2: var(--site-gray-2);
+  --sl-color-gray-3: var(--site-gray-3);
+  --sl-color-gray-4: var(--site-gray-4);
+  --sl-color-gray-5: var(--site-gray-5);
+  --sl-color-gray-6: var(--site-gray-6);
+  --sl-color-gray-7: var(--site-gray-7);
+  --sl-color-black: var(--site-bg);
+  --sl-font: var(--site-font-body);
+}
+
+/* Headings and the site title in the heading font. */
+.site-title,
+h1#_top,
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--site-font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* The hub's teal-to-warm line under the header. */
+header.header {
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--site-accent), var(--site-warm)) 1;
+}
