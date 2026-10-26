@@ -116,7 +116,10 @@ export default defineConfig({
                 { label: 'Overview', link: '/workflows/intake-phase/' },
                 { label: 'intake:document-codebase', link: '/workflows/intake-document-codebase/' },
                 { label: 'intake:capture-behavior', link: '/workflows/intake-capture-behavior/' },
-                { label: 'intake:create-system-description', link: '/workflows/intake-create-system-description/' },
+                {
+                  label: 'intake:create-system-description',
+                  link: '/workflows/intake-create-system-description/',
+                },
               ],
             },
             {
@@ -144,7 +147,10 @@ export default defineConfig({
               items: [
                 { label: 'Overview', link: '/workflows/execution-phase/' },
                 { label: 'execution:execute-ticket', link: '/workflows/execution-execute-ticket/' },
-                { label: 'execution:complete-ticket', link: '/workflows/execution-complete-ticket/' },
+                {
+                  label: 'execution:complete-ticket',
+                  link: '/workflows/execution-complete-ticket/',
+                },
               ],
             },
             {
@@ -152,7 +158,10 @@ export default defineConfig({
               collapsed: true,
               items: [
                 { label: 'Overview', link: '/workflows/retrospective-phase/' },
-                { label: 'retrospectives:complete-epic', link: '/workflows/retrospective-complete-epic/' },
+                {
+                  label: 'retrospectives:complete-epic',
+                  link: '/workflows/retrospective-complete-epic/',
+                },
               ],
             },
             { label: 'common-ground', link: '/workflows/common-ground/' },
@@ -162,62 +171,62 @@ export default defineConfig({
         {
           label: 'Language',
           collapsed: true,
-          autogenerate: { directory: 'skills/language' },
+          items: [{ autogenerate: { directory: 'skills/language' } }],
         },
         {
           label: 'Backend Frameworks',
           collapsed: true,
-          autogenerate: { directory: 'skills/backend' },
+          items: [{ autogenerate: { directory: 'skills/backend' } }],
         },
         {
           label: 'Frontend & Mobile',
           collapsed: true,
-          autogenerate: { directory: 'skills/frontend' },
+          items: [{ autogenerate: { directory: 'skills/frontend' } }],
         },
         {
           label: 'Infrastructure & Cloud',
           collapsed: true,
-          autogenerate: { directory: 'skills/infrastructure' },
+          items: [{ autogenerate: { directory: 'skills/infrastructure' } }],
         },
         {
           label: 'API & Architecture',
           collapsed: true,
-          autogenerate: { directory: 'skills/api-architecture' },
+          items: [{ autogenerate: { directory: 'skills/api-architecture' } }],
         },
         {
           label: 'Quality & Testing',
           collapsed: true,
-          autogenerate: { directory: 'skills/quality' },
+          items: [{ autogenerate: { directory: 'skills/quality' } }],
         },
         {
           label: 'DevOps & Operations',
           collapsed: true,
-          autogenerate: { directory: 'skills/devops' },
+          items: [{ autogenerate: { directory: 'skills/devops' } }],
         },
         {
           label: 'Security',
           collapsed: true,
-          autogenerate: { directory: 'skills/security' },
+          items: [{ autogenerate: { directory: 'skills/security' } }],
         },
         {
           label: 'Data & ML',
           collapsed: true,
-          autogenerate: { directory: 'skills/data-ml' },
+          items: [{ autogenerate: { directory: 'skills/data-ml' } }],
         },
         {
           label: 'Platform',
           collapsed: true,
-          autogenerate: { directory: 'skills/platform' },
+          items: [{ autogenerate: { directory: 'skills/platform' } }],
         },
         {
           label: 'Specialized',
           collapsed: true,
-          autogenerate: { directory: 'skills/specialized' },
+          items: [{ autogenerate: { directory: 'skills/specialized' } }],
         },
         {
           label: 'Workflow Skills',
           collapsed: true,
-          autogenerate: { directory: 'skills/workflow' },
+          items: [{ autogenerate: { directory: 'skills/workflow' } }],
         },
         {
           label: 'Project',

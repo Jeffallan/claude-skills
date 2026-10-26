@@ -9,7 +9,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const DOCS_DIR = path.resolve(import.meta.dirname, '..', 'src', 'content', 'docs');
@@ -147,7 +147,14 @@ function buildLinkMap() {
     }
   }
   // Map common internal paths that may appear without base path
-  const coreSlugs = ['getting-started', 'skills-guide', 'readme', 'contributing', 'changelog', 'roadmap'];
+  const coreSlugs = [
+    'getting-started',
+    'skills-guide',
+    'readme',
+    'contributing',
+    'changelog',
+    'roadmap',
+  ];
   for (const slug of coreSlugs) {
     linkMap.set(`/${slug}/`, `${BASE_PATH}/${slug}/`);
   }
@@ -273,6 +280,9 @@ function syncCoreDocs() {
 
     // Remove GitHub-specific HTML (badges, images, typing SVGs)
     body = body.replace(/<p align="center">[\s\S]*?<\/p>/g, '');
+    // A rule left at the very top would sit right under the frontmatter, and Astro 7
+    // reads the text up to the next rule as a second frontmatter block
+    body = body.trim().replace(/^---[ \t]*\n/, '');
 
     const fm = starlightFrontmatter({ title, description });
     const destPath = path.join(DOCS_DIR, dest);
@@ -308,7 +318,13 @@ function syncGuideDocs() {
     console.log(`  ${src} → ${dest}`);
 
     const slug = dest.replace(/\.md$/, '');
-    pageManifest.push({ siteUrl: `/${slug}/`, title, description, category: 'guides', contentFile: dest });
+    pageManifest.push({
+      siteUrl: `/${slug}/`,
+      title,
+      description,
+      category: 'guides',
+      contentFile: dest,
+    });
   }
 }
 
@@ -364,7 +380,9 @@ function syncWorkflowDocs() {
 function buildSkillIndex() {
   const index = new Map(); // name → { domain, title }
   const skillsDir = path.join(ROOT, 'skills');
-  const dirs = fs.readdirSync(skillsDir).filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory());
+  const dirs = fs
+    .readdirSync(skillsDir)
+    .filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory());
 
   for (const dir of dirs) {
     const skillPath = path.join(skillsDir, dir, 'SKILL.md');
@@ -373,7 +391,8 @@ function buildSkillIndex() {
     const content = fs.readFileSync(skillPath, 'utf-8');
     const { data, body } = parseFrontmatter(content);
     const domain = data.metadata?.domain || 'specialized';
-    const title = extractH1(body) || dir.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    const title =
+      extractH1(body) || dir.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
     index.set(dir, { domain, title });
   }
 
@@ -384,7 +403,9 @@ function buildSkillIndex() {
 
 function syncSkillPages(skillIndex) {
   const skillsDir = path.join(ROOT, 'skills');
-  const dirs = fs.readdirSync(skillsDir).filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory());
+  const dirs = fs
+    .readdirSync(skillsDir)
+    .filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory());
 
   let count = 0;
   for (const dir of dirs) {
@@ -444,7 +465,8 @@ function syncSkillPages(skillIndex) {
     // Rewrite reference table links to GitHub blob URLs
     body = body.replace(
       /`references\/([^`]+)`/g,
-      (_match, refPath) => `[references/${refPath}](${GITHUB_BLOB}/skills/${dir}/references/${refPath})`,
+      (_match, refPath) =>
+        `[references/${refPath}](${GITHUB_BLOB}/skills/${dir}/references/${refPath})`,
     );
 
     // Strip the canonical documentation backlink: it exists in the source SKILL.md

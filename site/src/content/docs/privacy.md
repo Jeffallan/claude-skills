@@ -36,11 +36,11 @@ Before configuring an MCP server, review the privacy policy of the vendor whose 
 
 The documentation site at `https://jeffallan.github.io/claude-skills/` uses the following third-party services:
 
-| Service | Purpose | Data involved |
-|---|---|---|
-| GitHub Pages | Static site hosting | IP addresses logged in standard server access logs, governed by [GitHub's privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
-| Google Analytics 4 (`G-QVMEHEZBXE`) | Aggregate page-view and session metrics | Cookies, page URL, referrer, approximate geolocation derived from IP, browser/device info; governed by [Google's privacy policy](https://policies.google.com/privacy) |
-| jsDelivr CDN | Loads the Mermaid diagram library on pages that render diagrams | IP address logged in CDN access logs; governed by [jsDelivr's privacy policy](https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net) |
+| Service                             | Purpose                                                         | Data involved                                                                                                                                                                       |
+| ----------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Pages                        | Static site hosting                                             | IP addresses logged in standard server access logs, governed by [GitHub's privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
+| Google Analytics 4 (`G-QVMEHEZBXE`) | Aggregate page-view and session metrics                         | Cookies, page URL, referrer, approximate geolocation derived from IP, browser/device info; governed by [Google's privacy policy](https://policies.google.com/privacy)               |
+| jsDelivr CDN                        | Loads the Mermaid diagram library on pages that render diagrams | IP address logged in CDN access logs; governed by [jsDelivr's privacy policy](https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net)                                           |
 
 To opt out of Google Analytics, you can use the [Google Analytics opt-out browser add-on](https://tools.google.com/dlpage/gaoptout), enable browser privacy features such as Do Not Track, or use any standard ad/tracker blocker. The site functions normally with these enabled.
 
