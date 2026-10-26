@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `common-ground` command: moved `commands/common-ground/COMMAND.md` to `commands/common-ground.md` (and its YAML beside it) so Claude Code registers it as `/fullstack-dev-skills:common-ground` instead of `/fullstack-dev-skills:common-ground:COMMAND`. Claude Code names plugin commands after their path under `commands/`; the `name` frontmatter added in #186 only adds a second label (#267, closing #264)
+
 ### Changed
 - CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
 
