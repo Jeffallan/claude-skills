@@ -36,17 +36,20 @@ jobs:
     name: skill-linter (report only)
     runs-on: ubuntu-latest
     # Report-only until the findings it reports are fixed; the scripts above stay the blocking checks.
-    continue-on-error: true
+    # Each check step may fail without failing the job, so findings show in the log, not as a red check.
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.x"
       - run: pip install skill-linter==0.2.0
+      - name: Fetch the plugin branch the marketplace entry points at
+        run: git fetch --no-tags --depth=1 origin +refs/heads/plugin:refs/remotes/origin/plugin
       - name: Check skills and the shipped plugin tree
+        continue-on-error: true
         run: skill-linter release
       - name: Check stamped counts and versions
-        if: always()
+        continue-on-error: true
         run: skill-linter stamp --check
 
   lint:
