@@ -1,12 +1,15 @@
 ---
-// Footer shared by Jeff's sites: links to every site, the credit line, the
-// social profiles, copyright and a privacy link. Comes from the handbook's
+// Footer shared by Jeff's sites. Comes from the handbook's
 // personal-sites/site-footer; change it there, not in the project.
 //
-// Sites come from site-nav's sites.json; the name (linking to Jeff's GitHub
-// profile), role and profiles from profile.json beside this file. Colors use the site-style tokens, with
-// plain fallbacks.
+// Row 1: the hub (About the Author) and a Contact link that opens the
+// contact dialog. Row 2: every project site, so a site added to site-nav's
+// sites.json appears here too. Then the social profiles, the credit line
+// (the name links to Jeff's GitHub profile), copyright and a privacy link.
+// It renders the page's ContactDialog. Profile data is in profile.json;
+// colors use the site-style tokens, with plain fallbacks.
 import sites from '../site-nav/sites.json';
+import ContactDialog from '../site-contact/ContactDialog.astro';
 import profile from './profile.json';
 
 interface Props {
@@ -18,19 +21,42 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const { privacyHref = `${base}privacy/` } = Astro.props;
 const current = new URL(base, Astro.site).href;
 const year = new Date().getFullYear();
+const home = sites.find((site) => site.home);
+const projects = sites.filter((site) => !site.home);
 ---
 
 <footer class="site-footer">
   <nav class="site-footer-sites" aria-label="Sites">
-    {sites.map((site) => (
-      <a
-        class="site-footer-link"
-        href={site.url}
-        aria-current={site.url === current ? 'true' : undefined}
+    <div class="site-footer-row">
+      {home && (
+        <a
+          class="site-footer-link"
+          href={home.url}
+          aria-current={home.url === current ? 'true' : undefined}
+        >
+          {home.name}
+        </a>
+      )}
+      <button
+        type="button"
+        class="site-footer-link site-footer-contact"
+        data-site-cta-open
+        data-cta="footer"
       >
-        {site.name}
-      </a>
-    ))}
+        Contact
+      </button>
+    </div>
+    <div class="site-footer-row">
+      {projects.map((site) => (
+        <a
+          class="site-footer-link"
+          href={site.url}
+          aria-current={site.url === current ? 'true' : undefined}
+        >
+          {site.name}
+        </a>
+      ))}
+    </div>
   </nav>
 
   <div class="site-footer-social">
@@ -66,6 +92,7 @@ const year = new Date().getFullYear();
       Privacy
     </a>
   </p>
+  <ContactDialog />
 </footer>
 
 <style>
@@ -88,6 +115,13 @@ const year = new Date().getFullYear();
 
   .site-footer-sites {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .site-footer-row {
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.5rem 1.5rem;
@@ -100,13 +134,21 @@ const year = new Date().getFullYear();
     gap: 0.75rem;
   }
 
-  .site-footer a.site-footer-link {
+  .site-footer-contact {
+    padding: 0;
+    font: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .site-footer .site-footer-link {
     color: var(--site-text-2, #4a5c63);
     text-decoration: none;
   }
 
-  .site-footer a.site-footer-link:hover,
-  .site-footer a.site-footer-link:focus-visible {
+  .site-footer .site-footer-link:hover,
+  .site-footer .site-footer-link:focus-visible {
     color: var(--site-accent-ui, #127c8d);
   }
 
