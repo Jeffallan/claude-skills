@@ -14,6 +14,7 @@ export default defineConfig({
     starlight({
       title: 'Claude Skills',
       description: DESCRIPTION,
+      routeMiddleware: './src/routeData.ts',
       customCss: [
         '@fontsource-variable/outfit',
         '@fontsource-variable/source-sans-3',
