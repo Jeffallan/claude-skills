@@ -14,9 +14,11 @@
     "@astrojs/starlight": "^0.42.6",
     "@fontsource-variable/outfit": "^5.3.0",
     "@fontsource-variable/source-sans-3": "^5.3.1",
+    "@jdevalk/astro-seo-graph": "^2.2.0",
     "astro": "^7.4.0",
     "js-yaml": "^4.3.2",
-    "sharp": "^0.35.5"
+    "sharp": "^0.35.5",
+    "smol-toml": "^1.9.1"
   },
   "devDependencies": {
     "prettier": "^3.9.10",

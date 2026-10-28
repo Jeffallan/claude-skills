@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier. Do not edit by hand.
-_commit: 016fd16
+_commit: b74aa10
 _src_path: https://github.com/Jeffallan/handbook.git
 handbook_docs: []
 site_dir: site
@@ -8,3 +8,4 @@ site_pieces:
 - site-style
 - site-footer
 - site-contact
+- site-sync
