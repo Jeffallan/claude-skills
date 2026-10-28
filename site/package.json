@@ -21,7 +21,8 @@
     "astro-og-canvas": "^0.13.2",
     "js-yaml": "^4.3.2",
     "sharp": "^0.35.5",
-    "smol-toml": "^1.9.1"
+    "smol-toml": "^1.9.1",
+    "starlight-links-validator": "^0.27.0"
   },
   "devDependencies": {
     "prettier": "^3.9.10",

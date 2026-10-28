@@ -1,6 +1,8 @@
 # Changes here will be overwritten by Copier. Do not edit by hand.
-_commit: baceb4a
+_commit: aa49d4b
 _src_path: https://github.com/Jeffallan/handbook.git
+ci_workflows:
+- docs-site
 handbook_docs: []
 site_dir: site
 site_pieces:

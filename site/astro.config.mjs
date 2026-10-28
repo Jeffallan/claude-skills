@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightLinksValidator from 'starlight-links-validator';
 import seoGraph from '@jdevalk/astro-seo-graph/integration';
 import { llmsSectionsFromSync } from './src/components/site-sync/llms.mjs';
 
@@ -15,6 +16,7 @@ export default defineConfig({
       title: 'Claude Skills',
       description: DESCRIPTION,
       routeMiddleware: './src/routeData.ts',
+      plugins: [starlightLinksValidator()],
       customCss: [
         '@fontsource-variable/outfit',
         '@fontsource-variable/source-sans-3',
@@ -259,7 +261,7 @@ export default defineConfig({
     // llms.txt from site-sync's page list (D-028); site-sync writes llms-full.txt
     seoGraph({
       // Its link check reads links from the domain root and misses the base path, so it
-      // reports every internal link as a 404. It stays off until link checking is set up
+      // reports every internal link as a 404. starlight-links-validator checks them instead
       validateInternalLinks: false,
       llmsTxt: {
         title: 'Claude Skills',
