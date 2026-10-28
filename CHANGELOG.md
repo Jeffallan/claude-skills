@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Docs site: the build fails on a broken internal link (`starlight-links-validator`)
+- CI: `docs-site.yml` lints and builds the docs site on every pull request and push to `main`, so a broken link or lint error shows up in review instead of at release. The workflow is shared with the other docs sites and kept in step from the same private repo as the site code
 - Docs site: every page has a 1200×630 preview image (`og:image`) for links shared on social sites: the site's name beside the monogram, the page title, and the page description cut to the whole sentences that fit in 260 characters. The cards are generated at build time (`site/src/pages/og/`) with astro-og-canvas
 - Docs site: every page carries a JSON-LD graph naming its author. Skill and doc pages are a `TechArticle` and the home page a `WebPage` about the repo (`SoftwareSourceCode`), each pointing at one `Person` (`https://jeffallan.github.io/#person`) declared on the author's site. It is added through Starlight's route middleware (`site/src/routeData.ts`), so Starlight's own title, description and Open Graph tags stay as they are
 - Docs site: the shared light and dark theme (`site/src/components/site-style/`), delivered from a private repo that keeps the docs sites in step: the teal palette and fonts (Outfit, Source Sans 3) from the author's site, a teal-based dark theme, and the monogram before the title, linking to that site. The purple palette is retired (#285)
