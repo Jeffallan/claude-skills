@@ -258,7 +258,7 @@ export default defineConfig({
     // llms.txt from site-sync's page list (D-028); site-sync writes llms-full.txt
     seoGraph({
       // Its link check reads links from the domain root and misses the base path, so it
-      // reports every internal link as a 404 (handbook #6 settles link checking)
+      // reports every internal link as a 404. It stays off until link checking is set up
       validateInternalLinks: false,
       llmsTxt: {
         title: 'Claude Skills',
