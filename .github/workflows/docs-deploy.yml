@@ -43,6 +43,9 @@ jobs:
       - name: Build
         working-directory: site
         run: npm run build
+        env:
+          # Only this build submits changed pages to IndexNow (site-seo); CI builds never do
+          INDEXNOW_SUBMIT: '1'
 
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
