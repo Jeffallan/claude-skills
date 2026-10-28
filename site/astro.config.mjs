@@ -1,5 +1,11 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import seoGraph from '@jdevalk/astro-seo-graph/integration';
+import { llmsSectionsFromSync } from './src/components/site-sync/llms.mjs';
+
+const SITE_URL = 'https://jeffallan.github.io/claude-skills';
+const DESCRIPTION =
+  '67 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
 
 export default defineConfig({
   site: 'https://jeffallan.github.io',
@@ -7,8 +13,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Claude Skills',
-      description:
-        '67 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
+      description: DESCRIPTION,
       customCss: [
         '@fontsource-variable/outfit',
         '@fontsource-variable/source-sans-3',
@@ -249,6 +254,18 @@ export default defineConfig({
           ],
         },
       ],
+    }),
+    // llms.txt from site-sync's page list (D-028); site-sync writes llms-full.txt
+    seoGraph({
+      // Its link check reads links from the domain root and misses the base path, so it
+      // reports every internal link as a 404 (handbook #6 settles link checking)
+      validateInternalLinks: false,
+      llmsTxt: {
+        title: 'Claude Skills',
+        siteUrl: SITE_URL,
+        summary: DESCRIPTION,
+        sections: llmsSectionsFromSync(import.meta.dirname, SITE_URL),
+      },
     }),
   ],
 });
