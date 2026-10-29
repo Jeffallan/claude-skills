@@ -28,7 +28,7 @@ jobs:
           repositories: |
             handbook
             ${{ github.event.repository.name }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           token: ${{ steps.app.outputs.token }}
       - uses: astral-sh/setup-uv@v5
