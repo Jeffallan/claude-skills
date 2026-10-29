@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Fixed
+- `code-reviewer`, `security-reviewer`, `spec-miner`: `allowed-tools` is space-separated, as the Agent Skills spec requires. `game-developer`, `embedded-systems` and `swift-expert` set `related-skills: ""` instead of leaving it empty, which parsed as null (#289, closing #270)
+- QUICKSTART: the backend count is 8 and lists Django Storages S3, and the frontend list names Vue (JavaScript). `complete-ticket.md`'s `argument-hint` matches its YAML (#287, closing #274)
 - Docs site: `llms.txt` links left out the `/claude-skills` base path, so all 96 returned 404. They are now absolute and include it (#272, #295)
 - Docs site: page titles are taken from the first heading outside code blocks. The README page had lost the `# Backend Development` comment from its install example, because the build took it for the page's H1 and removed it (#271, #295)
 - Docs site: the home page's Markdown copy links Getting Started under `/claude-skills/` (#295)
@@ -28,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `atlassian-mcp`: documented the hosted Atlassian Rovo MCP Server (`https://mcp.atlassian.com/v2/mcp`) as the official option, with Claude Code, Claude Desktop, `mcp-remote` and API-token setup; kept sooperset `mcp-atlassian` for Server/Data Center. Removed the nonexistent `@anthropic/mcp-atlassian` and `@sooperset/mcp-atlassian` packages, corrected the xuanxt package to `@xuandev/atlassian-mcp`, and replaced invented environment variables with the ones sooperset reads (#269, closing #265)
 
 ### Changed
+- QUICKSTART: the language, backend and frontend counts are stamped by skill-linter (`SKILL_COUNT:<domain>` markers), so `stamp --check` reports a stale count (#302)
 - Docs site: deploys on every push to `main` (`docs-deploy.yml`, shared with the other docs sites) instead of with each release, so site changes go live without a plugin release. `release.yml` now only creates the GitHub release
 - Docs site: the content sync is shared code, delivered from a private repo that keeps the docs sites in step (`site/src/components/site-sync/`). `site/scripts/sync-content.mjs` keeps only this site's settings, and the skills folder, domains, docs URL and credit come from the [skill-linter](https://pypi.org/project/skill-linter/) settings in `pyproject.toml` (`[tool.skill-linter]`). `llms.txt` is now written by astro-seo-graph's `seoGraph()`, and lists `llms-full.txt` under Optional (#295)
 - Docs site: skill page meta descriptions are the skill's description as written, without the "Claude Skills | <title> |" prefix. Workflow page descriptions end at a sentence instead of being cut at 160 characters (#295)
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: `release.yml` builds the docs site on Node 24, since Astro 7.4 needs Node 22.23.4 or later (#280)
 
 ### Contributors
+- @ShryukGrandhi: Made six SKILL.md frontmatter values spec-compliant (#289), corrected the QUICKSTART per-domain counts and the `complete-ticket` argument-hint (#287), and proposed the `llms.txt` base-path fix that #295 took over (#286)
 - @s1ngh-code: Reported the `common-ground` command registering as `/fullstack-dev-skills:common-ground:COMMAND` (#264)
 - @felipecrs: Reported that the official Atlassian Rovo MCP Server was missing from `atlassian-mcp` (#265)
 - @CBEPX: Reported the Go, WebSocket and Kubernetes example bugs (#266)
