@@ -18,6 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs site: the header has a Sites menu linking the author's site and both docs sites, with the current one marked. The menu (`site/src/components/site-nav/`) is shared code from the same private repo, delivered with Copier (`.copier-answers.yml`), and `handbook-update.yml` opens a PR when it changes (#283)
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
+### Changed
+- `CONTRIBUTING.md` and `CLAUDE.md` describe what the validator enforces: the description formula from `CLAUDE.md`, the section order, a five-step Core Workflow, the Reference Guide table, the Documentation backlink as the last line, and reference files without the old `> Reference for:` header (#277, closing #273)
+- Plugin and marketplace descriptions: the language, backend and frontend counts are stamped by skill-linter, which corrected them to 8 backend frameworks and 7 frontend/mobile (they said 10 and 6)
+- QUICKSTART: the language, backend and frontend counts are stamped by skill-linter (`SKILL_COUNT:<domain>` markers), so `stamp --check` reports a stale count (#302)
+- Docs site: deploys on every push to `main` (`docs-deploy.yml`, shared with the other docs sites) instead of with each release, so site changes go live without a plugin release. `release.yml` now only creates the GitHub release
+- Docs site: the content sync is shared code, delivered from a private repo that keeps the docs sites in step (`site/src/components/site-sync/`). `site/scripts/sync-content.mjs` keeps only this site's settings, and the skills folder, domains, docs URL and credit come from the [skill-linter](https://pypi.org/project/skill-linter/) settings in `pyproject.toml` (`[tool.skill-linter]`). `llms.txt` is now written by astro-seo-graph's `seoGraph()`, and lists `llms-full.txt` under Optional (#295)
+- Docs site: skill page meta descriptions are the skill's description as written, without the "Claude Skills | <title> |" prefix. Workflow page descriptions end at a sentence instead of being cut at 160 characters (#295)
+- Docs site: the Sites menu lists the Trust Center Directory (#295)
+- CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
+- Docs site: moved to Astro 7.4 and Starlight 0.42, matching writing-with-agents. The README page keeps its body, which Astro 7 had read as frontmatter once the badge HTML was stripped, and the footer keeps the space before the Synergetic Solutions link (#278, closing #226)
+- CI: `release.yml` builds the docs site on Node 24, since Astro 7.4 needs Node 22.23.4 or later (#280)
+
 ### Fixed
 - `code-reviewer`, `security-reviewer`, `spec-miner`: `allowed-tools` is space-separated, as the Agent Skills spec requires. `game-developer`, `embedded-systems` and `swift-expert` set `related-skills: ""` instead of leaving it empty, which parsed as null (#289, closing #270)
 - QUICKSTART: the backend count is 8 and lists Django Storages S3, and the frontend list names Vue (JavaScript). `complete-ticket.md`'s `argument-hint` matches its YAML (#287, closing #274)
@@ -29,17 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `golang-pro`, `websocket-engineer`, `kubernetes-specialist`: corrected eight examples. A successful Go pipeline no longer waits for its timeout; fan-out/fan-in and pipeline stages stop on cancellation while idle; `generics.md` uses `cmp.Ordered` and `golang.org/x/exp/constraints` in place of a nonexistent `constraints` import; the WebSocket inactivity timer restarts on each message; presence, queue and scaling examples use the JWT-verified `socket.userId`; the CoreDNS `cluster2.local` server block is top-level; the helm-unittest replica example disables autoscaling and lists the templates it needs; NetworkPolicy troubleshooting no longer deletes every production policy (#268, closing #266)
 - `atlassian-mcp`: documented the hosted Atlassian Rovo MCP Server (`https://mcp.atlassian.com/v2/mcp`) as the official option, with Claude Code, Claude Desktop, `mcp-remote` and API-token setup; kept sooperset `mcp-atlassian` for Server/Data Center. Removed the nonexistent `@anthropic/mcp-atlassian` and `@sooperset/mcp-atlassian` packages, corrected the xuanxt package to `@xuandev/atlassian-mcp`, and replaced invented environment variables with the ones sooperset reads (#269, closing #265)
 
-### Changed
-- QUICKSTART: the language, backend and frontend counts are stamped by skill-linter (`SKILL_COUNT:<domain>` markers), so `stamp --check` reports a stale count (#302)
-- Docs site: deploys on every push to `main` (`docs-deploy.yml`, shared with the other docs sites) instead of with each release, so site changes go live without a plugin release. `release.yml` now only creates the GitHub release
-- Docs site: the content sync is shared code, delivered from a private repo that keeps the docs sites in step (`site/src/components/site-sync/`). `site/scripts/sync-content.mjs` keeps only this site's settings, and the skills folder, domains, docs URL and credit come from the [skill-linter](https://pypi.org/project/skill-linter/) settings in `pyproject.toml` (`[tool.skill-linter]`). `llms.txt` is now written by astro-seo-graph's `seoGraph()`, and lists `llms-full.txt` under Optional (#295)
-- Docs site: skill page meta descriptions are the skill's description as written, without the "Claude Skills | <title> |" prefix. Workflow page descriptions end at a sentence instead of being cut at 160 characters (#295)
-- Docs site: the Sites menu lists the Trust Center Directory (#295)
-- CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
-- Docs site: moved to Astro 7.4 and Starlight 0.42, matching writing-with-agents. The README page keeps its body, which Astro 7 had read as frontmatter once the badge HTML was stripped, and the footer keeps the space before the Synergetic Solutions link (#278, closing #226)
-- CI: `release.yml` builds the docs site on Node 24, since Astro 7.4 needs Node 22.23.4 or later (#280)
-
 ### Contributors
+- @MannXo: Aligned `CONTRIBUTING.md` and `CLAUDE.md` with what the validator enforces (#277)
 - @ShryukGrandhi: Made six SKILL.md frontmatter values spec-compliant (#289), corrected the QUICKSTART per-domain counts and the `complete-ticket` argument-hint (#287), and proposed the `llms.txt` base-path fix that #295 took over (#286)
 - @s1ngh-code: Reported the `common-ground` command registering as `/fullstack-dev-skills:common-ground:COMMAND` (#264)
 - @felipecrs: Reported that the official Atlassian Rovo MCP Server was missing from `atlassian-mcp` (#265)
@@ -585,6 +588,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...HEAD
 [0.4.20]: https://github.com/jeffallan/claude-skills/compare/v0.4.19...v0.4.20
 [0.4.19]: https://github.com/jeffallan/claude-skills/compare/v0.4.18...v0.4.19
 [0.4.18]: https://github.com/jeffallan/claude-skills/compare/v0.4.17...v0.4.18
