@@ -1,6 +1,5 @@
 # skill-linter configuration (https://pypi.org/project/skill-linter/).
-# CI runs it as a report-only job while its current findings are fixed; until then
-# scripts/validate-skills.py, validate-markdown.py and update-docs.py stay the blocking checks.
+# CI and `make validate` run `skill-linter release` and `skill-linter stamp --check`.
 
 [tool.skill-linter]
 skills_dir = "skills"

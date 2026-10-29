@@ -61,10 +61,10 @@ cp -r skills/* ~/.claude/skills/
 
 #### 4.5. Validate Your Skill
 
-Run the validation script to catch issues before CI:
+Run skill-linter to catch issues before CI:
 
 ```bash
-python scripts/validate-skills.py --skill your-skill-name
+uvx skill-linter@0.2.0 check --skill your-skill-name
 ```
 
 #### 5. Commit Your Changes
@@ -144,7 +144,7 @@ description: [Brief capability statement]. Use when [triggering conditions].
 license: MIT
 metadata:
   author: https://github.com/YourGitHub
-  company: https://your-company.example  # optional
+  company: https://your-company.example
   version: "1.0.0"
   triggers: keyword1, keyword2, phrase1
   role: specialist
@@ -160,7 +160,7 @@ metadata:
 [Brief capability statement]. Use when [triggering conditions].
 ```
 
-The validator warns when a description lacks "Use when" or runs past 1024 characters. Say what the skill does and when to use it, never how: agents follow process steps written in a description instead of reading the skill.
+skill-linter fails a description that lacks "Use when" or runs past 1024 characters. Say what the skill does and when to use it, never how: agents follow process steps written in a description instead of reading the skill.
 
 **Example:**
 ```yaml
@@ -171,7 +171,7 @@ description: Builds React 19 components, hooks, and state management with Server
 
 ### Sections (In Order)
 
-`scripts/validate-skills.py` checks these H2 sections in this order: Role Definition, When to Use This Skill, Core Workflow, Reference Guide, Constraints, Output Templates, Knowledge Reference, Related Skills. Only Core Workflow is required, and it must have exactly 5 numbered steps. The others are optional, but any you include must keep that order. Other H2 sections, such as code patterns, can go between them.
+skill-linter checks these H2 sections in this order: Role Definition, When to Use This Skill, Core Workflow, Reference Guide, Constraints, Output Templates, Knowledge Reference, Related Skills. Core Workflow and Reference Guide are required, and Core Workflow must have exactly 5 numbered steps. The skill also needs a `references/` folder with at least one `.md` file. The others are optional, but any you include must keep that order. Other H2 sections, such as code patterns, can go between them.
 
 ```markdown
 # [Skill Name]
@@ -265,7 +265,7 @@ Load detailed guidance based on context:
 
 **Reference File Format:**
 
-Reference files need no special header. The validator rejects the old `> Reference for:` and `> Load when:` lines.
+Reference files need no special header. skill-linter rejects the old `> Reference for:` and `> Load when:` lines.
 
 ```markdown
 # Topic Title
