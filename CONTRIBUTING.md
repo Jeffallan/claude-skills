@@ -140,10 +140,11 @@ The `validate.yml` workflow runs pre-commit and Prettier checks on all PRs. Your
 ```yaml
 ---
 name: my-skill-name
-description: Use when [triggering conditions]. Invoke for [specific keywords].
+description: [Brief capability statement]. Use when [triggering conditions].
 license: MIT
 metadata:
   author: https://github.com/YourGitHub
+  company: https://your-company.example  # optional
   version: "1.0.0"
   triggers: keyword1, keyword2, phrase1
   role: specialist
@@ -156,24 +157,26 @@ metadata:
 
 **Description Formula:**
 ```
-Use when [triggering conditions]. Invoke for [specific keywords].
+[Brief capability statement]. Use when [triggering conditions].
 ```
+
+The validator warns when a description lacks "Use when" or runs past 1024 characters. Say what the skill does and when to use it, never how: agents follow process steps written in a description instead of reading the skill.
 
 **Example:**
 ```yaml
-description: Use when building React 18+ applications requiring component architecture, hooks patterns, or state management. Invoke for Server Components, performance optimization, Suspense boundaries, React 19 features.
+description: Builds React 19 components, hooks, and state management with Server Components and Suspense. Use when working in .jsx or .tsx files, Next.js App Router projects, or React performance and testing tasks.
 ```
 
-### Required Sections (In Order)
+`company` is optional. Omit it unless you want your company credited.
+
+### Sections (In Order)
+
+`scripts/validate-skills.py` checks these H2 sections in this order: Role Definition, When to Use This Skill, Core Workflow, Reference Guide, Constraints, Output Templates, Knowledge Reference, Related Skills. Only Core Workflow is required, and it must have exactly 5 numbered steps. The others are optional, but any you include must keep that order. Other H2 sections, such as code patterns, can go between them.
 
 ```markdown
 # [Skill Name]
 
 [One-sentence role definition]
-
-## Role Definition
-
-[2-3 sentences defining expert persona with years of experience and specializations]
 
 ## When to Use This Skill
 
@@ -185,8 +188,16 @@ description: Use when building React 18+ applications requiring component archit
 1. **Step** - Brief description
 2. **Step** - Brief description
 3. **Step** - Brief description
+4. **Step** - Brief description
+5. **Step** - Brief description
 
-## Technical Guidelines
+## Reference Guide
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| [Topic] | `references/topic.md` | [Trigger conditions] |
+
+## Key Patterns
 
 [Framework-specific patterns, code examples, tables]
 
@@ -220,7 +231,10 @@ When implementing [X], provide:
 
 [Comma-separated keywords only - no sentences]
 
+[Documentation](https://jeffallan.github.io/claude-skills/skills/{domain}/{skill-name}/)
 ```
+
+The Documentation link must be the last line of every `SKILL.md`. `{domain}` is `metadata.domain` and `{skill-name}` is the skill's directory name. Skills maintained by @jeffallan also carry a `Maintained by [@jeffallan](...)` credit line directly above it, separated by a blank line; contributed skills leave it out.
 
 ### Progressive Disclosure Pattern
 
@@ -250,11 +264,11 @@ Load detailed guidance based on context:
 ```
 
 **Reference File Format:**
+
+Reference files need no special header. The validator rejects the old `> Reference for:` and `> Load when:` lines.
+
 ```markdown
 # Topic Title
-
-> Reference for: Skill Name
-> Load when: Specific trigger conditions
 
 ## Section
 
