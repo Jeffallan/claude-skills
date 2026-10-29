@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `CONTRIBUTING.md` and `CLAUDE.md` describe what the validator enforces: the description formula from `CLAUDE.md`, the section order, a five-step Core Workflow, the Reference Guide table, the Documentation backlink as the last line, and reference files without the old `> Reference for:` header (#277, closing #273)
-- Plugin and marketplace descriptions: the language, backend and frontend counts are stamped by skill-linter, which corrected them to 8 backend frameworks and 7 frontend/mobile (they said 10 and 6)
+- Plugin and marketplace descriptions: the language, backend and frontend counts are stamped by skill-linter, which corrected them to 8 backend frameworks and 7 frontend/mobile (they said 10 and 6) (#303)
 - QUICKSTART: the language, backend and frontend counts are stamped by skill-linter (`SKILL_COUNT:<domain>` markers), so `stamp --check` reports a stale count (#302)
 - Docs site: deploys on every push to `main` (`docs-deploy.yml`, shared with the other docs sites) instead of with each release, so site changes go live without a plugin release. `release.yml` now only creates the GitHub release
 - Docs site: the content sync is shared code, delivered from a private repo that keeps the docs sites in step (`site/src/components/site-sync/`). `site/scripts/sync-content.mjs` keeps only this site's settings, and the skills folder, domains, docs URL and credit come from the [skill-linter](https://pypi.org/project/skill-linter/) settings in `pyproject.toml` (`[tool.skill-linter]`). `llms.txt` is now written by astro-seo-graph's `seoGraph()`, and lists `llms-full.txt` under Optional (#295)
