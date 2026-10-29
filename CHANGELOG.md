@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- Plugin: `plugin.json` lists the ten commands in an object map instead of scanning `./commands/`, which Claude Code documents for flat command files only. The commands keep their names, including `project:<phase>:<command>` for the nested ones. The marketplace entry no longer lists `commands` (skill-linter P12)
 - `CONTRIBUTING.md` and `CLAUDE.md` describe what the validator enforces: the description formula from `CLAUDE.md`, the section order, a five-step Core Workflow, the Reference Guide table, the Documentation backlink as the last line, and reference files without the old `> Reference for:` header (#277, closing #273)
 - Plugin and marketplace descriptions: the language, backend and frontend counts are stamped by skill-linter, which corrected them to 8 backend frameworks and 7 frontend/mobile (they said 10 and 6) (#303)
 - QUICKSTART: the language, backend and frontend counts are stamped by skill-linter (`SKILL_COUNT:<domain>` markers), so `stamp --check` reports a stale count (#302)
