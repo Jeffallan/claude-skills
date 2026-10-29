@@ -69,11 +69,21 @@ path = "assets/social-preview.html"
 [[tool.skill-linter.stamp.files]]
 path = ".claude-plugin/plugin.json"
 json = { "/version" = "version" }
-patterns = [{ key = "skillCount", regex = '(\d+) specialized skills' }]
+patterns = [
+  { key = "skillCount", regex = '(\d+) specialized skills' },
+  { key = "skillCount.language", regex = '(\d+) language experts' },
+  { key = "skillCount.backend", regex = '(\d+) backend frameworks' },
+  { key = "skillCount.frontend", regex = '(\d+) frontend/mobile' },
+]
 [[tool.skill-linter.stamp.files]]
 path = ".claude-plugin/marketplace.json"
 json = { "/metadata/version" = "version", "/plugins/0/version" = "version" }
-patterns = [{ key = "skillCount", regex = '(\d+) specialized skills' }]
+patterns = [
+  { key = "skillCount", regex = '(\d+) specialized skills' },
+  { key = "skillCount.language", regex = '(\d+) language experts' },
+  { key = "skillCount.backend", regex = '(\d+) backend frameworks' },
+  { key = "skillCount.frontend", regex = '(\d+) frontend/mobile' },
+]
 [[tool.skill-linter.stamp.files]]
 path = "site/astro.config.mjs"
 patterns = [{ key = "skillCount", regex = '(\d+) specialized skills' }]
