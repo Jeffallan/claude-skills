@@ -85,8 +85,7 @@
         "testing",
         "workflows"
       ],
-      "skills": "./skills/",
-      "commands": "./commands/"
+      "skills": "./skills/"
     }
   ]
 }

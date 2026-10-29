@@ -65,5 +65,36 @@
     "retrospectives"
   ],
   "skills": "./skills/",
-  "commands": "./commands/"
+  "commands": {
+    "common-ground": {
+      "source": "./commands/common-ground.md"
+    },
+    "project:discovery:approve-synthesis": {
+      "source": "./commands/project/discovery/approve-synthesis.md"
+    },
+    "project:discovery:create-epic-discovery": {
+      "source": "./commands/project/discovery/create-epic-discovery.md"
+    },
+    "project:discovery:synthesize-discovery": {
+      "source": "./commands/project/discovery/synthesize-discovery.md"
+    },
+    "project:execution:complete-ticket": {
+      "source": "./commands/project/execution/complete-ticket.md"
+    },
+    "project:execution:execute-ticket": {
+      "source": "./commands/project/execution/execute-ticket.md"
+    },
+    "project:planning:create-epic-plan": {
+      "source": "./commands/project/planning/create-epic-plan.md"
+    },
+    "project:planning:create-implementation-plan": {
+      "source": "./commands/project/planning/create-implementation-plan.md"
+    },
+    "project:retrospectives:complete-epic": {
+      "source": "./commands/project/retrospectives/complete-epic.md"
+    },
+    "project:retrospectives:complete-sprint": {
+      "source": "./commands/project/retrospectives/complete-sprint.md"
+    }
+  }
 }
