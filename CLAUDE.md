@@ -102,14 +102,14 @@ Every `SKILL.md` MUST end with a single canonical Documentation link pointing ba
 [Documentation](https://jeffallan.github.io/claude-skills/skills/{domain}/{skill-name}/)
 ```
 
-- `{domain}` is `metadata.domain` from the frontmatter (default `specialized` if absent — matches the fallback in `site/scripts/sync-content.mjs`).
+- `{domain}` is `metadata.domain` from the frontmatter and must be one of the `domains` in `pyproject.toml` (`[tool.skill-linter]`); the docs site build fails on any other value.
 - `{skill-name}` is the skill's directory name.
 - Format is exactly markdown link syntax (`[text](url)`), not a bare URL. Strict CommonMark renderers do not auto-link bare URLs, and the line's purpose is to render as a real `<a href>` on aggregators (skills.sh, etc.) for SEO backlinks.
 
 **Why two surfaces, two behaviors:**
 
 - Aggregators consume raw `SKILL.md` from GitHub and render the line as a hyperlink. This is the SEO point.
-- The docs site itself would render this line as a self-link, which is redundant. `syncSkillPages` in `site/scripts/sync-content.mjs` strips the line at build time so the docs site, public markdown mirrors, `llms.txt`, and `llms-full.txt` never show it.
+- The docs site itself would render this line as a self-link, which is redundant. The site's content sync (`site/src/components/site-sync/`, configured by `site/scripts/sync-content.mjs`) strips the line, and the credit line above it, at build time so the docs site, public markdown mirrors, `llms.txt`, and `llms-full.txt` never show it.
 
 **When adding or renaming a skill:** update both the directory name (which becomes `{skill-name}`) and the `metadata.domain` consistently with this URL formula, otherwise the backlink will 404.
 
@@ -178,7 +178,7 @@ For each PR:
 2. Squash-merge with subject `type(scope): title (#N)`
    - Conflicted fork PRs: squash locally (`git merge --squash`), add `Co-authored-by:` with the contributor's commit email, then close the PR with a comment pointing at the commit
 3. Record it in a separate commit, `docs(changelog): record #N <summary> under Unreleased`, adding an entry under `[Unreleased]` → Added/Changed/Fixed that ends with `(#N)` (append `closing #ISSUE` when it resolves one)
-4. If skill or reference counts changed, run `python scripts/update-docs.py` in the same push, otherwise `update-docs.py --check` fails CI on main
+4. If skill or reference counts changed, run `uvx skill-linter@0.2.0 stamp` in the same push, otherwise `stamp --check` fails CI on main
 5. Post-merge corrections go in their own commit with their own `### Changed` entry
 
 At release time, credit contributors (including issue reporters) in a `### Contributors` section of the version entry:
@@ -210,22 +210,15 @@ Version and counts are managed through `version.json`:
 **To release a new version:**
 
 1. Update the `version` field in `version.json`
-2. Run the update script:
+2. Stamp the counts and version:
 
 ```bash
-python scripts/update-docs.py
+uvx skill-linter@0.2.0 stamp
 ```
 
-The script will:
-- Compute counts from the filesystem (skills, references, workflows)
-- Update `version.json` with computed counts
-- Update all documentation files (README.md, plugin.json, etc.)
+This computes the counts from the filesystem (skills, per-domain skills, references, workflows), writes them to `version.json`, and stamps the version and counts into the files listed under `[[tool.skill-linter.stamp.files]]` in `pyproject.toml` (README.md, QUICKSTART.md, plugin.json, marketplace.json, the docs site and others).
 
-**Options:**
-```bash
-python scripts/update-docs.py --check    # Verify files are in sync (CI use)
-python scripts/update-docs.py --dry-run  # Preview changes without writing
-```
+`uvx skill-linter@0.2.0 stamp --check` reports stale files without writing (CI runs it).
 
 ### 2. Update CHANGELOG.md
 
@@ -254,11 +247,11 @@ Add version comparison link at bottom:
 **For new skills:**
 - Add to `SKILLS_GUIDE.md` in appropriate category
 - Add to decision trees if applicable
-- Run `python scripts/update-docs.py` to update counts
+- Run `uvx skill-linter@0.2.0 stamp` to update counts
 
 **For new commands:**
 - Add to `docs/WORKFLOW_COMMANDS.md`
-- Run `python scripts/update-docs.py` to update counts
+- Run `uvx skill-linter@0.2.0 stamp` to update counts
 
 **For modified skills/commands:**
 - Update any cross-references
@@ -276,59 +269,30 @@ npx -y -p puppeteer node ./assets/capture-screenshot.js
 
 This creates `assets/social-preview.png` from `assets/social-preview.html`.
 
-### 5. Validate Skills Integrity
+### 5. Validate
 
 **Critical:** Run validation before release to prevent broken skills from being published.
 
 ```bash
-python scripts/validate-skills.py
+make validate
 ```
 
-**skill-linter (being adopted):** CI also runs [skill-linter](https://pypi.org/project/skill-linter/) as a report-only job, configured in `pyproject.toml`. Run it locally with `make skill-lint`. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once the findings it reports today are fixed; until then those scripts stay the blocking checks.
+This runs [skill-linter](https://pypi.org/project/skill-linter/), configured in `pyproject.toml` (`[tool.skill-linter]`), and is the same check CI runs:
 
-The script validates:
-- **YAML frontmatter** - Parsing, required fields (name, description, triggers), format
-- **Name format** - Letters, numbers, hyphens only
-- **Description** - Max 1024 chars, must contain "Use when" trigger clause
-- **References** - Directory exists, has files, proper headers
-- **Reference paths** - File paths cited in skill markdown resolve relative to the containing file or the skill root
-- **Count consistency** - Skills/reference counts match across documentation
+- `skill-linter release` checks the shipped plugin tree (manifest, commands map, marketplace entry), then runs every other rule: frontmatter, names and descriptions, sections and references, Markdown syntax (unclosed fences, table separators, comments and column counts), commands, the changelog and stamped counts
+- `skill-linter stamp --check` fails when a stamped count or version is stale
 
 **Options:**
 ```bash
-python scripts/validate-skills.py --check yaml       # YAML checks only
-python scripts/validate-skills.py --check references # Reference checks only
-python scripts/validate-skills.py --skill react-expert  # Single skill
-python scripts/validate-skills.py --format json      # JSON output for CI
-python scripts/validate-skills.py --help             # Full usage
+uvx skill-linter@0.2.0 check --skill react-expert   # One skill's rules only
+uvx skill-linter@0.2.0 check --only markdown        # One rule group
+uvx skill-linter@0.2.0 check --format json          # JSON output
+uvx skill-linter@0.2.0 rules                        # Every rule, its group and severity
 ```
 
-**Exit codes:** 0 = success (warnings OK), 1 = errors found
+**Exit codes:** 0 = no errors (warnings OK), 1 = errors found
 
-### 6. Validate Markdown Syntax
-
-**Critical:** Run markdown validation to catch parsing errors.
-
-```bash
-python scripts/validate-markdown.py
-```
-
-The script validates:
-- **HTML comments in tables** - Comments between table rows break parsing
-- **Unclosed code blocks** - Ensures all code fences are properly closed
-- **Missing table separators** - Tables require `|---|` row after header
-- **Column count consistency** - All table rows must have same column count
-
-**Options:**
-```bash
-python scripts/validate-markdown.py --check       # CI mode (exit code only)
-python scripts/validate-markdown.py --path FILE   # Single file
-python scripts/validate-markdown.py --format json # JSON output for CI
-```
-
-**Exit codes:** 0 = no issues, 1 = issues found
-
-### 7. Final Verification
+### 6. Final Verification
 
 After running validation, manually verify:
 
@@ -337,7 +301,7 @@ After running validation, manually verify:
 grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
 ```
 
-### 8. Plugin Branch
+### 7. Plugin Branch
 
 The plugin ships from the `plugin` branch, not from `main`. Pushing the `vX.Y.Z` tag runs `.github/workflows/publish-plugin.yml`, which rebuilds that branch from `scripts/build-plugin-dist.sh` (only `.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `README.md`, `LICENSE`). Both the marketplace entry and the Claude plugin directory read from it.
 
