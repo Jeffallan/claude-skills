@@ -64,8 +64,8 @@ Verify skills are working:
 
 <!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> skills covering:
 - 12 Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
-- 7 Backend Framework Experts (NestJS, Django, FastAPI, Spring Boot, Laravel, Rails, .NET Core)
-- 7 Frontend & Mobile Experts (React, Next.js, Vue, Angular, React Native, Flutter)
+- 8 Backend Framework Experts (NestJS, Django, Django Storages S3, FastAPI, Spring Boot, Laravel, Rails, .NET Core)
+- 7 Frontend & Mobile Experts (React, Next.js, Vue, Vue (JavaScript), Angular, React Native, Flutter)
 - <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Project Workflow Commands (discovery, planning, execution, retrospectives)
 - Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
