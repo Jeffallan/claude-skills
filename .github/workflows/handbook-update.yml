@@ -32,6 +32,9 @@ jobs:
         with:
           token: ${{ steps.app.outputs.token }}
       - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - name: Let git read the private handbook
         run: git config --global url."https://x-access-token:${{ steps.app.outputs.token }}@github.com/".insteadOf "https://github.com/"
       - name: Check for a new handbook version
@@ -43,7 +46,8 @@ jobs:
           rm check.json
       - name: Update from the handbook
         if: steps.check.outputs.available == 'true'
-        run: uvx copier update --defaults
+        # --trust: the handbook runs personal-sites/versions.mjs to carry the shared site package versions
+        run: uvx copier update --defaults --trust
       - name: Open the update PR
         if: steps.check.outputs.available == 'true'
         uses: peter-evans/create-pull-request@v7
