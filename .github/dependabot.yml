@@ -4,3 +4,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # The handbook delivers these workflows and bumps their actions (action-pins.yml there).
+    exclude-paths:
+      - ".github/workflows/handbook-update.yml"
+      - ".github/workflows/docs-site.yml"
+      - ".github/workflows/docs-deploy.yml"
