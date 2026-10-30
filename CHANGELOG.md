@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- Docs site: skill page titles lead with the skill's name, as "Game Developer Agent Skill for Claude Code | Claude Skills" (was "Agent Skills for Claude Code | Game Developer | Claude Skills"), so search results show what the page is about first
 - Dependabot skips the workflows the handbook delivers (`handbook-update.yml`, `docs-site.yml`, `docs-deploy.yml`); the handbook bumps their actions and sends them with each release
 - The shared site packages (Astro, Starlight and the others listed in `CLAUDE.md`) take their versions from the handbook, which sends them with each release. `handbook-update.yml` sets up Node and runs `copier update --trust` for that step
 - CI: skill-linter is the blocking check. The Validate job runs `skill-linter release` and `skill-linter stamp --check`, and `make validate` runs the same two. `scripts/validate-skills.py`, `validate-markdown.py` and `update-docs.py` are removed, and `make skill-lint` with them. `CLAUDE.md` and `CONTRIBUTING.md` describe the skill-linter commands, which make a missing "Use when" clause or Reference Guide an error (closing #288)

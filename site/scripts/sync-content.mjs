@@ -21,7 +21,7 @@ syncSite({
   siteDir: path.resolve(import.meta.dirname, '..'),
   base: BASE_PATH,
   githubBlob: GITHUB_BLOB,
-  pageTitle: 'Agent Skills for Claude Code | {title}',
+  pageTitle: '{title} Agent Skill for Claude Code',
   docs: [
     {
       src: 'QUICKSTART.md',
