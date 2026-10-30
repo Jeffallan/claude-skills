@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs site: moved to Astro 7.4 and Starlight 0.42, matching writing-with-agents. The README page keeps its body, which Astro 7 had read as frontmatter once the badge HTML was stripped, and the footer keeps the space before the Synergetic Solutions link (#278, closing #226)
 - CI: `release.yml` builds the docs site on Node 24, since Astro 7.4 needs Node 22.23.4 or later (#280)
 
+### Removed
+
+- `.serena/`, the Serena project config and memories, which the repo no longer uses; `.gitignore` keeps it out
+
 ### Fixed
 - `code-reviewer`, `security-reviewer`, `spec-miner`: `allowed-tools` is space-separated, as the Agent Skills spec requires. `game-developer`, `embedded-systems` and `swift-expert` set `related-skills: ""` instead of leaving it empty, which parsed as null (#289, closing #270)
 - QUICKSTART: the backend count is 8 and lists Django Storages S3, and the frontend list names Vue (JavaScript). `complete-ticket.md`'s `argument-hint` matches its YAML (#287, closing #274)
