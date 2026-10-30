@@ -196,6 +196,8 @@ The site code under `site/src/components/site-*/`, the shared CI workflows and `
 
 The versions of the shared site packages come from the handbook too (`personal-sites/package.json`): `astro`, `@astrojs/starlight`, `@jdevalk/astro-seo-graph`, `astro-og-canvas`, `starlight-links-validator`, the `@fontsource` fonts, `js-yaml`, `smol-toml`, `sharp`, `prettier` and `prettier-plugin-astro`. Don't bump them in `site/package.json`. Bump them in the handbook. **They reach this repo only with a handbook release**, as the update PR that `handbook-update.yml` opens, carrying the new `site/package.json` and lockfile.
 
+The same goes for the actions in the workflows the handbook delivers (`handbook-update.yml`, `docs-site.yml`, `docs-deploy.yml`). Dependabot here skips those files (`exclude-paths`), and the handbook bumps them.
+
 ## Release Checklist
 
 When releasing a new version, follow these steps.
