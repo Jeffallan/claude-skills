@@ -50,7 +50,7 @@ jobs:
         run: uvx copier update --defaults --trust
       - name: Open the update PR
         if: steps.check.outputs.available == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app.outputs.token }}
           branch: handbook/update
