@@ -115,10 +115,10 @@ function works(career) {
 
 /**
  * A hub page. career: site-career/career.json; profile: site-footer/profile.json;
- * knowsAbout: topics for the Person; page: { url, title, description, isHome }.
+ * page: { url, title, description, isHome }. The Person's topics are career.person.knows_about.
  * The home page is the Person's ProfilePage and lists the works.
  */
-export function hubGraph({ career, profile, knowsAbout, page }) {
+export function hubGraph({ career, profile, page }) {
   const websiteId = `${HUB_URL}#website`;
   const org = career.organization;
   const nodes = [
@@ -131,7 +131,7 @@ export function hubGraph({ career, profile, knowsAbout, page }) {
       jobTitle: profile.role,
       description: career.person.bios.one_liner,
       sameAs: profile.profiles.map((x) => x.url),
-      knowsAbout,
+      knowsAbout: career.person.knows_about,
       affiliation: ref(orgId(org)),
     },
     { '@type': 'Organization', '@id': orgId(org), name: org.name, url: org.url },
