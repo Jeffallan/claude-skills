@@ -7,7 +7,7 @@ import { indexNowOptions } from './src/components/site-seo/indexnow.mjs';
 
 const SITE_URL = 'https://jeffallan.github.io/claude-skills';
 const DESCRIPTION =
-  '67 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
+  '68 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
 
 export default defineConfig({
   site: 'https://jeffallan.github.io',
