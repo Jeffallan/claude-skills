@@ -1,0 +1,163 @@
+---
+// Footer shared by Jeff's sites. Comes from the handbook's
+// personal-sites/site-footer; change it there, not in the project.
+//
+// Row 1: the hub (About the Author) and a Contact link that opens the
+// contact dialog. Row 2: every project site, so a site added to site-nav's
+// sites.json appears here too. Then the social profiles, the credit line
+// (the name links to Jeff's GitHub profile), copyright and a privacy link.
+// It renders the page's ContactDialog. Profile data is in profile.json;
+// colors use the site-style tokens, with plain fallbacks.
+import sites from '../site-nav/sites.json';
+import ContactDialog from '../site-contact/ContactDialog.astro';
+import profile from './profile.json';
+
+interface Props {
+  /** Link to this site's privacy page. Defaults to <base>/privacy/. */
+  privacyHref?: string;
+}
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const { privacyHref = `${base}privacy/` } = Astro.props;
+const current = new URL(base, Astro.site).href;
+const year = new Date().getFullYear();
+const home = sites.find((site) => site.home);
+const projects = sites.filter((site) => !site.home);
+---
+
+<footer class="site-footer">
+  <nav class="site-footer-sites" aria-label="Sites">
+    <div class="site-footer-row">
+      {home && (
+        <a
+          class="site-footer-link"
+          href={home.url}
+          aria-current={home.url === current ? 'true' : undefined}
+        >
+          {home.name}
+        </a>
+      )}
+      <button
+        type="button"
+        class="site-footer-link site-footer-contact"
+        data-site-cta-open
+        data-cta="footer"
+      >
+        Contact
+      </button>
+    </div>
+    <div class="site-footer-row">
+      {projects.map((site) => (
+        <a
+          class="site-footer-link"
+          href={site.url}
+          aria-current={site.url === current ? 'true' : undefined}
+        >
+          {site.name}
+        </a>
+      ))}
+    </div>
+  </nav>
+
+  <div class="site-footer-social">
+    {profile.profiles.map((p) => (
+      <a
+        class="site-footer-link site-footer-icon"
+        href={p.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={p.name}
+        title={p.name}
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path fill="currentColor" d={p.path} />
+        </svg>
+      </a>
+    ))}
+  </div>
+
+  <p class="site-footer-credit">
+    <a class="site-footer-link" href={profile.url}>
+      {profile.name}
+    </a>
+    , {profile.role} at{' '}
+    <a class="site-footer-link" href={profile.org.url}>
+      {profile.org.name}
+    </a>
+  </p>
+
+  <p class="site-footer-legal">
+    © {year} {profile.name} ·{' '}
+    <a class="site-footer-link" href={privacyHref}>
+      Privacy
+    </a>
+  </p>
+  <ContactDialog />
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--site-text-3, #6c757d);
+    border-top: 1px solid var(--site-border, #e0e6e8);
+  }
+
+  .site-footer p {
+    margin: 0;
+    color: inherit;
+  }
+
+  .site-footer-sites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .site-footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    font-family: var(--site-font-heading, inherit);
+    font-weight: 600;
+  }
+
+  .site-footer-social {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .site-footer-contact {
+    padding: 0;
+    font: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .site-footer .site-footer-link {
+    color: var(--site-text-2, #4a5c63);
+    text-decoration: none;
+  }
+
+  .site-footer .site-footer-link:hover,
+  .site-footer .site-footer-link:focus-visible {
+    color: var(--site-accent-ui, #127c8d);
+  }
+
+  .site-footer a.site-footer-link[aria-current] {
+    color: var(--site-accent-ui, #127c8d);
+  }
+
+  .site-footer-icon {
+    display: inline-flex;
+    padding: 0.25rem;
+  }
+</style>

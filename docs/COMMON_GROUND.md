@@ -420,7 +420,7 @@ Check git remote configuration. For non-git projects, the absolute path is used.
 
 - [Workflow Commands](WORKFLOW_COMMANDS.md) — Project workflow commands
 - [Atlassian MCP Setup](ATLASSIAN_MCP_SETUP.md) — Jira/Confluence integration
-- [commands/common-ground/COMMAND.md](../commands/common-ground/COMMAND.md) — Technical implementation
+- [commands/common-ground.md](../commands/common-ground.md) — Technical implementation
 - [Common Ground Workflow](workflow/common-ground.md) — Workflow integration details
 
 ---
@@ -431,5 +431,5 @@ Check git remote configuration. For non-git projects, the absolute path is used.
 |------|---------|
 | `~/.claude/common-ground/{project}/COMMON-GROUND.md` | Human-readable assumptions |
 | `~/.claude/common-ground/{project}/ground.index.json` | Machine-readable index |
-| `commands/common-ground/COMMAND.md` | Command implementation |
-| `commands/common-ground/references/` | Deep-dive reference files |
+| `commands/common-ground.md` | Command implementation |
+| `references/common-ground/` | Deep-dive reference files |

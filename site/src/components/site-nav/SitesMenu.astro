@@ -1,0 +1,132 @@
+---
+// Dropdown that links Jeff's sites to each other. Comes from the handbook's
+// personal-sites/site-nav; change it there, not in the project.
+//
+// The site list is sites.json beside this file. The current site is marked
+// with aria-current. Extra items can go in the default slot as
+// <li><a class="site-nav-link" href="...">...</a></li>.
+// Colors come from the --site-nav-* variables, which site-style sets; the
+// fallbacks below keep it usable without them.
+import sites from './sites.json';
+
+interface Props {
+  /** Text on the button that opens the menu. */
+  label: string;
+  /** Include the home entry (the hub). Off on the hub itself. */
+  home?: boolean;
+  /** Class for the button, so it can match the host's nav links. */
+  buttonClass?: string;
+}
+
+const { label, home = true, buttonClass = '' } = Astro.props;
+// BASE_URL is '/' on the hub and may lack the trailing slash on a docs site.
+const current = new URL(import.meta.env.BASE_URL.replace(/\/?$/, '/'), Astro.site).href;
+const entries = sites.filter((site) => home || !site.home);
+---
+
+<details class="site-nav">
+  <summary class={buttonClass}>
+    {label}
+    <span class="site-nav-caret" aria-hidden="true"></span>
+  </summary>
+  <ul class="site-nav-list">
+    <slot />
+    {entries.map((site) => (
+      <li>
+        <a
+          class="site-nav-link"
+          href={site.url}
+          aria-current={site.url === current ? 'true' : undefined}
+        >
+          {site.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
+
+<script>
+  // Close an open menu on a click outside it, on a link in it (a same-page
+  // link leaves the page in place), or on Escape.
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element;
+    for (const menu of document.querySelectorAll<HTMLDetailsElement>('details.site-nav[open]')) {
+      if (!menu.contains(target) || target.closest('a')) menu.open = false;
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    for (const menu of document.querySelectorAll<HTMLDetailsElement>('details.site-nav[open]')) {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    }
+  });
+</script>
+
+<style>
+  .site-nav {
+    position: relative;
+  }
+
+  .site-nav summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .site-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* A span, not summary::after, so a host's own nav-link ::after rules don't replace it. */
+  .site-nav-caret {
+    display: inline-block;
+    margin-left: 0.4em;
+    border: 0.3em solid transparent;
+    border-top-color: currentColor;
+    border-bottom: 0;
+    vertical-align: middle;
+  }
+
+  .site-nav ul.site-nav-list {
+    position: absolute;
+    right: 0;
+    z-index: 1030;
+    min-width: 12rem;
+    margin: 0.25rem 0 0;
+    padding: 0.5rem 0;
+    list-style: none;
+    background: var(--site-nav-menu-bg, #fff);
+    border: 1px solid var(--site-nav-menu-border, rgba(0, 0, 0, 0.15));
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .site-nav ul.site-nav-list :global(li) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-nav ul.site-nav-list :global(li)::before {
+    content: none;
+  }
+
+  /* Specific enough to beat a host's own link and list rules. */
+  .site-nav ul.site-nav-list :global(li a.site-nav-link) {
+    display: block;
+    padding: 0.4rem 1rem;
+    color: var(--site-nav-menu-fg, #1a2e35);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-nav ul.site-nav-list :global(li a.site-nav-link:hover),
+  .site-nav ul.site-nav-list :global(li a.site-nav-link:focus-visible) {
+    color: var(--site-nav-menu-fg, #1a2e35);
+    background: var(--site-nav-menu-hover, rgba(23, 162, 184, 0.1));
+  }
+
+  .site-nav ul.site-nav-list :global(li a.site-nav-link[aria-current]) {
+    font-weight: 600;
+    color: var(--site-nav-accent, #17a2b8);
+  }
+</style>

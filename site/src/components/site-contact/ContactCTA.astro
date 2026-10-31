@@ -1,0 +1,21 @@
+---
+// Call to action: a line of text and a button that opens the page's contact
+// dialog (ContactDialog, rendered by SiteFooter). For Markdown pages, where
+// a component can't go, cta-html.mjs builds the same block. Styles live in
+// ContactDialog. Comes from the handbook's personal-sites/site-contact;
+// change it there, not in the project.
+import { ctaBlock } from './cta-html.mjs';
+
+interface Props {
+  /** The line of text beside the button. */
+  text: string;
+  /** Which call to action this is, recorded with the message. */
+  cta?: string;
+  /** Button label. */
+  label?: string;
+}
+
+const { text, cta = 'page-end', label = 'Contact' } = Astro.props;
+---
+
+<Fragment set:html={ctaBlock({ text, cta, label })} />

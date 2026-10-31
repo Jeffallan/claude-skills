@@ -42,9 +42,8 @@ dev-unlink:
 	@echo "Restart Claude Code to load the released version."
 
 validate:
-	python scripts/validate-skills.py
-	python scripts/validate-markdown.py --check
-	python scripts/update-docs.py --check
+	uvx skill-linter@0.2.0 release
+	uvx skill-linter@0.2.0 stamp --check
 
 test:
 	bash scripts/test-makefile.sh

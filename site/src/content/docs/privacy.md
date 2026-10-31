@@ -3,7 +3,7 @@ title: Privacy Policy
 description: How the Fullstack Dev Skills Plugin and its documentation site handle information
 ---
 
-**Effective:** May 1, 2026
+**Effective:** October 26, 2026
 
 This privacy policy describes how the **Fullstack Dev Skills Plugin** (`claude-skills`) and its companion documentation site at `https://jeffallan.github.io/claude-skills/` handle information.
 
@@ -36,11 +36,12 @@ Before configuring an MCP server, review the privacy policy of the vendor whose 
 
 The documentation site at `https://jeffallan.github.io/claude-skills/` uses the following third-party services:
 
-| Service | Purpose | Data involved |
-|---|---|---|
-| GitHub Pages | Static site hosting | IP addresses logged in standard server access logs, governed by [GitHub's privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
-| Google Analytics 4 (`G-QVMEHEZBXE`) | Aggregate page-view and session metrics | Cookies, page URL, referrer, approximate geolocation derived from IP, browser/device info; governed by [Google's privacy policy](https://policies.google.com/privacy) |
-| jsDelivr CDN | Loads the Mermaid diagram library on pages that render diagrams | IP address logged in CDN access logs; governed by [jsDelivr's privacy policy](https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net) |
+| Service                             | Purpose                                                                                   | Data involved                                                                                                                                                                       |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Pages                        | Static site hosting                                                                       | IP addresses logged in standard server access logs, governed by [GitHub's privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
+| Google Analytics 4 (`G-QVMEHEZBXE`) | Aggregate page-view and session metrics                                                   | Cookies, page URL, referrer, approximate geolocation derived from IP, browser/device info; governed by [Google's privacy policy](https://policies.google.com/privacy)               |
+| jsDelivr CDN                        | Loads the Mermaid diagram library on pages that render diagrams                           | IP address logged in CDN access logs; governed by [jsDelivr's privacy policy](https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net)                                           |
+| Formspree                           | Delivers messages sent with the contact form (the Contact button at the end of each page) | The name, email address, topic and message you enter, and the site and page you sent it from; governed by [Formspree's privacy policy](https://formspree.io/legal/privacy-policy/)  |
 
 To opt out of Google Analytics, you can use the [Google Analytics opt-out browser add-on](https://tools.google.com/dlpage/gaoptout), enable browser privacy features such as Do Not Track, or use any standard ad/tracker blocker. The site functions normally with these enabled.
 
@@ -58,7 +59,7 @@ Form submissions are processed by [Formspree](https://formspree.io/legal/privacy
 
 ## 6. Sale of Personal Information
 
-This project does not sell, rent, or trade personal information. No personal information is collected by the plugin itself, and the documentation site's third-party services are used solely for hosting and aggregate site analytics as described in section 3.
+This project does not sell, rent, or trade personal information. No personal information is collected by the plugin itself, and the documentation site's third-party services are used solely for hosting, aggregate site analytics, and delivering contact-form messages, as described in section 3.
 
 ## 7. Children
 

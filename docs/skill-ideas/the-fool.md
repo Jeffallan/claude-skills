@@ -224,5 +224,5 @@ Context signals for auto-recommending modes:
 - `skills/feature-forge/SKILL.md` — AskUserQuestions integration pattern
 - `skills/feature-forge/references/interview-questions.md` — Structured question flow examples
 - `skills/code-reviewer/SKILL.md` — Review-scope skill with routing table
-- `commands/common-ground/COMMAND.md` — Interactive multi-phase dialogue pattern
+- `commands/common-ground.md` — Interactive multi-phase dialogue pattern
 - `SKILLS_GUIDE.md` — Category placement and decision tree format

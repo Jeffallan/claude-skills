@@ -1,0 +1,61 @@
+# Delivered by the handbook (Copier). Opens a PR when a new handbook version is available.
+# Triggered by the handbook's publish workflow, with a weekly check in case a push is missed.
+# Needs the handbook GitHub App: variable HANDBOOK_APP_ID and secret HANDBOOK_APP_PRIVATE_KEY.
+# Until HANDBOOK_APP_ID is set, the job is skipped instead of failing.
+name: Handbook update
+
+on:
+  repository_dispatch:
+    types: [handbook-updated]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    if: vars.HANDBOOK_APP_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        id: app
+        with:
+          app-id: ${{ vars.HANDBOOK_APP_ID }}
+          private-key: ${{ secrets.HANDBOOK_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            handbook
+            ${{ github.event.repository.name }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app.outputs.token }}
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Let git read the private handbook
+        run: git config --global url."https://x-access-token:${{ steps.app.outputs.token }}@github.com/".insteadOf "https://github.com/"
+      - name: Check for a new handbook version
+        id: check
+        run: |
+          uvx copier check-update --output-format json > check.json
+          echo "available=$(jq -r .update_available check.json)" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r .latest_version check.json)" >> "$GITHUB_OUTPUT"
+          rm check.json
+      - name: Update from the handbook
+        if: steps.check.outputs.available == 'true'
+        # --trust: the handbook runs personal-sites/versions.mjs to carry the shared site package versions
+        run: uvx copier update --defaults --trust
+      - name: Open the update PR
+        if: steps.check.outputs.available == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app.outputs.token }}
+          branch: handbook/update
+          commit-message: "chore: update handbook to v${{ steps.check.outputs.version }}"
+          title: "Update handbook to v${{ steps.check.outputs.version }}"
+          body: |
+            Copier update from the handbook, v${{ steps.check.outputs.version }}.
+            Conflict markers, if any, mark places where a local edit and the handbook changed the same lines.

@@ -7,8 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Docs site: each deploy tells search engines that support IndexNow (Bing, Yandex and others) which pages changed, so they recrawl them sooner. Only the deploy build submits, and only pages whose HTML changed since the last deploy (the first deploy submits all). The key is served once for every site at `https://jeffallan.github.io/17c975f34bbe97c32cf68c4f58503478.txt`
+- Docs site: the build fails on a broken internal link (`starlight-links-validator`)
+- CI: `docs-site.yml` lints and builds the docs site on every pull request and push to `main`, so a broken link or lint error shows up in review instead of at release. The workflow is shared with the other docs sites and kept in step from the same private repo as the site code
+- Docs site: every page has a 1200×630 preview image (`og:image`) for links shared on social sites: the site's name beside the monogram, the page title, and the page description cut to the whole sentences that fit in 260 characters. The cards are generated at build time (`site/src/pages/og/`) with astro-og-canvas
+- Docs site: every page carries a JSON-LD graph naming its author. Skill and doc pages are a `TechArticle` and the home page a `WebPage` about the repo (`SoftwareSourceCode`), each pointing at one `Person` (`https://jeffallan.github.io/#person`) declared on the author's site. It is added through Starlight's route middleware (`site/src/routeData.ts`), so Starlight's own title, description and Open Graph tags stay as they are
+- Docs site: the shared light and dark theme (`site/src/components/site-style/`), delivered from a private repo that keeps the docs sites in step: the teal palette and fonts (Outfit, Source Sans 3) from the author's site, a teal-based dark theme, and the monogram before the title, linking to that site. The purple palette is retired (#285)
+- Docs site: a shared footer (About the Author and Contact, the docs sites, profile links, credit line, copyright, privacy link) and a Contact call to action that opens the contact form in a dialog: under the home page's buttons, and before the first heading on skill, workflow, guide, Getting Started and Skills Guide pages. README, Changelog, Contributing, Roadmap and Privacy have none. The privacy page lists Formspree (#285)
+- Docs site: the header has a Sites menu linking the author's site and both docs sites, with the current one marked. The menu (`site/src/components/site-nav/`) is shared code from the same private repo, delivered with Copier (`.copier-answers.yml`), and `handbook-update.yml` opens a PR when it changes (#283)
+- CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
+
 ### Changed
+- Docs site: skill page titles lead with the skill's name, as "Game Developer Agent Skill for Claude Code | Claude Skills" (was "Agent Skills for Claude Code | Game Developer | Claude Skills"), so search results show what the page is about first
+- Dependabot skips the workflows the handbook delivers (`handbook-update.yml`, `docs-site.yml`, `docs-deploy.yml`); the handbook bumps their actions and sends them with each release
+- The shared site packages (Astro, Starlight and the others listed in `CLAUDE.md`) take their versions from the handbook, which sends them with each release. `handbook-update.yml` sets up Node and runs `copier update --trust` for that step
+- CI: skill-linter is the blocking check. The Validate job runs `skill-linter release` and `skill-linter stamp --check`, and `make validate` runs the same two. `scripts/validate-skills.py`, `validate-markdown.py` and `update-docs.py` are removed, and `make skill-lint` with them. `CLAUDE.md` and `CONTRIBUTING.md` describe the skill-linter commands, which make a missing "Use when" clause or Reference Guide an error (closing #288)
+- Plugin: `plugin.json` lists the ten commands in an object map instead of scanning `./commands/`, which Claude Code documents for flat command files only. The commands keep their names, including `project:<phase>:<command>` for the nested ones. The marketplace entry no longer lists `commands` (skill-linter P12)
+- `CONTRIBUTING.md` and `CLAUDE.md` describe what the validator enforces: the description formula from `CLAUDE.md`, the section order, a five-step Core Workflow, the Reference Guide table, the Documentation backlink as the last line, and reference files without the old `> Reference for:` header (#277, closing #273)
+- Plugin and marketplace descriptions: the language, backend and frontend counts are stamped by skill-linter, which corrected them to 8 backend frameworks and 7 frontend/mobile (they said 10 and 6) (#303)
+- QUICKSTART: the language, backend and frontend counts are stamped by skill-linter (`SKILL_COUNT:<domain>` markers), so `stamp --check` reports a stale count (#302)
+- Docs site: deploys on every push to `main` (`docs-deploy.yml`, shared with the other docs sites) instead of with each release, so site changes go live without a plugin release. `release.yml` now only creates the GitHub release
+- Docs site: the content sync is shared code, delivered from a private repo that keeps the docs sites in step (`site/src/components/site-sync/`). `site/scripts/sync-content.mjs` keeps only this site's settings, and the skills folder, domains, docs URL and credit come from the [skill-linter](https://pypi.org/project/skill-linter/) settings in `pyproject.toml` (`[tool.skill-linter]`). `llms.txt` is now written by astro-seo-graph's `seoGraph()`, and lists `llms-full.txt` under Optional (#295)
+- Docs site: skill page meta descriptions are the skill's description as written, without the "Claude Skills | <title> |" prefix. Workflow page descriptions end at a sentence instead of being cut at 160 characters (#295)
+- Docs site: the Sites menu lists the Trust Center Directory (#295)
 - CI: merged Dependabot updates for GitHub Actions: `actions/setup-python` 6.3.0 → 7.0.0 (#263) and `actions/configure-pages` 5.0.0 → 6.0.0 (#262). Neither breaking change applies here: the workflows never use setup-python's removed `pip-install` input, and configure-pages' move to Node 24 runs on GitHub-hosted runners that support it. `release.yml` runs only on tags, so configure-pages 6.0.0 is first exercised at the next release
+- Docs site: moved to Astro 7.4 and Starlight 0.42, matching writing-with-agents. The README page keeps its body, which Astro 7 had read as frontmatter once the badge HTML was stripped, and the footer keeps the space before the Synergetic Solutions link (#278, closing #226)
+- CI: `release.yml` builds the docs site on Node 24, since Astro 7.4 needs Node 22.23.4 or later (#280)
+
+### Removed
+
+- `.serena/`, the Serena project config and memories, which the repo no longer uses; `.gitignore` keeps it out
+
+### Fixed
+- `code-reviewer`, `security-reviewer`, `spec-miner`: `allowed-tools` is space-separated, as the Agent Skills spec requires. `game-developer`, `embedded-systems` and `swift-expert` set `related-skills: ""` instead of leaving it empty, which parsed as null (#289, closing #270)
+- QUICKSTART: the backend count is 8 and lists Django Storages S3, and the frontend list names Vue (JavaScript). `complete-ticket.md`'s `argument-hint` matches its YAML (#287, closing #274)
+- Docs site: `llms.txt` links left out the `/claude-skills` base path, so all 96 returned 404. They are now absolute and include it (#272, #295)
+- Docs site: page titles are taken from the first heading outside code blocks. The README page had lost the `# Backend Development` comment from its install example, because the build took it for the page's H1 and removed it (#271, #295)
+- Docs site: the home page's Markdown copy links Getting Started under `/claude-skills/` (#295)
+- Docs site: code blocks keep their frame and horizontal scrolling on pages whose first code block is a Mermaid diagram. Expressive Code puts its stylesheet in the first block, and rendering the diagram removed it; long lines ran into the "On this page" column on Workflow Commands (#284)
+- `common-ground` command: moved `commands/common-ground/COMMAND.md` to `commands/common-ground.md` (and its YAML beside it) so Claude Code registers it as `/fullstack-dev-skills:common-ground` instead of `/fullstack-dev-skills:common-ground:COMMAND`. Claude Code names plugin commands after their path under `commands/`; the `name` frontmatter added in #186 only adds a second label (#267, closing #264)
+- `golang-pro`, `websocket-engineer`, `kubernetes-specialist`: corrected eight examples. A successful Go pipeline no longer waits for its timeout; fan-out/fan-in and pipeline stages stop on cancellation while idle; `generics.md` uses `cmp.Ordered` and `golang.org/x/exp/constraints` in place of a nonexistent `constraints` import; the WebSocket inactivity timer restarts on each message; presence, queue and scaling examples use the JWT-verified `socket.userId`; the CoreDNS `cluster2.local` server block is top-level; the helm-unittest replica example disables autoscaling and lists the templates it needs; NetworkPolicy troubleshooting no longer deletes every production policy (#268, closing #266)
+- `atlassian-mcp`: documented the hosted Atlassian Rovo MCP Server (`https://mcp.atlassian.com/v2/mcp`) as the official option, with Claude Code, Claude Desktop, `mcp-remote` and API-token setup; kept sooperset `mcp-atlassian` for Server/Data Center. Removed the nonexistent `@anthropic/mcp-atlassian` and `@sooperset/mcp-atlassian` packages, corrected the xuanxt package to `@xuandev/atlassian-mcp`, and replaced invented environment variables with the ones sooperset reads (#269, closing #265)
+
+### Contributors
+- @MannXo: Aligned `CONTRIBUTING.md` and `CLAUDE.md` with what the validator enforces (#277)
+- @ShryukGrandhi: Made six SKILL.md frontmatter values spec-compliant (#289), corrected the QUICKSTART per-domain counts and the `complete-ticket` argument-hint (#287), and proposed the `llms.txt` base-path fix that #295 took over (#286)
+- @s1ngh-code: Reported the `common-ground` command registering as `/fullstack-dev-skills:common-ground:COMMAND` (#264)
+- @felipecrs: Reported that the official Atlassian Rovo MCP Server was missing from `atlassian-mcp` (#265)
+- @CBEPX: Reported the Go, WebSocket and Kubernetes example bugs (#266)
 
 ## [0.4.20] - 2026-10-16
 
@@ -62,9 +109,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README banner (capsule-render URL) still displayed 66 skills after the v0.4.16 release; the counts are URL-encoded inside the image URL where no `<!-- SKILL_COUNT -->` marker can live, so `update-docs.py` never touched them. The script now rewrites the banner's `desc=` parameter from computed counts
 
 ### Contributors
-- @shijian0-eng — Corrected the marketplace name in plugin install commands across the README, QUICKSTART, and docs site (#236)
-- @johnjehiel — Reported the failing plugin install command (#234)
-- @KoreaMango — Replaced the legacy Riverpod `StateNotifier` example in `flutter-expert` with the modern `Notifier` pattern (#237)
+- @shijian0-eng: Corrected the marketplace name in plugin install commands across the README, QUICKSTART, and docs site (#236)
+- @johnjehiel: Reported the failing plugin install command (#234)
+- @KoreaMango: Replaced the legacy Riverpod `StateNotifier` example in `flutter-expert` with the modern `Notifier` pattern (#237)
 
 ## [0.4.16] - 2026-08-07
 
@@ -88,13 +135,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `devops-engineer/SKILL.md`: the "never deploy to production without explicit approval" constraint was not operationalized in the core workflow; the deploy step now determines the target environment and, for production or customer-facing targets, presents the deployment summary and rollback plan and requires explicit user approval before running deployment commands, closing #196 and #212
 
 ### Contributors
-- @vasugarg09 — Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
-- @chgreer1070 — Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
-- @kasymovpost — GitLab CI/CD best-practices reference for devops-engineer (#219)
-- @awais786 — New `django-storages-s3` skill: production S3 file storage for Django (#218)
-- @snvtac — Replaced hard-coded Cohere API key placeholder in `rag-architect` with environment lookup (#216)
-- @SergiuLupaiescu — Added user-approval gate between `terraform plan` and `apply` in `terraform-engineer` (#213)
-- @specterslient95-lgtm — Reported the missing plan/apply approval gate (#211) and the non-operationalized production-deploy constraint (#196, #212)
+- @vasugarg09: Fixed broken relative reference paths in `vue-expert-js` and `react-expert` (#225)
+- @chgreer1070: Patched docs-site dependency vulnerabilities via `npm audit fix` (#220)
+- @kasymovpost: GitLab CI/CD best-practices reference for devops-engineer (#219)
+- @awais786: New `django-storages-s3` skill: production S3 file storage for Django (#218)
+- @snvtac: Replaced hard-coded Cohere API key placeholder in `rag-architect` with environment lookup (#216)
+- @SergiuLupaiescu: Added user-approval gate between `terraform plan` and `apply` in `terraform-engineer` (#213)
+- @specterslient95-lgtm: Reported the missing plan/apply approval gate (#211) and the non-operationalized production-deploy constraint (#196, #212)
 
 ## [0.4.15] - 2026-05-20
 
@@ -105,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CommandFrontmatterChecker` in `scripts/validate-skills.py`: strict-parses YAML frontmatter on every `commands/**/*.md` with PyYAML (no fallback to the lenient simple parser, which had been masking these bugs). Runs as part of the workflow validation pass.
 
 ### Contributors
-- @rlex — Reported broken YAML frontmatter in `complete-ticket.md` after the `0.4.14` release surfaced the parse error in oh-my-pi (#193)
+- @rlex: Reported broken YAML frontmatter in `complete-ticket.md` after the `0.4.14` release surfaced the parse error in oh-my-pi (#193)
 
 ## [0.4.14] - 2026-05-01
 
@@ -113,7 +160,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `postgres-pro` reference docs: corrected invalid column references in `pg_stat_user_tables` and `pg_stat_user_indexes` query examples (`tablename` → `relname`, `indexname` → `indexrelname`) so the snippets actually run. Hardened identifier assembly with `format('%I.%I', schemaname, relname)` for safety against quoted/case-sensitive identifiers. Clarified the `VACUUM FREEZE` comment to note it operates on the current database, not the entire cluster (#191)
 
 ### Contributors
-- @sobstel — Fix invalid `pg_stat_*` column references and `VACUUM FREEZE` scope comment in `postgres-pro` references (#191)
+- @sobstel: Fix invalid `pg_stat_*` column references and `VACUUM FREEZE` scope comment in `postgres-pro` references (#191)
 
 ## [0.4.13] - 2026-04-28
 
@@ -143,8 +190,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `commands/common-ground/COMMAND.md`: added explicit `name: common-ground` so the slash command registers as `/common-ground`. Without it, Claude Code derived the name from the filename (`COMMAND.md`) and registered it as `/COMMAND` (#186)
 
 ### Contributors
-- @modir — Fix broken Workflow Commands docs link in README (#180)
-- @xiaolai — Add missing `name:` frontmatter fields across workflow commands (#182, #183, #184, #185, #186)
+- @modir: Fix broken Workflow Commands docs link in README (#180)
+- @xiaolai: Add missing `name:` frontmatter fields across workflow commands (#182, #183, #184, #185, #186)
 
 ## [0.4.11] - 2026-03-23
 
@@ -156,7 +203,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Total reference files: 365 → 366
 
 ### Contributors
-- @Genius-apple — Context management content adapted from the context-engineer skill submission (#168)
+- @Genius-apple: Context management content adapted from the context-engineer skill submission (#168)
 
 ## [0.4.10] - 2026-03-06
 
@@ -178,8 +225,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Astro site files to `update-docs.py` release automation so counts stay in sync
 
 ### Contributors
-- @popey — Improve skill quality across 65 skills via Tessl review (#172)
-- @hasan613 — Standardize README links and improve Quick Start section (#166)
+- @popey: Improve skill quality across 65 skills via Tessl review (#172)
+- @hasan613: Standardize README links and improve Quick Start section (#166)
 
 ## [0.4.9] - 2026-02-24
 
@@ -196,9 +243,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed nested code block rendering in `prompt-engineer` skill's CoT example (#160)
 
 ### Contributors
-- @wiretail — Report and document reversed Jira issue link semantics (#163)
-- @Big-Shark — Update console example in symfony-patterns (#164)
-- @fiberproduct — Fix nested code block formatting in prompt-patterns.md (#160)
+- @wiretail: Report and document reversed Jira issue link semantics (#163)
+- @Big-Shark: Update console example in symfony-patterns (#164)
+- @fiberproduct: Fix nested code block formatting in prompt-patterns.md (#160)
 
 ## [0.4.8] - 2026-02-17
 
@@ -217,10 +264,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed incorrect Python/Pydantic V1 reference from `php-pro` skill MUST NOT DO section (#154)
 
 ### Contributors
-- @salmanmkc — Upgrade GitHub Actions for Node 24 compatibility (#146)
-- @salmanmkc — Upgrade GitHub Actions to latest versions (#147)
-- @Karanjot786 — Add Agent Skills CLI installation method (#151)
-- @Aivanaso — Remove copy-paste error from php-pro skill (#154)
+- @salmanmkc: Upgrade GitHub Actions for Node 24 compatibility (#146)
+- @salmanmkc: Upgrade GitHub Actions to latest versions (#147)
+- @Karanjot786: Add Agent Skills CLI installation method (#151)
+- @Aivanaso: Remove copy-paste error from php-pro skill (#154)
 
 ## [0.4.7] - 2026-02-08
 
@@ -268,9 +315,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Escaped pipe character in `php-pro/modern-php-features.md` table
 
 ### Contributors
-- @hesreallyhim — Featured in Awesome Claude Code (#138)
-- @hesreallyhim — Fix formatting and links in README.md (#139)
-- @hesreallyhim — fix: minor syntax error in .md yaml frontmatter (#137)
+- @hesreallyhim: Featured in Awesome Claude Code (#138)
+- @hesreallyhim: Fix formatting and links in README.md (#139)
+- @hesreallyhim: fix: minor syntax error in .md yaml frontmatter (#137)
 
 ## [0.4.4] - 2026-02-03
 
@@ -288,7 +335,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added AdaL CLI (SylphAI) to supported agents table (#135)
 
 ### Contributors
-- @liyin2015 — docs: add AdaL CLI to supported agents (#135)
+- @liyin2015: docs: add AdaL CLI to supported agents (#135)
 
 ## [0.4.3] - 2026-02-03
 
@@ -352,9 +399,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Missing version comparison link for v0.4.1 in CHANGELOG (#116)
 
 ### Contributors
-- @thomassamoul — feat: add bloc state management to flutter expert (#117)
-- @Coopyrightdmin — fix: add missing version link for v0.4.1 (#116)
-- @Chidwan3578 — docs: clarify npx add-skill installation (#96)
+- @thomassamoul: feat: add bloc state management to flutter expert (#117)
+- @Coopyrightdmin: fix: add missing version link for v0.4.1 (#116)
+- @Chidwan3578: docs: clarify npx add-skill installation (#96)
 
 ## [0.4.1] - 2026-01-19
 
@@ -550,6 +597,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...HEAD
 [0.4.20]: https://github.com/jeffallan/claude-skills/compare/v0.4.19...v0.4.20
 [0.4.19]: https://github.com/jeffallan/claude-skills/compare/v0.4.18...v0.4.19
 [0.4.18]: https://github.com/jeffallan/claude-skills/compare/v0.4.17...v0.4.18

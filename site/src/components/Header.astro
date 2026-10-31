@@ -7,7 +7,11 @@ import SiteTitle from 'virtual:starlight/components/SiteTitle';
 import SocialIcons from 'virtual:starlight/components/SocialIcons';
 import ThemeSelect from 'virtual:starlight/components/ThemeSelect';
 
-const shouldRenderSearch = config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
+import SitesMenu from './site-nav/SitesMenu.astro';
+import Monogram from './site-style/Monogram.astro';
+
+const shouldRenderSearch =
+  config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
 
 const pathname = Astro.url.pathname;
 const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathname}/index.html.md`;
@@ -15,10 +19,12 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
 
 <div class="header">
   <div class="title-wrapper sl-flex">
+    <Monogram />
     <SiteTitle />
   </div>
-  <div class="sl-flex print:hidden">
-    {shouldRenderSearch && <Search />}
+  <div class="sl-flex print:hidden">{shouldRenderSearch && <Search />}</div>
+  <div class="sl-flex print:hidden sites-menu">
+    <SitesMenu label="Sites" buttonClass="sites-button" />
   </div>
   <div class="sl-hidden md:sl-flex print:hidden right-group">
     <div class="sl-flex social-icons">
@@ -26,9 +32,7 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
     </div>
     <a href={mirrorUrl} class="md-view-link" title="View as Markdown" aria-label="View as Markdown">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path
-          d="M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9Zm11-3.06a1.3 1.3 0 0 0-.06-.27v-.09c-.05-.1-.11-.2-.19-.28l-6-6a1.07 1.07 0 0 0-.28-.19h-.09a.88.88 0 0 0-.33-.11H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H15a1 1 0 0 1-1-1V5.41ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Zm-3-3H9a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2Z"
-        ></path>
+        <path d="M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9Zm11-3.06a1.3 1.3 0 0 0-.06-.27v-.09c-.05-.1-.11-.2-.19-.28l-6-6a1.07 1.07 0 0 0-.28-.19h-.09a.88.88 0 0 0-.33-.11H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H15a1 1 0 0 1-1-1V5.41ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Zm-3-3H9a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2Z"></path>
       </svg>
     </a>
     <ThemeSelect />
@@ -47,10 +51,21 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
     }
 
     .title-wrapper {
+      gap: 0.6rem;
+      align-items: center;
       overflow: clip;
       padding: 0.25rem;
       margin: -0.25rem;
       min-width: 0;
+    }
+
+    .sites-menu :global(.sites-button) {
+      color: var(--sl-color-gray-2);
+      font-size: var(--sl-text-sm);
+      font-weight: 600;
+    }
+    .sites-menu :global(.sites-button:hover) {
+      color: var(--sl-color-white);
     }
 
     .right-group,
@@ -76,15 +91,19 @@ const mirrorUrl = pathname.endsWith('/') ? `${pathname}index.html.md` : `${pathn
         --__main-column-fr: calc(
           (
               100% + var(--__sidebar-pad, 0rem) - var(--__toc-width, var(--sl-sidebar-width)) -
-                (2 * var(--__toc-width, var(--sl-nav-pad-x))) - var(--sl-content-inline-start, 0rem) -
-                var(--sl-content-width)
+                (2 * var(--__toc-width, var(--sl-nav-pad-x))) -
+                var(--sl-content-inline-start, 0rem) - var(--sl-content-width)
             ) /
             2
         );
         display: grid;
         grid-template-columns:
-          minmax(calc(var(--__sidebar-width) + max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))), auto)
+          minmax(
+            calc(var(--__sidebar-width) + max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))),
+            auto
+          )
           1fr
+          auto
           auto;
         align-content: center;
       }

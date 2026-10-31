@@ -1,5 +1,13 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightLinksValidator from 'starlight-links-validator';
+import seoGraph from '@jdevalk/astro-seo-graph/integration';
+import { llmsSectionsFromSync } from './src/components/site-sync/llms.mjs';
+import { indexNowOptions } from './src/components/site-seo/indexnow.mjs';
+
+const SITE_URL = 'https://jeffallan.github.io/claude-skills';
+const DESCRIPTION =
+  '68 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
 
 export default defineConfig({
   site: 'https://jeffallan.github.io',
@@ -7,9 +15,16 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Claude Skills',
-      description:
-        '68 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.',
-      customCss: ['./src/styles/custom.css'],
+      description: DESCRIPTION,
+      routeMiddleware: './src/routeData.ts',
+      plugins: [starlightLinksValidator()],
+      customCss: [
+        '@fontsource-variable/outfit',
+        '@fontsource-variable/source-sans-3',
+        './src/components/site-style/tokens.css',
+        './src/components/site-style/starlight.css',
+        './src/styles/custom.css',
+      ],
       head: [
         {
           tag: 'meta',
@@ -60,7 +75,11 @@ export default defineConfig({
                 div.className = 'mermaid';
                 div.id = 'mermaid-' + i;
                 div.textContent = code;
-                pre.closest('.expressive-code').replaceWith(div);
+                const block = pre.closest('.expressive-code');
+                // Expressive Code puts its one stylesheet and script inside the first
+                // code block on the page. Keep them when that block is a diagram.
+                block.querySelectorAll('link, script').forEach((el) => document.head.append(el));
+                block.replaceWith(div);
               });
               mermaid.run();
             }
@@ -74,6 +93,7 @@ export default defineConfig({
         SocialIcons: './src/components/SocialIcons.astro',
         Header: './src/components/Header.astro',
         Footer: './src/components/Footer.astro',
+        Hero: './src/components/Hero.astro',
       },
       social: [
         {
@@ -116,7 +136,10 @@ export default defineConfig({
                 { label: 'Overview', link: '/workflows/intake-phase/' },
                 { label: 'intake:document-codebase', link: '/workflows/intake-document-codebase/' },
                 { label: 'intake:capture-behavior', link: '/workflows/intake-capture-behavior/' },
-                { label: 'intake:create-system-description', link: '/workflows/intake-create-system-description/' },
+                {
+                  label: 'intake:create-system-description',
+                  link: '/workflows/intake-create-system-description/',
+                },
               ],
             },
             {
@@ -144,7 +167,10 @@ export default defineConfig({
               items: [
                 { label: 'Overview', link: '/workflows/execution-phase/' },
                 { label: 'execution:execute-ticket', link: '/workflows/execution-execute-ticket/' },
-                { label: 'execution:complete-ticket', link: '/workflows/execution-complete-ticket/' },
+                {
+                  label: 'execution:complete-ticket',
+                  link: '/workflows/execution-complete-ticket/',
+                },
               ],
             },
             {
@@ -152,7 +178,10 @@ export default defineConfig({
               collapsed: true,
               items: [
                 { label: 'Overview', link: '/workflows/retrospective-phase/' },
-                { label: 'retrospectives:complete-epic', link: '/workflows/retrospective-complete-epic/' },
+                {
+                  label: 'retrospectives:complete-epic',
+                  link: '/workflows/retrospective-complete-epic/',
+                },
               ],
             },
             { label: 'common-ground', link: '/workflows/common-ground/' },
@@ -162,62 +191,62 @@ export default defineConfig({
         {
           label: 'Language',
           collapsed: true,
-          autogenerate: { directory: 'skills/language' },
+          items: [{ autogenerate: { directory: 'skills/language' } }],
         },
         {
           label: 'Backend Frameworks',
           collapsed: true,
-          autogenerate: { directory: 'skills/backend' },
+          items: [{ autogenerate: { directory: 'skills/backend' } }],
         },
         {
           label: 'Frontend & Mobile',
           collapsed: true,
-          autogenerate: { directory: 'skills/frontend' },
+          items: [{ autogenerate: { directory: 'skills/frontend' } }],
         },
         {
           label: 'Infrastructure & Cloud',
           collapsed: true,
-          autogenerate: { directory: 'skills/infrastructure' },
+          items: [{ autogenerate: { directory: 'skills/infrastructure' } }],
         },
         {
           label: 'API & Architecture',
           collapsed: true,
-          autogenerate: { directory: 'skills/api-architecture' },
+          items: [{ autogenerate: { directory: 'skills/api-architecture' } }],
         },
         {
           label: 'Quality & Testing',
           collapsed: true,
-          autogenerate: { directory: 'skills/quality' },
+          items: [{ autogenerate: { directory: 'skills/quality' } }],
         },
         {
           label: 'DevOps & Operations',
           collapsed: true,
-          autogenerate: { directory: 'skills/devops' },
+          items: [{ autogenerate: { directory: 'skills/devops' } }],
         },
         {
           label: 'Security',
           collapsed: true,
-          autogenerate: { directory: 'skills/security' },
+          items: [{ autogenerate: { directory: 'skills/security' } }],
         },
         {
           label: 'Data & ML',
           collapsed: true,
-          autogenerate: { directory: 'skills/data-ml' },
+          items: [{ autogenerate: { directory: 'skills/data-ml' } }],
         },
         {
           label: 'Platform',
           collapsed: true,
-          autogenerate: { directory: 'skills/platform' },
+          items: [{ autogenerate: { directory: 'skills/platform' } }],
         },
         {
           label: 'Specialized',
           collapsed: true,
-          autogenerate: { directory: 'skills/specialized' },
+          items: [{ autogenerate: { directory: 'skills/specialized' } }],
         },
         {
           label: 'Workflow Skills',
           collapsed: true,
-          autogenerate: { directory: 'skills/workflow' },
+          items: [{ autogenerate: { directory: 'skills/workflow' } }],
         },
         {
           label: 'Project',
@@ -229,6 +258,20 @@ export default defineConfig({
           ],
         },
       ],
+    }),
+    // llms.txt from site-sync's page list (D-028); site-sync writes llms-full.txt
+    seoGraph({
+      // Its link check reads links from the domain root and misses the base path, so it
+      // reports every internal link as a 404. starlight-links-validator checks them instead
+      validateInternalLinks: false,
+      // Submits changed pages to IndexNow, from the deploy build only (site-seo)
+      indexNow: indexNowOptions(SITE_URL),
+      llmsTxt: {
+        title: 'Claude Skills',
+        siteUrl: SITE_URL,
+        summary: DESCRIPTION,
+        sections: llmsSectionsFromSync(import.meta.dirname, SITE_URL),
+      },
     }),
   ],
 });
