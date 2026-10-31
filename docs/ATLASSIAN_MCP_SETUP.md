@@ -12,6 +12,7 @@ This guide provides step-by-step instructions for configuring the Atlassian MCP 
 - [MCP Configuration](#mcp-configuration)
 - [Verification](#verification)
 - [Troubleshooting](#troubleshooting)
+- [Works in Claude Chat but Not in Claude Code](#works-in-claude-chat-but-not-in-claude-code)
 - [Security Considerations](#security-considerations)
 
 ---
@@ -366,6 +367,28 @@ JIRA_URL=***
 JIRA_USERNAME=***
 JIRA_API_TOKEN=***
 ```
+
+---
+
+## Works in Claude Chat but Not in Claude Code
+
+The Atlassian connector you enable on claude.ai (chat or Cowork) is tied to your claude.ai account. Claude Code only picks it up when you are signed in to Claude Code with that same claude.ai account, and it still needs its own authorization there. If you use Claude Code with an API key, or your organization has not allowed the connector, Claude Code will not see it.
+
+Check what Claude Code has loaded:
+
+```bash
+claude mcp list
+```
+
+Inside a session, run `/mcp` to see each server's status and to authenticate any that show as needing it.
+
+If the connector is missing, add Atlassian's remote MCP server to Claude Code directly and authenticate it with `/mcp`:
+
+```bash
+claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
+```
+
+Or use the Docker setup in this guide, which works with any Claude Code login. Servers defined in a project's `.mcp.json` must also be approved when Claude Code first starts in that directory; if you dismissed the prompt, run `claude mcp reset-project-choices` and restart.
 
 ---
 
