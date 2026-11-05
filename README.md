@@ -78,6 +78,7 @@ The <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflow commands manage ep
 
 - [**Quick Start Guide**](QUICKSTART.md) - Installation and first steps
 - [**Skills Guide**](SKILLS_GUIDE.md) - Skill reference and decision trees
+- [**Workflow Examples**](examples/README.md) - Step-by-step multi-skill walkthroughs
 - [**Common Ground**](docs/COMMON_GROUND.md) - Context engineering with `/common-ground`
 - [**Workflow Commands**](docs/WORKFLOW_COMMANDS.md) - Project workflow commands guide
 - [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup
