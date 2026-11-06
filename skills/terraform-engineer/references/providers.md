@@ -8,7 +8,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 }
@@ -61,8 +61,10 @@ resource "aws_vpc" "secondary" {
 
 **AWS Authentication Methods**
 ```hcl
-# Method 1: Environment variables (recommended for CI/CD)
-# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+# Method 1: Short-lived credentials from the environment (recommended for CI/CD)
+# Prefer OIDC federation (for example GitHub Actions -> IAM role) so that no
+# long-lived keys exist; the workflow exports temporary AWS_ACCESS_KEY_ID,
+# AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN
 
 # Method 2: Shared credentials file
 provider "aws" {
@@ -130,7 +132,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = "~> 5.0"
     }
   }
 }
@@ -153,6 +155,7 @@ provider "azurerm" {
     }
   }
 
+  # Always set the subscription explicitly (or via ARM_SUBSCRIPTION_ID)
   subscription_id = var.subscription_id
   tenant_id       = var.tenant_id
 }
@@ -185,17 +188,29 @@ resource "azurerm_resource_group" "prod" {
 
 **Azure Authentication Methods**
 ```hcl
-# Method 1: Service Principal with Client Secret
+# Method 1: OIDC / workload identity federation (recommended for CI/CD)
+# No stored secret; the pipeline supplies the token.
+provider "azurerm" {
+  features {}
+
+  use_oidc        = true
+  subscription_id = var.subscription_id
+  tenant_id       = var.tenant_id
+  client_id       = var.client_id
+}
+
+# Method 2: Service Principal with Client Secret (avoid; prefer OIDC)
+# Pass the secret via the ARM_CLIENT_SECRET environment variable rather than a
+# Terraform variable, so it never lands in state or plan files.
 provider "azurerm" {
   features {}
 
   subscription_id = var.subscription_id
   tenant_id       = var.tenant_id
   client_id       = var.client_id
-  client_secret   = var.client_secret
 }
 
-# Method 2: Service Principal with Certificate
+# Method 2b: Service Principal with Certificate
 provider "azurerm" {
   features {}
 
@@ -211,6 +226,7 @@ provider "azurerm" {
   features {}
 
   use_msi         = true
+  client_id       = var.client_id # only for a user-assigned identity
   subscription_id = var.subscription_id
   tenant_id       = var.tenant_id
 }
@@ -219,7 +235,8 @@ provider "azurerm" {
 provider "azurerm" {
   features {}
 
-  use_cli = true
+  use_cli         = true
+  subscription_id = var.subscription_id
 }
 ```
 
@@ -231,7 +248,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 5.0"
+      version = "~> 8.0"
     }
   }
 }
@@ -270,16 +287,14 @@ resource "google_compute_network" "prod" {
 
 **GCP Authentication Methods**
 ```hcl
-# Method 1: Service Account Key (not recommended for production)
-provider "google" {
-  credentials = file("service-account-key.json")
-  project     = var.project_id
-  region      = var.region
-}
+# Method 1: Service Account Key (avoid; long-lived key material)
+# Keep the key file outside the repository and pass its path via the
+# GOOGLE_APPLICATION_CREDENTIALS environment variable instead of file().
 
 # Method 2: Application Default Credentials (recommended)
+# Locally: gcloud auth application-default login
+# CI/CD: Workload Identity Federation, no key file required
 provider "google" {
-  # Uses GOOGLE_APPLICATION_CREDENTIALS env var
   project = var.project_id
   region  = var.region
 }
@@ -310,11 +325,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 5.0"
+      version = "~> 8.0"
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = "~> 5.0"
+      version = "~> 8.0"
     }
   }
 }
@@ -335,20 +350,25 @@ resource "google_compute_security_policy" "policy" {
 
 ## Kubernetes Provider
 
+Use an `exec` credential plugin so that a fresh short-lived token is fetched on
+every run. Reading a token from a data source (for example
+`aws_eks_cluster_auth`) stores it in state.
+
 **With AWS EKS**
 ```hcl
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
 }
 
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+
+  exec = {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 ```
 
@@ -372,12 +392,21 @@ provider "kubernetes" {
 
 ## Helm Provider
 
+Helm provider 3.x changed block syntax to attribute syntax: `kubernetes = { ... }`
+on the provider and `set = [ ... ]` on `helm_release`. The 2.x nested blocks
+(`kubernetes { }`, `set { }`) no longer validate.
+
 ```hcl
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
+
+    exec = {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    }
   }
 }
 
@@ -391,10 +420,12 @@ resource "helm_release" "nginx" {
     file("${path.module}/values.yaml")
   ]
 
-  set {
-    name  = "controller.service.type"
-    value = "LoadBalancer"
-  }
+  set = [
+    {
+      name  = "controller.service.type"
+      value = "LoadBalancer"
+    }
+  ]
 }
 ```
 
@@ -402,41 +433,46 @@ resource "helm_release" "nginx" {
 
 ```hcl
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.14"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"  # >= 5.0.0, < 6.0.0
+      version = "~> 6.0" # >= 6.0.0, < 7.0.0
     }
 
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.0.0, < 4.0.0"
+      version = "~> 5.0"
     }
 
     google = {
       source  = "hashicorp/google"
-      version = "~> 5.0"
+      version = "~> 8.0"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.23"
+      version = "~> 3.0"
     }
 
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.11"
+      version = "~> 3.0"
     }
 
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.5"
+      version = "~> 3.7"
     }
   }
 }
 ```
+
+Use the latest major of each provider unless the lock file or another module
+constrains it. Provider majors move quickly, so check the registry before pinning,
+and read the upgrade guide before crossing a major version (for example, azurerm 4
+to 5). Commit `.terraform.lock.hcl`; refresh it with `terraform init -upgrade`.
 
 ## Best Practices
 

@@ -35,7 +35,8 @@ terraform plan \
 
 **Plan Analysis**
 ```bash
-# Resource targeting for specific resources
+# Resource targeting is for exceptional recovery only; it skips dependency
+# checks and leaves the rest of the configuration unreviewed
 terraform plan -target=aws_vpc.main
 
 # Refresh only (check drift)
@@ -48,67 +49,100 @@ terraform plan -destroy
 terraform plan -out=tfplan 2>&1 | tee plan-output.txt
 ```
 
-## Terraform Test (1.6+)
+## Terraform Test (native)
+
+`terraform test` is the default choice for module tests. Reach for Terratest only
+when you must call cloud APIs to verify real infrastructure.
 
 **Test File Structure**
+
+Terraform discovers `.tftest.hcl` files only directly inside `tests/` (or the
+directory passed to `-test-directory`); it does **not** recurse into subdirectories.
+Encode the test type in the file name instead:
+
 ```
 tests/
-├── unit/
-│   ├── vpc_test.tftest.hcl
-│   └── security_group_test.tftest.hcl
-└── integration/
-    └── complete_test.tftest.hcl
+├── defaults_unit_test.tftest.hcl          # command = plan, fast, no resources
+├── validation_unit_test.tftest.hcl        # command = plan
+└── complete_integration_test.tftest.hcl   # command = apply, creates real resources
 ```
 
-**Basic Test**
+**Unit Test (plan mode)**
 ```hcl
-# tests/vpc_test.tftest.hcl
-run "validate_vpc_cidr" {
+# tests/defaults_unit_test.tftest.hcl
+mock_provider "aws" {} # unit tests need no credentials
+
+variables {
+  name       = "test-vpc"
+  cidr_block = "10.0.0.0/16"
+}
+
+run "creates_vpc_with_expected_cidr" {
   command = plan
 
-  variables {
-    cidr_block = "10.0.0.0/16"
-    name       = "test-vpc"
-  }
-
   assert {
-    condition     = aws_vpc.main.cidr_block == "10.0.0.0/16"
+    condition     = aws_vpc.this.cidr_block == "10.0.0.0/16"
     error_message = "VPC CIDR block did not match expected value"
   }
 
   assert {
-    condition     = aws_vpc.main.enable_dns_hostnames == true
-    error_message = "DNS hostnames should be enabled"
+    condition     = aws_vpc.this.enable_dns_hostnames
+    error_message = "DNS hostnames should be enabled by default"
   }
 }
 
-run "validate_tags" {
+run "rejects_invalid_cidr" {
   command = plan
 
   variables {
-    cidr_block = "10.0.0.0/16"
-    name       = "test-vpc"
-    tags = {
-      Environment = "test"
+    cidr_block = "not-a-cidr"
+  }
+
+  expect_failures = [var.cidr_block]
+}
+```
+
+**Mock Provider (no credentials, no resources)**
+
+`mock_provider` (Terraform 1.7+) lets plan- and apply-mode tests run without cloud
+access; without it, even a `plan` run needs valid provider credentials. Override
+computed values the module depends on, such as ARNs and IDs:
+
+```hcl
+# tests/mocked_unit_test.tftest.hcl
+mock_provider "aws" {
+  mock_resource "aws_vpc" {
+    defaults = {
+      id  = "vpc-12345678"
+      arn = "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-12345678"
     }
+  }
+}
+
+run "exposes_vpc_id" {
+  command = apply
+
+  variables {
+    name       = "mocked-vpc"
+    cidr_block = "10.0.0.0/16"
   }
 
   assert {
-    condition     = aws_vpc.main.tags["Environment"] == "test"
-    error_message = "Environment tag not set correctly"
+    condition     = output.vpc_id == "vpc-12345678"
+    error_message = "vpc_id output should come from the VPC resource"
   }
 }
 ```
 
-**Integration Test**
+**Integration Test (apply mode)**
 ```hcl
-# tests/integration/complete_test.tftest.hcl
+# tests/complete_integration_test.tftest.hcl
 run "create_full_stack" {
   command = apply
 
   variables {
-    cidr_block = "10.0.0.0/16"
     name       = "integration-test"
+    cidr_block = "10.0.0.0/16"
 
     private_subnets = {
       app = { cidr_block = "10.0.1.0/24", az = "us-east-1a" }
@@ -127,19 +161,17 @@ run "create_full_stack" {
 }
 ```
 
+Resources created by `apply` runs are destroyed automatically in reverse run order
+when the file finishes. Integration tests create real, billable resources, so run
+them only with the user's approval and in a sandbox account.
+
 **Run Tests**
 ```bash
-# Run all tests
-terraform test
-
-# Run specific test file
-terraform test tests/vpc_test.tftest.hcl
-
-# Verbose output
-terraform test -verbose
-
-# Keep test resources (for debugging)
-terraform test -no-cleanup
+terraform test                                       # every file in tests/
+terraform test -filter=tests/defaults_unit_test.tftest.hcl  # one file (repeatable)
+terraform test -test-directory=integration-tests     # custom test directory
+terraform test -verbose                              # print plan/state per run block
+terraform test -junit-xml=results.xml                # CI report
 ```
 
 ## Terratest (Go-based Testing)
@@ -156,11 +188,11 @@ tests/
 ```go
 module github.com/example/terraform-modules/tests
 
-go 1.21
+go 1.26.0
 
 require (
-    github.com/gruntwork-io/terratest v0.45.0
-    github.com/stretchr/testify v1.8.4
+    github.com/gruntwork-io/terratest v1.0.1
+    github.com/stretchr/testify v1.11.1
 )
 ```
 
@@ -204,140 +236,95 @@ func TestVPCCreation(t *testing.T) {
 }
 ```
 
-**Advanced Terratest with AWS SDK**
-```go
-package test
+**Verifying Real Cloud State**
 
-import (
-    "testing"
-
-    "github.com/aws/aws-sdk-go/aws"
-    "github.com/aws/aws-sdk-go/service/ec2"
-    "github.com/gruntwork-io/terratest/modules/terraform"
-    aws_helper "github.com/gruntwork-io/terratest/modules/aws"
-    "github.com/stretchr/testify/assert"
-)
-
-func TestVPCConfiguration(t *testing.T) {
-    t.Parallel()
-
-    awsRegion := "us-east-1"
-
-    terraformOptions := &terraform.Options{
-        TerraformDir: "../examples/complete",
-        Vars: map[string]interface{}{
-            "name":       "test-vpc",
-            "cidr_block": "10.0.0.0/16",
-        },
-    }
-
-    defer terraform.Destroy(t, terraformOptions)
-    terraform.InitAndApply(t, terraformOptions)
-
-    vpcID := terraform.Output(t, terraformOptions, "vpc_id")
-
-    // Verify VPC configuration using AWS SDK
-    vpc := aws_helper.GetVpcById(t, vpcID, awsRegion)
-    assert.Equal(t, "10.0.0.0/16", *vpc.CidrBlock)
-    assert.True(t, *vpc.EnableDnsSupport)
-    assert.True(t, *vpc.EnableDnsHostnames)
-
-    // Verify tags
-    tags := convertEC2TagsToMap(vpc.Tags)
-    assert.Equal(t, "test-vpc", tags["Name"])
-}
-
-func convertEC2TagsToMap(tags []*ec2.Tag) map[string]string {
-    result := make(map[string]string)
-    for _, tag := range tags {
-        result[*tag.Key] = *tag.Value
-    }
-    return result
-}
-```
+To assert against the live resource (for example, that a VPC really has flow logs),
+call the cloud API from the test with AWS SDK for Go **v2**
+(`github.com/aws/aws-sdk-go-v2`); v1 is end-of-support. Prefer a `terraform test`
+`apply` run first and add Terratest only for checks that Terraform assertions
+cannot express.
 
 **Run Terratest**
 ```bash
 cd tests
 go mod download
-go test -v -timeout 30m
+go test -v -timeout 30m ./...
 ```
 
-## Policy as Code - OPA/Sentinel
+## Policy as Code - OPA/Conftest
 
-**Open Policy Agent (OPA)**
+Evaluate policies against the JSON plan so that they see the final configuration.
+Rego v1 syntax (`contains`/`if`) is the default in OPA 1.0+.
 
 **policy.rego**
 ```rego
 package terraform.analysis
 
-import input as tfplan
+import rego.v1
 
-# Deny if resources are not tagged
-deny[msg] {
-    r := tfplan.resource_changes[_]
-    r.change.actions[_] == "create"
-    not r.change.after.tags.Environment
-    msg := sprintf("Resource %s is missing Environment tag", [r.address])
+# Deny created resources that support tags but have no Environment tag
+deny contains msg if {
+    some r in input.resource_changes
+    "create" in r.change.actions
+    is_object(r.change.after.tags_all)
+    not r.change.after.tags_all.Environment
+    msg := sprintf("Resource %s is missing the Environment tag", [r.address])
 }
 
-# Require encryption for S3 buckets
-deny[msg] {
-    r := tfplan.resource_changes[_]
-    r.type == "aws_s3_bucket"
-    r.change.actions[_] == "create"
-    not r.change.after.server_side_encryption_configuration
-    msg := sprintf("S3 bucket %s must have encryption enabled", [r.address])
+# Require a public access block for every created S3 bucket
+deny contains msg if {
+    some bucket in input.resource_changes
+    bucket.type == "aws_s3_bucket"
+    "create" in bucket.change.actions
+    not has_public_access_block(bucket.change.after.bucket)
+    msg := sprintf("S3 bucket %s needs an aws_s3_bucket_public_access_block", [bucket.address])
 }
 
-# Ensure VPC flow logs are enabled
-deny[msg] {
-    r := tfplan.resource_changes[_]
-    r.type == "aws_vpc"
-    r.change.actions[_] == "create"
-    vpc_id := r.change.after.id
-    not has_flow_log(vpc_id)
-    msg := sprintf("VPC %s must have flow logs enabled", [r.address])
-}
-
-has_flow_log(vpc_id) {
-    r := tfplan.resource_changes[_]
-    r.type == "aws_flow_log"
-    r.change.after.vpc_id == vpc_id
+has_public_access_block(bucket_name) if {
+    some r in input.resource_changes
+    r.type == "aws_s3_bucket_public_access_block"
+    r.change.after.bucket == bucket_name
 }
 ```
+
+Plan JSON does not contain values that are unknown until apply (generated IDs),
+so match resources by configured attributes such as names. Matching on `id` or
+other computed fields silently never fires.
 
 **Run OPA Policy**
 ```bash
-# Generate plan in JSON
 terraform plan -out=tfplan
-terraform show -json tfplan > tfplan.json
+terraform show -json tfplan > tfplan.json   # contains sensitive values; delete after use
 
-# Run OPA policy check
+opa check policy.rego                        # syntax check
 opa eval -i tfplan.json -d policy.rego "data.terraform.analysis.deny"
 ```
 
-**Conftest (OPA wrapper for testing)**
+**Conftest (OPA wrapper for CI)**
 ```bash
-# Install conftest
-brew install conftest
+# Install: https://www.conftest.dev/install/
+conftest test tfplan.json --policy policy.rego --namespace terraform.analysis
+```
 
-# Test plan against policies
-conftest test tfplan.json
+Use Sentinel instead when policies must run inside HCP Terraform / Terraform
+Enterprise policy sets.
 
-# With specific namespace
-conftest test tfplan.json --namespace terraform.analysis
+## Security Scanning
+
+`tfsec` is deprecated and now maintained as part of Trivy. Use Trivy or Checkov:
+
+```bash
+trivy config .                  # misconfiguration scan of Terraform files
+trivy config --severity HIGH,CRITICAL --exit-code 1 .
+checkov -d . --framework terraform --quiet
 ```
 
 ## TFLint
 
 **Installation and Configuration**
 ```bash
-# Install tflint
-brew install tflint
-
-# Initialize tflint plugins
-tflint --init
+# Install: https://github.com/terraform-linters/tflint#installation
+tflint --init     # downloads the plugins declared in .tflint.hcl
 ```
 
 **.tflint.hcl**
@@ -349,14 +336,13 @@ plugin "terraform" {
 
 plugin "aws" {
   enabled = true
-  version = "0.27.0"
+  version = "0.50.0"
   source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
 
 rule "terraform_naming_convention" {
   enabled = true
-
-  format = "snake_case"
+  format  = "snake_case"
 }
 
 rule "terraform_required_version" {
@@ -366,15 +352,13 @@ rule "terraform_required_version" {
 rule "terraform_required_providers" {
   enabled = true
 }
-
-rule "aws_instance_invalid_type" {
-  enabled = true
-}
-
-rule "aws_s3_bucket_encryption" {
-  enabled = true
-}
 ```
+
+The `terraform` preset already enables the common rules; keep explicit `rule` blocks
+only for the ones you configure. Provider rulesets (such as `aws`) detect invalid
+instance types, deprecated instance generations and similar errors; see
+`tflint --init` output and the ruleset docs for rule names, which change between
+releases.
 
 **Run TFLint**
 ```bash
@@ -397,7 +381,7 @@ tflint --format=json
 ```yaml
 repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.83.6
+    rev: v1.109.4
     hooks:
       - id: terraform_fmt
       - id: terraform_validate
@@ -408,78 +392,87 @@ repos:
         args:
           - --hook-config=--path-to-file=README.md
           - --hook-config=--add-to-existing-file=true
-      - id: terraform_checkov
+      - id: terraform_trivy
         args:
-          - --args=--quiet
-          - --args=--skip-check CKV_AWS_*
+          - --args=--severity=HIGH,CRITICAL
 ```
 
 **Setup**
 ```bash
-# Install pre-commit
 pip install pre-commit
-
-# Install hooks
 pre-commit install
-
-# Run manually
 pre-commit run -a
 ```
 
 ## CI/CD Pipeline Testing
 
 **GitHub Actions Example**
+
+Pin third-party actions to a full commit SHA in production workflows; version tags
+are shown here for readability.
+
 ```yaml
 name: Terraform Test
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   terraform-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: 1.6.0
+          terraform_version: "~> 1.14"
 
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend=false
 
       - name: Terraform Validate
         run: terraform validate
 
+      - uses: terraform-linters/setup-tflint@v6
+
       - name: TFLint
-        uses: terraform-linters/setup-tflint@v3
+        run: |
+          tflint --init
+          tflint --recursive
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # avoids plugin download rate limits
+
+      - name: Terraform Test (plan-mode unit tests)
+        run: |
+          terraform test \
+            -filter=tests/defaults_unit_test.tftest.hcl \
+            -filter=tests/validation_unit_test.tftest.hcl
+
+      - name: Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
-          tflint_version: latest
-
-      - name: Run TFLint
-        run: tflint --recursive
-
-      - name: Terraform Test
-        run: terraform test
-
-      - name: Checkov
-        uses: bridgecrewio/checkov-action@master
-        with:
-          directory: .
-          framework: terraform
+          scan-type: config
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
 ```
+
+Run `*_unit_test` files on every pull request and `*_integration_test` files on
+merge, since the latter create real resources.
 
 ## Best Practices
 
 - Run `terraform validate` before every commit
-- Use `terraform test` for unit and integration tests
+- Use `terraform test` for unit (plan, mocked) and integration (apply) tests
 - Implement policy as code for security compliance
 - Run TFLint in CI/CD pipelines
 - Use pre-commit hooks for automated checks
-- Test modules with Terratest for critical infrastructure
+- Add Terratest only for checks `terraform test` cannot express
 - Always review plan output before apply
 - Test provider upgrades in isolated environments
 - Document test scenarios and expected outcomes
