@@ -6,31 +6,31 @@
 ```hcl
 # Bad - Repeated code
 resource "aws_vpc" "app1" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  tags = { Name = "app1-vpc", Environment = "prod" }
+  tags                 = { Name = "app1-vpc", Environment = "prod" }
 }
 
 resource "aws_vpc" "app2" {
-  cidr_block = "10.1.0.0/16"
+  cidr_block           = "10.1.0.0/16"
   enable_dns_hostnames = true
-  tags = { Name = "app2-vpc", Environment = "prod" }
+  tags                 = { Name = "app2-vpc", Environment = "prod" }
 }
 
 # Good - Use module
 module "vpc_app1" {
   source = "./modules/vpc"
 
-  name       = "app1"
-  cidr_block = "10.0.0.0/16"
+  name        = "app1"
+  cidr_block  = "10.0.0.0/16"
   environment = "prod"
 }
 
 module "vpc_app2" {
   source = "./modules/vpc"
 
-  name       = "app2"
-  cidr_block = "10.1.0.0/16"
+  name        = "app2"
+  cidr_block  = "10.1.0.0/16"
   environment = "prod"
 }
 ```
@@ -69,13 +69,13 @@ resource "aws_instance" "web" {
 }
 
 # Good - Dynamic AMI lookup
-data "aws_ami" "amazon_linux_2" {
+data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["al2023-ami-2023.*-x86_64"]
   }
 
   filter {
@@ -85,7 +85,7 @@ data "aws_ami" "amazon_linux_2" {
 }
 
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.amazon_linux_2.id
+  ami           = data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
 }
 ```
@@ -143,9 +143,11 @@ resource "aws_security_group" "web" {}
 resource "aws_instance" "app" {}
 
 # Avoid generic names
-resource "aws_vpc" "vpc" {}          # Bad
-resource "aws_subnet" "subnet" {}    # Bad
-resource "aws_vpc" "this" {}         # Use in modules only
+resource "aws_vpc" "vpc" {}       # Bad
+resource "aws_subnet" "subnet" {} # Bad
+resource "aws_vpc" "this" {}      # Use in modules only
+# Resource names are singular nouns without the resource type; use "main" when
+# only one instance exists
 ```
 
 **AWS Resource Name Tags**
@@ -188,13 +190,13 @@ resource "aws_security_group" "web" {
 **Variable Naming**
 ```hcl
 # Use snake_case for all names
-variable "instance_type" {}      # Good
-variable "instanceType" {}       # Bad
-variable "InstanceType" {}       # Bad
+variable "instance_type" {} # Good
+variable "instanceType" {}  # Bad
+variable "InstanceType" {}  # Bad
 
 # Be descriptive
-variable "vpc_cidr_block" {}     # Good
-variable "cidr" {}               # Too vague
+variable "vpc_cidr_block" {} # Good
+variable "cidr" {}           # Too vague
 
 # Boolean variables should be questions
 variable "enable_nat_gateway" {} # Good
@@ -208,13 +210,13 @@ variable "private_subnets" {}    # Good
 **File Naming**
 ```
 # Standard structure
-main.tf           # Primary resource definitions
-variables.tf      # Input variables
-outputs.tf        # Output values
-versions.tf       # Terraform and provider versions
+terraform.tf      # Terraform and provider version requirements
+providers.tf      # Provider configurations
+main.tf           # Primary resources and data sources
+variables.tf      # Input variables (alphabetical)
+outputs.tf        # Output values (alphabetical)
+locals.tf         # Local values
 backend.tf        # Backend configuration (optional)
-locals.tf         # Local values (optional)
-data.tf           # Data sources (optional)
 
 # Resource-specific files for complex modules
 vpc.tf
@@ -229,7 +231,7 @@ route_tables.tf
 ```hcl
 # Bad - Secrets in plain text
 variable "db_password" {
-  default = "<db-password>"  # NEVER DO THIS
+  default = "<db-password>" # NEVER DO THIS
 }
 
 # Good - Use sensitive variables
@@ -240,13 +242,35 @@ variable "db_password" {
   # No default - must be provided
 }
 
-# Better - Use secrets manager
-data "aws_secretsmanager_secret_version" "db_password" {
-  secret_id = "prod/db/password"
+# Best - let the service manage the secret so it never enters your state
+resource "aws_db_instance" "main" {
+  identifier                  = "main"
+  engine                      = "postgres"
+  instance_class              = "db.t4g.micro"
+  allocated_storage           = 20
+  username                    = "app"
+  manage_master_user_password = true # stored in AWS Secrets Manager
+}
+```
+
+Reading a secret through a regular data source
+(`data.aws_secretsmanager_secret_version`) writes the value to state in plaintext.
+Follow this priority order for sensitive attributes (Terraform 1.11+):
+
+1. Native secrets-manager integration such as `manage_master_user_password`.
+2. An `ephemeral` resource passed to a write-only attribute (`*_wo`, with its
+   `*_wo_version`); neither value is stored in state or plan files.
+3. A regular resource or data source only when neither option exists.
+
+```hcl
+ephemeral "random_password" "db" {
+  length = 24
 }
 
-resource "aws_db_instance" "main" {
-  password = data.aws_secretsmanager_secret_version.db_password.secret_string
+resource "aws_secretsmanager_secret_version" "db" {
+  secret_id                = aws_secretsmanager_secret.db.id
+  secret_string_wo         = ephemeral.random_password.db.result
+  secret_string_wo_version = 1 # bump to rotate
 }
 ```
 
@@ -279,8 +303,8 @@ resource "aws_ebs_volume" "data" {
 
 # RDS encryption
 resource "aws_db_instance" "main" {
-  storage_encrypted   = true
-  kms_key_id          = aws_kms_key.rds.arn
+  storage_encrypted = true
+  kms_key_id        = aws_kms_key.rds.arn
 }
 ```
 
@@ -322,44 +346,39 @@ data "aws_iam_policy_document" "good" {
 
 **Network Security**
 ```hcl
-# Security group with restricted access
+# Manage rules as standalone resources: inline ingress/egress blocks conflict with
+# them and make rule-level changes recreate or clobber each other
 resource "aws_security_group" "web" {
   name        = "${var.name}-web-sg"
   description = "Security group for web servers"
   vpc_id      = aws_vpc.main.id
+}
 
-  # Bad - Too permissive
-  # ingress {
-  #   from_port   = 0
-  #   to_port     = 65535
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
+resource "aws_vpc_security_group_ingress_rule" "web_https" {
+  security_group_id = aws_security_group.web.id
+  description       = "HTTPS from internet"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+}
 
-  # Good - Specific rules
-  ingress {
-    description = "HTTPS from internet"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "web_http_from_alb" {
+  security_group_id            = aws_security_group.web.id
+  description                  = "HTTP from ALB"
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.alb.id
+}
 
-  ingress {
-    description     = "HTTP from ALB"
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
-  }
+# Avoid opening every port to the internet (from_port 0 - 65535, 0.0.0.0/0)
 
-  egress {
-    description = "All outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_egress_rule" "web_all" {
+  security_group_id = aws_security_group.web.id
+  description       = "All outbound"
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
 }
 ```
 
@@ -398,12 +417,12 @@ provider "aws" {
 
 # Resource-specific tags
 resource "aws_instance" "app" {
-  ami           = data.aws_ami.amazon_linux_2.id
+  ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
 
   tags = merge(local.common_tags, {
-    Name = "${var.name}-app"
-    Role = "application"
+    Name   = "${var.name}-app"
+    Role   = "application"
     Backup = "daily"
   })
 }
@@ -447,12 +466,12 @@ resource "aws_db_instance" "main" {
 **Lifecycle Management**
 ```hcl
 resource "aws_instance" "app" {
-  ami           = data.aws_ami.amazon_linux_2.id
+  ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
 
   lifecycle {
     create_before_destroy = true
-    prevent_destroy       = var.environment == "production"
+    prevent_destroy       = true # must be a literal; lifecycle arguments cannot use variables
     ignore_changes        = [ami, user_data]
   }
 }
@@ -479,28 +498,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "data" {
       days = 365
     }
   }
-}
-```
-
-**Resource Scheduling**
-```hcl
-# Auto-scaling schedule for cost savings
-resource "aws_autoscaling_schedule" "scale_down_evening" {
-  scheduled_action_name  = "scale-down-evening"
-  min_size               = 1
-  max_size               = 1
-  desired_capacity       = 1
-  recurrence             = "0 20 * * MON-FRI"
-  autoscaling_group_name = aws_autoscaling_group.app.name
-}
-
-resource "aws_autoscaling_schedule" "scale_up_morning" {
-  scheduled_action_name  = "scale-up-morning"
-  min_size               = 3
-  max_size               = 10
-  desired_capacity       = 3
-  recurrence             = "0 7 * * MON-FRI"
-  autoscaling_group_name = aws_autoscaling_group.app.name
 }
 ```
 
@@ -537,7 +534,11 @@ terraform/
 variable "cidr_block" {
   description = "CIDR block for VPC"
   type        = string
-  validation { ... }
+
+  validation {
+    condition     = can(cidrhost(var.cidr_block, 0))
+    error_message = "Must be a valid IPv4 CIDR block."
+  }
 }
 
 # modules/vpc/outputs.tf
@@ -547,13 +548,13 @@ output "vpc_id" {
 }
 
 # Version all modules
-# modules/vpc/versions.tf
+# modules/vpc/terraform.tf
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.14"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 }
@@ -575,7 +576,9 @@ terraform {
 - [ ] Review plan output before apply
 - [ ] Use data sources instead of hardcoding
 - [ ] Implement automated testing
-- [ ] Use for_each instead of count
+- [ ] Use for_each instead of count (count only for conditional creation)
+- [ ] Commit .terraform.lock.hcl
+- [ ] Keep secrets out of state (managed secrets, ephemeral resources, write-only attributes)
 - [ ] Avoid hardcoded secrets
 - [ ] Enable logging and monitoring
 - [ ] Implement cost optimization strategies

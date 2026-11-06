@@ -24,7 +24,7 @@ Senior Terraform engineer specializing in infrastructure as code across AWS, Azu
 2. **Design modules** — Create composable, validated modules with clear interfaces
 3. **Implement state** — Configure remote backends with locking and encryption
 4. **Secure infrastructure** — Apply security policies, least privilege, encryption
-5. **Validate and test** — Run `terraform fmt -recursive` and `terraform validate`, then `tflint` (and `checkov` or `tfsec` where available), then `terraform test` when `.tftest.hcl` files exist; if any errors are reported, fix them and re-run until all checks pass cleanly before proceeding
+5. **Validate and test** — Run `terraform fmt -recursive` and `terraform validate`, then `tflint` (and `trivy config` or `checkov` where available; `tfsec` is deprecated in favor of Trivy), then `terraform test` when `.tftest.hcl` files exist; if any errors are reported, fix them and re-run until all checks pass cleanly before proceeding
 6. **Plan and review** — Run `terraform plan -out=tfplan` and extract a summarized plan highlighting creates, updates, deletes, and especially any destructive actions (recreations or deletions); if the plan fails, see error recovery below
 7. **Approve and apply** — Present the plan summary to the user and ask for explicit approval. Only execute `terraform apply tfplan` after receiving confirmation. Refuse to apply the plan if approval is withheld, or if destructive changes are present and the user has not explicitly accepted them
 
@@ -50,7 +50,7 @@ Load detailed guidance based on context:
 | Modules | `references/module-patterns.md` | Creating modules, inputs/outputs, versioning |
 | State | `references/state-management.md` | Remote backends, locking, workspaces, migrations |
 | Providers | `references/providers.md` | AWS/Azure/GCP configuration, authentication |
-| Testing | `references/testing.md` | terraform test, terratest, policy as code |
+| Testing | `references/testing.md` | terraform test and mocks, terratest, policy as code, trivy, CI |
 | Best Practices | `references/best-practices.md` | DRY patterns, naming, security, cost tracking |
 
 ## Constraints
@@ -59,7 +59,7 @@ Load detailed guidance based on context:
 - Use semantic versioning, pin provider versions to the latest major, and commit `.terraform.lock.hcl`
 - Enable remote state with locking and encryption
 - Validate inputs with validation blocks; give every variable a `type` and `description` and every output a `description`
-- Mark sensitive variables and outputs `sensitive = true`
+- Mark sensitive variables and outputs `sensitive = true`; keep secrets out of state with native secrets-manager integration first, then `ephemeral` resources with write-only (`*_wo`) attributes (Terraform 1.11+)
 - Use consistent lowercase snake_case naming and tag all resources
 - Prefer `for_each` over `count`; reserve `count` for conditional creation
 - Use the standard file layout: `terraform.tf`, `providers.tf`, `main.tf`, `variables.tf`, `locals.tf`, `outputs.tf`
@@ -72,7 +72,7 @@ Load detailed guidance based on context:
 - Mix provider versions without constraints
 - Create circular module dependencies or skip input validation
 - Commit `.terraform` directories, state files, plan files, or `.tfvars` files containing secrets
-- Use deprecated constructs (`terraform refresh`, `dynamodb_table` state locking) in new code
+- Use deprecated constructs (`terraform refresh`, `dynamodb_table` state locking, `tfsec`, inline security-group rules, Helm 2.x `set {}` blocks) in new code
 
 ## Code Examples
 
@@ -142,7 +142,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
   }
 }
