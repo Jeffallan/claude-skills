@@ -599,6 +599,42 @@ def evidence_check(repo: Path) -> dict:
     return check("findings-evidence", ok, detail)
 
 
+OP_ROW = re.compile(r"^\|\s*(OP-\d+)\s*\|(.*)$", re.M)
+
+
+def section(text: str, heading: str) -> str:
+    m = re.search(rf"^## {re.escape(heading)}\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    return m.group(1) if m else ""
+
+
+def matrix_check(repo: Path) -> dict:
+    """The access matrix has a row per inventory operation and no unexamined cell (references/intake/access-control.md)."""
+    if "document-api" in checklist_excuses(repo):
+        return check("access-matrix", True, "no API: document-api is checked not present")
+    api, authz = (
+        repo / intake_path(repo, rel)
+        for rel in ("docs/architecture/api-reference.md", "docs/security/authorization.md")
+    )
+    ops = section(api.read_text(encoding="utf-8"), "Operations") if api.is_file() else ""
+    matrix = section(authz.read_text(encoding="utf-8"), "Access matrix") if authz.is_file() else ""
+    inventory = [m[0] for m in OP_ROW.findall(ops) if "removed" not in m[1].lower()]
+    rows = {m[0]: m[1] for m in OP_ROW.findall(matrix)}
+    problems = []
+    if not inventory:
+        problems.append("no ## Operations inventory with OP-NNN rows")
+    listed = re.search(r"\((\d+) routes?\b", ops)
+    if listed and int(listed.group(1)) != len(inventory):
+        problems.append(f"route listing counts {listed.group(1)}, inventory has {len(inventory)}")
+    if not rows:
+        problems.append("no ## Access matrix with OP-NNN rows")
+    if missing := [op for op in inventory if op not in rows]:
+        problems.append(f"operations missing from the matrix: {missing[:10]}")
+    if unexamined := [op for op, cells in rows.items() if "[x]" in cells]:
+        problems.append(f"rows with unexamined [x] cells: {unexamined[:10]}")
+    detail = f"{len(inventory)} operations, each in the matrix, every cell examined"
+    return check("access-matrix", not problems, detail if not problems else "; ".join(problems))
+
+
 def index_check(repo: Path) -> dict:
     """The docs index links every doc, and the checklist and tracker name the same base commit.
 
@@ -610,8 +646,9 @@ def index_check(repo: Path) -> dict:
     readme = repo / index
     links = set(re.findall(r"\]\(([^)#\s]+)", readme.read_text(encoding="utf-8"))) if readme.is_file() else set()
     skip = {index, "docs/intake-checklist.md", "docs/intake-goal-prompt.md"}
-    for p in sorted((repo / "docs").rglob("*.md")):
-        rel = str(p.relative_to(repo))
+    # git's view of docs/, so a file the run keeps out of git (a restricted findings file) isn't required
+    listed = git(repo, "ls-files", "--cached", "--others", "--exclude-standard", "--", "docs").splitlines()
+    for rel in sorted(p for p in listed if p.endswith(".md")):
         if rel in skip or (rel.startswith("docs/specs/") and rel != "docs/specs/INDEX.md"):
             continue
         if rel.removeprefix("docs/") not in links:
@@ -685,7 +722,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 6  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills
+CHECKS_VERSION = 7  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix
 
 
 def main() -> int:
@@ -747,6 +784,7 @@ def main() -> int:
             evidence_check(a.repo),
             citations_check(a.repo),
             index_check(a.repo),
+            matrix_check(a.repo),
             pristine_check(a.repo),
             check("characterization-green", True, "green in the run's saved test output (--suite-green)")
             if a.suite_green and not a.test_cmd

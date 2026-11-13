@@ -80,6 +80,9 @@ EOF
         printf -- '---\ncommand: intake:document-x\nverified: %s\nsources: [app.py]\nrelated: []\n---\n# Doc %s\n\nBody citing `app.py::total`.\n\n## Accuracy audit\n\nChecked against the code.\n' "$base" "$doc" >"$d/docs/$doc.md"
     done
     mv "$d/docs/existing-docs.md" "$d/docs/intake-existing-docs.md"
+    # the operation inventory and the access matrix (references/intake/access-control.md)
+    printf '\n## Operations\n\nRoute listing: `python3 manage.py routes` (2 routes at %s).\n\n| Id | Method | Path | Source | Handler | Authentication | Permission (resolved) |\n|----|----|----|----|----|----|----|\n| OP-001 | GET | /profiles/ | app | `app.py::visible` | token | any (F-001) |\n| OP-002 | POST | /auth/login/ | library: authlib | `app.py::total` | none | AllowAny (library default) |\n' "$base" >>"$d/docs/architecture/api-reference.md"
+    printf '\n## Access matrix\n\n| Op | anonymous | authenticated | owner |\n|----|----|----|----|\n| OP-001 | deny 401 [t] | allow [t] F-001 | allow [t] |\n| OP-002 | allow [t] | allow [n: no session needed] | n/a |\n' >>"$d/docs/security/authorization.md"
     {
         printf -- '---\ncommand: intake:create-onboarding\nverified: %s\nsources: []\nrelated: []\n---\n# Docs\n\n' "$base"
         for doc in $DOCS; do printf -- '- [%s](%s.md)\n' "$doc" "$doc"; done
@@ -621,6 +624,37 @@ V=$(fresh v5-fixed-commit)
 sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none: test code only; evidence: `git show abc1234`|; s|- \*\*Status:\*\* open|- **Status:** fixed|' "$V/docs/intake-findings.md"
 commit_item "$V" intake:testing-features "test(intake): fix"
 v5 "$V" findings-evidence 1 "a fixed finding naming its fixing commit passes findings-evidence"
+
+# Version 7: the access matrix covers the whole inventory and leaves no cell unexamined
+V=$(fresh v7-good)
+v5 "$V" access-matrix 1 "the good run passes access-matrix"
+
+V=$(fresh v7-row-missing)
+sed -i '/^| OP-002 | allow/d' "$V/docs/security/authorization.md"
+commit_item "$V" intake:document-authorization "docs(intake): authorization"
+v5 "$V" access-matrix 0 "an inventory operation missing from the matrix fails access-matrix"
+
+V=$(fresh v7-unexamined)
+sed -i 's/| OP-002 | allow \[t\]/| OP-002 | allow [x]/' "$V/docs/security/authorization.md"
+commit_item "$V" intake:document-authorization "docs(intake): authorization"
+v5 "$V" access-matrix 0 "a cell left [x] fails access-matrix"
+
+V=$(fresh v7-count)
+sed -i 's/(2 routes at/(3 routes at/' "$V/docs/architecture/api-reference.md"
+commit_item "$V" intake:document-api "docs(intake): api"
+v5 "$V" access-matrix 0 "an inventory shorter than the route listing fails access-matrix"
+
+V=$(fresh v7-no-api)
+sed -i '/^## Operations/,$d' "$V/docs/architecture/api-reference.md"
+sed -i '/^## Access matrix/,$d' "$V/docs/security/authorization.md"
+printf -- '- [x] `intake:document-api`\n  not present: no API, a command-line tool\n' >>"$V/docs/intake-checklist.md"
+commit_item "$V" intake:document-api "docs(intake): api"
+v5 "$V" access-matrix 1 "a project with no API (document-api not present) passes access-matrix"
+
+V=$(fresh v7-restricted)
+printf 'detail\n' >"$V/docs/intake-findings-restricted.md"
+printf 'docs/intake-findings-restricted.md\n' >>"$V/.git/info/exclude"
+v5 "$V" docs-index 1 "a restricted findings file excluded from git doesn't fail docs-index"
 
 V=$(fresh v5-index)
 sed -i '/glossary.md/d' "$V/docs/README.md"

@@ -53,7 +53,7 @@ Every scorer reads its inputs from an eval directory you point it at: one folder
 | `gold` | both | The gold file |
 | `test_cmd`, `test_paths` | intake | The project's characterization suite and its test globs; a run may override either |
 | `run` | both | The name `RUN=` selects |
-| `repo` | both | The clone to score; the baseline uses `bundle` and `branch` instead |
+| `repo` | both | The clone to score, only while it still sits at the run's end; drop it once the clone moves on (a Phase 4 branch), and the run scores from `bundle` and `branch`, as the baseline always does |
 | `spec` | workflow | The spec the run executed |
 | `start` | intake | The commit that added the goal prompt and checklist |
 | `plugin`, `model` | both | Recorded in the result |
