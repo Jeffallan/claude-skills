@@ -71,6 +71,8 @@ Items that don't apply (a project with no analytics, no UI for e2e) are still wo
 
 The gate touches CI configuration and the close-out records owner decisions on findings, so a goal run stops before Phase 4. The owner works it attended, after reading the findings tracker.
 
+The gate keeps intake's security tests running after intake: the route ratchet and the access matrix tests from `intake:testing-authorization` run on every PR, and so do the dependency audit and the secrets scan `intake:testing-owasp` used as evidence. A new route with no access decision then fails the build.
+
 When the branch isn't pushed, the gate can't be seen running on CI. Check it locally (a workflow linter such as `actionlint`, then the workflow's steps in a fresh clone) and say in the item's note that it hasn't run on CI yet.
 
 ## When not to use it

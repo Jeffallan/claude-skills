@@ -63,7 +63,17 @@ until triaged.
 - Ids are `F-` plus a three-digit number, assigned in order and never reused: `F-001`, `F-002`. A finding later shown to be wrong keeps its id and gets `invalid`.
 - The command that finds an issue appends it with the next free id, before it writes the doc or test that mentions it. "Append" means at the end of each section: the Summary row goes at the end of the Summary table, the finding at the end of Findings. The file keeps its section order.
 - Docs, docstrings and tests cite the id, never a paraphrase, so `grep -rn "F-012"` finds every place a finding touches.
+- An access-control finding from the matrix names its operation ids, the principal column and the invariant it breaks, one finding per root cause (`references/intake/access-control.md`, "Findings from the matrix").
 - Cite code by symbol, never by line: `` `app/billing/services.py::round_minutes` ``, `` `app/models.py::Profile.save` `` for a method, the setting or key name for configuration, the path alone for a file with no symbol. `intake:document-codebase` and every later docstring move lines, so a line number goes stale inside the run. `<base-sha>` in the header is the commit the intake branch started from, the same one the checklist header names.
+
+## Security detail in a committed tracker
+
+The tracker is committed, and a High security finding with its tests is a working recipe against the deployed system until it's fixed. Before writing the first High security finding, check where the repo is visible (`gh repo view --json visibility`, the remote's host, or the owner's note in the checklist):
+
+- **Private to the owner's team:** write it in full, as usual.
+- **Public, or shared wider than the people who would fix it, or unknown:** write the Summary row and a Findings entry with severity, area, status, location and `Tests:` line, and put the reproduction detail (the exact requests, payloads and the steps) in `docs/intake-findings-restricted.md`, which the command adds to `.git/info/exclude` so it never gets committed. Record the choice in the item's checklist note and as an Open question, so the owner can move the detail back.
+
+The tests still pin the behavior either way; their names say what they check, not how to exploit it.
 
 ## Who writes what
 
