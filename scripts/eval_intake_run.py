@@ -380,12 +380,14 @@ def rewrite_check(repo: Path, start: str, windows, reflog: Path | None) -> dict:
 
 
 SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
+DECLINED = re.compile(r"[\w:-]+\s+(?:skill\s+)?(?:was\s+)?not loaded")
 
 
 def skills_check(repo: Path, paths: list[Path]) -> dict:
     """Every skill a checklist note names was loaded with the Skill tool in the goal session or its subagents."""
     path = repo / "docs/intake-checklist.md"
     text = path.read_text(encoding="utf-8") if path.exists() else ""
+    text = DECLINED.sub("", text)  # "javascript-pro not loaded (no call sites)" claims nothing
     claimed = {m.split(":", 1)[1] for m in SKILL_NAME.findall(text)}
     # bare names count too ("the test-master skill"): any skill this plugin ships, as a whole word
     for name in (d.name for d in (Path(__file__).resolve().parent.parent / "skills").iterdir() if d.is_dir()):
@@ -564,20 +566,28 @@ def findings(repo: Path) -> list[dict]:
     return out
 
 
+# a test id: a pytest node id (`path::Class::test`), `path::Class.method`, or a JS test title (`path::title`)
+TEST_ID = re.compile(r"`([\w./-]+\.\w+)::([^`]+)`")
+
+
+def test_exists(path: Path, name: str) -> bool:
+    if not path.is_file():
+        return False
+    last, text = name.split("::")[-1], path.read_text(encoding="utf-8")
+    if re.fullmatch(r"[\w.]+", last):
+        return bool(re.search(rf"\b{re.escape(last.split('.')[-1])}\b", text))
+    return last in text  # a title with spaces appears as written
+
+
 def evidence_check(repo: Path) -> dict:
     """Every finding not invalid names a real test (`path::name`), or says why none can and names its evidence command."""
     rows, bad = findings(repo), []
     for f in rows:
         if f["status"].startswith("invalid"):
             continue
-        cited = guard_docs.citations(f["tests"])
+        cited = TEST_ID.findall(f["tests"])
         if cited:
-            gone = [
-                f"{path}::{name}"
-                for path, name in cited
-                if not (repo / path).is_file()
-                or not re.search(rf"\b{re.escape(name.split('.')[-1])}\b", (repo / path).read_text(encoding="utf-8"))
-            ]
+            gone = [f"{path}::{name}" for path, name in cited if not test_exists(repo / path, name)]
             if gone:
                 bad.append(f"{f['id']} names missing tests {gone}")
         elif not re.match(r"none:.*evidence:\s*`[^`]+`", f["tests"]):
@@ -675,9 +685,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = (
-    5  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence
-)
+CHECKS_VERSION = 6  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills
 
 
 def main() -> int:

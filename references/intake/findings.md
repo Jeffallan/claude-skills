@@ -50,7 +50,7 @@ until triaged.
 - **Impact:** <who or what it affects>
 - **Recommendation:** <the fix, not applied>
 - **Surfaced in:** <relative links to the docs that mention it>
-- **Tests:** `<test path>::<test name>` for each test that characterizes it, or none: <why no test can express it>; evidence: `<command>`
+- **Tests:** `<test path>::<test id>` for each test that characterizes it (the pytest node id, such as `tests/test_x.py::TestX::test_y`, or for a JS test its title as written: `tests/x.spec.js::F-001 hides profiles (current)`), or none: <why no test can express it>; evidence: `<command>`
 
 ## Test coverage
 

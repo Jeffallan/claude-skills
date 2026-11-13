@@ -467,10 +467,18 @@ sk2="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"
 printf '%s\n' "$g" "$sk" "$sk2" "$f" >"$WORK/skills-loaded.jsonl"
 printf '%s\n' "$g" "$sk" "$f" >"$WORK/skills-bare.jsonl"
 printf '%s\n' "$g" "$f" >"$WORK/skills-missing.jsonl"
-for case in loaded:1 missing:0 bare:0; do
+printf '%s\n' "$g" "$sk" "$sk2" "$f" >"$WORK/skills-declined.jsonl"
+for case in loaded:1 missing:0 bare:0 declined:1; do
     name=${case%%:*}; want=${case##*:}
     set +e
-    out=$(python3 "$EVAL" --repo "$SK" --start "$(cat "$SK.start")" --transcript "$WORK/skills-$name.jsonl" 2>&1)
+    repo=$SK
+    if [ "$name" = declined ]; then
+        repo="$WORK/skills-declined"
+        rm -rf "$repo"; cp -r "$SK" "$repo"
+        printf -- '- [x] `intake:document-analytics`\n  2026-11-12: written; javascript-pro not loaded (no call sites to read)\n' >>"$repo/docs/intake-checklist.md"
+        commit_item "$repo" intake:document-analytics "docs(intake): document-analytics"
+    fi
+    out=$(python3 "$EVAL" --repo "$repo" --start "$(cat "$SK.start")" --transcript "$WORK/skills-$name.jsonl" 2>&1)
     set -e
     if has "$out" skills-loaded "$want"; then pass "skills check case $name"; else fail "skills check case $name: $out"; fi
 done
@@ -583,6 +591,26 @@ V=$(fresh v5-invalid)
 sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none|; s|- \*\*Status:\*\* open|- **Status:** invalid|' "$V/docs/intake-findings.md"
 commit_item "$V" intake:testing-features "test(intake): fix"
 v5 "$V" findings-evidence 1 "an invalid finding needs no evidence"
+
+V=$(fresh v5-node-id)
+printf 'class TestVisible:\n    def test_F001_nested_current(self):\n        pass\n' >"$V/tests/test_nested.py"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/test_nested.py::TestVisible::test_F001_nested_current`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 1 "a pytest node id with a class passes findings-evidence"
+
+V=$(fresh v5-jest-title)
+mkdir -p "$V/tests/unit"
+printf "it.skip('F-001 other profiles hidden (intended)', () => {})\n" >"$V/tests/unit/visible.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/visible.spec.js::F-001 other profiles hidden (intended)`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 1 "a Jest test named by its title passes findings-evidence"
+
+V=$(fresh v5-jest-title-gone)
+mkdir -p "$V/tests/unit"
+printf "it.skip('F-001 other profiles hidden (intended)', () => {})\n" >"$V/tests/unit/visible.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/visible.spec.js::F-001 a title nobody wrote`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 0 "a Jest title missing from its file fails findings-evidence"
 
 V=$(fresh v5-index)
 sed -i '/glossary.md/d' "$V/docs/README.md"
