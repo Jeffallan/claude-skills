@@ -30,6 +30,8 @@ git -C "$REPO_ROOT" archive --format=tar HEAD -- \
     skills \
     commands \
     references \
+    hooks \
+    runtime/guard.pyz \
     README.md \
     LICENSE \
     | tar -x -C "$OUT"

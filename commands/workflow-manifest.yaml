@@ -6,10 +6,46 @@ phases:
     depends_on: []
     run_once: true
     commands:
+      - command: "intake:existing-docs"
+        definition: commands/intake/existing-docs.yaml
       - command: "intake:document-codebase"
         definition: commands/intake/document-codebase.yaml
-      - command: "intake:capture-behavior"
-        definition: commands/intake/capture-behavior.yaml
+      - command: "intake:document-data-model"
+        definition: commands/intake/document-data-model.yaml
+      - command: "intake:document-file-tree"
+        definition: commands/intake/document-file-tree.yaml
+      - command: "intake:document-integrations"
+        definition: commands/intake/document-integrations.yaml
+      - command: "intake:document-api"
+        definition: commands/intake/document-api.yaml
+      - command: "intake:document-user-model"
+        definition: commands/intake/document-user-model.yaml
+      - command: "intake:document-features"
+        definition: commands/intake/document-features.yaml
+      - command: "intake:document-glossary"
+        definition: commands/intake/document-glossary.yaml
+      - command: "intake:document-security"
+        definition: commands/intake/document-security.yaml
+      - command: "intake:document-authorization"
+        definition: commands/intake/document-authorization.yaml
+      - command: "intake:document-user-flow"
+        definition: commands/intake/document-user-flow.yaml
+      - command: "intake:document-config"
+        definition: commands/intake/document-config.yaml
+      - command: "intake:document-analytics"
+        definition: commands/intake/document-analytics.yaml
+      - command: "intake:create-onboarding"
+        definition: commands/intake/create-onboarding.yaml
+      - command: "intake:testing-setup"
+        definition: commands/intake/testing-setup.yaml
+      - command: "intake:testing-features"
+        definition: commands/intake/testing-features.yaml
+      - command: "intake:testing-authorization"
+        definition: commands/intake/testing-authorization.yaml
+      - command: "intake:testing-owasp"
+        definition: commands/intake/testing-owasp.yaml
+      - command: "intake:testing-user-flows"
+        definition: commands/intake/testing-user-flows.yaml
       - command: "intake:create-system-description"
         definition: commands/intake/create-system-description.yaml
 
@@ -18,48 +54,76 @@ phases:
     depends_on:
       - phase: intake
         strength: recommended
-    optional: true
+    optional: true             # Way in when no tickets exist; existing tickets start at spec:triage
     external_skills:
-      - skill: feature-forge
-        role: prerequisite
+      - skill: feature-forge   # Interviews vague items; output saved in the topic folder
+        role: companion
+      - skill: spec-miner      # Light pass so proposed tickets reflect existing code
+        role: companion
     commands:
       - command: "discovery:create"
-        definition: commands/project/discovery/create.yaml
+        definition: commands/discovery/create.yaml
       - command: "discovery:synthesize"
-        definition: commands/project/discovery/synthesize.yaml
+        definition: commands/discovery/synthesize.yaml
       - command: "discovery:approve"
-        definition: commands/project/discovery/approve.yaml
+        definition: commands/discovery/approve.yaml
 
-  planning:
-    description: docs/workflow/planning-phase.md
+  # triage groups tickets and cuts the branch, create plans, the ticket phase runs,
+  # review checks the branch diff, complete opens the PR, merges and closes tickets
+  spec:
+    description: docs/workflow/spec-phase.md
     depends_on:
       - phase: discovery
-        strength: required
+        strength: recommended
+    external_skills:
+      - skill: spec-miner              # spec:create codebase analysis
+        role: companion
+      - skill: architecture-designer   # spec:create when structure changes; spec:review panel
+        role: companion
+      - skill: security-reviewer       # spec:create and spec:review when auth or sensitive data are touched
+        role: companion
+      - skill: api-designer            # spec:create and spec:review when routes or schemas are touched
+        role: companion
+      - skill: feature-forge           # spec:create open questions
+        role: companion
+      - skill: the-fool                # spec:create optional challenge pass
+        role: companion
+      - skill: prompt-engineer         # spec:create goal prompt
+        role: companion
+      - skill: code-reviewer           # spec:review panel, always
+        role: companion
+      - skill: test-master             # spec:create RED tests; spec:review panel, always
+        role: companion
+      - skill: secure-code-guardian    # spec:review panel when auth, crypto or input handling are touched
+        role: companion
+      - skill: debugging-wizard        # spec:review blind verifiers
+        role: companion
     commands:
-      - command: "planning:epic-plan"
-        definition: commands/project/planning/epic-plan.yaml
-      - command: "planning:impl-plan"
-        definition: commands/project/planning/impl-plan.yaml
+      - command: "spec:triage"
+        definition: commands/spec/triage.yaml
+      - command: "spec:create"
+        definition: commands/spec/create.yaml
+      - command: "spec:review"
+        definition: commands/spec/review.yaml
+      - command: "spec:complete"
+        definition: commands/spec/complete.yaml
+      - command: "spec:status"
+        definition: commands/spec/status.yaml
 
-  execution:
-    description: docs/workflow/execution-phase.md
+  # Runs between spec:create and spec:review, one ticket at a time, attended or in a goal run
+  ticket:
+    description: docs/workflow/ticket-phase.md
     depends_on:
-      - phase: planning
+      - phase: spec
         strength: required
+    external_skills:
+      - skill: test-master     # RED tests written before the code
+        role: companion
     commands:
-      - command: "execution:execute-ticket"
-        definition: commands/project/execution/execute-ticket.yaml
-      - command: "execution:complete-ticket"
-        definition: commands/project/execution/complete-ticket.yaml
-
-  retrospectives:
-    description: docs/workflow/retrospective-phase.md
-    depends_on:
-      - phase: execution
-        strength: required
-    commands:
-      - command: "retrospectives:complete-epic"
-        definition: commands/project/retrospectives/complete-epic.yaml
+      - command: "ticket:execute"
+        definition: commands/ticket/execute.yaml
+      - command: "ticket:complete"
+        definition: commands/ticket/complete.yaml
 
 utilities:
   - command: common-ground
