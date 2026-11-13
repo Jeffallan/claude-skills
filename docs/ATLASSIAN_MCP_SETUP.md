@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for configuring the Atlassian MCP (Model Context Protocol) server to enable Claude to interact with Jira and Confluence.
 
+> **Workflow commands:** you need this only when your workflow tracker is Jira. Specs live in your repo, so no workflow command uses Confluence. See [Tracker Setup](TRACKER_SETUP.md#jira).
+
 ---
 
 ## Table of Contents
@@ -466,4 +468,4 @@ If you suspect a token has been compromised:
 
 - [Atlassian API Token Documentation](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/)
 - [MCP Atlassian GitHub Repository](https://github.com/sooperset/mcp-atlassian)
-- [Workflow Commands Reference](./WORKFLOW_COMMANDS.md) - Commands that use Atlassian integration
+- [Tracker Setup](./TRACKER_SETUP.md) - The Jira adapter the workflow commands use

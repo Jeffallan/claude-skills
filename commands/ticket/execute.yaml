@@ -1,0 +1,21 @@
+command: "ticket:execute"
+phase: ticket
+path: commands/ticket/execute.md
+description: docs/workflow/ticket-execute.md
+inputs:
+  - name: ticket-id
+    type: string
+    required: true
+    description: Ticket ID from the spec's implementation plan
+outputs:
+  - name: completion-summary
+    type: report
+    description: Changes made, RED and GREEN evidence, deviations and the proposed commit message
+requires:
+  - ticketing
+status: existing
+argument-hint: "<ticket-id>"
+repeat: true
+unattended: true
+adapter-operations:
+  - read

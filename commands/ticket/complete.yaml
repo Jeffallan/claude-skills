@@ -1,0 +1,19 @@
+command: "ticket:complete"
+phase: ticket
+path: commands/ticket/complete.md
+description: docs/workflow/ticket-complete.md
+inputs:
+  - name: ticket-id
+    type: string
+    required: false
+    description: Ticket ID to complete; optional when ticket:execute ran in this session
+outputs:
+  - name: ticket-commit
+    type: file
+    description: One commit holding the ticket's work, its Completion Status row and the evidence summary
+requires: []
+status: existing
+argument-hint: "[ticket-id]"
+repeat: true
+unattended: true
+adapter-operations: []

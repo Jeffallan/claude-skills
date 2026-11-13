@@ -1,0 +1,40 @@
+command: "spec:complete"
+phase: spec
+path: commands/spec/complete.md
+description: docs/workflow/spec-complete.md
+inputs:
+  - name: spec-name
+    type: string
+    required: true
+    description: Spec to finish
+outputs:
+  - name: completion-report
+    type: report
+    description: What happened, deviations, debt and follow-ups, added to overview.md
+  - name: pull-request
+    type: url
+    description: The spec PR, opened or reused, merged on the owner's yes
+  - name: closed-tickets
+    type: tickets
+    description: Every remaining ticket closed after the merge, then the group
+requires:
+  - ticketing
+status: existing
+argument-hint: "<spec-name>"
+repeat: true
+unattended: false
+adapter-operations:
+  - read
+  - list-spec-tickets
+  - ensure-group
+  - unlink
+  - update
+  - comment
+  - close
+  - reopen
+  - create
+  - open-pr
+  - read-pr-feedback
+  - reply-resolve
+  - check-pr
+  - merge-pr

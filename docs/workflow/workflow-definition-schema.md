@@ -18,39 +18,45 @@ command: "discovery:create"
 phase: discovery
 
 # Relative path to the command's .md implementation file
-path: commands/project/discovery/create-epic-discovery.md
+path: commands/discovery/create.md
 
 # Relative path to the human-readable overview in docs/workflow/
 description: docs/workflow/discovery-create.md
 
 # Ordered list of inputs the command accepts
 inputs:
-  - name: epic-key
+  - name: topic-input
     type: string
     required: true
-    description: Jira epic key (e.g., CC-60)
+    description: Feature sets, business requirements, a build request, or an existing ticket ID
 
 # Ordered list of outputs the command produces
 outputs:
   - name: discovery-document
-    type: url
-    path: "/epics/Discovery/{epic-key}/"
-    description: Published Confluence discovery document
+    type: file
+    path: "{specsRoot}/todo/discovery/{topic}/discovery.md"
+    description: Feature list, open questions, proposed tickets and status
 
 # Backend capabilities this command depends on
-# Valid values: ticketing, documentation, or empty list
+# Valid values: ticketing, or an empty list
 requires:
   - ticketing
-  - documentation
 
 # Command lifecycle status (default: existing)
 status: existing
 
 # CLI syntax hint shown in help text
-argument-hint: "<epic-key>"
+argument-hint: "<topic-or-ticket>"
 
-# Whether this command is invoked multiple times per epic (default: false)
+# Whether this command is invoked several times per spec (default: false)
 repeat: false
+
+# Whether the command runs under unattended rules inside a goal run
+unattended: false
+
+# Tracker and code-host operations the command uses
+adapter-operations:
+  - read
 ```
 
 ### Field Reference
@@ -58,7 +64,7 @@ repeat: false
 | Field | Type | Required | Default | Constraints |
 |-------|------|----------|---------|-------------|
 | `command` | string | yes | — | Format `{phase}:{action}` or bare name for utilities. Unique across all definitions. |
-| `phase` | string | yes | — | One of: `intake`, `discovery`, `planning`, `execution`, `retrospectives`. Required for phase commands. Omit for utility commands. |
+| `phase` | string | yes | — | One of: `intake`, `discovery`, `spec`, `ticket`. Required for phase commands. Omit for utility commands. |
 | `path` | string | yes | — | Relative path from repo root to the `.md` command file. Must resolve to an existing file when `status: existing`. When `status: planned`, the path is not required to resolve to an existing file. |
 | `description` | string | yes | — | Relative path from repo root to the overview `.md` in `docs/workflow/`. Must resolve to an existing file. |
 | `inputs` | list | yes | — | Ordered list of input objects. May be empty (`[]`). |
@@ -71,17 +77,19 @@ repeat: false
 | `outputs[].type` | string | yes | — | One of: `url`, `document`, `tickets`, `report`, `file`. |
 | `outputs[].path` | string | no | — | Template path for the output location. Supports `{input-name}` interpolation. |
 | `outputs[].description` | string | no | — | Human-readable description of the output. |
-| `requires` | list | yes | — | Backend capabilities needed. Valid values: `ticketing`, `documentation`. Empty list (`[]`) if no backends needed. |
+| `requires` | list | yes | — | Backend capabilities needed. Valid value: `ticketing`. Empty list (`[]`) if no backend is needed. |
 | `status` | string | no | `existing` | One of: `existing`, `planned`, `deprecated`. |
-| `argument-hint` | string | no | — | CLI syntax hint (e.g., `<epic-key>`). |
-| `repeat` | boolean | no | `false` | `true` if the command is invoked multiple times per epic (e.g., per-ticket commands). |
+| `argument-hint` | string | no | — | CLI syntax hint (e.g., `<spec-name>`). |
+| `repeat` | boolean | no | `false` | `true` if the command is invoked several times per spec (e.g., per-ticket commands). |
+| `unattended` | boolean | no | — | `true` for a command that runs under unattended rules in a goal run (`ticket:execute`, `ticket:complete`); `false` for an attended-only command. skill-linter's WF-02 rejects write operations on an unattended command. |
+| `adapter-operations` | list | no | — | Tracker and code-host operations the command uses: `create`, `read`, `list-spec-tickets`, `link`, `update`, `comment`, `close`, `reopen`, `ensure-group`, `link-groups`, `list-ungrouped`, `open-pr`, `read-pr-feedback`, `reply-resolve`, `check-pr`, `merge-pr`. See `references/adapters/operations.md`. |
 
 ### Input Types
 
 | Type | Description | Example |
 |------|-------------|---------|
 | `string` | Single string value | `CC-60` |
-| `url` | Single URL | `https://confluence/doc` |
+| `url` | Single URL | `https://example.com/notes` |
 | `list[url]` | Space-separated URLs | `url1 url2 url3` |
 | `list[string]` | Space-separated strings | `--decision=D1:B --decision=D2:Y` |
 | `flag` | Boolean flag | `--list`, `--check`, `--graph` |
@@ -91,7 +99,7 @@ repeat: false
 | Type | Description |
 |------|-------------|
 | `url` | A URL to a published document or page |
-| `document` | A generated document (Confluence page, local markdown) |
+| `document` | A generated local markdown document |
 | `tickets` | Jira tickets created in the ticketing system |
 | `report` | A generated report (completion report, retrospective) |
 | `file` | A local file produced on disk |
@@ -117,7 +125,7 @@ phases:
     # Phase dependencies (empty = entry point)
     depends_on: []
 
-    # Whether this phase runs once per project (vs. per-epic)
+    # Whether this phase runs once per project (vs. once per spec)
     run_once: true
 
     # Ordered list of commands in this phase
@@ -140,11 +148,11 @@ phases:
         role: prerequisite     # Feature-forge identifies unknowns that trigger discovery
     commands:
       - command: "discovery:create"
-        definition: commands/project/discovery/create.yaml
+        definition: commands/discovery/create.yaml
       - command: "discovery:synthesize"
-        definition: commands/project/discovery/synthesize.yaml
+        definition: commands/discovery/synthesize.yaml
       - command: "discovery:approve"
-        definition: commands/project/discovery/approve.yaml
+        definition: commands/discovery/approve.yaml
 
 # Utility commands not tied to a specific phase
 utilities:

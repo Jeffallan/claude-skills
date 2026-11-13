@@ -1,39 +1,28 @@
 # Discovery Phase
 
-Optional research phase triggered when `feature-forge` identifies unknowns that require human investigation before planning can proceed.
+Optional phase that turns a feature set, a set of requirements or an unclear ticket into approved tickets, through a discovery topic kept next to the code.
 
 ---
 
 ## Purpose
 
-Not every feature needs discovery. When the feature-forge interview surfaces questions that cannot be answered from existing knowledge — user interviews needed, competitive analysis required, technical spikes pending — those unknowns route here. Discovery provides structure for research and converts findings into actionable epics and tickets.
+Use discovery when there are no tickets yet, or when `spec:triage` sends back a ticket with real unknowns. Each topic lives in `docs/specs/todo/discovery/<topic>/`. Clear items become proposed tickets at once, vague items go through a Feature Forge interview, and items with real unknowns go to research first.
 
 ## Commands
 
 | Order | Command | Summary |
 |-------|---------|---------|
-| 1 | `discovery:create` | Create a structured discovery workspace with research questions and hypotheses |
-| 2 | `discovery:synthesize` | Consolidate research artifacts into findings, recommendations, and proposed tickets |
-| 3 | `discovery:approve` | Resolve blocking decisions and create tickets in the ticketing system |
-
-Between steps 1 and 2, humans conduct the actual research: user interviews, technical spikes, competitive analysis, design sprints.
+| 1 | `discovery:create` | Split the input into items, read the existing code, route each item, and write `discovery.md` |
+| 2 | `discovery:synthesize` | Only after research: consolidate the findings into `synthesis.md` |
+| 3 | `discovery:approve` | Resolve blocking decisions and create the approved tickets in the tracker |
 
 ## Outputs
 
-- **Discovery document** — Research questions, hypotheses, research plan
-- **Synthesis document** — Consolidated findings, recommendations, proposed tickets with blocking decisions
-- **Tickets** — Epics and tickets created in the ticketing system, grounded in research
-
-## Prerequisites
-
-- Feature-forge spec with Discovery Recommendation section (recommended)
-- Ticketing system access (Jira)
-- Documentation system access (Confluence)
-
-## External Skills
-
-- **feature-forge** — Produces the spec that identifies unknowns triggering discovery
+- `discovery.md`, with features, open questions, blocking decisions and proposed tickets
+- One Feature Forge specification per vague item, in the topic folder
+- `synthesis.md` and `sources/` when research ran
+- Tickets in the configured tracker, each with a `Discovery: <topic>` line
 
 ## Next Steps
 
-After discovery, proceed to the [Planning Phase](planning-phase.md) to create the epic plan and implementation plan from the created tickets.
+After discovery, proceed to the [Spec Phase](spec-phase.md): `spec:triage` groups the created tickets into specs.
