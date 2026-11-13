@@ -16,10 +16,10 @@ Bootstrap a runnable test harness (unit, integration, and end-to-end layers) for
 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
-| `test-harness` | directory | (runner config, package scripts, integration-backend config, e2e driver config, tests/helpers) | A runnable test harness: a unit/component runner wired to the stack, an integration harness for the real datastore/backend, an end-to-end driver for the UI, shared fixtures/helpers, per-layer scripts, and one smoke test per layer proven to execute. |
+| `test-harness` | directory | (runner config, package scripts, integration-backend config, e2e driver config, tests/helpers) | A runnable test harness: a unit/component runner wired to the stack, an integration harness for the real datastore/backend, an end-to-end driver for the UI, shared fixtures/helpers, per-layer scripts, a safety guard that fails the test session closed unless the database host, mail backend, payment, storage and external API base URLs point at local or test resources, and one smoke test per layer (the guard included) proven to execute. |
 
 ## How it runs
 
-The command reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
+The command checks what test tooling exists, picks a runner for each layer, and stops at a checkpoint to confirm the toolchain. It then installs the tools, adds the scripts and helpers, and proves each layer with a smoke test. Before any adversarial test can run, it adds a safety guard to the start of the test session: when the database host, mail backend, payment, storage or an external API URL points anywhere other than a local or test resource, the guard stops the run. An unset value counts as unsafe. The guard gets its own smoke test, and the targets it checks go in the checklist note.
 
 Run it after `intake:document-codebase`. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).

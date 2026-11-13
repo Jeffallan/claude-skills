@@ -1,6 +1,6 @@
 # intake:testing-owasp
 
-Map the OWASP Top 10 to the project's real surfaces and generate adversarial tests for each applicable category, characterizing current behavior and recording known weaknesses by finding id.
+Map the current OWASP Top 10 (the 2025 edition when this was written) to the project's real surfaces and write adversarial tests for each category that applies. Current behavior is characterized, and each known weakness is recorded under its finding id.
 
 **Step:** capture-behavior (intake phase) · **Command file:** `commands/intake/testing-owasp.md`
 
@@ -16,10 +16,14 @@ Map the OWASP Top 10 to the project's real surfaces and generate adversarial tes
 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
-| `owasp-tests` | directory | (test directory; one file per applicable OWASP category) | Adversarial tests mapped to the OWASP Top 10: each category is mapped to real surfaces in the code or marked N/A with a reason, then probed (access-control bypass, injection, insecure-design abuse, misconfiguration, auth failures). Known weaknesses are characterized and paired with a skipped hardened-behavior test cross-referencing the finding id. |
+| `owasp-tests` | directory | (test directory; one file per applicable OWASP category) | Adversarial tests mapped to the current OWASP Top 10 edition (2025 at the time of writing), named in the coverage map. A01 cites the access matrix tests from intake:testing-authorization and adds only what a matrix cell can't express (SSRF, path traversal, CSRF and CORS). Each other category applies its techniques: business-logic abuse (skip, replay, reorder, double-submit, boundary quantities, limit bypass, one test per project invariant), the credential lifecycle and token properties, fail-open probes, and command evidence (dependency audit, secrets scan over git history, the framework's deployment check) for supply chain, crypto and misconfiguration. A checklist covers the surface outside the request path. The coverage map has one row per category, surface and technique with a status: tested, not tested with a reason, or not examined. Known weaknesses are characterized and paired with a skipped hardened-behavior test cross-referencing the finding id. |
 
 ## How it runs
 
 The command reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
 
-Run it after `intake:document-codebase`. Capture-behavior commands other than `intake:testing-setup` also need the harness that command builds. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).
+Broken access control (A01) belongs to the access matrix that `intake:testing-authorization` tests. This command cites that table and adds only the cases a cell can't hold: server-side request forgery, path traversal, and cross-origin requests. The other categories each come with techniques. Business logic gets skipped, replayed, reordered and doubled steps, boundary and negative quantities, limit bypasses, and one test for each project invariant from `INV-7` on. Authentication gets the credential lifecycle (does a session, token or emailed link still work after deactivation, a password change, logout or a role change?) and every property listed under `## Tokens` in `docs/security/security.md`. Supply chain, cryptography and misconfiguration are proven with commands: a dependency audit, a secrets scan over the whole git history, and the framework's deployment check. A checklist covers what never shows up in the route table, such as seed data, container and CI files, client-side code, uploads, logs and outgoing email.
+
+The coverage map has one row for each category, surface and technique. Every row says whether it was tested, not tested (and why), or not examined.
+
+Run it after `intake:document-codebase` and `intake:testing-authorization`. Capture-behavior commands other than `intake:testing-setup` also need the harness that command builds. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).

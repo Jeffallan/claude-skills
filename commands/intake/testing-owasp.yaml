@@ -11,7 +11,7 @@ outputs:
   - name: owasp-tests
     type: directory
     path: (test directory; one file per applicable OWASP category)
-    description: "Adversarial tests mapped to the OWASP Top 10: each category is mapped to real surfaces in the code or marked N/A with a reason, then probed (access-control bypass, injection, insecure-design abuse, misconfiguration, auth failures). Known weaknesses are characterized and paired with a skipped hardened-behavior test cross-referencing the finding id."
+    description: "Adversarial tests mapped to the current OWASP Top 10 edition (2025 at the time of writing), named in the coverage map. A01 cites the access matrix tests from intake:testing-authorization and adds only what a matrix cell can't express (SSRF, path traversal, CSRF and CORS). Each other category applies its techniques: business-logic abuse (skip, replay, reorder, double-submit, boundary quantities, limit bypass, one test per project invariant), the credential lifecycle and token properties, fail-open probes, and command evidence (dependency audit, secrets scan over git history, the framework's deployment check) for supply chain, crypto and misconfiguration. A checklist covers the surface outside the request path. The coverage map has one row per category, surface and technique with a status: tested, not tested with a reason, or not examined. Known weaknesses are characterized and paired with a skipped hardened-behavior test cross-referencing the finding id."
 requires: []
 status: existing
 argument-hint: "[directory]"

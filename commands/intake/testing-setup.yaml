@@ -11,7 +11,7 @@ outputs:
   - name: test-harness
     type: directory
     path: (runner config, package scripts, integration-backend config, e2e driver config, tests/helpers)
-    description: "A runnable test harness: a unit/component runner wired to the stack, an integration harness for the real datastore/backend, an end-to-end driver for the UI, shared fixtures/helpers, per-layer scripts, and one smoke test per layer proven to execute."
+    description: "A runnable test harness: a unit/component runner wired to the stack, an integration harness for the real datastore/backend, an end-to-end driver for the UI, shared fixtures/helpers, per-layer scripts, a safety guard that fails the test session closed unless the database host, mail backend, payment, storage and external API base URLs point at local or test resources, and one smoke test per layer (the guard included) proven to execute."
 requires: []
 status: existing
 argument-hint: "[directory]"

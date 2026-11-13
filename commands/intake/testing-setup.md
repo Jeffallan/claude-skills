@@ -17,7 +17,7 @@ This command is the prerequisite for `intake:testing-authorization`, `intake:tes
 `intake:testing-features`, and `intake:testing-user-flows`; they assume the layout, scripts, and helpers it
 produces.
 
-Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` before the first phase. They set the output layout, the findings tracker, the checkpoint, the run-and-verify phase and the goal-run behavior.
+Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/access-control.md` before the first phase. They set the output layout, the findings tracker, the checkpoint, the run-and-verify phase, the goal-run behavior, and the safety guard this command adds before any adversarial test runs ("Safety of the run" in `access-control.md`).
 
 ## When to use
 
@@ -65,9 +65,14 @@ Pick the minimum toolchain that covers three layers. A repo with more than one c
   integration and e2e runs.
 - **Fixtures/helpers:** authenticated-context builders, seed-data factories, deterministic clock and ID helpers,
   and backend setup/teardown.
+- **Safety guard:** list every outbound target the test settings resolve: the database host, the mail backend,
+  payment, storage, and each external API base URL the code reads from settings or the environment. Plan a check
+  that runs once before any test session and aborts it when any target is not local or a test resource (a
+  loopback or container host, an in-memory or file mail backend, a provider's test mode or sandbox key, a local
+  storage emulator). An unknown or unset target counts as not local: the guard fails closed.
 
 **MANDATORY CHECKPOINT: confirm scope before installing.** Present the chosen toolchain per layer, the
-dependencies to add, the directory layout, the scripts, and the integration-backend choice. Do not install or
+dependencies to add, the directory layout, the scripts, and the integration-backend choice, and the outbound targets the safety guard will check. Do not install or
 write config until the user confirms. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 4: Install and configure
@@ -77,8 +82,15 @@ Install the dependencies, write the runner config(s), add the scripts, create th
 one **smoke test per layer**: a trivial assertion that exercises the layer's wiring (a pure assertion for unit, a
 single allowed-plus-denied datastore operation for integration, a single screen load for e2e).
 
+Install the **safety guard** in the runner's session-start hook (a root `conftest.py`, a global setup file, a
+`TestMain`), so it runs before every layer and every later testing command's tests. It reads the effective
+settings the tests run with, not the settings file's text. Add a smoke test for it like the other layers: one
+case where every target is local and the guard passes, and one per target kind where that target points at a
+non-local host and the guard aborts. When a target can only be made local by changing application code, record
+a finding and leave the code alone (`rules.md`, "What intake may change").
+
 ### Phase 5: Run and verify (required; the harness must execute)
-Run each layer's script and capture fresh output. Every smoke test must pass. When a layer genuinely cannot
+Run each layer's script and capture fresh output. Every smoke test must pass, the safety guard's included. When a layer genuinely cannot
 run in this environment, report the blocker explicitly; do not hide it. Keep the type-checker clean if the project
 is typed. Do not claim the harness works without command output proving it.
 
@@ -96,6 +108,7 @@ tests/ (or framework convention)
   integration/  + one smoke test (allowed + denied operation)
   e2e/          + one smoke test (screen loads)
   helpers/      # auth-context builder, fixtures, seed data, setup/teardown
+<session-start hook>  # the safety guard, + its smoke test (passes local, aborts non-local)
 ```
 
 Plus a short "how to run" note: the command for each layer and any prerequisite (a running emulator, a built web
@@ -113,6 +126,9 @@ bundle).
 
 The harness files above, plus a short summary: the toolchain chosen per layer, the scripts added, the smoke-test
 results (with command output), and any layer that could not be executed and why.
+
+Record the safety guard in this item's note in `docs/intake-checklist.md`: where it runs, each target it checks
+with its test value, and its smoke-test result.
 
 The summary ends with one `Test paths:` line listing a glob for every folder or file pattern that holds tests, fixtures
 or test helpers, comma-separated, for example `Test paths: backend/api/apps/*/tests.py, frontend/tests/*, e2e/*`. Copy the
