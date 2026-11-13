@@ -1,0 +1,20 @@
+command: "intake:document-config"
+phase: intake
+path: commands/intake/document-config.md
+description: docs/workflow/intake-document-config.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: configuration-doc
+    type: file
+    path: docs/operations/configuration.md
+    description: Configuration reference. Covers the environment/config model, environment variables vs hardcoded config, per-environment build/deploy profiles, and a local-dev setup quickstart.
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

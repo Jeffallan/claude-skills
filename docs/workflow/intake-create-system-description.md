@@ -1,32 +1,32 @@
 # intake:create-system-description
 
-Launch parallel analysis threads to produce a SOC2-style living document covering architecture, API surface, security patterns, and external dependencies.
+Write the baseline spec and a living system description from the intake docs, the spec index and every completed spec.
 
-**Status:** Planned
+**Step:** system description (intake phase, last) · **Command file:** `commands/intake/create-system-description.md`
 
 ---
-
-## Overview
-
-The agent runs parallel analysis: one thread maps the architecture (services, databases, queues), another catalogs the API surface area, another traces security patterns (auth, encryption, access controls), and another maps external dependencies. The output is `docs/system-description.md` — a system overview suitable for an auditor or a new senior engineer. This document becomes the shared context for all subsequent workflow phases, and is incrementally updated during execution and holistically reviewed during retrospective.
 
 ## Inputs
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `directory` | string | no | Root directory to analyze. Defaults to project root. |
+| `--full` | flag | no | Rewrite the whole description instead of folding in only the specs it hasn't seen |
 
 ## Outputs
 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
-| `system-description` | file | `docs/system-description.md` | Living document: architecture, API surface, security, deployments, third-party dependencies |
+| `system-description` | file | `docs/system-description.md` | Components, data flow, security, API surface, dependencies, operations and change management, with a change history |
+| `baseline-spec` | file | `docs/specs/completed/baseline/overview.md` | The system as intake found it, written on the first run |
 
-## Prerequisites
+## How it runs
 
-- Documented codebase (from `intake:document-codebase`)
-- Characterization tests (from `intake:capture-behavior`)
+The first run writes the baseline spec, a completed spec named `baseline` whose `Feature areas:` line comes from the documentation phase, and regenerates the spec index. Later specs on the same areas find it through the index. It then writes the whole system description from the intake docs and any completed specs.
 
-## Next Steps
+Each later run reads the description's Change history and folds in only the completed specs it doesn't list, changing just the sections they touch. `--full` rewrites everything. Every section names its sources, and open findings that affect a section appear in it by id.
 
-The system description is complete. Feature-forge reads it during feature definition. If discovery is needed, proceed to `discovery:create`. Otherwise, proceed directly to `planning:epic-plan`.
+`spec:complete` keeps the description current one spec at a time: in its completion commit, before the PR opens, it proposes updates for the finished spec and applies the ones the owner approves.
+
+## Next steps
+
+Intake is done when the docs, the tests and the findings tracker agree. Go to the [Discovery Phase](discovery-phase.md) or the [Spec Phase](spec-phase.md).

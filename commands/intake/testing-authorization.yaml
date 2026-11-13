@@ -1,0 +1,20 @@
+command: "intake:testing-authorization"
+phase: intake
+path: commands/intake/testing-authorization.md
+description: docs/workflow/intake-testing-authorization.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: authorization-tests
+    type: directory
+    path: (test directory; one file per resource)
+    description: "Characterization tests for the access-control model: authorized-allow and unauthorized-deny per resource and verb, plus the gates (authentication, identity verification, ownership/participation, immutability), run against the real enforcement layer where the harness allows. Known authorization bugs are characterized and paired with a skipped intended-fix test cross-referencing the finding id."
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

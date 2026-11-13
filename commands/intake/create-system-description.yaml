@@ -3,16 +3,22 @@ phase: intake
 path: commands/intake/create-system-description.md
 description: docs/workflow/intake-create-system-description.md
 inputs:
-  - name: directory
-    type: string
+  - name: full
+    type: flag
     required: false
-    description: Root directory to analyze (defaults to project root)
+    description: Rewrite the whole description instead of folding in only the specs it hasn't seen
 outputs:
   - name: system-description
     type: file
     path: "docs/system-description.md"
-    description: SOC2-style living document covering architecture, API surface, security patterns, and external dependencies
+    description: Living system description (components, data flow, security, API surface, dependencies, operations, change management) with a change history of the specs folded in
+  - name: baseline-spec
+    type: file
+    path: "docs/specs/completed/baseline/overview.md"
+    description: Baseline spec written on the first run, so the spec index knows the system as intake found it
 requires: []
-status: planned
-argument-hint: "[directory]"
-repeat: false
+status: existing
+argument-hint: "[--full]"
+repeat: true
+unattended: true
+adapter-operations: []

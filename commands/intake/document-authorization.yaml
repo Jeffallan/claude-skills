@@ -1,0 +1,20 @@
+command: "intake:document-authorization"
+phase: intake
+path: commands/intake/document-authorization.md
+description: docs/workflow/intake-document-authorization.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: authorization-doc
+    type: file
+    path: docs/security/authorization.md
+    description: "Authorization and access-control reference: the project's actual authorization model (RBAC, ABAC, ownership/relationship-based, ACL, or a mix), the identity/claims basis, the helper/primitive inventory, and a per-resource access matrix (resource | read | create | update | delete) with the real conditions, plus server-only resources and the default rule."
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

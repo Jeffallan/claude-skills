@@ -1,0 +1,20 @@
+command: "intake:create-onboarding"
+phase: intake
+path: commands/intake/create-onboarding.md
+description: docs/workflow/intake-create-onboarding.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: onboarding-doc
+    type: file
+    path: docs/README.md
+    description: Onboarding index covering project overview, quickstart (setup and run), a structure pointer, and a linked index of all intake docs.
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

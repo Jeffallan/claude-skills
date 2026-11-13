@@ -1,0 +1,20 @@
+command: "intake:testing-features"
+phase: intake
+path: commands/intake/testing-features.md
+description: docs/workflow/intake-testing-features.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: feature-tests
+    type: directory
+    path: (test directory; unit, parity, and view tests)
+    description: "Unit and component characterization tests for domain/service functions, pure helpers, constant/enumeration parity between duplicated sources of truth, type vs view-model contracts, and view/screen logic, with a deliberate mocking boundary. Known bugs are characterized and paired with a skipped intended-fix test cross-referencing the finding id."
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

@@ -1,32 +1,32 @@
 # intake:document-codebase
 
-Scan the entire codebase and generate documentation for all undocumented functions, classes, modules, and endpoints.
+Add accurate, agent-readable docstrings and module comments across an existing codebase without changing a single executable line.
 
-**Status:** Planned
+**Step:** docstrings (intake phase, first) · **Command file:** `commands/intake/document-codebase.md`
 
 ---
-
-## Overview
-
-The agent scans the codebase, identifies every function, class, module, and endpoint that lacks documentation, and prioritizes public APIs and external-facing interfaces first. Before generating anything, it presents a scope summary for approval. It then generates docstrings/JSDoc/XML docs throughout the codebase so that any developer or agent can understand function signatures without tracing implementations.
 
 ## Inputs
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `directory` | string | no | Root directory to scan. Defaults to project root. |
+| `directory` | string | no | Root directory to document. Defaults to the project root. |
 
 ## Outputs
 
 | Name | Type | Description |
 |------|------|-------------|
-| `documentation-report` | report | Summary of documentation added: function count, class count, module count |
+| `docstrings` | directory | Docstrings and module comments across the code, with no executable line changed |
+| `documentation-report` | report | Coverage before and after, the test runs, the executable-line check and the findings raised |
 
-## Prerequisites
+## How it runs
 
-- Access to the project codebase
-- No external tooling required
+The command records the start commit and runs the project's tests, detects the language, the framework and the docstring style already in use, and lists what lacks a docstring with public APIs first. After the checkpoint it writes docstrings that say what each unit does, takes, returns, raises and changes, from reading the code and its callers.
 
-## Next Steps
+It proves the pass changed nothing that runs in two ways: the test suite gives the same result before and after, and a diff check confirms every changed hunk is a comment or docstring (an AST comparison for Python, a comment-stripped comparison for JavaScript and TypeScript, a comment-line check elsewhere). Any hunk that touches code is reverted.
 
-After documenting the codebase, run `intake:capture-behavior` to create characterization tests for the newly-documented code.
+Code that contradicts its own name or type gets a docstring describing what it does and a finding in `docs/intake-findings.md`. The bug is never fixed here.
+
+## Next steps
+
+Run the `intake:document-*` commands next; see the [intake phase](intake-phase.md).

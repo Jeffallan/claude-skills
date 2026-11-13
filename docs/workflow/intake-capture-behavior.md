@@ -1,33 +1,27 @@
-# intake:capture-behavior
+# Capture behavior
 
-Scan for untested behavior and write characterization tests that assert current functionality as a safety net for future changes.
+The intake step that writes a runnable test suite pinning the codebase's current behavior, through the five `intake:testing-*` commands.
 
-**Status:** Planned
+**Status:** Step name only. There is no `intake:capture-behavior` command; the step runs as the commands below.
 
 ---
 
-## Overview
+## Commands
 
-The agent identifies functions, endpoints, and components with no test coverage and builds a test plan based on what the code *currently does* — not what it should do. These characterization tests capture existing behavior so that future changes will immediately surface regressions. Tests are run against the live code to verify they pass before being committed.
+Run them in this order. Each later command needs the harness from `intake:testing-setup` and reads its paired documentation doc.
 
-## Inputs
+| Order | Command | Reads | Writes |
+|-------|---------|-------|--------|
+| 1 | [`intake:testing-setup`](intake-testing-setup.md) | the codebase | unit, integration and e2e harness, one smoke test per layer |
+| 2 | [`intake:testing-features`](intake-testing-features.md) | `docs/domain/features.md` | unit, component and parity tests |
+| 3 | [`intake:testing-authorization`](intake-testing-authorization.md) | `docs/security/authorization.md` | allow and deny tests per resource and verb |
+| 4 | [`intake:testing-owasp`](intake-testing-owasp.md) | `docs/security/security.md` | adversarial tests per OWASP category |
+| 5 | [`intake:testing-user-flows`](intake-testing-user-flows.md) | `docs/flows/user-flow.md` | backend and UI end-to-end tests |
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `directory` | string | no | Root directory to scan for untested behavior. Defaults to project root. |
+## Characterize, don't fix
 
-## Outputs
+The tests record what the code does today. A known bug gets a passing test that pins the current behavior and a sibling skipped or expected-fail test for the intended behavior, both naming the finding id from `docs/intake-findings.md`. Intake never fixes a bug and never asserts one as correct.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `characterization-tests` | file | Test files asserting current behavior |
-| `coverage-report` | report | Summary of behavior captured and coverage added |
+## Why five commands
 
-## Prerequisites
-
-- Documented codebase (from `intake:document-codebase`)
-- Project test framework configured and runnable
-
-## Next Steps
-
-After capturing behavior, run `intake:create-system-description` to generate the living system description.
+The v0.5.0 plan had a single `capture-behavior` command. The dogfood pass that produced the intake specs showed each layer needs its own harness checks, fixtures and paired doc, so the step was split. The name stays as the label for the step.

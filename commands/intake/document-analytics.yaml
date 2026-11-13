@@ -1,0 +1,20 @@
+command: "intake:document-analytics"
+phase: intake
+path: commands/intake/document-analytics.md
+description: docs/workflow/intake-document-analytics.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: analytics-events-doc
+    type: file
+    path: docs/operations/analytics-events.md
+    description: "Product-analytics reference: telemetry setup and enablement, an event catalog table (event, when it fires, params, call site), identity and user-property wiring, and flags for events defined-but-never-fired and fired-but-undefined."
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []
