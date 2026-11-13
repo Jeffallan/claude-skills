@@ -1,0 +1,257 @@
+import io
+import json
+from pathlib import Path
+import sys
+
+import pytest
+from ticket_guard import evidence, marker
+from ticket_guard.__main__ import main
+
+FAIL_TEST = "def test_sub():\n    from src.app import sub\n    assert sub(3, 1) == 2\n"
+RED_CMD = [sys.executable, "-c", "import sys; sys.exit(1)"]
+
+
+def hook(capsys, monkeypatch, name, payload):
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(payload)))
+    code = main(["hook", name])
+    return code, capsys.readouterr().out
+
+
+def started(git_repo, mode="goal"):
+    marker.start(git_repo.root, "demo", "T1", mode)
+    marker.claim(git_repo.root, "s1")
+
+
+def red(git_repo, capsys, *extra):
+    git_repo.write("tests/test_sub.py", FAIL_TEST)
+    code = main(["run", "red", *extra, "--", *RED_CMD])
+    capsys.readouterr()
+    return code
+
+
+# RED and GREEN wrappers ---------------------------------------------------------
+
+
+def test_red_records_a_failing_run_of_new_tests(git_repo, capsys):
+    started(git_repo)
+    assert red(git_repo, capsys) == 0
+    rec = [r for r in evidence.records(git_repo.root, "T1") if r["event"] == "run"][-1]
+    assert rec["phase"] == "red" and rec["valid"] is True
+    assert rec["exit_code"] == 1
+    assert rec["test_files"] == ["tests/test_sub.py"]
+    for key in ("command", "cwd", "head_sha", "tree_hash", "test_files_digest"):
+        assert rec[key]
+    assert rec["log_sha256"]
+    assert Path(rec["log_path"]).is_file()
+
+
+def test_red_is_invalid_when_the_tests_pass(git_repo, capsys):
+    started(git_repo)
+    git_repo.write("tests/test_sub.py", FAIL_TEST)
+    assert main(["run", "red", "--", sys.executable, "-c", "pass"]) == 1
+    assert "RED needs a failing" in capsys.readouterr().err
+
+
+def test_red_is_invalid_after_a_source_change(git_repo, capsys):
+    started(git_repo)
+    git_repo.write("src/app.py", "def sub(a, b):\n    return a - b\n")
+    assert red(git_repo, capsys) == 1
+    rec = evidence.records(git_repo.root, "T1")[-1]
+    assert rec["valid"] is False and "src/app.py" in rec["reason"]
+
+
+def test_red_is_invalid_on_a_collection_error(git_repo, capsys):
+    started(git_repo)
+    git_repo.write("tests/test_sub.py", FAIL_TEST)
+    cmd = [
+        sys.executable,
+        "-c",
+        "import sys; print('ERROR collecting tests'); sys.exit(2)",
+    ]
+    assert main(["run", "red", "--", *cmd]) == 1
+    assert "collection" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "script, kind",
+    [
+        (
+            "import sys; print('/usr/bin/python3: No module named pytest'); sys.exit(1)",
+            "test",
+        ),
+        (
+            "import sys; print('bash: line 1: pytest: command not found'); sys.exit(1)",
+            "test",
+        ),
+        ("import sys; print('sh: 1: pytest: not found'); sys.exit(1)", "stand-in"),
+        ("import sys; sys.exit(127)", "test"),
+    ],
+)
+def test_red_is_invalid_when_the_runner_is_missing(git_repo, capsys, script, kind):
+    started(git_repo)
+    git_repo.write("tests/test_sub.py", FAIL_TEST)
+    cmd = [sys.executable, "-c", script]
+    assert main(["run", "red", "--type", kind, "--", *cmd]) == 1
+    assert "test runner did not start" in capsys.readouterr().err
+
+
+def test_red_accepts_a_missing_module_inside_a_test(git_repo, capsys):
+    started(git_repo)
+    git_repo.write("tests/test_sub.py", FAIL_TEST)
+    script = "import sys; print(\"E   ModuleNotFoundError: No module named 'src.app'\"); sys.exit(1)"
+    assert main(["run", "red", "--", sys.executable, "-c", script]) == 0
+
+
+def test_red_stand_in_needs_only_a_failure(git_repo, capsys):
+    started(git_repo)
+    assert main(["run", "red", "--type", "stand-in", "--", *RED_CMD]) == 0
+
+
+def test_red_refactor_needs_a_passing_suite_and_freezes_every_test(git_repo, capsys):
+    started(git_repo)
+    ok = [sys.executable, "-c", "pass"]
+    assert main(["run", "red", "--type", "refactor", "--", *ok]) == 0
+    rec = evidence.records(git_repo.root, "T1")[-1]
+    assert rec["test_files"] == ["tests/test_app.py"]
+    assert main(["run", "red", "--type", "refactor", "--", *RED_CMD]) == 1
+
+
+def test_green_records_and_flags_changed_tests(git_repo, capsys):
+    started(git_repo)
+    red(git_repo, capsys)
+    ok = [sys.executable, "-c", "pass"]
+    assert main(["run", "green", "--", *ok]) == 0
+    rec = evidence.records(git_repo.root, "T1")[-1]
+    assert (rec["phase"], rec["exit_code"], rec["tests_changed"]) == ("green", 0, False)
+    git_repo.write("tests/test_sub.py", "def test_sub():\n    pass\n")
+    assert main(["run", "green", "--", *ok]) == 1
+    assert evidence.records(git_repo.root, "T1")[-1]["tests_changed"] is True
+    assert "changed since RED" in capsys.readouterr().err
+
+
+def test_green_needs_a_red_record(git_repo, capsys):
+    started(git_repo)
+    assert main(["run", "green", "--", sys.executable, "-c", "pass"]) == 1
+    assert "no valid RED record" in capsys.readouterr().err
+
+
+def test_run_needs_a_marker(git_repo, capsys):
+    assert main(["run", "red", "--", *RED_CMD]) == 1
+    assert "no marker" in capsys.readouterr().err
+
+
+# PreToolUse ---------------------------------------------------------------------
+
+
+def edit(git_repo, rel, session="s1", tool="Edit"):
+    return {
+        "session_id": session,
+        "hook_event_name": "PreToolUse",
+        "cwd": str(git_repo.root),
+        "tool_name": tool,
+        "tool_input": {"file_path": str(git_repo.root / rel)},
+    }
+
+
+def decision(out):
+    return json.loads(out)["hookSpecificOutput"]["permissionDecision"] if out else None
+
+
+def test_pre_tool_use_exits_0_silently_without_a_marker(git_repo, capsys, monkeypatch):
+    assert hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/x.py")) == (
+        0,
+        "",
+    )
+
+
+def test_freeze_denies_frozen_tests_in_goal_mode(git_repo, capsys, monkeypatch):
+    started(git_repo)
+    red(git_repo, capsys)
+    code, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py"))
+    assert code == 0 and decision(out) == "deny"
+    reason = json.loads(out)["hookSpecificOutput"]["permissionDecisionReason"]
+    assert "T1" in reason and "marker.json" in reason and "guard marker clear" in reason
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "src/app.py"))
+    assert out == ""
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py", "s2"))
+    assert out == ""  # another session: stand down
+
+
+def test_freeze_asks_attended_and_records_the_amendment(git_repo, capsys, monkeypatch):
+    started(git_repo, "attended")
+    red(git_repo, capsys)
+    payload = edit(git_repo, "tests/test_sub.py", tool="Write")
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", payload)
+    assert decision(out) == "ask"
+    assert evidence.records(git_repo.root, "T1")[-1]["event"] == "amendment_requested"
+
+
+def test_no_freeze_before_red(git_repo, capsys, monkeypatch):
+    started(git_repo)
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_app.py"))
+    assert out == ""
+
+
+def test_goal_mode_blocks_the_text_ticket_folder(git_repo, capsys, monkeypatch):
+    git_repo.write(".claude/workflow-config.json", json.dumps({"text": {"ticketsDir": "tickets"}}))
+    git_repo.commit("config")
+    started(git_repo)
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tickets/T9.md"))
+    assert decision(out) == "deny"
+    marker.update(git_repo.root, mode="attended")
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tickets/T9.md"))
+    assert out == ""
+
+
+def test_hooks_survive_bad_input(git_repo, capsys, monkeypatch):
+    monkeypatch.setattr(sys, "stdin", io.StringIO("not json"))
+    assert main(["hook", "pre-tool-use"]) == 0
+
+
+# SessionStart -------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("setup", "expected"),
+    [
+        ("none", "guard run red"),
+        ("red", "guard run green"),
+        ("green", "ticket:complete T1"),
+    ],
+)
+def test_session_start_after_compact_prints_next_step(git_repo, capsys, monkeypatch, setup, expected):
+    started(git_repo)
+    if setup in ("red", "green"):
+        red(git_repo, capsys)
+    if setup == "green":
+        main(["run", "green", "--", sys.executable, "-c", "pass"])
+        capsys.readouterr()
+    payload = {"session_id": "s1", "source": "compact", "cwd": str(git_repo.root)}
+    code, out = hook(capsys, monkeypatch, "session-start", payload)
+    assert code == 0
+    assert "T1" in out and "goal" in out and expected in out
+    assert "docs/specs/todo/demo/goal-prompt.md" in out
+
+
+def test_session_start_is_silent_for_other_sources_and_no_marker(git_repo, capsys, monkeypatch):
+    payload = {"session_id": "s1", "source": "compact", "cwd": str(git_repo.root)}
+    assert hook(capsys, monkeypatch, "session-start", payload) == (0, "")
+    started(git_repo)
+    payload["source"] = "startup"
+    assert hook(capsys, monkeypatch, "session-start", payload) == (0, "")
+
+
+def test_a_rerun_after_block_judges_only_its_own_evidence(git_repo, capsys, monkeypatch):
+    started(git_repo)
+    red(git_repo, capsys)
+    assert main(["block", "T1", "the tests were wrong"]) == 0
+    capsys.readouterr()
+    started(git_repo)
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py"))
+    assert out == ""  # the old attempt's RED no longer freezes this attempt's tests
+    git_repo.write("tests/test_sub.py", "def test_sub():\n    from src.app import sub\n    assert sub(5, 2) == 3\n")
+    assert main(["run", "red", "--", *RED_CMD]) == 0
+    capsys.readouterr()
+    reds = [r for r in evidence.current(git_repo.root, "T1") if r["event"] == "run" and r["phase"] == "red"]
+    assert len(reds) == 1
+    assert len([r for r in evidence.records(git_repo.root, "T1") if r["event"] == "run"]) == 2  # the file keeps both
