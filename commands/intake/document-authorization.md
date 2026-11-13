@@ -23,7 +23,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 ## When to use
 
 Run once during intake, after `intake:document-codebase`. Re-run when access rules change (a new resource, a
-new role/claim, a changed ownership predicate). This command is idempotent and overwrites the document.
+new role/claim, a changed ownership predicate). A rerun edits the existing document in place and keeps hand edits ("Reruns" in `references/intake/rules.md`).
 
 ## Skills to invoke
 
@@ -99,6 +99,9 @@ remove anything not provable from the code. Prefer "denied", "server-only", or "
 
 ```markdown
 ---
+command: intake:document-authorization
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: [<globs of the code this doc describes>]
 related: [<docs this one depends on or that depend on it, paths under docs/>]
 ---
 # Authorization and Access Control

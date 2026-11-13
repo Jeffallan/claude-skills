@@ -39,7 +39,7 @@ Read each doc's factual claims (names, paths, commands, settings, endpoints, rol
 **MANDATORY CHECKPOINT: confirm scope before writing.** Present the doc list, the topic map and the wrong claims found. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 4: Write
-Write `docs/intake-existing-docs.md` from the template below, with `related: []` frontmatter (the intake docs that link to an owner doc add themselves later, both ways).
+Write `docs/intake-existing-docs.md` from the template below, with the frontmatter from `references/intake/rules.md` (`related: []` to start: the intake docs that link to an owner doc add themselves later, both ways).
 
 ### Phase 5: Accuracy audit
 Give the prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`), then re-check every Wrong row against the code: the finding id exists, the cited symbol resolves, and the quoted claim matches the doc as written. End with `## Accuracy audit`.
@@ -48,6 +48,9 @@ Give the prose its human-voice pass ("Human-voice pass" in `references/intake/ru
 
 ```markdown
 ---
+command: intake:existing-docs
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: []
 related: []
 ---
 # Existing Docs

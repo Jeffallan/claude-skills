@@ -641,8 +641,18 @@ def pristine_check(repo: Path) -> dict:
     by_root = {rel.removeprefix("docs/"): text for rel, text in texts.items()}
     problems = []
     for rel, text in by_root.items():
-        if "related" not in re.findall(r"^(\w+):", text.split("\n---", 1)[0] if text.startswith("---") else "", re.M):
-            problems.append(f"{rel}: no related: frontmatter")
+        fm = guard_docs.frontmatter(text)
+        missing = [k for k in ("command", "verified", "sources", "related") if k not in fm]
+        if missing:
+            problems.append(f"{rel}: frontmatter lacks {', '.join(missing)}")
+        verified = fm.get("verified")
+        if (
+            verified
+            and subprocess.run(
+                ["git", "rev-parse", "--verify", "-q", f"{verified}^{{commit}}"], cwd=repo, capture_output=True
+            ).returncode
+        ):
+            problems.append(f"{rel}: verified {verified} is not a commit")
         for other in guard_docs.related(text):
             target = repo / "docs" / other
             if not target.is_file():

@@ -81,6 +81,9 @@ Re-check every component, data store, integration, control and dependency agains
 
 ```markdown
 ---
+command: intake:create-system-description
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: [<globs of the code this doc describes>]
 related: [<docs this one depends on or that depend on it, paths under docs/>]
 ---
 # System Description

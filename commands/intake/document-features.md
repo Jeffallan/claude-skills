@@ -17,8 +17,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 
 ## When to use
 
-Run once during intake, after `intake:document-codebase`. Re-run when features are added or removed (this command
-is idempotent; it overwrites the document).
+Run once during intake, after `intake:document-codebase`. Re-run when features are added or removed (a rerun edits the existing
+document in place and keeps hand edits; see "Reruns" in `references/intake/rules.md`).
 
 ## Skills to invoke
 
@@ -65,6 +65,9 @@ Prefer omission over invention.
 
 ```markdown
 ---
+command: intake:document-features
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: [<globs of the code this doc describes>]
 related: [<docs this one depends on or that depend on it, paths under docs/>]
 ---
 # Features

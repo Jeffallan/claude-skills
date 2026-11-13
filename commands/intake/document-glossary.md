@@ -18,7 +18,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 ## When to use
 
 Run once during intake, after `intake:document-codebase`. Re-run when the domain vocabulary changes (new features,
-renamed concepts, new enum values): this command is idempotent and overwrites the document.
+renamed concepts, new enum values): A rerun edits the existing document in place and keeps hand edits ("Reruns" in `references/intake/rules.md`).
 
 ## Skills to invoke
 
@@ -65,6 +65,9 @@ code does not use and any meaning it does not support. Prefer "unknown" over a g
 
 ```markdown
 ---
+command: intake:document-glossary
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: [<globs of the code this doc describes>]
 related: [<docs this one depends on or that depend on it, paths under docs/>]
 ---
 # Glossary

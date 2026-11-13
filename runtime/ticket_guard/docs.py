@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from fnmatch import fnmatch
 from pathlib import Path
 import re
+import subprocess
 from typing import Any
 
 from ticket_guard import evidence, files, plan, settings
@@ -14,26 +16,40 @@ CITE = re.compile(r"`([\w./-]+)::([A-Za-z_][\w.]*)(?:\(\))?`")
 HUNK = re.compile(r"^@@[^@]*@@(.*)$")
 
 
-def related(text: str) -> list[str]:
-    """`related:` from the leading `---` frontmatter, as an inline `[a, b]` or a block list."""
+def frontmatter(text: str) -> dict[str, Any]:
+    """The leading `---` block: `key: value` scalars, inline `[a, b]` lists and block `- item` lists."""
     lines = text.splitlines()
     if lines[:1] != ["---"] or "---" not in lines[1:]:
-        return []
+        return {}
     block = lines[1 : lines.index("---", 1)]
-    for i, line in enumerate(block):
-        key, _, rest = line.partition(":")
-        if key.strip() != "related":
+    out: dict[str, Any] = {}
+    key = None
+    for line in block:
+        item = line.lstrip()
+        if key and item.startswith("- "):
+            out[key].append(item[2:].strip().strip("'\""))
             continue
-        rest = rest.strip()
+        name, sep, rest = line.partition(":")
+        if not sep or line[:1].isspace():
+            continue
+        key, rest = name.strip(), rest.split(" #")[0].strip()
         if rest.startswith("["):
-            return [p.strip().strip("'\"") for p in rest.strip("[]").split(",") if p.strip()]
-        out = []
-        for item in block[i + 1 :]:
-            if not item.lstrip().startswith("- "):
-                break
-            out.append(item.lstrip()[2:].strip().strip("'\""))
-        return out
-    return []
+            out[key] = [p.strip().strip("'\"") for p in rest.strip("[]").split(",") if p.strip()]
+        elif rest:
+            out[key] = rest.strip("'\"")
+        else:
+            out[key] = []
+    return out
+
+
+def related(text: str) -> list[str]:
+    value = frontmatter(text).get("related", [])
+    return value if isinstance(value, list) else [value]
+
+
+def sources(text: str) -> list[str]:
+    value = frontmatter(text).get("sources", [])
+    return value if isinstance(value, list) else [value]
 
 
 def citations(text: str) -> list[tuple[str, str]]:
@@ -70,6 +86,9 @@ def check(cwd: Path) -> list[str]:
                 problems.append(f"{doc}: related doc {other} does not exist")
             elif doc not in related(found[other]):
                 problems.append(f"{doc} lists {other} as related, but {other} does not list it back")
+        verified = frontmatter(text).get("verified")
+        if verified and not _is_commit(cwd, str(verified)):
+            problems.append(f"{doc}: verified {verified} is not a commit")
         for path, symbol in citations(text):
             target = repo / path
             if not target.is_file():
@@ -79,14 +98,19 @@ def check(cwd: Path) -> list[str]:
     return problems
 
 
-def _changed_lines(cwd: Path, base: str, path: str) -> str:
-    """The added, removed and hunk-header text of `path`'s diff against `base` (all of it when untracked)."""
-    tracked = git(cwd, "ls-files", "--", path).strip()
-    if not tracked and not git(cwd, "ls-tree", "--name-only", base, "--", path).strip():
-        target = top(cwd) / path
-        return target.read_text(encoding="utf-8", errors="replace") if target.is_file() else ""
+def _is_commit(cwd: Path, rev: str) -> bool:
+    return (
+        subprocess.run(
+            ["git", "rev-parse", "--verify", "-q", f"{rev}^{{commit}}"], cwd=cwd, capture_output=True
+        ).returncode
+        == 0
+    )
+
+
+def _diff_text(diff: str) -> str:
+    """The added, removed and hunk-header text of a `-U0` diff."""
     out = []
-    for line in git(cwd, "diff", "-U0", "--no-renames", base, "--", path).splitlines():
+    for line in diff.splitlines():
         if line.startswith(("+++", "---")):
             continue
         hunk = HUNK.match(line)
@@ -97,20 +121,48 @@ def _changed_lines(cwd: Path, base: str, path: str) -> str:
     return "\n".join(out)
 
 
+def _changed_lines(cwd: Path, base: str, path: str) -> str:
+    """The added, removed and hunk-header text of `path`'s diff against `base` (all of it when untracked)."""
+    tracked = git(cwd, "ls-files", "--", path).strip()
+    if not tracked and not git(cwd, "ls-tree", "--name-only", base, "--", path).strip():
+        target = top(cwd) / path
+        return target.read_text(encoding="utf-8", errors="replace") if target.is_file() else ""
+    return _diff_text(git(cwd, "diff", "-U0", "--no-renames", base, "--", path))
+
+
+def _code_reasons(text: str, changed: set[str], lines_of, exists, new: set[str] | None = None) -> list[str]:
+    """Why a doc is affected: a cited symbol the changed files touch, or a `sources:` glob a file matches.
+
+    `new` limits the glob match to added files (the per-ticket check: an edit to an existing file is covered
+    by the citations, so broad globs don't flag a doc on every ticket); None matches every changed file (drift).
+    """
+    out = []
+    for path, symbol in citations(text):
+        if path in changed and (not exists(path) or _word(symbol).search(lines_of(path))):
+            out.append(f"cites {path}::{symbol}")
+    for glob in sources(text):
+        out.extend(f"matches sources {glob}: {f}" for f in sorted(changed if new is None else new) if fnmatch(f, glob))
+    return out
+
+
 def affected(cwd: Path, base: str) -> dict[str, list[str]]:
     """{doc: reasons}: docs citing a symbol the diff touches, and the `related:` docs of each changed doc."""
     found, changed = all_docs(cwd), set(files.changed_since(cwd, base))
     prefix = root(cwd).rstrip("/") + "/"
     diffs: dict[str, str] = {}
     out: dict[str, list[str]] = {}
+    code = {f for f in changed if not f.startswith(prefix)}
+    added = set(git(cwd, "diff", "--name-only", "--no-renames", "--diff-filter=A", base).split())
+    added |= set(git(cwd, "ls-files", "--others", "--exclude-standard").split())
+    new = {f for f in code if f in added}
+
+    def lines_of(path: str) -> str:
+        return diffs.setdefault(path, _changed_lines(cwd, base, path))
+
     for doc, text in found.items():
-        for path, symbol in citations(text):
-            if path not in changed:
-                continue
-            diffs.setdefault(path, _changed_lines(cwd, base, path))
-            deleted = not (top(cwd) / path).is_file()
-            if deleted or _word(symbol).search(diffs[path]):
-                out.setdefault(doc, []).append(f"cites {path}::{symbol}")
+        reasons = _code_reasons(text, code, lines_of, lambda path: (top(cwd) / path).is_file(), new)
+        if reasons:
+            out.setdefault(doc, []).extend(reasons)
     for doc in sorted(d for d in found if prefix + d in changed):
         for other in related(found[doc]):
             if other in found:
@@ -248,3 +300,50 @@ def gate_refusals(spec_dir: Path, plan_text: str) -> list[str]:
             continue
         out.append(f"{wid}: docs waiver ({doc}) has no ruling in review/code-documenter.md")
     return out
+
+
+def drift(cwd: Path) -> list[dict[str, Any]]:
+    """Docs with a `verified:` commit that code changed since, outside the commits that also updated the doc.
+
+    A commit that changes the doc counts as its update (the ticket workflow edits code and docs together); one
+    without an `Intake:` or `Ticket:` trailer is a hand edit, reported so a rerun keeps it.
+    """
+    prefix = root(cwd).rstrip("/") + "/"
+    rows = []
+    for doc, text in all_docs(cwd).items():
+        fm = frontmatter(text)
+        verified = fm.get("verified")
+        if not verified:
+            continue
+        if not _is_commit(cwd, str(verified)):
+            rows.append(
+                {
+                    "doc": doc,
+                    "command": fm.get("command"),
+                    "verified": verified,
+                    "reasons": [f"verified {verified} is not a commit"],
+                }
+            )
+            continue
+        reasons: list[str] = []
+        for sha in git(cwd, "rev-list", "--reverse", "--no-merges", f"{verified}..HEAD").split():
+            files = set(git(cwd, "show", "--name-only", "--format=", "--no-renames", sha).split())
+            if prefix + doc in files:
+                trailers = git(
+                    cwd, "log", "-1", "--format=%(trailers:key=Intake,valueonly)%(trailers:key=Ticket,valueonly)", sha
+                )
+                if not trailers.strip() and "edited outside the workflow since its audit" not in reasons:
+                    reasons.append("edited outside the workflow since its audit")
+                continue
+            code = {f for f in files if not f.startswith(prefix)}
+
+            def lines_of(path: str, sha: str = sha) -> str:
+                return _diff_text(git(cwd, "show", "-U0", "--format=", "--no-renames", sha, "--", path))
+
+            def exists(path: str, sha: str = sha) -> bool:
+                return bool(git(cwd, "ls-tree", "--name-only", sha, "--", path).strip())
+
+            reasons += [r for r in _code_reasons(text, code, lines_of, exists) if r not in reasons]
+        if reasons:
+            rows.append({"doc": doc, "command": fm.get("command"), "verified": verified, "reasons": reasons})
+    return rows

@@ -35,7 +35,7 @@ docs/
 
 - The five categories are `docs/architecture/` (how it is built), `docs/domain/` (what it does), `docs/security/`, `docs/flows/` (user journeys) and `docs/operations/` (how it runs).
 - Cross-link sibling docs with relative paths (`../security/authorization.md`).
-- Each command owns its file and overwrites it on a rerun. The findings tracker is the exception: commands only append to it.
+- Each command owns its file. A rerun edits it in place (see "Reruns"); it never rewrites the whole file. The findings tracker is the exception: commands only append to it.
 - The docs index is `docs/README.md`, or `docs/README-intake.md` when the project already had its own `docs/README.md` (an owner doc, see "Existing docs"). Once the index exists, a command that writes a new doc adds it there in the same commit (`intake:create-system-description` adds `system-description.md` and `specs/`).
 - A later command that proves an earlier doc wrong, incomplete or stale corrects it in its own commit: a doc saying a test "will" pin a behavior that is now pinned, a finding called "suspected" that a test confirmed, the test trees `intake:testing-setup` adds go into `file-tree.md`, an account path a testing command finds goes into `user-model.md` and `security.md`. Keep the doc's structure and add a dated line to its `## Accuracy audit` naming what changed and why. A doc that stops matching the code is worse than no doc.
 
@@ -52,13 +52,27 @@ The docs index lists the owner docs too, marking each "owner-written" with its o
 
 ## Doc frontmatter and citations
 
-Every intake doc starts with frontmatter naming the docs to check when it changes. List the docs that state facts this one depends on, or that depend on it, as paths under `docs/`, and keep each link two-way:
+Every intake doc starts with frontmatter:
 
 ```markdown
 ---
-related: [security/authorization.md, architecture/api-reference.md]
+command: intake:document-api
+verified: 95a4f38
+sources:
+  - backend/api/urls.py
+  - backend/api/apps/*/views.py
+related: [security/authorization.md, architecture/data-model.md]
 ---
 ```
+
+| Key | Holds | Written |
+|-----|-------|---------|
+| `command` | The intake command that owns the doc. A doc without it is the project's own | When the command first writes the doc |
+| `verified` | The short SHA of HEAD when the doc's accuracy audit last ran: the code the doc was checked against | At every full audit: the command's first run, a rerun, a drift repair. A ticket that edits the doc leaves it alone, since a commit that changes code and the doc together counts as the doc's update |
+| `sources` | Globs of the code the doc describes, matched against repo paths (`*` crosses folders). They catch new code no citation names yet. Keep them narrow: the files this doc's claims come from (`backend/api/urls.py`, `backend/api/apps/*/views.py`), never a whole tree (`backend/**`). A ticket that adds a file matching a doc's glob must update or waive that doc | When the command writes the doc; widened when the doc's scope grows |
+| `related` | The docs that state facts this one depends on, or that depend on it, as paths under `docs/`, each link two-way | Whenever a cross-link changes |
+
+`guard docs-drift` lists each doc whose code changed since its `verified` commit, through a cited symbol or a `sources` glob, in commits that didn't also update the doc, and each doc edited outside the workflow since then (a commit with no `Intake:` or `Ticket:` trailer).
 
 Cite code by symbol: `` `app/billing/services.py::round_minutes` ``, `` `app/models.py::Profile.save` `` for a method, the key name for configuration. Never cite `path:line`: `intake:document-codebase` and every later docstring move lines, so a line number goes stale before the run ends. After a ticket workflow adopts these docs, `ticket:execute` finds the docs a change affects through these citations and `related:` links.
 
@@ -68,7 +82,19 @@ Check both before committing a doc:
 uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" docs-check
 ```
 
-It reports a `related:` doc that is missing or doesn't link back, and a citation whose file or symbol is gone. Fix what it lists in intake docs; an owner doc it lists goes in the inventory instead.
+It reports a `related:` doc that is missing or doesn't link back, a citation whose file or symbol is gone, and a `verified` that isn't a commit. Fix what it lists in intake docs; an owner doc it lists goes in the inventory instead.
+
+## Reruns
+
+A rerun of a documentation command updates its doc; it never regenerates it from the template. People edit these docs, and a rewrite would destroy their edits.
+
+1. Run `guard docs-drift` and read the doc's rows: what changed in the code since `verified`, and whether the doc was edited outside the workflow.
+2. Re-audit the doc against the code as it is now, starting with what drift lists.
+3. Edit only the sections whose claims the code no longer bears out, or that a `sources` match shows are missing something. Keep every other passage as it stands, hand edits included, and keep sections the template doesn't have.
+4. A hand-edited passage the code contradicts is corrected like any other claim. Name it in the `## Accuracy audit` entry, so the owner sees their text changed and why.
+5. Set `verified` to the HEAD the audit ran against, and add a dated entry to `## Accuracy audit`.
+
+A doc whose `command` names another command, or that has none, is not this command's to edit: link to it, and record contradictions as findings.
 
 ## What intake may change
 
@@ -111,6 +137,7 @@ Every documentation command ends with an audit, because agents read its document
 - Ground every example in a real call site, and cite it as `path::symbol`.
 - Keep each fact in one doc. Read the docs already written for anything this one restates: the doc that owns the topic keeps the fact, and this one links to it. A sentence repeated word for word across docs fails the eval, and a fact kept in six docs needs six edits when it changes.
 - When two sources disagree (a type and a rule, a doc and the code), keep both in the document, flag the discrepancy and add a finding.
+- Set the frontmatter's `verified` to the short SHA of the HEAD the audit ran against.
 - End the document with an `## Accuracy audit` section: the date, the commit, what was checked and how, and the finding ids it raised. The eval looks for this section.
 
 ## Run and verify

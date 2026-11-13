@@ -130,6 +130,11 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
     dw.add_argument("spec")
     dw.add_argument("--base", help="default: merge base with origin/HEAD, main or master")
     dw.set_defaults(func=cmd_docs_waivers)
+    dd = gsub.add_parser(
+        "docs-drift", help="docs whose code changed since their verified: commit, outside the workflow"
+    )
+    dd.add_argument("--json", action="store_true", help="print JSON rows instead of lines")
+    dd.set_defaults(func=cmd_docs_drift)
     dc = gsub.add_parser("docs-check", help="one-sided or missing related: links, citations that no longer resolve")
     dc.set_defaults(func=cmd_docs_check)
 
@@ -339,6 +344,18 @@ def cmd_docs_checked(args) -> int:
 def cmd_docs_waivers(args) -> int:
     base = args.base or metrics.default_base(Path.cwd())
     print(f"wrote {docs.write_waivers(Path.cwd(), args.spec, base)}")
+    return EXIT_OK
+
+
+def cmd_docs_drift(args) -> int:
+    rows = docs.drift(Path.cwd())
+    if args.json:
+        _print(rows)
+    else:
+        for r in rows:
+            print(f"{r['doc']} ({r['command'] or 'no command'}, verified {r['verified']}): {'; '.join(r['reasons'])}")
+        if not rows:
+            print("no drift since each doc's verified commit")
     return EXIT_OK
 
 

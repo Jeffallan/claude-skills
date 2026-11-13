@@ -23,8 +23,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 ## When to use
 
 Run once during intake, after `intake:document-codebase`. Re-run when the security surface changes (new auth
-flow, new validation layer, a moderation or rate-limit change). This command is idempotent and overwrites the
-document.
+flow, new validation layer, a moderation or rate-limit change). A rerun edits the existing document in place and keeps hand edits ("Reruns" in `references/intake/rules.md`).
 
 ## Skills to invoke
 
@@ -106,6 +105,9 @@ description of mechanisms, not a list of weaknesses.
 
 ```markdown
 ---
+command: intake:document-security
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: [<globs of the code this doc describes>]
 related: [<docs this one depends on or that depend on it, paths under docs/>]
 ---
 # Security Mechanisms

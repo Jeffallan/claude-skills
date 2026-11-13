@@ -77,11 +77,11 @@ EOF
     local doc
     for doc in $DOCS existing-docs; do
         mkdir -p "$d/docs/$(dirname "$doc")"
-        printf -- '---\nrelated: []\n---\n# Doc %s\n\nBody citing `app.py::total`.\n\n## Accuracy audit\n\nChecked against the code.\n' "$doc" >"$d/docs/$doc.md"
+        printf -- '---\ncommand: intake:document-x\nverified: %s\nsources: [app.py]\nrelated: []\n---\n# Doc %s\n\nBody citing `app.py::total`.\n\n## Accuracy audit\n\nChecked against the code.\n' "$base" "$doc" >"$d/docs/$doc.md"
     done
     mv "$d/docs/existing-docs.md" "$d/docs/intake-existing-docs.md"
     {
-        printf -- '---\nrelated: []\n---\n# Docs\n\n'
+        printf -- '---\ncommand: intake:create-onboarding\nverified: %s\nsources: []\nrelated: []\n---\n# Docs\n\n' "$base"
         for doc in $DOCS; do printf -- '- [%s](%s.md)\n' "$doc" "$doc"; done
         printf -- '- [Findings](intake-findings.md)\n- [Existing docs](intake-existing-docs.md)\n\n## Accuracy audit\n\nLinks checked.\n'
     } >"$d/docs/README.md"
@@ -675,6 +675,21 @@ set +e
 out=$(score "$V")
 set -e
 if has "$out" docs-index 0 && printf '%s' "$out" | grep -q 'misses docs/README.md'; then pass "an intake index that leaves out the owner README fails docs-index"; else fail "an intake index that leaves out the owner README fails docs-index: $out"; fi
+
+V=$(fresh v5-no-verified)
+sed -i '/^verified:/d' "$V/docs/domain/features.md"
+commit_item "$V" intake:document-features "docs(intake): features"
+v5 "$V" docs-pristine 0 "an intake doc without verified: fails docs-pristine"
+
+V=$(fresh v5-bad-verified)
+sed -i 's/^verified: .*/verified: 0000000/' "$V/docs/domain/features.md"
+commit_item "$V" intake:document-features "docs(intake): features"
+v5 "$V" docs-pristine 0 "a verified: that is not a commit fails docs-pristine"
+
+V=$(fresh v5-no-command)
+sed -i '/^command:/d; /^sources:/d' "$V/docs/domain/features.md"
+commit_item "$V" intake:document-features "docs(intake): features"
+v5 "$V" docs-pristine 0 "an intake doc without command: or sources: fails docs-pristine"
 
 # A bad start SHA is bad input
 set +e

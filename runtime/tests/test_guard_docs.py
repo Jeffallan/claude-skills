@@ -206,3 +206,101 @@ def test_gate_refuses_plan_waivers_when_docs_waivers_was_never_run(git_repo, cap
 def test_gate_ignores_docs_when_no_ticket_waived(git_repo, capsys):
     reviewed_spec(git_repo, capsys, t2_note="ok")
     assert main(["gate", "demo"]) == 0
+
+
+# frontmatter: verified, sources, command ---------------------------------------------------
+
+FULL = (
+    "---\ncommand: intake:document-api\nverified: {sha}\nsources:\n  - src/*.py\nrelated: [security/auth.md]\n---\n"
+    "# API\n\n`add` lives in `src/app.py::add`.\n"
+)
+
+
+def drift_repo(git_repo):
+    """docs/architecture/api.md verified at the commit that wrote it; returns that sha."""
+    with_docs(git_repo)
+    sha = git_repo.head()
+    git_repo.write("docs/architecture/api.md", FULL.format(sha=sha[:7]))
+    git_repo.commit("docs: api frontmatter\n\nIntake: intake:document-api")
+    return sha
+
+
+def drift(git_repo):
+    return {r["doc"]: r for r in docs.drift(git_repo.root)}
+
+
+def test_frontmatter_reads_scalars_and_lists():
+    fm = docs.frontmatter(FULL.format(sha="abc1234"))
+    assert fm == {
+        "command": "intake:document-api",
+        "verified": "abc1234",
+        "sources": ["src/*.py"],
+        "related": ["security/auth.md"],
+    }
+    assert docs.related(FULL) == ["security/auth.md"]
+
+
+def test_no_drift_right_after_the_audit(git_repo, capsys):
+    drift_repo(git_repo)
+    assert "architecture/api.md" not in drift(git_repo)
+
+
+def test_a_cited_symbol_changed_outside_the_doc_is_drift(git_repo, capsys):
+    drift_repo(git_repo)
+    git_repo.write("src/app.py", "def add(a, b):\n    return b + a\n\n\ndef mul(a, b):\n    return a * b\n")
+    git_repo.commit("fix: swap")
+    got = drift(git_repo)["architecture/api.md"]
+    assert "cites src/app.py::add" in got["reasons"]
+
+
+def test_a_commit_that_also_updates_the_doc_is_not_drift(git_repo, capsys):
+    sha = drift_repo(git_repo)
+    git_repo.write("src/app.py", "def add(a, b):\n    return b + a\n\n\ndef mul(a, b):\n    return a * b\n")
+    git_repo.write("docs/architecture/api.md", FULL.format(sha=sha[:7]) + "\nArguments swap.\n")
+    git_repo.commit("feat: swap\n\nTicket: T1")
+    assert "architecture/api.md" not in drift(git_repo)
+
+
+def test_a_new_file_under_the_sources_globs_is_drift(git_repo, capsys):
+    drift_repo(git_repo)
+    git_repo.write("src/billing.py", "def charge():\n    return 1\n")
+    git_repo.commit("feat: billing")
+    assert "matches sources src/*.py: src/billing.py" in drift(git_repo)["architecture/api.md"]["reasons"]
+
+
+def test_a_doc_edited_outside_the_workflow_is_reported(git_repo, capsys):
+    sha = drift_repo(git_repo)
+    git_repo.write("docs/architecture/api.md", FULL.format(sha=sha[:7]) + "\nA hand note.\n")
+    git_repo.commit("docs: my note")
+    assert "edited outside the workflow since its audit" in drift(git_repo)["architecture/api.md"]["reasons"]
+
+
+def test_affected_follows_sources_globs(git_repo, capsys):
+    base = drift_repo(git_repo)
+    base = git_repo.head()
+    git_repo.write("src/billing.py", "def charge():\n    return 1\n")
+    assert docs.affected(git_repo.root, base)["architecture/api.md"] == ["matches sources src/*.py: src/billing.py"]
+
+
+def test_check_flags_a_verified_commit_that_does_not_exist(git_repo, capsys):
+    drift_repo(git_repo)
+    git_repo.write("docs/architecture/api.md", FULL.format(sha="0000000"))
+    assert main(["docs-check"]) == 1
+    assert "architecture/api.md: verified 0000000 is not a commit" in capsys.readouterr().err
+
+
+def test_docs_drift_prints_json(git_repo, capsys):
+    drift_repo(git_repo)
+    git_repo.write("src/billing.py", "def charge():\n    return 1\n")
+    git_repo.commit("feat: billing")
+    capsys.readouterr()
+    assert main(["docs-drift", "--json"]) == 0
+    rows = json.loads(capsys.readouterr().out)
+    assert rows[0]["doc"] == "architecture/api.md" and rows[0]["command"] == "intake:document-api"
+
+
+def test_a_ticket_editing_an_existing_source_file_is_flagged_only_through_citations(git_repo, capsys):
+    drift_repo(git_repo)
+    base = git_repo.head()
+    git_repo.write("src/app.py", "def add(a, b):\n    return a + b\n\n\ndef mul(a, b):\n    return b * a\n")
+    assert "architecture/api.md" not in docs.affected(git_repo.root, base)

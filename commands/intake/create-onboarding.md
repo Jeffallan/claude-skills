@@ -59,6 +59,9 @@ invented. Fix or remove anything unverified.
 
 ```markdown
 ---
+command: intake:create-onboarding
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: []
 related: []
 ---
 # <Project> Documentation

@@ -97,9 +97,9 @@ The ticket isn't done until the docs it affects say what the code now does. List
 guard docs-affected
 ```
 
-It lists each doc under the docs root (`docsRoot`, default `docs`) that cites a symbol the diff touches (`` `path::symbol` ``), and each doc a changed doc names in its `related:` frontmatter, one hop. Include the docs on the ticket's `Docs:` line too. For each one:
+It lists each doc under the docs root (`docsRoot`, default `docs`) that cites a symbol the diff touches (`` `path::symbol` ``) or whose `sources:` globs match a file the ticket adds (an edit to an existing file is covered by the citations), and each doc a changed doc names in its `related:` frontmatter, one hop. Include the docs on the ticket's `Docs:` line too. For each one:
 
-- **Update it** in this ticket's work: correct the claims, cite symbols as `` `path::symbol` `` (never bare line numbers), keep each fact in one doc and link to it from the others, and keep its `related:` list two-way. Invoke the `fullstack-dev-skills:code-documenter` skill for the edit.
+- **Update it** in this ticket's work (leave its `verified:` as it is; the ticket's commit counts as the update): correct the claims, cite symbols as `` `path::symbol` `` (never bare line numbers), keep each fact in one doc and link to it from the others, and keep its `related:` list two-way. Invoke the `fullstack-dev-skills:code-documenter` skill for the edit.
 - **Or record that it needs no change**, with the reason: `guard docs-checked <doc> --reason "<why it still holds>"`. Read the doc first.
 
 Run `guard docs-check` and fix what it reports. `guard summary` refuses while an affected doc is neither updated nor checked.

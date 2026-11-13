@@ -19,7 +19,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 ## When to use
 
 Run once during intake, after `intake:document-codebase`. Re-run when an integration is added, removed, or
-reconfigured (this command is idempotent; it overwrites the document).
+reconfigured (a rerun edits the existing document in place and keeps hand edits; see "Reruns" in `references/intake/rules.md`).
 
 ## Skills to invoke
 
@@ -84,6 +84,9 @@ not configured in code" over a guess.
 
 ```markdown
 ---
+command: intake:document-integrations
+verified: <short SHA of HEAD when the accuracy audit ran>
+sources: [<globs of the code this doc describes>]
 related: [<docs this one depends on or that depend on it, paths under docs/>]
 ---
 # External Integrations
