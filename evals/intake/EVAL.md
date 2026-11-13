@@ -1,0 +1,95 @@
+# Intake run eval
+
+Scores one finished intake run (the intake checklist worked by `intake:*` commands, usually as a goal run) against the guarantees the intake commands make. It turns a real run, its repo state, its test suite and its goal-session transcripts into a pass or fail per guarantee, so a change to an intake command, the shared rules or the model can be compared on the same runs.
+
+The workflow eval lives beside it in `evals/workflow/`.
+
+## What it checks
+
+| Check | Passes when | Reads |
+|-------|-------------|-------|
+| `docs-with-audit` | Each documentation command's doc (and `intake:existing-docs`'s inventory) exists and has an `## Accuracy audit` section, at its own path or as `<name>-intake.md` beside an owner doc. A doc may be absent only when its checklist item is checked with a "not present" or "N/A" note | `docs/**`, `docs/intake-checklist.md` |
+| `findings-tracker` | `docs/intake-findings.md` exists and holds `F-NNN` ids | The tracker |
+| `bug-tests-cite-findings` | Every skipped or expected-fail test written since the start names a finding id within three lines, and the tracker knows that id. A helper function that wraps a marker is checked where tests call it, not where it is defined | Test files changed since the start |
+| `findings-evidence` | Every finding that isn't `invalid` names on its `Tests:` line a test that exists, as `` `path::name` ``, or says why no test can express it and names its evidence command (none: <why>; evidence: `<command>`). A finding without evidence is not a finding | The tracker's finding sections, the named test files |
+| `symbol-citations` | The intake docs and the tracker cite code as `` `path::symbol` ``, never `` `path:line` ``: the docstring pass moves lines | Intake docs, the tracker |
+| `docs-index` | `docs/README.md` links every doc under `docs/` (specs only through `specs/INDEX.md`), and the checklist header and the tracker header name the same base commit | `docs/README.md`, the checklist, the tracker |
+| `docs-pristine` | Every intake doc has `related:` frontmatter whose links exist and link back, every `` `path::symbol` `` citation resolves, and no sentence of 12 words or more appears word for word in two intake docs. Owner-written docs are never checked; an intake doc beside one (`<name>-intake.md`) is | Intake docs |
+| `characterization-green` | The suite command exits 0. Fails, rather than passing, when no command is given | `--test-cmd`, run in the repo |
+| `characterize-dont-fix` | The diff since the start touches only docs, tests, test config, test scripts and docstrings. A source file passes when its change is comment-only (an AST compare with docstrings removed for Python, a comment-line check for other languages); `package.json` passes when only `scripts` and `devDependencies` changed, whatever the declared test paths say; a new one intake created may also carry `name`, `description`, `private`, `version` and `license`; `package-lock.json` passes when every runtime entry (not marked `dev`) is unchanged, so test tools must fit the installed runtime. `yarn.lock` and `pnpm-lock.yaml` aren't checked | `git diff <start>..HEAD` |
+| `one-commit-per-item` | Every commit since the start carries exactly one `Intake: <command>` trailer, as git parses trailers (the message's last paragraph), BLOCKED notes and follow-up fixes included; and every `intake:` item checked since the start has at least one commit naming it. The goal prompt's `<done_when>` uses the same rule | `git log`, the checklist at the start and at HEAD |
+| `no-history-rewrite` | No rebase, reset or amend after the start (a reset to the same HEAD, as `git stash` makes, rewrites nothing and passes), or inside a goal session when transcripts are given. Fails when the reflog has no entries since the start | `git reflog` or a saved snapshot (`--reflog`) |
+| `launch-delivered`, `no-question-in-goal`, `no-denied-git`, `final-message-evidence` | The transcript checks of the workflow eval (`evals/workflow/EVAL.md`), reused from `scripts/eval_workflow_run.py` | Transcripts |
+| `skills-loaded` | Given transcripts: every skill a checklist note names (`fullstack-dev-skills:<name>`, or a bare name of a skill this plugin ships) was loaded with the Skill tool in the goal session or a subagent transcript passed with it. | `docs/intake-checklist.md`, transcripts |
+| `compaction-recovery` | Only when a goal session compacted: after each compaction, the run re-reads `docs/intake-checklist.md` and `docs/intake-goal-prompt.md` before its next edit. A run with no compaction has no such check, so its total is one lower | Transcripts (`compact_boundary` records) |
+
+Without transcripts, the last four checks are skipped.
+
+### Which files are tests
+
+`bug-tests-cite-findings` and `characterize-dont-fix` need to know which changed files are tests. The scorer takes the globs `intake:testing-setup` recorded in the checklist (a `Test paths:` line in its item's note), adds any `--test-path` globs, and falls back to built-in names: `test/`, `tests/`, `Tests/`, `__tests__/`, `__mocks__/`, `e2e/`, `cypress/`, `playwright/`, `androidTest/`, `*.Tests/` folders, and `test_*`, `tests.py`, `*_test.*`, `*_spec.rb`, `*.test.*`, `*.spec.*` and `conftest.py` files. Globs use `fnmatch`, so `*` crosses folders. `spec/`, `fixtures/` and `testing/` count only inside a test tree, since projects also keep shipped code there (an OpenAPI `spec/`, seed `fixtures/`). The diff check's detail lists the declared globs, so a glob broad enough to excuse application code shows in the result.
+
+## Gold set and accuracy
+
+The procedure score says the run followed the rules; it can't say the docs and findings are right. A gold set can: the findings and doc verdicts a careful reviewer expects for one project at one commit, kept as `gold.md` in the project's eval directory (`../README.md`), never in this repo. Each version is confirmed by the owner, and its header names the version. Each row names its source: the run whose findings it started from, or the review. A run is never scored on rows it was the source of, since those count as found by construction; the mapping names the run (`"run": "run 2"`) and the tally leaves its rows out.
+
+To score accuracy:
+
+1. An agent reads the run's tracker and docs against the gold file and writes a mapping: each gold row to the run finding that covers it, or `null`, plus the rows the run's setup gave away. A person checks the mapping.
+2. Tally it:
+
+   ```bash
+   python3 scripts/eval_intake_accuracy.py <eval directory>/gold.md <eval directory>/<run>/accuracy-mapping-gold-v<N>.json
+   ```
+
+   It prints the gold version, found and total (given rows left out) and the missed rows, and exits 2 when the mapping names a row the gold set doesn't have or skips one it does.
+3. Record the version beside the score. A gold set grows when a run finds a real bug it lacked, so scores against different versions don't compare directly.
+
+New findings that aren't in the gold set are checked by hand and, when real, added in the next version.
+
+## Running it
+
+```bash
+make eval-intake EVAL=<eval directory> RUN=<run name>
+```
+
+`eval.json` in the eval directory names, per run, the repo (or its bundle), start SHA, reflog, transcripts, plugin commit, model and accuracy mapping, and the project's test command and test paths (`../README.md`). Any of them can be given directly instead, to score a run before it is added:
+
+```bash
+make eval-intake REPO=<project clone> START=<start sha> TEST_CMD="<test:all command>" TEST_PATHS="<glob> ..." \
+  TRANSCRIPTS="<goal-session.jsonl> ..." REFLOG=<saved reflog> PLUGIN=<plugin commit> MODEL=<model id>
+```
+
+`START` is the commit that added the intake goal prompt and checklist (`git log -1 --format=%h -- docs/intake-goal-prompt.md`). Save the reflog into the eval directory when the run ends, since git prunes it:
+
+```bash
+git -C <project clone> reflog --date=iso-strict --format='%gd%x00%gs' > <eval directory>/<run>/intake.reflog
+```
+
+It prints one JSON result: `eval`, `workflow`, `start`, `version`, `model`, `score`, `total` and each check with its detail. Exit 0 means every check passed, 1 means one failed, 2 means bad input (an unknown start SHA or run name, an unreadable file).
+
+A second run on the same project is only a fair test when it can't read the first run's answers. Launch it with `Read(...)` denies, plus Bash text rules, on the gold set and pilot notes, the Claude Code session transcripts (`~/.claude/projects/`), earlier sessions' temp folders and any backup of the first run, and keep its results folder outside all of them. Before launch, check that a rule (not the auto-mode classifier) refuses each route.
+
+**Exercising compaction recovery.** A goal run rarely compacts on its own, so a run meant to test recovery compacts once by hand: after the last Phase 1 commit, press Esc in the goal session, run `/compact`, then send `continue`. If the session no longer shows an active goal, re-send the same `/goal` line. The scorer then adds `compaction-recovery`. The interrupt-and-continue step hasn't been tried in a goal run yet; record what happened in the results.
+
+`scripts/test-eval-intake.sh` (part of `make test`) checks the scorer on synthetic runs and a synthetic eval directory.
+
+## Results
+
+### Baseline
+
+Scores compare only on the same check set and gold set. The scorer's `CHECKS_VERSION` names the check set; the gold file names its version. Whenever either changes (a check added, removed or reworded, a gold row added), re-score every run of the project before comparing:
+
+```bash
+make eval-baseline EVAL=<eval directory>
+```
+
+It rebuilds each run from its saved git bundle and re-scores it from the reflog, transcripts and accuracy mapping `eval.json` lists, then prints one table row per run. `suite_green` on a run takes the suite result from the run's saved test output, since its services are gone by then. Optional checks (`compaction-recovery`) show only for runs that exercised them and never enter the score. Record the table in the eval directory's `baseline.md`, never here.
+
+## Limits
+
+- `bug-tests-cite-findings` finds skip and expected-fail markers by pattern (pytest, unittest including bare imported decorators, Jest, Vitest, Playwright, JUnit, Go, PHPUnit). A framework outside that list goes unchecked; add its marker to `SKIP_MARK`.
+- Tests that share a file with application code, such as Rust's `#[cfg(test)] mod tests` inside `src/*.rs`, can't be told apart by path. A run that adds them fails `characterize-dont-fix`; check those by hand.
+- `characterize-dont-fix` treats a comment-only diff as safe by line shape outside Python. A change that turns code into a comment, or a comment into code, in a language without an AST compare can slip through; the test run catches most of those.
+- `docs-with-audit` checks that the audit section exists, not that the audit was done well. The accuracy of a doc is still the owner's read.
+- `characterization-green` runs the command in the clone, so it needs the project's services (database, emulators, browsers) up. A suite that needs a secret should be scored where the secret exists.
