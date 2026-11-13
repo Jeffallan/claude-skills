@@ -53,7 +53,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Microservices Architect](https://jeffallan.github.io/claude-skills/skills/api-architecture/microservices-architect/)**: Microservices patterns, service mesh, distributed systems
 - **[MCP Developer](https://jeffallan.github.io/claude-skills/skills/api-architecture/mcp-developer/)**: Model Context Protocol development and integration
 - **[Architecture Designer](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/)**: System design, choosing architectures, ADRs
-- **[Feature Forge](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)**: Creating new features, gathering requirements, writing specs
+- **[Feature Forge](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)**: Creating new features, gathering requirements, writing specs. The workflow runs it inside `discovery:create` for vague items and inside `spec:create` for open questions
 - **[Spec Miner](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)**: Analyzing existing code, reverse-engineering specifications
 
 ### Quality & Testing
@@ -96,6 +96,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Debugging Wizard](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)**: Systematic debugging across all languages
 - **[Fullstack Guardian](https://jeffallan.github.io/claude-skills/skills/security/fullstack-guardian/)**: Implementing features across full stack
 - **[The Fool](https://jeffallan.github.io/claude-skills/skills/workflow/the-fool/)**: Challenge ideas and decisions with 5 structured reasoning modes
+- **[Ticket Guard](https://jeffallan.github.io/claude-skills/skills/workflow/ticket-guard/)**: Guarding one workflow ticket with RED and GREEN evidence, a test freeze and compaction recovery
 
 ## Skill Workflows
 

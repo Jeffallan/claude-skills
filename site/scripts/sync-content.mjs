@@ -21,7 +21,7 @@ syncSite({
   siteDir: path.resolve(import.meta.dirname, '..'),
   base: BASE_PATH,
   githubBlob: GITHUB_BLOB,
-  pageTitle: 'Agent Skills for Claude Code | {title}',
+  pageTitle: '{title} Agent Skill for Claude Code',
   docs: [
     {
       src: 'QUICKSTART.md',
@@ -73,6 +73,29 @@ syncSite({
       category: 'guides',
     },
     {
+      src: 'docs/TRACKER_SETUP.md',
+      dest: 'guides/tracker-setup.md',
+      title: 'Tracker Setup',
+      description:
+        'Configure the workflow for Jira, GitHub Issues, GitHub Projects, Linear or text tickets',
+      category: 'guides',
+    },
+    {
+      src: 'docs/INTAKE.md',
+      dest: 'guides/intake.md',
+      title: 'Intake',
+      description:
+        'Adopt an existing codebase: reference docs, characterization tests and a findings tracker',
+      category: 'guides',
+    },
+    {
+      src: 'docs/GOAL_RUNS.md',
+      dest: 'guides/goal-runs.md',
+      title: 'Goal Runs',
+      description: 'Launch and check unattended goal runs over a spec',
+      category: 'guides',
+    },
+    {
       src: 'docs/COMMON_GROUND.md',
       dest: 'guides/common-ground.md',
       title: 'Common Ground',
@@ -105,6 +128,9 @@ syncSite({
   linkMap: {
     '../commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
     'commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
+    '../GOAL_RUNS.md': `${BASE_PATH}/guides/goal-runs/`,
+    '../INTAKE.md': `${BASE_PATH}/guides/intake/`,
+    '../TRACKER_SETUP.md': `${BASE_PATH}/guides/tracker-setup/`,
     LICENSE: `${GITHUB_BLOB}/LICENSE`,
     'docs/v0.5.0-plan.md': `${GITHUB_BLOB}/docs/v0.5.0-plan.md`,
   },

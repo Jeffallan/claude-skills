@@ -33,7 +33,7 @@ For all installation methods and first steps, see the [**Quick Start Guide**](QU
 
 ## Skills
 
-<!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
+<!-- SKILL_COUNT -->68<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
 
 See [**Skills Guide**](SKILLS_GUIDE.md) for the full list, decision trees, and workflow combinations.
 
@@ -69,10 +69,10 @@ Surface and validate Claude's hidden assumptions about your project with `/commo
 
 ## Project Workflow
 
-The <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflow commands manage epics from discovery through retrospectives, integrating with Jira and Confluence. See [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md) for the full command reference and lifecycle diagrams.
+The <!-- WORKFLOW_COUNT -->31<!-- /WORKFLOW_COUNT --> workflow commands take a group of tickets from your tracker to a reviewed, merged pull request: `spec:triage` groups tickets into specs, `spec:create` plans one, `ticket:execute` and `ticket:complete` build it test-first (by hand or in an unattended goal run), and `spec:review` and `spec:complete` review it and merge it. Specs live as markdown in your repo; tickets stay in Jira, GitHub Issues, GitHub Projects, Linear or text files. See the [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md). Adopting an existing codebase? The `intake:` commands document it, pin its current behavior in tests and track its bugs first; see [**Intake**](docs/INTAKE.md).
 
 > [!TIP]
-> **Setup:** Workflow commands require an Atlassian MCP server. See the [**Atlassian MCP Setup Guide**](docs/ATLASSIAN_MCP_SETUP.md).
+> **Setup:** the workflow needs [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which the first workflow command offers to create. See [**Tracker Setup**](docs/TRACKER_SETUP.md) and [**Goal Runs**](docs/GOAL_RUNS.md).
 
 ## Documentation
 
@@ -80,7 +80,10 @@ The <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflow commands manage ep
 - [**Skills Guide**](SKILLS_GUIDE.md) - Skill reference and decision trees
 - [**Common Ground**](docs/COMMON_GROUND.md) - Context engineering with `/common-ground`
 - [**Workflow Commands**](docs/WORKFLOW_COMMANDS.md) - Project workflow commands guide
-- [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup
+- [**Tracker Setup**](docs/TRACKER_SETUP.md) - Configure the workflow for your tracker
+- [**Intake**](docs/INTAKE.md) - Adopt an existing codebase
+- [**Goal Runs**](docs/GOAL_RUNS.md) - Unattended goal runs over a spec
+- [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup, for Jira
 - [**Local Development**](docs/local_skill_development.md) - Local skill development
 - [**Contributing**](CONTRIBUTING.md) - Contribution guidelines
 - **skills/\*/SKILL.md** - Individual skill documentation
@@ -122,4 +125,4 @@ Fullstack engineering, security engineering, compliance, and technical due dilig
 
 ---
 
-**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->371<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> Skills**
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->31<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->372<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->68<!-- /SKILL_COUNT --> Skills**

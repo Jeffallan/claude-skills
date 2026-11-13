@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Workflow: v0.5.0 workflow commands, `spec:triage` and `spec:review`, plus rewritten `discovery:create`, `discovery:synthesize`, `discovery:approve`, `spec:create`, `spec:complete`, `ticket:execute` and `ticket:complete`. Specs live as markdown under `docs/specs/{todo,completed}/` with a generated `INDEX.md`; tickets stay in the tracker (#253)
+- Workflow: tracker adapters for Jira, GitHub Issues, GitHub Projects, Linear and text tickets, and a GitHub code-host adapter, configured in `.claude/workflow-config.json` with a setup wizard (`references/adapters/`) (#62, #119)
+- Workflow: the ticket guard (marker, hooks, RED and GREEN evidence, boundary checks, review rollup and gate, spec index, batch runner) ships inside the plugin as `runtime/guard.pyz`, run through `uv run`, which supplies Python 3.11 or later when needed. The guard itself is never fetched from PyPI, and the guard is versioned with the commands that call it. Moved from skill-linter 0.3.7, which keeps only the linter
+- Workflow: `spec:status` lists every spec with its state, ticket counts, build order, live ticket, pull request and next command, read from each spec branch with git (`guard spec-status`)
+- Workflow: unattended goal runs. `spec:create` prints whole-spec and next-batch launch commands that deny pushes, PR and issue writes, API writes, `AskUserQuestion` and `guard decide` for that session; a stuck ticket is blocked with `guard block` and the run continues
+- Workflow: `ticket-guard` companion skill carrying the ticket rules, plus marker-guarded plugin hooks (`hooks/hooks.json`) that freeze RED tests, re-run GREEN before a goal-mode stop and restore ticket context after a compaction, in every session including a resumed one
+- Workflow: `spec:review` runs a reviewer panel over the spec diff, a blind verifier per finding, `guard rollup` and `guard gate` (`references/review/`)
+- Docs: Tracker Setup and Goal Runs guides, and fuller `docs/workflow/` pages for every command
+- `make evidence` prints every verification check with its exit code in one run
+- Workflow: intake commands for adopting an existing codebase, under `commands/intake/`: `intake:document-codebase` (docstrings, proven by the same test result before and after and a check that no executable line changed), twelve `intake:document-*` reference docs with an accuracy audit each, `intake:create-onboarding`, and the capture-behavior step as `intake:testing-setup`, `-features`, `-authorization`, `-owasp` and `-user-flows`. Every intake command runs in a goal run without asking questions (#120)
+- Workflow: the findings tracker and "characterize, don't fix" (`references/intake/`): a bug gets an `F-NNN` id, a passing test that pins current behavior and a skipped or expected-fail twin for the intended one
+- Workflow: `intake:create-system-description` writes a baseline spec into `docs/specs/completed/baseline/` and `docs/system-description.md`; `spec:complete` proposes description updates once per spec, attended
+- Workflow: an intake checklist and goal-prompt template, so intake runs as one goal with a commit per item (`references/intake/checklist.md`, `goal-prompt.md`)
+- Evals: `evals/intake/` and `make eval-intake` score a finished intake run (docs with audits, tests citing findings, a green suite, a diff limited to docs and tests, clean goal sessions), tested on synthetic runs in `make test`
+- Docs: an Intake guide and an intake section in Workflow Commands
 - Docs site: each deploy tells search engines that support IndexNow (Bing, Yandex and others) which pages changed, so they recrawl them sooner. Only the deploy build submits, and only pages whose HTML changed since the last deploy (the first deploy submits all). The key is served once for every site at `https://jeffallan.github.io/17c975f34bbe97c32cf68c4f58503478.txt`
 - Docs site: the build fails on a broken internal link (`starlight-links-validator`)
 - CI: `docs-site.yml` lints and builds the docs site on every pull request and push to `main`, so a broken link or lint error shows up in review instead of at release. The workflow is shared with the other docs sites and kept in step from the same private repo as the site code
@@ -19,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- Workflow: commands move to `commands/{discovery,spec,ticket}/` and are named `discovery:*`, `spec:*` and `ticket:*` (#123). "Spec" replaces "epic". Discovery takes topics or tickets instead of an epic key and creates tickets only; `spec:triage` forms groups (#121, #122, #103)
+- Workflow: ticket commands write the failing test first, never write to the tracker, and commit with a neutral `Ticket: <id>` trailer. Only `spec:complete` closes tickets, after the merge
+- skill-linter 0.3.5 is pinned through one stamped value, `runtimePin`, which `stamp` writes into commands, references, docs, scripts, `Makefile`, `CLAUDE.md` and CI. CI's Validate job moves from skill-linter 0.2.0
+- Docs site: skill page titles lead with the skill's name, as "Game Developer Agent Skill for Claude Code | Claude Skills" (was "Agent Skills for Claude Code | Game Developer | Claude Skills"), so search results show what the page is about first
 - Dependabot skips the workflows the handbook delivers (`handbook-update.yml`, `docs-site.yml`, `docs-deploy.yml`); the handbook bumps their actions and sends them with each release
 - The shared site packages (Astro, Starlight and the others listed in `CLAUDE.md`) take their versions from the handbook, which sends them with each release. `handbook-update.yml` sets up Node and runs `copier update --trust` for that step
 - CI: skill-linter is the blocking check. The Validate job runs `skill-linter release` and `skill-linter stamp --check`, and `make validate` runs the same two. `scripts/validate-skills.py`, `validate-markdown.py` and `update-docs.py` are removed, and `make skill-lint` with them. `CLAUDE.md` and `CONTRIBUTING.md` describe the skill-linter commands, which make a missing "Use when" clause or Reference Guide an error (closing #288)
@@ -36,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Workflow: `complete-sprint` and the `project:<phase>:<command>` names. `create-implementation-plan` folds into `spec:create`, `complete-epic` into `spec:complete`, and the retrospective phase is dropped
 - `.serena/`, the Serena project config and memories, which the repo no longer uses; `.gitignore` keeps it out
 
 ### Fixed

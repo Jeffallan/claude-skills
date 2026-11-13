@@ -13,6 +13,22 @@ make dev-unlink  # Restore the released version
 
 Restart Claude Code after running either command.
 
+### One session only: `--plugin-dir`
+
+To try the working copy in a single session without touching the plugin cache, start Claude Code with the repo as a plugin directory:
+
+```bash
+claude --plugin-dir ~/path/to/claude-skills
+```
+
+That session loads the skills, commands and hooks from your working copy; every other session keeps the installed version. To test exactly what ships, build the distribution and point at it:
+
+```bash
+out=$(mktemp -d) && bash scripts/build-plugin-dist.sh "$out" && claude --plugin-dir "$out"
+```
+
+The build uses committed files only, so commit first. `make evidence` runs this build and checks which commands load from it.
+
 ---
 
 ## How Plugin Loading Works
