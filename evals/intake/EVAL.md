@@ -11,7 +11,7 @@ The workflow eval lives beside it in `evals/workflow/`.
 | `docs-with-audit` | Each documentation command's doc (and `intake:existing-docs`'s inventory) exists and has an `## Accuracy audit` section, at its own path or as `<name>-intake.md` beside an owner doc. A doc may be absent only when its checklist item is checked with a "not present" or "N/A" note | `docs/**`, `docs/intake-checklist.md` |
 | `findings-tracker` | `docs/intake-findings.md` exists and holds `F-NNN` ids | The tracker |
 | `bug-tests-cite-findings` | Every skipped or expected-fail test written since the start names a finding id within three lines, and the tracker knows that id. A helper function that wraps a marker is checked where tests call it, not where it is defined | Test files changed since the start |
-| `findings-evidence` | Every finding that isn't `invalid` names on its `Tests:` line a test that exists, as `` `path::name` ``, or says why no test can express it and names its evidence command (none: <why>; evidence: `<command>`). A finding without evidence is not a finding | The tracker's finding sections, the named test files |
+| `findings-evidence` | Every finding that isn't `invalid` names on its `Tests:` line a test that exists, as `` `path::name` ``, or says why no test can express it and names its evidence command (none: <why>; evidence: `<command>`) | The tracker's finding sections, the named test files |
 | `symbol-citations` | The intake docs and the tracker cite code as `` `path::symbol` ``, never `` `path:line` ``: the docstring pass moves lines | Intake docs, the tracker |
 | `docs-index` | `docs/README.md` links every doc under `docs/` (specs only through `specs/INDEX.md`), and the checklist header and the tracker header name the same base commit | `docs/README.md`, the checklist, the tracker |
 | `docs-pristine` | Every intake doc has `related:` frontmatter whose links exist and link back, every `` `path::symbol` `` citation resolves, and no sentence of 12 words or more appears word for word in two intake docs. Owner-written docs are never checked; an intake doc beside one (`<name>-intake.md`) is | Intake docs |
@@ -20,7 +20,7 @@ The workflow eval lives beside it in `evals/workflow/`.
 | `one-commit-per-item` | Every commit since the start carries exactly one `Intake: <command>` trailer, as git parses trailers (the message's last paragraph), BLOCKED notes and follow-up fixes included; and every `intake:` item checked since the start has at least one commit naming it. The goal prompt's `<done_when>` uses the same rule | `git log`, the checklist at the start and at HEAD |
 | `no-history-rewrite` | No rebase, reset or amend after the start (a reset to the same HEAD, as `git stash` makes, rewrites nothing and passes), or inside a goal session when transcripts are given. Fails when the reflog has no entries since the start | `git reflog` or a saved snapshot (`--reflog`) |
 | `launch-delivered`, `no-question-in-goal`, `no-denied-git`, `final-message-evidence` | The transcript checks of the workflow eval (`evals/workflow/EVAL.md`), reused from `scripts/eval_workflow_run.py` | Transcripts |
-| `skills-loaded` | Given transcripts: every skill a checklist note names (`fullstack-dev-skills:<name>`, or a bare name of a skill this plugin ships) was loaded with the Skill tool in the goal session or a subagent transcript passed with it. | `docs/intake-checklist.md`, transcripts |
+| `skills-loaded` | Given transcripts: every skill a checklist note names (`fullstack-dev-skills:<name>`, or a bare name of a skill this plugin ships) was loaded with the Skill tool in the goal session or a subagent transcript passed with it | `docs/intake-checklist.md`, transcripts |
 | `compaction-recovery` | Only when a goal session compacted: after each compaction, the run re-reads `docs/intake-checklist.md` and `docs/intake-goal-prompt.md` before its next edit. A run with no compaction has no such check, so its total is one lower | Transcripts (`compact_boundary` records) |
 
 Without transcripts, the last four checks are skipped.
@@ -31,7 +31,7 @@ Without transcripts, the last four checks are skipped.
 
 ## Gold set and accuracy
 
-The procedure score says the run followed the rules; it can't say the docs and findings are right. A gold set can: the findings and doc verdicts a careful reviewer expects for one project at one commit, kept as `gold.md` in the project's eval directory (`../README.md`), never in this repo. Each version is confirmed by the owner, and its header names the version. Each row names its source: the run whose findings it started from, or the review. A run is never scored on rows it was the source of, since those count as found by construction; the mapping names the run (`"run": "run 2"`) and the tally leaves its rows out.
+The procedure score checks that the run followed the rules. Whether its docs and findings are right is measured against a gold set: the findings and doc verdicts a careful reviewer expects for one project at one commit, kept as `gold.md` in the project's eval directory (`../README.md`). Each version is confirmed by the owner, and its header names the version. Each row names its source: the run whose findings it started from, or the review. A run is never scored on rows it was the source of, since those count as found by construction; the mapping names the run (`"run": "run 2"`) and the tally leaves its rows out.
 
 To score accuracy:
 
@@ -84,7 +84,7 @@ Scores compare only on the same check set and gold set. The scorer's `CHECKS_VER
 make eval-baseline EVAL=<eval directory>
 ```
 
-It rebuilds each run from its saved git bundle and re-scores it from the reflog, transcripts and accuracy mapping `eval.json` lists, then prints one table row per run. `suite_green` on a run takes the suite result from the run's saved test output, since its services are gone by then. Optional checks (`compaction-recovery`) show only for runs that exercised them and never enter the score. Record the table in the eval directory's `baseline.md`, never here.
+It rebuilds each run from its saved git bundle and re-scores it from the reflog, transcripts and accuracy mapping `eval.json` lists, then prints one table row per run. `suite_green` on a run takes the suite result from the run's saved test output, since its services are gone by then. Optional checks (`compaction-recovery`) show only for runs that exercised them and never enter the score. Record the table in the eval directory's `baseline.md`.
 
 ## Limits
 

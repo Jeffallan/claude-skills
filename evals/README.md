@@ -73,4 +73,4 @@ A flag given on the command line (`REPO=`, `START=`, `TRANSCRIPTS=` and the rest
 
 ## What stays local
 
-A results repo can be private and still not be the place for everything. Keep out of any pushed repo, through its `.gitignore`: details of security findings the project hasn't fixed, raw transcripts (push redacted copies), and repo bundles. Check what you push for tokens and environment dumps first; a goal run's shell commands can capture them.
+Some files stay on your machine even when the results repo is private. List them in its `.gitignore`: details of security findings the project hasn't fixed, raw transcripts (push redacted copies instead), and repo bundles. Before each push, check the files for tokens and environment dumps, since a goal run's shell commands can capture them.

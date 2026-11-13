@@ -19,7 +19,7 @@ Without transcripts, the last four checks are skipped and `no-history-rewrite` c
 
 ## Gold set
 
-A gold set is a JSON file mapping each spec to the final status every ticket should reach (Done, Blocked, Already done). Gold sets describe real projects, so they live in an eval directory outside this repo (`../README.md`), never here.
+A gold set is a JSON file mapping each spec to the final status every ticket should reach (Done, Blocked, Already done). Gold sets describe real projects, so they live in an eval directory outside this repo (`../README.md`).
 
 ## Running it
 
