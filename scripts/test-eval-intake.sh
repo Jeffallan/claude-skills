@@ -612,6 +612,16 @@ sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/visible.spec.js::F-001 a
 commit_item "$V" intake:testing-features "test(intake): fix"
 v5 "$V" findings-evidence 0 "a Jest title missing from its file fails findings-evidence"
 
+V=$(fresh v5-fixed)
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none|; s|- \*\*Status:\*\* open|- **Status:** fixed|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 0 "a fixed finding without evidence fails findings-evidence"
+
+V=$(fresh v5-fixed-commit)
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none: test code only; evidence: `git show abc1234`|; s|- \*\*Status:\*\* open|- **Status:** fixed|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 1 "a fixed finding naming its fixing commit passes findings-evidence"
+
 V=$(fresh v5-index)
 sed -i '/glossary.md/d' "$V/docs/README.md"
 commit_item "$V" intake:create-onboarding "docs(intake): onboarding"

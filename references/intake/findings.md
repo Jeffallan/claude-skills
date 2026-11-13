@@ -82,6 +82,8 @@ A finding without evidence is not a finding. By the end of Phase 3, every findin
 
 Only a finding no test can express (dead code, a build or deploy setting, an end-of-life dependency version) goes without one. Its `Tests:` line then says why and names the command whose output proves the finding, for example: none: end-of-life version, nothing to run; evidence: `pip show django`. A finding that can't be proven either way is `invalid` or an Open question, never left open.
 
+A `fixed` finding keeps its evidence too: the `Tests:` line names the intended-behavior test that now passes, or, when no test can express the fix (a repaired test factory, a build setting), says so and names the fixing commit as its evidence command: none: test code only; evidence: `git show <sha>`.
+
 ## Severity
 
 | Severity | Use it for |
@@ -103,7 +105,7 @@ Fixes come after intake, attended, one finding at a time:
 1. Un-skip the intended-behavior test and watch it fail. A finding whose `Tests:` line says `none:` gets a new failing test first. When no test can express it (dead code to delete, a build-time warning), say so in the finding and name the command whose result proves the fix (a clean build log, a test run with the runner the fix restores).
 2. Fix the code. Keep the suite deterministic: a fix that adds shared state (a rate limit, a cache) keys it so tests don't leak into each other.
 3. Delete the characterization test and the comment block that cites the id above it, the whole block when it spans lines.
-4. Set the status in both the Summary row and the finding's section.
+4. Set the status in both the Summary row and the finding's section, and point the `Tests:` line at the evidence for the fix ("Every finding has evidence").
 5. Update every doc that cites the id (`grep -rn "F-012" docs/`): describe the fixed behavior and drop or annotate the citation.
 
 ## When not to use it
