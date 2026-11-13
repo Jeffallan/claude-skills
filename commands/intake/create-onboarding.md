@@ -1,6 +1,6 @@
 ---
 name: create-onboarding
-description: Generate the onboarding index (docs/README.md) tying together the project overview, quickstart, and links to all intake reference docs.
+description: Generate the onboarding index (docs/README.md, or docs/README-intake.md beside an owner README) tying together the project overview, quickstart, and links to all intake reference docs.
 argument-hint: "[directory]"
 ---
 
@@ -8,7 +8,7 @@ argument-hint: "[directory]"
 
 **Argument:** `$ARGUMENTS`: optional root directory to analyze (defaults to the project root).
 
-Produce `docs/README.md` (configurable): the entry-point document a new engineer or AI agent reads first. It gives
+Produce the docs index at `docs/README.md`, or at `docs/README-intake.md` when the project already has its own `docs/README.md` (`references/intake/rules.md`, "Existing docs"): the entry-point document a new engineer or AI agent reads first. It gives
 a short project overview, a working quickstart (how to install and run), a pointer to the structure, and a linked
 index of every other intake doc. Document only what the code and project config prove.
 
@@ -48,7 +48,7 @@ Docs written after this command add themselves to the index in their own commit 
 path. Do not write until confirmed. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 4: Write
-Write `docs/README.md` using the template below.
+Write the docs index using the template below. When an owner `docs/README.md` exists, write `docs/README-intake.md` and list the owner README under Owner docs; never edit it.
 
 ### Phase 5: Accuracy audit (required)
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`): wording only, never a claim. Then audit:
@@ -90,4 +90,4 @@ related: []
 
 ## Output
 
-`docs/README.md`, plus a short summary: commands captured and docs linked.
+The docs index (`docs/README.md` or `docs/README-intake.md`), plus a short summary: commands captured and docs linked.

@@ -30,8 +30,8 @@ the evidence on the lines right below the item.
 - [ ] `intake:document-user-flow`
 - [ ] `intake:document-config`
 - [ ] `intake:document-analytics`
-- [ ] `intake:create-onboarding`: `docs/README.md` linking every doc above, ending with its `## Accuracy audit`
-- [ ] Link `docs/README.md` from the project's `CLAUDE.md` so agents find the docs
+- [ ] `intake:create-onboarding`: the docs index (`docs/README.md`, or `docs/README-intake.md` beside an owner README) linking every doc above, ending with its `## Accuracy audit`
+- [ ] Link the docs index from the project's `CLAUDE.md` so agents find the docs
 
 ## Phase 2: Harness
 

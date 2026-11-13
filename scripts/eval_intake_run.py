@@ -590,17 +590,22 @@ def evidence_check(repo: Path) -> dict:
 
 
 def index_check(repo: Path) -> dict:
-    """docs/README.md links every doc, and the checklist and tracker name the same base commit."""
+    """The docs index links every doc, and the checklist and tracker name the same base commit.
+
+    The index is docs/README.md, or docs/README-intake.md when the project has its own docs/README.md;
+    then the owner's README is one of the docs the index must link.
+    """
     problems = []
-    readme = repo / "docs/README.md"
+    index = intake_path(repo, "docs/README.md")
+    readme = repo / index
     links = set(re.findall(r"\]\(([^)#\s]+)", readme.read_text(encoding="utf-8"))) if readme.is_file() else set()
-    skip = {"docs/README.md", "docs/intake-checklist.md", "docs/intake-goal-prompt.md"}
+    skip = {index, "docs/intake-checklist.md", "docs/intake-goal-prompt.md"}
     for p in sorted((repo / "docs").rglob("*.md")):
         rel = str(p.relative_to(repo))
         if rel in skip or (rel.startswith("docs/specs/") and rel != "docs/specs/INDEX.md"):
             continue
         if rel.removeprefix("docs/") not in links:
-            problems.append(f"README misses {rel}")
+            problems.append(f"{index} misses {rel}")
     sha = re.compile(r"\bat\s+(?:\S+\s+)?`?([0-9a-f]{7,40})`?")
     heads = []
     for rel in ("docs/intake-checklist.md", "docs/intake-findings.md"):

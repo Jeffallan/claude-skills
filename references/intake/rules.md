@@ -8,7 +8,7 @@ Documentation commands write one document each under `docs/`, grouped by categor
 
 ```
 docs/
-├── README.md                         # intake:create-onboarding, links every doc below
+├── README.md                         # intake:create-onboarding, the docs index (README-intake.md when the project has its own)
 ├── intake-findings.md                # the findings tracker, every command appends
 ├── intake-existing-docs.md           # intake:existing-docs, the docs the project already had
 ├── system-description.md             # intake:create-system-description
@@ -36,7 +36,7 @@ docs/
 - The five categories are `docs/architecture/` (how it is built), `docs/domain/` (what it does), `docs/security/`, `docs/flows/` (user journeys) and `docs/operations/` (how it runs).
 - Cross-link sibling docs with relative paths (`../security/authorization.md`).
 - Each command owns its file and overwrites it on a rerun. The findings tracker is the exception: commands only append to it.
-- Once `docs/README.md` exists, a command that writes a new doc adds it to the README's index in the same commit (`intake:create-system-description` adds `system-description.md` and `specs/`).
+- The docs index is `docs/README.md`, or `docs/README-intake.md` when the project already had its own `docs/README.md` (an owner doc, see "Existing docs"). Once the index exists, a command that writes a new doc adds it there in the same commit (`intake:create-system-description` adds `system-description.md` and `specs/`).
 - A later command that proves an earlier doc wrong, incomplete or stale corrects it in its own commit: a doc saying a test "will" pin a behavior that is now pinned, a finding called "suspected" that a test confirmed, the test trees `intake:testing-setup` adds go into `file-tree.md`, an account path a testing command finds goes into `user-model.md` and `security.md`. Keep the doc's structure and add a dated line to its `## Accuracy audit` naming what changed and why. A doc that stops matching the code is worse than no doc.
 
 ## Existing docs
@@ -48,7 +48,7 @@ Docs the project had before intake are the owner's. Intake never edits them. `in
 - A topic an existing doc covers fully is linked from the intake doc for that topic, not repeated. A topic it covers in part or not at all is written by the intake command, as usual.
 - When an owner doc sits at an intake doc's path, the intake doc goes beside it as `<name>-intake.md`, and each lists the other in `related:`.
 
-`docs/README.md` lists the owner docs too, marking each "owner-written" with its open finding ids.
+The docs index lists the owner docs too, marking each "owner-written" with its open finding ids. When the owner's `docs/README.md` holds the index path, intake's index is `docs/README-intake.md` and lists that README among the owner docs.
 
 ## Doc frontmatter and citations
 

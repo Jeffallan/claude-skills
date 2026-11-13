@@ -11,7 +11,7 @@ outputs:
   - name: onboarding-doc
     type: file
     path: docs/README.md
-    description: Onboarding index covering project overview, quickstart (setup and run), a structure pointer, and a linked index of all intake docs.
+    description: Onboarding index (docs/README-intake.md instead when the project has its own docs/README.md) covering project overview, quickstart (setup and run), a structure pointer, and a linked index of all intake docs.
 requires: []
 status: existing
 argument-hint: "[directory]"

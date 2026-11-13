@@ -10,7 +10,7 @@ Intake is how you adopt an existing codebase. It documents the code for the agen
 |--------|-------|------------|
 | Docstrings and module comments | Across the code | `intake:document-codebase` |
 | Reference docs, one aspect each | `docs/architecture/`, `docs/domain/`, `docs/security/`, `docs/flows/`, `docs/operations/` | the twelve `intake:document-*` commands |
-| An index of those docs | `docs/README.md` | `intake:create-onboarding` |
+| An index of those docs | `docs/README.md`, or `docs/README-intake.md` beside your own | `intake:create-onboarding` |
 | A test harness with a smoke test per layer | Your test tree and package scripts | `intake:testing-setup` |
 | Characterization tests | Your test tree | `intake:testing-features`, `-authorization`, `-owasp`, `-user-flows` |
 | The findings tracker | `docs/intake-findings.md` | every command, appending |

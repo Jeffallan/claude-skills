@@ -659,6 +659,23 @@ else
     fail "the baseline re-scores every run in the eval directory (exit $rc): $out"
 fi
 
+# An owner docs/README.md: the intake index is docs/README-intake.md, and it lists the owner's README
+V=$(fresh v5-owner-readme)
+git -C "$V" mv docs/README.md docs/README-intake.md
+printf '# Our docs\n\nOwner text.\n' >"$V/docs/README.md"
+printf -- '- [Owner README, owner-written](README.md)\n' >>"$V/docs/README-intake.md"
+commit_item "$V" intake:create-onboarding "docs(intake): index beside the owner README"
+set +e
+out=$(score "$V")
+set -e
+if has "$out" docs-index 1 && has "$out" docs-with-audit 1 && has "$out" docs-pristine 1; then pass "with an owner docs/README.md, docs/README-intake.md is the index"; else fail "with an owner docs/README.md, docs/README-intake.md is the index: $out"; fi
+sed -i '/Owner README/d' "$V/docs/README-intake.md"
+commit_item "$V" intake:create-onboarding "docs(intake): index drops the owner README"
+set +e
+out=$(score "$V")
+set -e
+if has "$out" docs-index 0 && printf '%s' "$out" | grep -q 'misses docs/README.md'; then pass "an intake index that leaves out the owner README fails docs-index"; else fail "an intake index that leaves out the owner README fails docs-index: $out"; fi
+
 # A bad start SHA is bad input
 set +e
 python3 "$EVAL" --repo "$GOOD" --start deadbeef >/dev/null 2>&1

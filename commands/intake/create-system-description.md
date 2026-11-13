@@ -29,7 +29,7 @@ Run once as the last intake command, after the documentation commands; that firs
 
 ### Phase 1: Read the inputs
 1. Read `.claude/workflow-config.json` for `specsRoot` (default `docs/specs`). Paths below use the default.
-2. Read the intake docs that exist: `docs/README.md`, `docs/architecture/*.md`, `docs/domain/*.md`, `docs/security/*.md`, `docs/flows/*.md`, `docs/operations/*.md` and `docs/intake-findings.md`. A missing doc is a gap to fill from the code, and the section says so.
+2. Read the intake docs that exist: the docs index (`docs/README.md` or `docs/README-intake.md`), `docs/architecture/*.md`, `docs/domain/*.md`, `docs/security/*.md`, `docs/flows/*.md`, `docs/operations/*.md` and `docs/intake-findings.md`. A missing doc is a gap to fill from the code, and the section says so.
 3. Read `docs/specs/INDEX.md`, then each completed spec's `overview.md` under `docs/specs/completed/`, including its `## Completion report`, in the index's order.
 4. When `docs/system-description.md` exists, read its `## Change history` table: the specs already folded in.
 
@@ -71,7 +71,7 @@ When the baseline exists, leave it alone: it records the system at intake, and l
 **MANDATORY CHECKPOINT: confirm scope before writing.** Present the pass type, the inputs found and missing, the baseline spec's feature areas (first run) and the specs to fold in. Do not write until the user confirms. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 4: Write
-Write or update `docs/system-description.md` with the template below, with `related:` frontmatter naming the intake docs its sections draw on (each of those lists it back). Add `system-description.md` and `specs/INDEX.md` to the index in `docs/README.md` in the same commit. Each section names its sources. Diagrams are Mermaid. Open findings that affect a section are listed in it by id, never restated as fact or hidden.
+Write or update `docs/system-description.md` with the template below, with `related:` frontmatter naming the intake docs its sections draw on (each of those lists it back). Add `system-description.md` and `specs/INDEX.md` to the docs index (`docs/README.md`, or `docs/README-intake.md` beside an owner README) in the same commit. Each section names its sources. Diagrams are Mermaid. Open findings that affect a section are listed in it by id, never restated as fact or hidden.
 
 ### Phase 5: Accuracy audit (required)
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`): wording only, never a claim. Then audit:

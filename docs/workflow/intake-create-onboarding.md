@@ -1,6 +1,6 @@
 # intake:create-onboarding
 
-Write the onboarding index, `docs/README.md`, which ties together the project overview, quickstart, and links to all intake reference docs.
+Write the onboarding index, `docs/README.md` (or `docs/README-intake.md` when your project already has its own `docs/README.md`), which ties together the project overview, quickstart, and links to all intake reference docs.
 
 **Step:** documentation (intake phase) · **Command file:** `commands/intake/create-onboarding.md`
 
@@ -16,7 +16,7 @@ Write the onboarding index, `docs/README.md`, which ties together the project ov
 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
-| `onboarding-doc` | file | docs/README.md | Onboarding index covering project overview, quickstart (setup and run), a structure pointer, and a linked index of all intake docs. |
+| `onboarding-doc` | file | docs/README.md | Onboarding index (docs/README-intake.md instead when the project has its own docs/README.md) covering project overview, quickstart (setup and run), a structure pointer, and a linked index of all intake docs. |
 
 ## How it runs
 

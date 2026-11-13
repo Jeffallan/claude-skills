@@ -28,7 +28,7 @@ The phase runs once (`run_once` in the manifest). Commands within a step can run
 | Documentation | [`intake:document-user-flow`](intake-document-user-flow.md) | `docs/flows/user-flow.md` |
 | Documentation | [`intake:document-config`](intake-document-config.md) | `docs/operations/configuration.md` |
 | Documentation | [`intake:document-analytics`](intake-document-analytics.md) | `docs/operations/analytics-events.md` |
-| Documentation, last | [`intake:create-onboarding`](intake-create-onboarding.md) | `docs/README.md` |
+| Documentation, last | [`intake:create-onboarding`](intake-create-onboarding.md) | `docs/README.md`, or `docs/README-intake.md` beside your own |
 | [Capture behavior](intake-capture-behavior.md), first | [`intake:testing-setup`](intake-testing-setup.md) | Test harness with a smoke test per layer |
 | Capture behavior | [`intake:testing-features`](intake-testing-features.md) | Feature characterization tests |
 | Capture behavior | [`intake:testing-authorization`](intake-testing-authorization.md) | Authorization matrix tests |
