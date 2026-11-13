@@ -11,7 +11,7 @@ outputs:
   - name: configuration-doc
     type: file
     path: docs/operations/configuration.md
-    description: Configuration reference. Covers the environment/config model, environment variables vs hardcoded config, per-environment build/deploy profiles, and a local-dev setup quickstart.
+    description: "Configuration reference. Covers the environment/config model, environment variables vs hardcoded config, per-environment build/deploy profiles, a local-dev setup quickstart, `## Library security settings` (each auth, admin and API library's security-relevant settings with effective value and source, defaults the project never set included), and `## Security settings: test versus deployed`."
 requires: []
 status: existing
 argument-hint: "[directory]"

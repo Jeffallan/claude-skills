@@ -11,7 +11,7 @@ outputs:
   - name: user-model-doc
     type: file
     path: docs/domain/user-model.md
-    description: "Primary-actor model reference: the principal entity's representations (public/own/stored), identity, lifecycle state machine, completeness/validation rules, and account lifecycle."
+    description: "Primary-actor model reference: the principal entity's representations (public/own/stored), identity, lifecycle state machine (every writer of each state field as a transition, with its routes by operation id and who may call them), blocking states (operations still allowed, every way out, credentials that survive entry), completeness/validation rules, and account lifecycle. INV-2 and INV-6 breaks go to the findings tracker."
 requires: []
 status: existing
 argument-hint: "[directory]"

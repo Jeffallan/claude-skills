@@ -11,7 +11,7 @@ outputs:
   - name: features-doc
     type: file
     path: docs/domain/features.md
-    description: "Feature catalog: a Feature/Area/Key-files summary table plus per-feature subsections (what it does, user-visible behavior, implementing files), covering only features present in the code."
+    description: "Feature catalog: a Feature/Area/Key-files summary table plus per-feature subsections (what it does, user-visible behavior, implementing files), covering only features present in the code; state machines for domain entities with a status (every writer of each state field as a transition, with its routes by operation id and who may call them); and project invariants INV-7 onward, each citing evidence of intent. Breaks go to the findings tracker."
 requires: []
 status: existing
 argument-hint: "[directory]"

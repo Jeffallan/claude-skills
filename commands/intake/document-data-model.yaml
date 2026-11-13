@@ -11,7 +11,7 @@ outputs:
   - name: data-model-doc
     type: file
     path: docs/architecture/data-model.md
-    description: "Data model reference: entities (tables/collections), field shapes with enforced constraints, relationships, enumerations, and an ER diagram."
+    description: "Data model reference: entities (tables/collections), field shapes with enforced constraints and a Flags column marking state, ownership/tenant, privilege and money/quantity fields, relationships, enumerations, and an ER diagram."
 requires: []
 status: existing
 argument-hint: "[directory]"

@@ -11,7 +11,7 @@ outputs:
   - name: security-doc
     type: file
     path: docs/security/security.md
-    description: "Security mechanisms reference: the defense layers that protect the backend, with per-mechanism sections (authentication/verification gates, input/field validation, rate limiting, content moderation, secrets/attestation status, abuse controls, deny-by-default), each grounded in code."
+    description: "Security mechanisms reference: the defense layers that protect the backend, with per-mechanism sections (authentication/verification gates, tokens, input/field validation, rate limiting, content moderation, secrets/attestation status, abuse controls, deny-by-default), each grounded in code. The Tokens section lists every token type the system issues with its expiry, single use, user and purpose binding, and the state changes that void it, each cited; a missing property without intent evidence becomes a finding in docs/intake-findings.md."
 requires: []
 status: existing
 argument-hint: "[directory]"

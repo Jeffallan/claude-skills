@@ -11,7 +11,7 @@ outputs:
   - name: api-reference-doc
     type: file
     path: docs/architecture/api-reference.md
-    description: "API reference for the backend surface: a summary table of every operation plus per-operation entries (trigger/route/method, request or event shape, behavior, side effects, errors, auth) across REST, GraphQL, RPC, and serverless/event-triggered shapes."
+    description: "API reference for the backend surface: the `## Operations` inventory built from the framework's resolved route table (one row per method and path with a stable OP-NNN id, source app/library/framework, and the resolved permission with the setting or default behind it, plus the listing command and its route count), then per-operation entries (trigger/route/method, request or event shape, behavior, side effects, errors, auth) across REST, GraphQL, RPC, and serverless/event-triggered shapes."
 requires: []
 status: existing
 argument-hint: "[directory]"

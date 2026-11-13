@@ -13,7 +13,7 @@ project is configured, built, and run across environments, written for an AI age
 implementation contract. **Document only what the code and config prove. Never invent a variable, default, or
 profile. Never reproduce a secret value.**
 
-Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` before the first phase. They set the output layout, the findings tracker, the checkpoint, the accuracy audit and the goal-run behavior.
+Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/access-control.md` before the first phase. The first two set the output layout, the findings tracker, the checkpoint, the accuracy audit and the goal-run behavior. The third defines the two sections this command owns ("Library security settings"): `## Library security settings` and `## Security settings: test versus deployed`.
 
 ## When to use
 
@@ -56,6 +56,19 @@ Capture:
 - **Per-environment build/deploy profiles**: each profile/target, what differs between them (distribution, runtime,
   flags, auto-increment, etc.), and how one is selected.
 - **Scripts**: the canonical commands to start, build, test, lint, and deploy, with their purpose.
+- **Library security settings**: for each auth, admin and API library the project installs (an auth or account
+  library, a token or session library, an admin site, an API framework, a CORS or rate-limit package), every
+  setting that bears on security, with its effective value and the source of that value
+  (`<settings file>::<NAME>`, an env var, or "library default"). Read the library's own defaults in the installed
+  package, not from memory, and list the defaults the project never set: who may register, whether accounts
+  activate by link, which permission and authentication classes apply when a view names none, token lifetime and
+  rotation, which routes the library mounts, throttles, password rules.
+- **Security settings, test versus deployed**: the settings the test configuration resolves next to the ones the
+  deployed configuration resolves, for each security control: debug mode, CORS origins, allowed hosts, throttles
+  and rate limits, cookie flags (secure, httponly, samesite), CSRF, password validators and hashers, the email
+  backend, HTTPS redirects and HSTS, session lifetime. Read both from the settings the test runner actually loads
+  and the settings the deploy config selects. Mark each row that differs, and say which tests that difference
+  leaves unproven.
 
 ### Phase 3: Assemble the local-dev quickstart
 From the above, derive the minimal ordered steps to get a working local environment: install dependencies, supply
@@ -63,16 +76,27 @@ required config/secrets (by name and source, never value), choose a runtime, and
 for the chosen feature set. Note anything that silently no-ops or behaves differently locally vs. in a full build.
 
 **MANDATORY CHECKPOINT: confirm scope before writing.** Present the environment model, the count of settings
-(env-driven vs hardcoded), the build/deploy profiles found, and the output path. Do not write the document until the
+(env-driven vs hardcoded), the build/deploy profiles found, the security-relevant libraries found, the test and
+deployed settings modules being compared, and the output path. Do not write the document until the
 user confirms. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 4: Write
 Write the document at the output path using the template below.
 
+Docs describe what the configuration does, neutrally. A setting whose effective value breaks an access invariant
+(`references/intake/access-control.md`, "Access invariants") or contradicts stated intent (a comment, a test,
+another doc) is a finding: append it to the tracker before writing the doc, and cite its id in the row. A
+security-relevant default nobody chose that weakens a control is a finding too, because "the library does it by
+default" is not evidence of intent. A deployed setting that turns a control off is also a finding. A control the test settings
+turn off is not a finding by itself; record it in the test-versus-deployed table so the testing commands know
+which tests need the deployed value.
+
 ### Phase 5: Accuracy audit (required; the output is agent-facing)
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`): wording only, never a claim. Then audit:
 Re-verify every claim against the code/config: setting names, defaults, required-vs-optional status, the file each is
-read in, profile differences, and script commands. Confirm no secret value is reproduced anywhere in the doc, and
+read in, profile differences, script commands, and each library setting's effective value against the installed
+library's default and the project's override. Confirm both security tables come from the settings modules the
+test runner and the deploy config actually load. Confirm no secret value is reproduced anywhere in the doc, and
 that each secret's storage location is named correctly. Ground any example in a real file. Fix or remove anything not
 provable. Prefer "unknown / not defaulted in code" over a guess.
 
@@ -117,6 +141,21 @@ related: [<docs this one depends on or that depend on it, paths under docs/>]
 | Profile | Selected by | Differences | Notes |
 |---|---|---|---|
 
+## Library security settings
+<one subsection per auth, admin and API library; every security-relevant setting, defaults the project never set included>
+
+### <library name> <version>
+| Setting | Effective value | Source | Notes |
+|---|---|---|---|
+| <NAME> | <value, never a secret> | <`settings file::NAME` / env var / library default> | <what it controls; finding id> |
+
+## Security settings: test versus deployed
+Test settings: `<module or file>`. Deployed settings: `<module or file>`, selected by <flag or profile>.
+
+| Setting | Test value | Deployed value | Differs | Effect on tests |
+|---|---|---|---|---|
+| <debug / CORS / allowed hosts / throttles / cookie flags / password rules / email backend / ...> | <value> | <value> | <yes / no> | <which control the tests don't exercise; finding id> |
+
 ## Scripts
 | Script | Command | Purpose |
 |---|---|---|
@@ -136,11 +175,14 @@ related: [<docs this one depends on or that depend on it, paths under docs/>]
 - **No configuration surface found**: state that plainly and stop; do not fabricate variables or profiles.
 - **Config sources disagree** (e.g. a default in code vs a different value in a committed config file): document
   **both** and flag the discrepancy; do not silently pick one.
+- **No deployed settings in the repo** (they live in a platform console or secret store): fill the deployed column
+  with "not in repo" and add an Open question naming the settings whose deployed value the owner must confirm.
 - **A secret value would be exposed**: never reproduce it. Record only the name and storage location, and flag a
   hardcoded secret for rotation/relocation.
 
 ## Output
 
 A single document at the output path, plus a short summary: the environment model, settings cataloged (env-driven vs
-hardcoded), build/deploy profiles, the local-dev quickstart, and any discrepancies, hardcoded secrets, or unknowns
-surfaced for follow-up.
+hardcoded), build/deploy profiles, the local-dev quickstart, the security-relevant libraries and settings listed,
+the security settings that differ between test and deployed, finding ids raised, and any discrepancies, hardcoded
+secrets, or unknowns surfaced for follow-up.

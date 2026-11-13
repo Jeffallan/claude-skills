@@ -12,7 +12,7 @@ Produce a data-model reference at `docs/architecture/data-model.md` (configurabl
 project persists data, written for an AI agent or engineer to rely on as the implementation contract. **Document
 only what the code proves. Never invent a field, constraint, or relationship.**
 
-Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` before the first phase. They set the output layout, the findings tracker, the checkpoint, the accuracy audit and the goal-run behavior.
+Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/access-control.md` before the first phase. The first two set the output layout, the findings tracker, the checkpoint, the accuracy audit and the goal-run behavior. The third names what this command owns for the access matrix ("Who owns what"): the `Flags` column of each entity table.
 
 ## When to use
 
@@ -43,6 +43,21 @@ Per entity: its identifier / primary key and **ID convention**, every field with
 **constraints actually enforced** (validation, nullability, ranges, enums, immutability). If the code distinguishes
 **stored shapes** from **view models / DTOs**, capture both and the mapping between them.
 
+Mark the fields the access matrix and the state machines depend on, in a `Flags` column. A field may carry several
+flags:
+
+- `state`: a field that holds a lifecycle or status value (a status enum, an active, verified or locked flag, a
+  soft-delete or archived timestamp, an expiry stamp).
+- `owner`: a key that ties the record to the account or tenant it belongs to (an owner, creator, user, account,
+  organization or tenant foreign key).
+- `privilege`: a field that grants rights (a role, a staff or admin flag, a permission set, a group membership, a
+  plan or tier that unlocks features).
+- `money`: an amount, price, balance, credit, quantity or count whose value a caller could profit from changing.
+
+Flag by what the field does, not by its name: a `level` integer that gates admin pages is `privilege`. Note in the
+row which code writes each flagged field (the serializer, form or handler that accepts it, a signal, a job), so
+later commands can check whether a caller can set it.
+
 ### Phase 3: Extract relationships and integrity rules
 Foreign keys / references and cardinality, join or lookup patterns, cascade behavior (e.g. delete cascades),
 uniqueness guarantees (including those enforced by deterministic IDs), and denormalized/duplicated fields together
@@ -55,16 +70,22 @@ Produce a Mermaid `erDiagram` of entities, key attributes, and relationships wit
 Collect enums / allowed-value sets, where each is defined, and where it is re-validated (application code vs
 database/rules). Summarize field-level constraints.
 
-**MANDATORY CHECKPOINT: confirm scope before writing.** Present the storage technology, the entity list, and the
-output path. Do not write the document until the user confirms. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
+**MANDATORY CHECKPOINT: confirm scope before writing.** Present the storage technology, the entity list, the
+flagged fields, and the output path. Do not write the document until the user confirms. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 6: Write
 Write the document at the output path using the template below.
 
+Docs describe the schema neutrally. Where enforcement breaks an access invariant (`references/intake/access-control.md`,
+"Access invariants") or contradicts stated intent (a type, a comment, a test, another doc), append a finding to the
+tracker before writing the doc, and cite its id in the field's Notes. A flagged field that a write path accepts from
+the caller with no check is such a case, and so is a constraint the type promises but the store never enforces.
+
 ### Phase 7: Accuracy audit (required; the output is agent-facing)
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`): wording only, never a claim. Then audit:
 Re-verify every claim against the code: field names and types, enforced constraints, ID conventions, relationships,
-and cascade behavior. Ground any example in a real call site. Fix or remove anything not provable from the code.
+cascade behavior, and every flag (search the models again for state, ownership, privilege and money fields left
+unflagged). Ground any example in a real call site. Fix or remove anything not provable from the code.
 Prefer "unknown / not enforced" over a guess.
 
 ## Output template
@@ -94,8 +115,9 @@ erDiagram
 ## Entities
 ### <entity / table / collection> (`<id convention>`)
 <purpose; what writes it; one-line access pointer to the authorization doc>
-| Field | Type | Constraint | Notes |
-|---|---|---|---|
+| Field | Type | Constraint | Flags | Notes |
+|---|---|---|---|---|
+| <name> | <type> | <enforced constraint> | <state / owner / privilege / money, or blank> | <who writes it; finding id> |
 
 ## Enumerations
 <type -> allowed values; where defined and where re-validated>
@@ -115,5 +137,5 @@ erDiagram
 
 ## Output
 
-A single document at the output path, plus a short summary: entities documented, relationships captured, and any
-discrepancies or unknowns surfaced for follow-up.
+A single document at the output path, plus a short summary: entities documented, relationships captured, flagged
+fields by flag, finding ids raised, and any discrepancies or unknowns surfaced for follow-up.
