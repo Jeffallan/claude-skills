@@ -48,7 +48,6 @@ After a compaction or resume, re-read this file and the checklist, and rebuild s
 <final_report>
 Save the scoring files to <results-dir> (outside the repo):
 - `git reflog --date=iso-strict --format='%gd%x00%gs' > <results-dir>/intake.reflog`
-- the session transcript path: the `~/.claude/projects/<project>/<session>.jsonl` file whose first prompt is this /goal
 - `<test:all command>` output as <results-dir>/test-all.txt
 Then rerun <done_when>, quoting each condition before its output. Phase 4 items stay unchecked: they are attended and out of this run's scope. Lead with blocked items and open questions, then a table: item, commit, evidence, finding ids. Then the findings by severity, and "Ready for Phase 4 (attended)."
 </final_report>
@@ -91,6 +90,8 @@ The kickoff line names the end state, never "read the file", for the reason `ref
 ## Scoring the run
 
 The reflog snapshot, the transcript and the test output are what the intake eval (`evals/intake/` in the claude-skills repo) reads. Save them before deleting the branch or the clone: git prunes reflog entries after about 30 days, and transcripts stay only on the machine that ran the session.
+
+The run saves the reflog and the test output itself. Record the transcript path yourself once the run ends: it is the `~/.claude/projects/<project>/<session>.jsonl` file whose first prompt is the /goal. The run can't do it, because a fair run denies it every read of `~/.claude/projects`, and it can't confirm a file it can't open.
 
 ## What never goes in
 
