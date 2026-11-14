@@ -96,13 +96,22 @@ A `fixed` finding keeps its evidence too: the `Tests:` line names the intended-b
 
 ## Severity
 
+Rate a finding by what its evidence shows it lets someone do in this app. The category it falls in, such as access control or hardening, sets no level by itself.
+
 | Severity | Use it for |
 |----------|-----------|
-| High | Data exposure, broken access control, data loss, a security control that is missing or bypassable |
-| Medium | Incorrect behavior a user can hit, a non-atomic operation that can leave bad state, a hardening gap |
-| Low | Drift between two sources of truth, dead code, type drift, inconsistency |
+| High | Someone gains a higher role or another role's powers, lifts or bypasses a blocking state on their own, keeps access after it was removed, reads or changes sensitive data (credentials, payment details, health or legal records) of other accounts, or loses data with no way back |
+| Medium | A principal reads or changes another account's ordinary data or does an action reserved for another role, money or stock counts go wrong, an operation leaves bad state, a missing control with an exploit path shown in this app |
+| Low | A hardening gap with no exploit path shown, wrong behavior that stores nothing, an error answered as a 500 without harm, drift, dead code, type drift, inconsistency |
 
-Severity is the finder's first guess; the owner adjusts it at close-out.
+Then adjust:
+
+- **Rate the reach you showed.** A library advisory, a default setting or a missing header is Low until the entry names how this app reaches it. "Applicability unconfirmed" is Low.
+- **Weigh who can do it and what it takes.** One level lower when only staff or admins can reach it, when it needs a leaked secret, or when an existing control stops it at once (an admin can remove the role).
+- **Depends on deployment:** rate what the repo shows, name the setting that would change the rating, and ask for its deployed value as an Open question.
+- **Depends on an unstated rule:** when the code is wrong under one reading of a rule nobody wrote down, rate it Low or make it an Open question.
+
+The `What:` line states the impact the rating rests on. Severity is the finder's first guess; the owner adjusts it at close-out.
 
 ## Close-out
 
