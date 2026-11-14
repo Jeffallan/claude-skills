@@ -19,7 +19,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 Run LAST in the intake documentation suite, after the other `intake:document-*` commands, so it can link the docs
 they produced. It degrades gracefully: link only the docs that exist.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:code-documenter`**: structure and format the onboarding doc and the documentation index.
 - **The project's framework skill** (e.g. `fullstack-dev-skills:react-native-expert`, `fullstack-dev-skills:nextjs-developer`, `fullstack-dev-skills:django-expert`): derive the

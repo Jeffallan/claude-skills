@@ -16,7 +16,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` (especially "Existing do
 
 Run once during intake, right after the findings tracker starts and before `intake:document-codebase`, so the docstrings and every later doc can see what the project already says. Run it on a project with no docs too: the inventory then says so, and the checklist item is checked with that note.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: check each claim against the code that would prove or disprove it.
 - **`fullstack-dev-skills:code-documenter`**: structure and validate the inventory.

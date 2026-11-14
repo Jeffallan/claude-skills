@@ -37,7 +37,7 @@ End your turn with `BLOCKED: <stop>`, what you need, and `git status --short` on
 <per_item_loop>
 Each item, in order:
 1. Re-read docs/intake-checklist.md and take the first unchecked item without an unresolved BLOCKED note.
-2. Run its command under the goal-run rules in references/intake/rules.md, loading the skills it names.
+2. Load the skills in its command's "Skills to load" list with the Skill tool ("Skills" in references/intake/rules.md), then run the command under the goal-run rules there.
 3. Verify with fresh output: the command's accuracy audit or run-and-verify phase, then `<test:all command>`.
 4. Check the box with an indented note (date, evidence, finding ids raised), then commit the item's files and the checklist together: `<docs|test>(intake): <command>` with the trailer `Intake: <command>` in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
 5. Check the commit you just made: `git log -1 --format='%(trailers:key=Intake,valueonly)'` prints this item's command, and `git show --stat HEAD` lists only this item's files. When either is wrong, never amend: fix it with a follow-up commit carrying the same item's trailer.

@@ -25,7 +25,7 @@ The document stays neutral: it describes what the code does. Where the code brea
 Run once during intake, after `intake:document-codebase`. Re-run when the actor model, auth flow, or lifecycle
 changes (a rerun edits the existing document in place and keeps hand edits; see "Reruns" in `references/intake/rules.md`).
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: reverse-engineer the actor model from the auth, profile, and routing layers; infer
   representations, states, and gates from code.

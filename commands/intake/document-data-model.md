@@ -18,7 +18,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/
 
 Run once during intake, after `intake:document-codebase`. Re-run when the schema changes (a rerun edits the existing document in place and keeps hand edits; see "Reruns" in `references/intake/rules.md`).
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: reverse-engineer the existing persistence layer; infer entities and relationships from code.
 - **`fullstack-dev-skills:code-documenter`**: structure, format, and validate the output document.

@@ -22,7 +22,7 @@ The document stays neutral: it describes what the code does. Where the code brea
 Run once during intake, after `intake:document-codebase`. Re-run when features are added or removed (a rerun edits the existing
 document in place and keeps hand edits; see "Reruns" in `references/intake/rules.md`).
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: reverse-engineer features from screens / routes / services / handlers; identify undocumented
   behavior.

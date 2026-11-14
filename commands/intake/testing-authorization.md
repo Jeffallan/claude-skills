@@ -24,7 +24,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/
 Run during the capture-behavior step, after `intake:testing-setup` and `intake:document-authorization`.
 Re-run when routes or access rules change. Idempotent for the tests it owns.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:test-master`**: design the table, the fixtures per principal column and the
   parametrization so each row is one named case.

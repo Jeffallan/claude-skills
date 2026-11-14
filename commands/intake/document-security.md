@@ -30,15 +30,14 @@ checked against the user model's blocking states). Re-run when the security surf
 new token type, a new validation layer, a moderation or rate-limit change). When the user model is missing,
 work from the code and add an Open question naming it ("In a goal run" in `rules.md`). A rerun edits the existing document in place and keeps hand edits ("Reruns" in `references/intake/rules.md`).
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: reverse-engineer the existing enforcement code; infer the layers and
   where each control lives.
 - **`fullstack-dev-skills:code-documenter`**: structure, format, and validate the output document.
-- **`fullstack-dev-skills:security-reviewer`**: use its knowledge of control categories to confirm the
-  inventory is complete (auth, tokens, validation, rate limiting, moderation, attestation, abuse controls,
-  default-deny), and to write the findings for a token property or control that is missing without intent
-  evidence.
+- **`fullstack-dev-skills:security-reviewer`**: check the inventory against its control categories (auth,
+  tokens, validation, rate limiting, moderation, attestation, abuse controls, default-deny), and write the
+  findings for a token property or control that is missing without intent evidence.
 - **`fullstack-dev-skills:secure-code-guardian`**: interpret how each mechanism is implemented (token checks,
   parameterized queries, input validation, header policies) so the description is technically precise.
 

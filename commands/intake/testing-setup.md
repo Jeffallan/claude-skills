@@ -25,7 +25,7 @@ Run once during the capture-behavior step, after `intake:document-codebase` (ide
 suite, so the domain testing commands can read the contract docs). Re-run when the stack or test toolchain
 changes. This command is idempotent for the config it owns; it will not clobber hand-written tests.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:test-master`**: choose the test architecture, runner, and layering; define the mocking
   and fixture strategy.

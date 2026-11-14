@@ -26,7 +26,7 @@ Run during the capture-behavior step, after `intake:testing-setup`, `intake:test
 `intake:document-security`. Re-run when input surfaces, authentication, or configuration change. Idempotent for
 the tests it owns.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:security-reviewer`**: map each OWASP category to the codebase's real surfaces and rate
   applicability; lead the threat enumeration and run the scanners whose output is evidence.

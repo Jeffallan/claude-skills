@@ -21,7 +21,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 Run once during intake, after `intake:document-codebase`. Re-run when an integration is added, removed, or
 reconfigured (a rerun edits the existing document in place and keeps hand edits; see "Reruns" in `references/intake/rules.md`).
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: reverse-engineer the dependency surface; infer which external services the code calls and where.
 - **`fullstack-dev-skills:code-documenter`**: structure, format, and validate the output document.

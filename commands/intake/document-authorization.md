@@ -30,7 +30,7 @@ and `intake:document-security`: the matrix joins their output. Re-run when acces
 new role or claim, a changed ownership predicate, a new account state). A rerun edits the existing document in
 place and keeps hand edits ("Reruns" in `references/intake/rules.md`); operation ids stay stable.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:spec-miner`**: reverse-engineer the existing access-control code and infer the model
   from how decisions are actually made.

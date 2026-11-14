@@ -24,7 +24,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 Run during the capture-behavior step, after `intake:testing-setup` and (ideally) `intake:document-features`.
 Re-run when feature logic changes. Idempotent for the tests it owns.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:test-master`**: inventory testable units, design cases per branch, and set the mocking
   boundary.

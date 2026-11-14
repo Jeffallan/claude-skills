@@ -26,7 +26,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/
 Run during the capture-behavior step, after `intake:testing-setup` and (ideally) `intake:document-user-flow`.
 Re-run when journeys or routes change. Idempotent for the tests it owns.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:test-master`**: select the critical journeys, the two-layer split, and the seeding
   strategy.

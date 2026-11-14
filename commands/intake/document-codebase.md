@@ -16,7 +16,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROO
 
 Run once at the start of intake, before any `intake:document-*` or `intake:testing-*` command. Rerun on code that changed since: it is idempotent and leaves accurate docstrings alone.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:code-documenter`**: docstring formats, coverage counting and the report.
 - **`fullstack-dev-skills:spec-miner`**: read what a function really does, including side effects and error paths, before describing it.
@@ -77,7 +77,7 @@ The deliverable is the docstrings plus a report:
 ```markdown
 ## Docstring pass
 
-**Start commit:** <sha> · **Style:** <style per part> · **Skills:** <skills used>
+**Start commit:** <sha> · **Style:** <style per part> · **Skills:** <skills this session loaded with the Skill tool; any listed skill it didn't load as `<skill> not loaded: <reason>`>
 
 | Part | Modules | Classes | Functions | Before | After |
 |------|---------|---------|-----------|--------|-------|

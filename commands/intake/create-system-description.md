@@ -16,7 +16,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/
 
 Run once as the last intake command, after the documentation commands; that first run is a full pass. Rerun later to fold in specs completed since the last run; `spec:complete` proposes the same update for one spec at a time. Use `--full` when the description has drifted far from the code.
 
-## Skills to invoke
+## Skills to load
 
 - **`fullstack-dev-skills:architecture-designer`**: the component and data-flow diagrams, and the architecture sections.
 - **`fullstack-dev-skills:spec-miner`**: confirm each claim against the code where a doc is missing or thin.

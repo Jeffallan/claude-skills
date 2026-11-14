@@ -127,7 +127,7 @@ Attended, the command presents the scope and waits for the owner. It writes noth
 
 ## Human-voice pass
 
-Every documentation command gives its document's prose a human-voice pass after writing it and before the accuracy audit: people read these docs too. When the `writing-with-agents:human-voice` command is available, run it in embedded mode on the prose; otherwise remove the usual tells by hand (no em dashes, no sentences opening with "And" or "But", no "not just X, but Y" shapes, no filler). Leave code, commands, paths, identifiers, tables of facts, frontmatter and `path::symbol` citations exactly as they are. The pass may change wording, never a claim; the audit below then re-checks every claim against the code. Record it in the item's checklist note as `human-voice: writing-with-agents:human-voice` or `human-voice: by hand`; the intake eval checks that note, and that a note naming the command loaded it.
+Every documentation command gives its document's prose a human-voice pass after writing it and before the accuracy audit: people read these docs too. When the `writing-with-agents:human-voice` command is available, run it in embedded mode on the prose; otherwise remove the usual tells by hand (no em dashes, no sentences opening with "And" or "But", no "not just X, but Y" shapes, no filler). Leave code, commands, paths, identifiers, tables of facts, frontmatter and `path::symbol` citations exactly as they are. The pass may change wording, never a claim; the audit below then re-checks every claim against the code. Record it in the item's checklist note as `human-voice: writing-with-agents:human-voice` when you called the command on this document in this item, or `human-voice: by hand` when you made the pass yourself. The intake eval checks each note against a call inside that item, and scans the finished prose for the tells.
 
 ## Accuracy audit
 
@@ -165,3 +165,7 @@ The rest holds unchanged: no tracker writes, no history rewrites, subagents only
 ## Skills
 
 Each command names its skills by exact name. The language and framework skill is chosen by detection: read the package manifest and lockfile, the framework config and the test config, then pick the matching `fullstack-dev-skills:` skill. A stack with no matching skill gets none, and the command says so rather than borrowing a neighbor's.
+
+Before a command's first step, call the Skill tool for each skill in its "Skills to load" list that this session has not loaded since its last compaction. A skill loaded earlier in the session and still in context needs no second call.
+
+The checklist note records only what this session did. Name a skill there only when this session made the Skill call for it. A skill the command lists but you didn't load gets `<skill> not loaded: <reason>` instead. The next session trusts the note, and the intake eval checks every named skill against the transcript.
