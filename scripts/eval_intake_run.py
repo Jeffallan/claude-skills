@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+from datetime import datetime
 import fnmatch
 import json
 from pathlib import Path
@@ -25,7 +26,7 @@ import subprocess
 import sys
 
 import eval_dir
-from eval_workflow_run import REWRITE, check, git, transcript_checks, when
+from eval_workflow_run import REWRITE, check, git, text_of, transcript_checks, when
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "runtime"))
 from ticket_guard import docs as guard_docs
@@ -385,67 +386,127 @@ def rewrite_check(repo: Path, start: str, windows, reflog: Path | None) -> dict:
 
 SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
 DECLINED = re.compile(r"[\w:-]+\s+(?:skill\s+)?(?:was\s+)?not loaded")
+ITEM_SKILL = "fullstack-dev-skills:intake:"
+CONTINUED = "This session is being continued from a previous conversation"
 
 
-def skills_check(repo: Path, paths: list[Path]) -> dict:
-    """Every skill a checklist note names was loaded with the Skill tool in the goal session or its subagents."""
-    path = repo / "docs/intake-checklist.md"
-    text = path.read_text(encoding="utf-8") if path.exists() else ""
-    text = DECLINED.sub("", text)  # "javascript-pro not loaded (no call sites)" claims nothing
-    claimed = {m.split(":", 1)[1] for m in SKILL_NAME.findall(text)}
-    # bare names count too ("the test-master skill"): any skill this plugin ships, as a whole word
-    for name in (d.name for d in (Path(__file__).resolve().parent.parent / "skills").iterdir() if d.is_dir()):
-        if re.search(rf"(?<![\w:/-]){re.escape(name)}(?![\w-])", text):
-            claimed.add(name)
-    loaded = set()
-    for p in paths:
-        for line in p.read_text(encoding="utf-8").splitlines():
-            if '"Skill"' not in line:
-                continue
-            m = json.loads(line)
-            content = m.get("message", {}).get("content") if isinstance(m.get("message"), dict) else None
-            for c in content if isinstance(content, list) else []:
-                if c.get("type") == "tool_use" and c.get("name") == "Skill":
-                    loaded.add(str(c.get("input", {}).get("skill", "")).split(":")[-1])
-    missing = sorted(claimed - loaded)
-    return check(
-        "skills-loaded",
-        not missing,
-        f"{len(claimed)} skills named in checklist notes, all loaded"
-        if not missing
-        else f"named but never loaded: {missing}",
-    )
-
-
-VOICE_SKILL = "writing-with-agents:human-voice"
-
-
-def voice_check(repo: Path, paths: list[Path]) -> dict:
-    """Each checked documentation item's note records its human-voice pass; a note naming the skill needs a Skill call."""
+def checklist_items(repo: Path) -> list[tuple[str, bool, str]]:
+    """Each `intake:<cmd>` item of the checklist: its command, whether it is checked, and its line plus note."""
     path = repo / "docs/intake-checklist.md"
     lines = path.read_text(encoding="utf-8").splitlines() if path.exists() else []
-    missing, claimed = [], False
+    out = []
     for i, line in enumerate(lines):
         m = re.search(r"`intake:([a-z-]+)`", line)
-        if not (m and line.lstrip().startswith("- [x]") and m.group(1) in DOCS):
+        if not (m and line.lstrip().startswith("- [")):
             continue
         note = [line]
         for nxt in lines[i + 1 :]:
             if not nxt.startswith("  "):
                 break
             note.append(nxt)
-        text = " ".join(note)
-        if re.search(r"not present|\bN/A\b", text, re.I):
+        out.append((m.group(1), line.lstrip().startswith("- [x]"), " ".join(note)))
+    return out
+
+
+def named_skills(text: str) -> set[str]:
+    """Skills a note claims: `fullstack-dev-skills:<name>`, or a bare name this plugin ships, as a whole word."""
+    text = DECLINED.sub("", text)  # "javascript-pro not loaded (no call sites)" claims nothing
+    claimed = {m.split(":", 1)[1] for m in SKILL_NAME.findall(text)}
+    for name in (d.name for d in (Path(__file__).resolve().parent.parent / "skills").iterdir() if d.is_dir()):
+        if re.search(rf"(?<![\w:/-]){re.escape(name)}(?![\w-])", text):
+            claimed.add(name)
+    return claimed
+
+
+def skill_uses(m: dict) -> list[str]:
+    content = m.get("message", {}).get("content") if isinstance(m.get("message"), dict) else None
+    return [
+        str(c.get("input", {}).get("skill", ""))
+        for c in (content if isinstance(content, list) else [])
+        if c.get("type") == "tool_use" and c.get("name") == "Skill"
+    ]
+
+
+def timeline(
+    paths: list[Path],
+) -> tuple[list[tuple[str, datetime, datetime]], list[tuple[datetime, str]], list[datetime]]:
+    """Item windows (cmd, start, end), Skill loads (time, skill) and compaction times from the goal sessions.
+
+    A window opens at a Skill call to `fullstack-dev-skills:intake:<cmd>` and runs to the next one or the
+    session's end. A subagent's loads count when their time falls inside a window.
+    """
+    windows, loads, compactions, side = [], [], [], []
+    for p in paths:
+        msgs = [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
+        timed = [(when(m["timestamp"]), m) for m in msgs if m.get("timestamp")]
+        if is_subagent(p):
+            side += [(t, s) for t, m in timed for s in skill_uses(m)]
+            continue
+        opened = None
+        for t, m in timed:
+            content = m["message"].get("content", "") if isinstance(m.get("message"), dict) else ""
+            if m.get("type") == "user" and (m.get("isCompactSummary") or text_of(content).startswith(CONTINUED)):
+                compactions.append(t)
+            for s in skill_uses(m):
+                loads.append((t, s))
+                if s.startswith(ITEM_SKILL):
+                    if opened:
+                        windows.append((*opened, t))
+                    opened = (s.removeprefix(ITEM_SKILL), t)
+        if opened:
+            windows.append((*opened, timed[-1][0]))
+    loads += [(t, s) for t, s in side if any(a <= t <= b for _, a, b in windows)]
+    return windows, loads, compactions
+
+
+def skills_check(repo: Path, tl) -> dict:
+    """A skill a checklist note names is loaded by the end of the first naming item's window, and again after a compaction.
+
+    The reload is due by the end of the next naming item's window after the compaction.
+    """
+    windows, loads, compactions = tl
+    by_skill: dict[str, set[str]] = {}
+    for cmd, _, note in checklist_items(repo):
+        for name in named_skills(note):
+            by_skill.setdefault(name, set()).add(cmd)
+    bad = []
+    for name, cmds in sorted(by_skill.items()):
+        spans = sorted((a, b, c) for c, a, b in windows if c in cmds)
+        times = [t for t, s in loads if s.split(":")[-1] == name]
+        if not spans:
+            bad.append(f"{name}: named by {sorted(cmds)}, which have no window in the transcripts")
+        elif not any(t <= spans[0][1] for t in times):
+            bad.append(f"{name}: not loaded by the end of intake:{spans[0][2]}")
+        else:
+            for c in compactions:
+                nxt = next((s for s in spans if s[0] > c), None)  # the first naming item to start after it
+                if nxt and not any(c < t <= nxt[1] for t in times):
+                    bad.append(
+                        f"{name}: not reloaded after the compaction at {c.isoformat()} by the end of intake:{nxt[2]}"
+                    )
+    return check(
+        "skills-loaded",
+        not bad,
+        f"{len(by_skill)} skills named in checklist notes, each loaded before use" if not bad else f"{bad[:10]}",
+    )
+
+
+VOICE_SKILL = "writing-with-agents:human-voice"
+
+
+def voice_check(repo: Path, tl) -> dict:
+    """Each checked documentation item's note records its human-voice pass; a note naming the skill needs a call in its window."""
+    missing, unbacked = [], []
+    for cmd, checked, text in checklist_items(repo):
+        if not checked or cmd not in DOCS or re.search(r"not present|\bN/A\b", text, re.I):
             continue
         if "human-voice" not in text.lower():
-            missing.append(m.group(1))
-        claimed |= VOICE_SKILL in text
-    loaded = any(
-        f'"{VOICE_SKILL}"' in line and '"Skill"' in line
-        for p in paths
-        for line in p.read_text(encoding="utf-8").splitlines()
-    )
-    unbacked = claimed and paths and not loaded
+            missing.append(cmd)
+        if VOICE_SKILL in text and tl:
+            windows, loads, _ = tl
+            spans = [(a, b) for c, a, b in windows if c == cmd]
+            if not any(a <= t <= b for t, s in loads if s == VOICE_SKILL for a, b in spans):
+                unbacked.append(cmd)
     ok = not missing and not unbacked
     detail = (
         "every documentation item's note records its human-voice pass"
@@ -454,12 +515,44 @@ def voice_check(repo: Path, paths: list[Path]) -> dict:
             x
             for x in (
                 f"no human-voice record in: {missing}" if missing else "",
-                f"notes name {VOICE_SKILL} but no transcript loads it" if unbacked else "",
+                f"notes name {VOICE_SKILL} with no call in the item's window: {unbacked}" if unbacked else "",
             )
             if x
         )
     )
     return check("human-voice-pass", ok, detail)
+
+
+TELL = re.compile(r"\u2014|(?:^[\s>*#-]*|[.!?][\"')\]]*\s+)(?:And|But)\s")
+
+
+def tells_check(repo: Path) -> dict:
+    """The prose of every intake doc carries no em dash and no sentence starting with "And " or "But ".
+
+    Prose is outside frontmatter, fenced code and table rows, with inline code removed.
+    """
+    hits = []
+    for rel, text in intake_docs(repo).items():
+        fence = front = False
+        for n, line in enumerate(text.splitlines(), 1):
+            if n == 1 and line.strip() == "---":
+                front = True
+                continue
+            if front:
+                front = line.strip() != "---"
+                continue
+            if line.lstrip().startswith(("```", "~~~")):
+                fence = not fence
+                continue
+            if fence or line.lstrip().startswith("|"):
+                continue
+            if TELL.search(re.sub(r"`[^`]*`", "", line)):
+                hits.append(f"{rel}:{n}")
+    return check(
+        "human-voice-tells",
+        not hits,
+        "no em dash or sentence opening with And or But in intake prose" if not hits else f"tells at: {hits[:10]}",
+    )
 
 
 RECOVERY_FILES = ("intake-checklist.md", "intake-goal-prompt.md")
@@ -574,13 +667,31 @@ def findings(repo: Path) -> list[dict]:
 TEST_ID = re.compile(r"`([\w./-]+\.\w+)::([^`]+)`")
 
 
+SETATTR = re.compile(r"""setattr\(\s*\w+\s*,\s*f(["'])(.*?)\1""")
+
+
 def test_exists(path: Path, name: str) -> bool:
     if not path.is_file():
         return False
     last, text = name.split("::")[-1], path.read_text(encoding="utf-8")
     if re.fullmatch(r"[\w.]+", last):
-        return bool(re.search(rf"\b{re.escape(last.split('.')[-1])}\b", text))
-    return last in text  # a title with spaces appears as written
+        if re.search(rf"\b{re.escape(last.split('.')[-1])}\b", text):
+            return True
+    elif last in text:  # a title with spaces appears as written
+        return True
+    # a Python name built at runtime: setattr(Class, f"test_{op}_current", ...)
+    for _, f in SETATTR.findall(text):
+        if re.fullmatch(".+".join(map(re.escape, re.split(r"\{[^}]*\}", f))), last):
+            return True
+    # Jest's full name: a describe title and a test title joined by one space
+    plain = text.replace("\\'", "'").replace('\\"', '"')
+    q = "['\"`]"
+    return any(
+        re.search(rf"\bdescribe(?:\.\w+)*\(\s*{q}{re.escape(last[:i])}{q}", plain)
+        and re.search(rf"\b(?:it|test)(?:\.\w+)*\(\s*{q}{re.escape(last[i + 1 :])}{q}", plain)
+        for i, ch in enumerate(last)
+        if ch == " "
+    )
 
 
 def evidence_check(repo: Path, suite_out: str = "") -> dict:
@@ -733,7 +844,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 8  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output
+CHECKS_VERSION = 9  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names
 
 
 def main() -> int:
@@ -778,8 +889,11 @@ def main() -> int:
         ap.error("give --repo and --start, or --eval and --run with both in eval.json")
     try:
         start = git(a.repo, "rev-parse", "--verify", f"{a.start}^{{commit}}").strip()
-        sessions = [t for t in a.transcript if not is_subagent(t)]  # subagents feed skills-loaded only
+        sessions = [
+            t for t in a.transcript if not is_subagent(t)
+        ]  # subagents feed the per-item skill and human-voice claims only
         t_checks, windows = transcript_checks(sessions) if sessions else ([], [])
+        tl = timeline(a.transcript) if a.transcript else None
         ids = tracker_ids(a.repo)
         globs = a.test_path + declared_test_paths(a.repo)
         suite, suite_out = (
@@ -805,12 +919,13 @@ def main() -> int:
             suite,
             diff_check(a.repo, start, globs),
             commits_check(a.repo, start),
-            voice_check(a.repo, a.transcript),
+            voice_check(a.repo, tl),
+            tells_check(a.repo),
             rewrite_check(a.repo, start, windows, a.reflog),
             *t_checks,
         ]
         if a.transcript:
-            checks.append(skills_check(a.repo, a.transcript))
+            checks.append(skills_check(a.repo, tl))
         # Optional checks run only when the run exercised them; they never enter the score
         optional = [c for c in (compaction_check(sessions),) if c]
     except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as e:

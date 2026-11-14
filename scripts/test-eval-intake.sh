@@ -467,10 +467,12 @@ g="{\"type\":\"user\",\"timestamp\":\"$T0\",\"message\":{\"role\":\"user\",\"con
 f="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"git log shows every done_when check\"}]}}"
 sk="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Skill\",\"input\":{\"skill\":\"fullstack-dev-skills:code-documenter\"}}]}}"
 sk2="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Skill\",\"input\":{\"skill\":\"fullstack-dev-skills:test-master\"}}]}}"
-printf '%s\n' "$g" "$sk" "$sk2" "$f" >"$WORK/skills-loaded.jsonl"
-printf '%s\n' "$g" "$sk" "$f" >"$WORK/skills-bare.jsonl"
-printf '%s\n' "$g" "$f" >"$WORK/skills-missing.jsonl"
-printf '%s\n' "$g" "$sk" "$sk2" "$f" >"$WORK/skills-declined.jsonl"
+# the item's window opens at its intake command's Skill call
+win="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Skill\",\"input\":{\"skill\":\"fullstack-dev-skills:intake:document-glossary\"}}]}}"
+printf '%s\n' "$g" "$win" "$sk" "$sk2" "$f" >"$WORK/skills-loaded.jsonl"
+printf '%s\n' "$g" "$win" "$sk" "$f" >"$WORK/skills-bare.jsonl"
+printf '%s\n' "$g" "$win" "$f" >"$WORK/skills-missing.jsonl"
+printf '%s\n' "$g" "$win" "$sk" "$sk2" "$f" >"$WORK/skills-declined.jsonl"
 for case in loaded:1 missing:0 bare:0 declined:1; do
     name=${case%%:*}; want=${case##*:}
     set +e
@@ -516,7 +518,7 @@ make_run "$SA"
 printf -- '- [x] `intake:document-glossary`\n  2026-11-12: written with the test-master skill\n' >>"$SA/docs/intake-checklist.md"
 commit_item "$SA" intake:document-glossary "docs(intake): document-glossary"
 T0=$(date -u -d '-1 min' +%Y-%m-%dT%H:%M:%SZ)
-printf '%s\n' "{\"type\":\"user\",\"timestamp\":\"$T0\",\"message\":{\"role\":\"user\",\"content\":\"/goal Every condition in <done_when> holds\"}}" "{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"git log shows every done_when check\"}]}}" >"$WORK/sa-main.jsonl"
+printf '%s\n' "{\"type\":\"user\",\"timestamp\":\"$T0\",\"message\":{\"role\":\"user\",\"content\":\"/goal Every condition in <done_when> holds\"}}" "$win" "{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"git log shows every done_when check\"}]}}" >"$WORK/sa-main.jsonl"
 printf '%s\n' "{\"type\":\"user\",\"isSidechain\":true,\"agentId\":\"a1\",\"timestamp\":\"$T0\",\"message\":{\"role\":\"user\",\"content\":\"Review this diff\"}}" "{\"type\":\"assistant\",\"isSidechain\":true,\"agentId\":\"a1\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Skill\",\"input\":{\"skill\":\"fullstack-dev-skills:test-master\"}}]}}" >"$WORK/sa-agent.jsonl"
 set +e
 out=$(python3 "$EVAL" --repo "$SA" --start "$(cat "$SA.start")" --transcript "$WORK/sa-main.jsonl" --transcript "$WORK/sa-agent.jsonl" 2>&1)
@@ -536,7 +538,7 @@ T0=$(date -u -d '-1 min' +%Y-%m-%dT%H:%M:%SZ)
 gl="{\"type\":\"user\",\"timestamp\":\"$T0\",\"message\":{\"role\":\"user\",\"content\":\"/goal Every condition in <done_when> holds\"}}"
 fl="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"git log shows every done_when check\"}]}}"
 hv="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Skill\",\"input\":{\"skill\":\"writing-with-agents:human-voice\"}}]}}"
-printf '%s\n' "$gl" "$hv" "$fl" >"$WORK/hv-loaded.jsonl"
+printf '%s\n' "$gl" "$win" "$hv" "$fl" >"$WORK/hv-loaded.jsonl"
 printf '%s\n' "$gl" "$fl" >"$WORK/hv-missing.jsonl"
 for case in loaded:1 missing:0; do
     name=${case%%:*}; want=${case##*:}
@@ -776,6 +778,82 @@ V=$(fresh v5-no-command)
 sed -i '/^command:/d; /^sources:/d' "$V/docs/domain/features.md"
 commit_item "$V" intake:document-features "docs(intake): features"
 v5 "$V" docs-pristine 0 "an intake doc without command: or sources: fails docs-pristine"
+
+# Version 9: claims are checked per item window. A window opens at a Skill call to
+# fullstack-dev-skills:intake:<cmd> and runs to the next one; entries below are minutes past 10:00.
+at() { printf '2026-11-12T10:%02d:00Z' "$1"; }
+t_goal() { printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"/goal Every condition in <done_when> holds"}}\n' "$(at "$1")"; }
+t_skill() { printf '{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"%s"}}]}}\n' "$(at "$1")" "$2"; }
+t_item() { t_skill "$1" "fullstack-dev-skills:intake:$2"; }
+t_sub() { printf '{"type":"assistant","isSidechain":true,"agentId":"a1","timestamp":"%s","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"%s"}}]}}\n' "$(at "$1")" "$2"; }
+t_compact() { printf '{"type":"user","isCompactSummary":true,"timestamp":"%s","message":{"role":"user","content":"This session is being continued from a previous conversation that ran out of context."}}\n' "$(at "$1")"; }
+t_done() { printf '{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"text","text":"git log shows every done_when check"}]}}\n' "$(at "$1")"; }
+v9() { # v9 <label> <check> <want> <transcript>... : score the v9 repo with these transcripts
+    local label=$1 c=$2 want=$3 out args=()
+    shift 3
+    for t in "$@"; do args+=(--transcript "$t"); done
+    set +e
+    out=$(score "$W9" "${args[@]}")
+    set -e
+    if has "$out" "$c" "$want"; then pass "$label"; else fail "$label: $out"; fi
+}
+W9=$(fresh v9)
+printf -- '- [x] `intake:document-glossary`\n  2026-11-12: written with the test-master skill; human-voice: writing-with-agents:human-voice\n- [x] `intake:document-features`\n  2026-11-12: written with the test-master skill; javascript-pro not loaded (no call sites); human-voice: by hand\n' >>"$W9/docs/intake-checklist.md"
+commit_item "$W9" intake:document-glossary "docs(intake): glossary and features"
+TM=fullstack-dev-skills:test-master
+HVS=writing-with-agents:human-voice
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $TM; t_skill 2 $HVS; t_item 3 document-features; t_done 4; } >"$WORK/v9-first.jsonl"
+v9 "a skill loaded in the first naming item's window passes skills-loaded" skills-loaded 1 "$WORK/v9-first.jsonl"
+v9 "a by-hand pass needs no call, a claimed pass has one in its window" human-voice-pass 1 "$WORK/v9-first.jsonl"
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $HVS; t_item 3 document-features; t_skill 4 $TM; t_done 5; } >"$WORK/v9-late.jsonl"
+v9 "a skill first loaded after its first naming item fails skills-loaded" skills-loaded 0 "$WORK/v9-late.jsonl"
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $HVS; t_item 3 document-features; t_done 4; } >"$WORK/v9-sub-main.jsonl"
+t_sub 2 $TM >"$WORK/v9-sub-agent.jsonl"
+v9 "a subagent load inside the naming item's window passes skills-loaded" skills-loaded 1 "$WORK/v9-sub-main.jsonl" "$WORK/v9-sub-agent.jsonl"
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $TM; t_skill 2 $HVS; t_compact 3; t_item 4 document-features; t_done 5; } >"$WORK/v9-compact.jsonl"
+v9 "a skill not reloaded after a compaction fails skills-loaded" skills-loaded 0 "$WORK/v9-compact.jsonl"
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $TM; t_skill 2 $HVS; t_compact 3; t_item 4 document-features; t_skill 5 $TM; t_done 6; } >"$WORK/v9-reload.jsonl"
+v9 "a skill reloaded after a compaction in the next naming item passes skills-loaded" skills-loaded 1 "$WORK/v9-reload.jsonl"
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $TM; t_item 3 document-features; t_skill 4 $HVS; t_done 5; } >"$WORK/v9-hv-elsewhere.jsonl"
+set +e
+out=$(score "$W9" --transcript "$WORK/v9-hv-elsewhere.jsonl")
+set -e
+if has "$out" human-voice-pass 0 && printf '%s' "$out" | grep -q 'document-glossary'; then pass "a human-voice call in another item's window fails the claim"; else fail "a human-voice call in another item's window fails the claim: $out"; fi
+{ t_goal 0; t_item 1 document-glossary; t_skill 2 $TM; t_item 3 document-features; t_item 4 document-glossary; t_skill 5 $HVS; t_done 6; } >"$WORK/v9-followup.jsonl"
+v9 "a human-voice call in an item's follow-up window passes" human-voice-pass 1 "$WORK/v9-followup.jsonl"
+
+# human-voice-tells: the finished prose carries none of the tells the pass removes
+V=$(fresh v9-tells-good)
+printf '\n```\nx = 1  # a code comment — kept\n```\n\n| Term | Meaning — kept |\n|---|---|\n\nInline `a — b` code.\n' >>"$V/docs/domain/glossary.md"
+commit_item "$V" intake:document-glossary "docs(intake): glossary"
+v5 "$V" human-voice-tells 1 "an em dash only in code, inline code or a table passes human-voice-tells"
+V=$(fresh v9-tells-dash)
+printf '\nThe total sums prices — every one.\n' >>"$V/docs/domain/glossary.md"
+commit_item "$V" intake:document-glossary "docs(intake): glossary"
+set +e
+out=$(score "$V")
+set -e
+if has "$out" human-voice-tells 0 && printf '%s' "$out" | grep -q 'docs/domain/glossary.md:15'; then pass "an em dash in prose fails human-voice-tells with doc:line"; else fail "an em dash in prose fails human-voice-tells with doc:line: $out"; fi
+V=$(fresh v9-tells-but)
+printf '\nThe total sums prices. But it skips refunds.\n' >>"$V/docs/domain/features.md"
+commit_item "$V" intake:document-features "docs(intake): features"
+v5 "$V" human-voice-tells 0 "a sentence starting with But fails human-voice-tells"
+
+# findings-evidence: names built at runtime by setattr, and Jest's describe-plus-title full name
+V=$(fresh v9-setattr)
+printf 'class TestMatrix:\n    pass\n\n\nfor op in ["op001"]:\n    setattr(TestMatrix, f"test_{op}_F001_current", lambda self: None)\n' >"$V/tests/test_matrix.py"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/test_matrix.py::TestMatrix::test_op001_F001_current`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): matrix"
+v5 "$V" findings-evidence 1 "a test name a setattr f-string builds passes findings-evidence"
+sed -i 's|test_op001_F001_current|test_op001_F002_intended|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): matrix"
+v5 "$V" findings-evidence 0 "a test name no setattr f-string builds fails findings-evidence"
+V=$(fresh v9-jest-full)
+mkdir -p "$V/tests/unit"
+printf "describe('Profile deactivate button', () => {\n  it('F-001 current: PATCHes djoser\\\\'s user route', () => {})\n})\n" >"$V/tests/unit/profile.spec.js"
+sed -i "s|- \*\*Tests:\*\* \`.*|- **Tests:** \`tests/unit/profile.spec.js::Profile deactivate button F-001 current: PATCHes djoser's user route\`|" "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): profile"
+v5 "$V" findings-evidence 1 "a Jest full name (describe plus title) passes findings-evidence"
 
 # A bad start SHA is bad input
 set +e
