@@ -44,6 +44,8 @@ List every module, class, function, method and endpoint handler without a docstr
 
 Skip generated code, vendored code, migrations, minified bundles, lockfiles and test files.
 
+Framework component files are source code and in scope by default: the `<script>` or `<script setup>` block of every `.vue` and `.svelte` file, and every `.jsx` and `.tsx` component. Document the component itself (what it shows and when, from the parent's view), its props, the events it emits, its computed properties and its methods and handlers, and rank each by the list above. Leave templates and styles alone. Don't leave components to the user-flow or features docs, and don't raise their scope as an Open question.
+
 **MANDATORY CHECKPOINT: confirm scope before writing.** Present the detected languages and frameworks, the docstring style per part, the inventory counts by priority, the excluded paths and the baseline test result. Do not write until the user confirms. In a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 ### Phase 4: Write the docstrings
@@ -64,6 +66,7 @@ Documentation always surfaces bugs. When the code contradicts its name, its type
 2. Check the diff against the start commit with `git diff <start>` and confirm every changed hunk is a comment or a docstring:
    - **Python**: for each changed file, compare `ast.dump` of the file at the start commit and now, with docstring nodes removed from both. Any difference means code changed.
    - **JavaScript and TypeScript**: compare the files with comments stripped, for example `npx esbuild <file> --loader=ts --minify-whitespace` (or `--loader=js`) at both commits; or confirm every added and removed line of `git diff -U0` sits inside a `//` or `/* */` comment.
+   - **Vue and Svelte single-file components**: the `<template>` and `<style>` blocks must be byte-identical at both commits. Extract the `<script>` block from each version and compare it as JavaScript or TypeScript, as above.
    - **Other languages**: confirm every added and removed line of `git diff -U0` is a comment line or inside a doc comment block, using the language's comment syntax.
 3. Revert any hunk that touches an executable line, whatever the reason, then rerun the check.
 
