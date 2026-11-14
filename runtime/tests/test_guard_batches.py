@@ -342,3 +342,12 @@ def test_deny_set_blocks_every_way_to_call_decide(command):
     from ticket_guard.batches import DENY
 
     assert denied_by(DENY, command)
+
+
+def test_kickoff_reserves_blocked_for_spec_wide_stops():
+    """A ticket-level stop ends the batch normally; only a spec-wide stop earns BLOCKED:."""
+    from ticket_guard.batches import kickoff
+
+    text = kickoff("docs/specs/todo/demo/goal-prompt.md", ["T1", "T2"])
+    assert "each Done or Blocked with its reason" in text
+    assert "names a spec-wide stop from <stops>" in text

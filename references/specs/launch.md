@@ -13,13 +13,13 @@ The text after `/goal` is the condition the goal evaluator checks after every tu
 **Whole spec**, one run across compactions:
 
 ```
-/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a stop from <stops> in that file. Read that file first, and again after any compaction.
+/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds, with every ticket in that file Done or Blocked with its reason, and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a spec-wide stop from <stops> in that file. Read that file first, and again after any compaction.
 ```
 
 **Next batch**, the next N tickets that are neither Done nor Blocked, in Execution Order. N is `goal.batchSize` in `.claude/workflow-config.json`, default 3. The line names the batch's tickets:
 
 ```
-/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds for the next batch (tickets <T1>, <T2>, <T3>), each Done or Blocked with its reason, and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a stop from <stops> in that file. Do only these tickets, in Execution Order, update the Completion Status table, then stop. Read that file first, and again after any compaction.
+/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds for the next batch (tickets <T1>, <T2>, <T3>), each Done or Blocked with its reason, and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a spec-wide stop from <stops> in that file. Do only these tickets, in Execution Order, update the Completion Status table, then stop. Read that file first, and again after any compaction.
 ```
 
 After a batch, the owner runs `/compact` and launches the next batch in the same session (`claude --resume <session> ...`), or starts a fresh session the same way; `ticket:execute` re-claims the marker either way. Claude cannot run `/compact` on itself.
@@ -87,7 +87,7 @@ claude \
   --disallowedTools 'Bash(git rebase:*)' --disallowedTools 'Bash(git reset:*)' \
   --disallowedTools 'Bash(git commit --amend:*)' \
   <one --disallowedTools per goal.deny entry> \
-  -- "/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a stop from <stops> in that file. Read that file first, and again after any compaction."
+  -- "/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds, with every ticket in that file Done or Blocked with its reason, and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a spec-wide stop from <stops> in that file. Read that file first, and again after any compaction."
 
 # Next batch: the same flags, with -- and the next-batch kickoff line as the last arguments
 ```

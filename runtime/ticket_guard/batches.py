@@ -106,7 +106,7 @@ def kickoff(goal_prompt: str, tickets: list[str]) -> str:
     return (
         f"/goal Every condition in <done_when> in {goal_prompt} holds for the next batch "
         f"(tickets {', '.join(tickets)}), each Done or Blocked with its reason, and your latest message "
-        "shows the evidence, or your latest message starts with BLOCKED: and names a stop from <stops> "
+        "shows the evidence, or your latest message starts with BLOCKED: and names a spec-wide stop from <stops> "
         "in that file. Do only these tickets, in Execution Order, update the Completion Status table, "
         "then stop. Read that file first, and again after any compaction."
     )
