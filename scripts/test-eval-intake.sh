@@ -271,6 +271,31 @@ for case in ok:pass deps:fail; do
     fi
 done
 
+# "type" is allowed only on a new manifest under a declared test glob, never on the root or an existing one
+TYPED='{"name": "e2e", "private": true, "type": "module", "description": "e2e tests", "devDependencies": {"@playwright/test": "1.0.0"}}'
+for case in newtest:test/e2e/package.json:test/*:1 undeclared:test/e2e/package.json::0 root:package.json:*:0 outside:tools/package.json:test/*:0 existing:tools/package.json:tools/*:0; do
+    IFS=: read -r name rel glob want <<<"$case"
+    TM="$WORK/typed-$name"
+    make_run "$TM"
+    mkdir -p "$(dirname "$TM/$rel")"
+    if [ "$name" = existing ]; then
+        printf '{"name": "e2e", "private": true}\n' >"$TM/$rel"
+        git -C "$TM" add -A
+        git -C "$TM" commit -qm "chore: add manifest before intake" -m "Intake: setup"
+        git -C "$TM" rev-parse --short HEAD >"$TM.start"
+    fi
+    printf '%s\n' "$TYPED" >"$TM/$rel"
+    commit_item "$TM" intake:testing-setup "test(intake): harness"
+    set +e
+    if [ -n "$glob" ]; then out=$(score "$TM" --test-path "$glob"); else out=$(score "$TM"); fi
+    set -e
+    if has "$out" characterize-dont-fix "$want"; then
+        pass "type on a $name manifest ($rel) gives characterize-dont-fix=$want"
+    else
+        fail "type on a $name manifest ($rel) gives characterize-dont-fix=$want: $out"
+    fi
+done
+
 # package-lock.json may gain dev entries; its runtime entries stay identical
 for case in dev:pass runtime:fail; do
     name=${case%%:*}

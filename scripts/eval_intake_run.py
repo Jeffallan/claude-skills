@@ -232,8 +232,11 @@ def comment_only(repo: Path, start: str, rel: str) -> bool:
     return all(COMMENT_LINE.match(x) for x in body)
 
 
-def package_json_ok(repo: Path, start: str, rel: str) -> bool:
-    """package.json may change only its scripts and devDependencies; a new one may also carry inert metadata."""
+def package_json_ok(repo: Path, start: str, rel: str, globs: list[str]) -> bool:
+    """package.json may change only its scripts and devDependencies; a new one may also carry inert metadata.
+
+    A new manifest below the root under a declared test glob may also set "type" for its test files.
+    """
     try:
         after = json.loads((repo / rel).read_text(encoding="utf-8"))
     except json.JSONDecodeError:
@@ -244,6 +247,8 @@ def package_json_ok(repo: Path, start: str, rel: str) -> bool:
     except subprocess.CalledProcessError:
         before = {}  # a manifest intake created for its test scripts
         keep = {"scripts", "devDependencies", "name", "description", "private", "version", "license"}
+        if "/" in rel and any(fnmatch.fnmatch(rel, g) for g in globs):
+            keep.add("type")
     except json.JSONDecodeError:
         return False
     return {k: v for k, v in before.items() if k not in keep} == {k: v for k, v in after.items() if k not in keep}
@@ -283,7 +288,7 @@ def diff_check(repo: Path, start: str, globs: list[str]) -> dict:
     for rel in changed(repo, start):
         # A manifest is judged by its keys whatever a declared glob says
         if rel.endswith("package.json"):
-            if (repo / rel).exists() and package_json_ok(repo, start, rel):
+            if (repo / rel).exists() and package_json_ok(repo, start, rel, globs):
                 continue
             bad.append(rel)
             continue
@@ -844,7 +849,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 9  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names
+CHECKS_VERSION = 10  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests
 
 
 def main() -> int:

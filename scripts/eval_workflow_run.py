@@ -23,6 +23,7 @@ import sys
 
 import eval_dir
 
+GIT_COMMIT = re.compile(r"\bgit\s+commit\b")
 DENIED_GIT = re.compile(r"\bgit\s+(push|tag|rebase|reset|commit\s+[^|;&]*--amend)\b")
 REWRITE = re.compile(r"^(rebase|reset|commit \(amend\))")
 
@@ -219,7 +220,7 @@ def transcript_checks(paths: list[Path]) -> tuple[list[dict], list[tuple[datetim
         stamps = [when(m["timestamp"]) for m in msgs if m.get("timestamp")]
         if stamps:
             windows.append((min(stamps), max(stamps)))
-        finals = []
+        evidence, committed = False, False  # committed: a git commit after the last evidence message
         for m in msgs:
             if m.get("type") != "assistant":
                 continue
@@ -234,10 +235,13 @@ def transcript_checks(paths: list[Path]) -> tuple[list[dict], list[tuple[datetim
                 hit = DENIED_GIT.search(cmd)
                 if hit:
                     denied.append(f"{p.name[:8]}: {cmd[hit.start() : hit.end() + 40].splitlines()[0]}")
-                if c.get("type") == "text" and c.get("text", "").strip():
-                    finals.append(c["text"])
-        last = finals[-1] if finals else ""
-        if not (last.lstrip().startswith("BLOCKED:") or re.search(r"done_when|git log", last)):
+                if GIT_COMMIT.search(cmd):
+                    committed = True
+                text = c.get("text", "") if c.get("type") == "text" else ""
+                # stop-hook loops and late wakeups may add turns after the evidence; only a later commit voids it
+                if text.lstrip().startswith("BLOCKED:") or re.search(r"done_when|git log", text):
+                    evidence, committed = True, False
+        if not evidence or committed:
             unreported.append(p.name)
     return [
         check(
@@ -254,7 +258,9 @@ def transcript_checks(paths: list[Path]) -> tuple[list[dict], list[tuple[datetim
         check(
             "final-message-evidence",
             not unreported,
-            "each goal session ends with evidence or BLOCKED:" if not unreported else f"no evidence in: {unreported}",
+            "each goal session posts evidence or BLOCKED: with no commit after it"
+            if not unreported
+            else f"no evidence, or a commit after it, in: {unreported}",
         ),
     ], windows
 

@@ -13,7 +13,7 @@ Scores one finished spec run of the claude-skills workflow (`spec:triage` to `sp
 | `launch-delivered` | Each goal transcript starts with its `/goal` prompt | Transcripts |
 | `no-question-in-goal` | No `AskUserQuestion` in a goal session | Transcripts |
 | `no-denied-git` | No push, tag, rebase, reset or amend run through Bash in a goal session | Transcripts |
-| `final-message-evidence` | Each goal session ends with `<done_when>` evidence or `BLOCKED:` | Transcripts |
+| `final-message-evidence` | Each goal session posts a message with `<done_when>` evidence or a `BLOCKED:` start, and runs no `git commit` after the last such message. Later turns that carry no evidence, such as a stop-hook loop or a wakeup after the goal was met, don't fail it | Transcripts |
 
 Without transcripts, the last four checks are skipped and `no-history-rewrite` covers everything after the first ticket started.
 

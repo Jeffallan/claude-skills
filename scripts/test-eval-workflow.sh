@@ -133,6 +133,31 @@ else
     fail "a saved reflog snapshot still finds the amend"
 fi
 
+# final-message-evidence: an evidence message counts even when later turns follow it,
+# unless a git commit comes after the last evidence message
+for case in trailing:1 commit-after:0 commit-before:1; do
+    name=${case%%:*}
+    want=${case##*:}
+    G='{"type":"user","timestamp":"2026-11-10T10:00:00Z","message":{"role":"user","content":"/goal Every condition in <done_when> holds"}}'
+    E='{"type":"assistant","timestamp":"2026-11-10T10:01:00Z","message":{"content":[{"type":"text","text":"done_when evidence: git log shows 2 commits"}]}}'
+    C='{"type":"assistant","timestamp":"2026-11-10T10:02:00Z","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"git add -A && git commit -m more"}}]}}'
+    L='{"type":"assistant","timestamp":"2026-11-10T10:03:00Z","message":{"content":[{"type":"text","text":"Stop hook fired again; nothing left to do."}]}}'
+    case $name in
+    trailing) printf '%s\n' "$G" "$E" "$L" >"$WORK/fme-$name.jsonl" ;;
+    commit-after) printf '%s\n' "$G" "$E" "$C" "$L" >"$WORK/fme-$name.jsonl" ;;
+    commit-before) printf '%s\n' "$G" "$C" "$E" "$L" >"$WORK/fme-$name.jsonl" ;;
+    esac
+    if PYTHONPATH="$REPO_ROOT/scripts" python3 -c "
+from pathlib import Path
+from eval_workflow_run import transcript_checks
+c = [x for x in transcript_checks([Path('$WORK/fme-$name.jsonl')])[0] if x['id'] == 'final-message-evidence'][0]
+raise SystemExit(0 if c['pass'] == bool($want) else 1)"; then
+        pass "final-message-evidence on $name gives pass=$want"
+    else
+        fail "final-message-evidence on $name gives pass=$want"
+    fi
+done
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
