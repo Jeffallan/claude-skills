@@ -23,6 +23,8 @@ SKIP = re.compile(
     r"|#\[ignore\]|@(Disabled|Ignore)\b"
 )
 ASSERTION = re.compile(r"\bassert|\bexpect\(|\bshould\b|\.toBe|t\.(Error|Fatal)|require\.|\braises\(")
+# A file that defines no test case (a shared helper under tests/) is not held to the assertion rule.
+TEST_CASE = re.compile(r"\b(it|test|specify)(\.\w+)*\s*\(|\bit\s+['\"]|\bdef test_|\bfunc Test\w*\(|@Test\b|#\[test\]")
 SNAPSHOTS = ("*__snapshots__/*", "*.snap", "*.golden", "*/golden/*", "*/snapshots/*")
 MOCK_ASSERT = re.compile(r"^assert_(not_)?(called|any_call|has_calls|awaited)")
 
@@ -247,7 +249,7 @@ def scan(cwd: Path, start_sha: str) -> list[dict[str, Any]]:
                 )
         if rel.endswith(".py"):
             flags.extend(_python_flags(rel, text))
-        elif not ASSERTION.search(text):
+        elif TEST_CASE.search(text) and not ASSERTION.search(text):
             flags.append(
                 {
                     "kind": "no-assertion",

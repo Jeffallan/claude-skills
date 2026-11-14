@@ -182,6 +182,20 @@ def test_tamper_scan_flags(git_repo, capsys, setup, kind):
     assert flags[0]["id"] == "TS1"
 
 
+def test_tamper_scan_flags_a_js_test_case_without_assertion(git_repo, capsys):
+    marker.start(git_repo.root, "demo", "T1", "goal")
+    git_repo.write("tests/test_case.test.js", "test('adds', () => { add(1, 2) })\n")
+    assert main(["tamper-scan"]) == 1
+    assert [f["kind"] for f in last(git_repo, "tamper_scan")["flags"]] == ["no-assertion"]
+
+
+def test_tamper_scan_skips_a_test_helper_with_no_test_cases(git_repo, capsys):
+    marker.start(git_repo.root, "demo", "T1", "goal")
+    git_repo.write("tests/register.ts", "export async function register(app) {\n  return app.post('/x')\n}\n")
+    assert main(["tamper-scan"]) == 0
+    assert last(git_repo, "tamper_scan")["flags"] == []
+
+
 def test_tamper_scan_flags_changed_snapshots_not_new_ones(git_repo, capsys):
     git_repo.write("tests/__snapshots__/a.snap", "old\n")
     git_repo.commit("snap")
