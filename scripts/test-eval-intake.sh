@@ -625,6 +625,20 @@ sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none: test code only; evidence: `git
 commit_item "$V" intake:testing-features "test(intake): fix"
 v5 "$V" findings-evidence 1 "a fixed finding naming its fixing commit passes findings-evidence"
 
+# A table-driven test builds its title at runtime, so only the runner's output shows it
+V=$(fresh v7-generated-title)
+mkdir -p "$V/tests/unit"
+printf 'for (const op of ops) it(`${op}-member-F-001-current`, () => {})\n' >"$V/tests/unit/matrix.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/matrix.spec.js::OP-001-member-F-001-current`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+for case in "OP-001-member-F-001-current:1" "OP-009-member-F-001-current:0"; do
+    printed=${case%%:*}; want=${case##*:}
+    set +e
+    out=$(score "$V" --test-cmd "echo '  ✔ $printed (3ms)'")
+    set -e
+    if has "$out" findings-evidence "$want"; then pass "a generated title the suite printed as $printed scores $want"; else fail "generated title $printed: $out"; fi
+done
+
 # Version 7: the access matrix covers the whole inventory and leaves no cell unexamined
 V=$(fresh v7-good)
 v5 "$V" access-matrix 1 "the good run passes access-matrix"

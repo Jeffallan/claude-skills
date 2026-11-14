@@ -185,12 +185,16 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
     return check("bug-tests-cite-findings", ok, detail)
 
 
-def suite_check(repo: Path, cmd: str | None) -> dict:
+def suite_check(repo: Path, cmd: str | None) -> tuple[dict, str]:
+    """The suite's verdict plus its output, which lists the titles table-driven tests build at runtime."""
     if not cmd:
-        return check("characterization-green", False, "not run: pass --test-cmd with the project's test:all command")
+        return check(
+            "characterization-green", False, "not run: pass --test-cmd with the project's test:all command"
+        ), ""
     r = subprocess.run(cmd, shell=True, cwd=repo, capture_output=True, text=True)
-    tail = (r.stdout + r.stderr).strip().splitlines()[-1:] or [""]
-    return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}")
+    out = r.stdout + r.stderr
+    tail = out.strip().splitlines()[-1:] or [""]
+    return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}"), out
 
 
 def strip_docstrings(src: str) -> str:
@@ -579,15 +583,22 @@ def test_exists(path: Path, name: str) -> bool:
     return last in text  # a title with spaces appears as written
 
 
-def evidence_check(repo: Path) -> dict:
-    """Every finding not invalid names a real test (`path::name`), or says why none can and names its evidence command."""
+def evidence_check(repo: Path, suite_out: str = "") -> dict:
+    """Every finding not invalid names a real test (`path::name`), or says why none can and names its evidence command.
+
+    A name absent from its file still counts when the suite run printed it (a title built at runtime).
+    """
     rows, bad = findings(repo), []
     for f in rows:
         if f["status"].startswith("invalid"):
             continue
         cited = TEST_ID.findall(f["tests"])
         if cited:
-            gone = [f"{path}::{name}" for path, name in cited if not test_exists(repo / path, name)]
+            gone = [
+                f"{path}::{name}"
+                for path, name in cited
+                if not (test_exists(repo / path, name) or (suite_out and name.split("::")[-1] in suite_out))
+            ]
             if gone:
                 bad.append(f"{f['id']} names missing tests {gone}")
         elif not re.match(r"none:.*evidence:\s*`[^`]+`", f["tests"]):
@@ -722,7 +733,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 7  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix
+CHECKS_VERSION = 8  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output
 
 
 def main() -> int:
@@ -771,6 +782,11 @@ def main() -> int:
         t_checks, windows = transcript_checks(sessions) if sessions else ([], [])
         ids = tracker_ids(a.repo)
         globs = a.test_path + declared_test_paths(a.repo)
+        suite, suite_out = (
+            (check("characterization-green", True, "green in the run's saved test output (--suite-green)"), "")
+            if a.suite_green and not a.test_cmd
+            else suite_check(a.repo, a.test_cmd)
+        )
         checks = [
             docs_check(a.repo),
             check(
@@ -781,14 +797,12 @@ def main() -> int:
                 else "docs/intake-findings.md missing or holds no F-NNN ids",
             ),
             bug_tests_check(a.repo, start, ids or set(), globs),
-            evidence_check(a.repo),
+            evidence_check(a.repo, suite_out),
             citations_check(a.repo),
             index_check(a.repo),
             matrix_check(a.repo),
             pristine_check(a.repo),
-            check("characterization-green", True, "green in the run's saved test output (--suite-green)")
-            if a.suite_green and not a.test_cmd
-            else suite_check(a.repo, a.test_cmd),
+            suite,
             diff_check(a.repo, start, globs),
             commits_check(a.repo, start),
             voice_check(a.repo, a.transcript),
