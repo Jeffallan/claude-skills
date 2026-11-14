@@ -62,7 +62,7 @@ Intake documented the code, characterized its behavior and recorded <n> findings
 
 Take the `Feature areas:` values from the documentation phase: the feature groups in `docs/domain/features.md`, as kebab-case names, plus `security`, `data-model` and `integrations` when those docs exist. Write no prose in brackets on a header line; the index splits values on commas. Then run `guard spec-index` so `INDEX.md` lists the baseline. Later specs that change the same areas name them in their own `Feature areas:` line, which is how `spec:create` finds the baseline.
 
-When the baseline exists, leave it alone: it records the system at intake, and later changes belong to later specs.
+When the baseline exists, leave it alone: it records the system at intake, and later changes belong to later specs. That includes its findings count and list: when a later pass adds, widens or closes a finding, `docs/intake-findings.md` carries the change and the baseline keeps the numbers from the day it was written.
 
 ### Phase 3: Plan the pass
 - **Full pass**: on the first run (no `docs/system-description.md`), or with `--full`. Every section is written from the intake docs and the completed specs.
