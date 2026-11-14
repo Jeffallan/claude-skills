@@ -135,7 +135,7 @@ Each blocking state gets a section: the operations still allowed in it, every wa
 
 ## An independent second pass
 
-One pass over a codebase misses things another pass finds. After the matrix is written, `intake:document-authorization` gives a fresh read-only subagent the inventory, the principals, the invariants, the matrix with its finding ids and Open question references removed, and read access to the code, but not the findings tracker, and asks it for every cell that breaks an invariant. The command checks each deviation it reports against the code and adds the real ones as findings. Record the subagent's count, and how many held, in the checklist note.
+One pass over a codebase misses things another pass finds, and a reviewer shown the answers tends to agree with them. After the matrix is written, `intake:document-authorization` hands fresh read-only subagents the inventory, the principals and the invariants, with a copy of the code taken before the docstring pass (so no comment names a finding), and asks them to derive every cell themselves. They never see the matrix or the findings tracker. The command compares their cells with the matrix, checks each real disagreement against the code and the running app, and probes every other defect they report. Corrected cells and new findings are cited in the matrix, and the counts go in the checklist note.
 
 ## Findings from the matrix
 

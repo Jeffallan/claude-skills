@@ -131,14 +131,24 @@ Write the document at the output path using the template below.
    versus the resource ID) and for privileged operations that live outside the rules layer.
 
 ### Independent second pass
-After the matrix is written, start one fresh read-only subagent ("An independent second pass" in the
-contract). Give it the inventory, the principals, the invariants and the matrix with the finding ids and Open
-question references removed from its cells, plus read access to the code. Do not give it the findings tracker.
-Ask it to check each cell against the code and the invariants and to report every cell that breaks one, with
-the code it relied on. Verify each reported cell against the code yourself. Correct a cell the matrix got
-wrong; file a real deviation not already filed as a finding (or add its rows to the finding with the same root
-cause), and cite it in the cell. Record in the checklist note: `second pass: <N> reported, <M> held, <K> new
-findings`.
+After the matrix is written, run the second pass described in "An independent second pass" in the contract. A
+pass that reviews a finished matrix tends to agree with it, so this one derives the cells itself from code that
+carries no finding ids.
+
+1. Build a clean copy of the code. Find the commit before the docstring pass, the parent of the first commit
+   with the trailer `Intake: intake:document-codebase` (HEAD when there is none), and extract it to a scratch
+   folder outside the repo: `git archive <commit> | tar -x -C <scratch>`. Its comments name no findings.
+2. Start one fresh read-only subagent per batch of about 60 operations. Give each its batch of the inventory
+   (id, method, path, source), the principal columns, the invariants and the clean copy, plus the installed
+   source of any library that mounts routes. Do not give it the matrix, the findings tracker or the intake
+   branch. Ask it for the outcome of every cell in its batch with the code it relied on, and for a separate list
+   of any other defect it noticed.
+3. Compare its cells with the matrix. Wording that differs but means the same outcome is not a disagreement.
+   For each real disagreement, check the code and probe the running app; correct the cell the matrix got wrong,
+   and file a deviation not yet filed as a finding (or add its rows to the finding with the same root cause).
+4. Probe each defect on its other list the same way and file the ones that hold.
+5. Delete the scratch copy. Record in the checklist note: `second pass: <C> cells derived, <D> disagreements,
+   <M> matrix cells corrected, <O> other defects reported, <K> new findings`.
 
 ### Accuracy audit (required; the output is agent-facing)
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`):
@@ -257,4 +267,4 @@ Indirect leaks: <filtering or ordering on unreadable fields; 403 versus 404 or e
 
 A single document at the output path, plus a short summary: the detected model, the principal columns, the
 matrix row count against the inventory count, the project invariants, the findings and Open questions raised
-from deviating cells and channels, the second pass's reported and held counts, and any rule/code discrepancies.
+from deviating cells and channels, the second pass's counts, and any rule/code discrepancies.
