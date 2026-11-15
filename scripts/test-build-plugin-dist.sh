@@ -94,7 +94,7 @@ if grep -q '^hooks:' "$GUARD" 2>/dev/null; then fail "ticket-guard declares no f
 
 PHOOKS="$OUT/hooks/hooks.json"
 assert_exists "$PHOOKS" "ships hooks/hooks.json"
-for spec in "PreToolUse:pre-tool-use" "Stop:stop" "SessionStart:session-start"; do
+for spec in "PreToolUse:pre-tool-use" "PostToolUse:post-tool-use" "Stop:stop" "SessionStart:session-start"; do
     event=${spec%%:*}; sub=${spec#*:}
     if python3 -c "import json,sys; h=json.load(open(sys.argv[1]))['hooks'].get(sys.argv[2],[]); c=[x['command'] for g in h for x in g['hooks']]; want='ticket-guard/marker.json\"; [ -f \"\$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"\${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook '+sys.argv[3]; sys.exit(0 if len(c)==1 and c[0].endswith(want) else 1)" "$PHOOKS" "$event" "$sub" 2>/dev/null; then
         pass "hooks.json has one marker-gated $event hook"
@@ -102,7 +102,7 @@ for spec in "PreToolUse:pre-tool-use" "Stop:stop" "SessionStart:session-start"; 
         fail "hooks.json has one marker-gated $event hook"
     fi
 done
-if python3 -c "import json,sys; h=json.load(open(sys.argv[1]))['hooks']; sys.exit(0 if h['SessionStart'][0].get('matcher')=='compact' and h['PreToolUse'][0].get('matcher')=='Write|Edit|MultiEdit|NotebookEdit|Bash' else 1)" "$PHOOKS" 2>/dev/null; then
+if python3 -c "import json,sys; h=json.load(open(sys.argv[1]))['hooks']; sys.exit(0 if h['SessionStart'][0].get('matcher')=='compact' and h['PreToolUse'][0].get('matcher')=='Write|Edit|MultiEdit|NotebookEdit|Bash' and h['PostToolUse'][0].get('matcher')=='Write|Edit|MultiEdit|NotebookEdit' else 1)" "$PHOOKS" 2>/dev/null; then
     pass "hooks.json keeps the compact and edit-tool matchers"
 else
     fail "hooks.json keeps the compact and edit-tool matchers"
@@ -114,7 +114,7 @@ hook_cmd() { python3 -c "import json,sys; print([x['command'] for g in json.load
 NOGIT=$(mktemp -d)
 CLEANUP_DIRS+=("$NOGIT")
 git -C "$NOGIT" init -q
-for event in PreToolUse Stop SessionStart; do
+for event in PreToolUse PostToolUse Stop SessionStart; do
     set +e
     hook_out=$(cd "$NOGIT" && CLAUDE_PROJECT_DIR="$NOGIT" bash -c "$(hook_cmd "$event")" </dev/null 2>&1)
     rc=$?

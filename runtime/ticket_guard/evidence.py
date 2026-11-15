@@ -23,6 +23,11 @@ def append(cwd: Path, ticket: str, event: str, /, **fields: Any) -> dict[str, An
     return record
 
 
+def tickets(cwd: Path) -> list[str]:
+    """Every ticket with an evidence record in this repo."""
+    return sorted(p.stem for p in (guard_dir(cwd) / "evidence").glob("*.jsonl"))
+
+
 def records(cwd: Path, ticket: str) -> list[dict[str, Any]]:
     return read_jsonl(path(cwd, ticket))
 

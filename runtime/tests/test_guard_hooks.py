@@ -186,6 +186,84 @@ def test_freeze_asks_attended_and_records_the_amendment(git_repo, capsys, monkey
     assert evidence.records(git_repo.root, "T1")[-1]["event"] == "amendment_requested"
 
 
+def earlier_ticket(git_repo, capsys, mode="goal"):
+    """T1 records RED on tests/test_sub.py and commits; then T2 starts in the same session."""
+    started(git_repo, mode)
+    red(git_repo, capsys)
+    git_repo.commit("T1")
+    marker.clear(git_repo.root)
+    marker.start(git_repo.root, "demo", "T2", mode)
+    marker.claim(git_repo.root, "s1")
+
+
+def test_freeze_denies_an_earlier_tickets_red_tests_in_goal_mode(git_repo, capsys, monkeypatch):
+    earlier_ticket(git_repo, capsys)
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py"))
+    assert decision(out) == "deny"
+    reason = json.loads(out)["hookSpecificOutput"]["permissionDecisionReason"]
+    assert "ticket T1" in reason and "guard block" in reason
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_app.py"))
+    assert out == ""
+
+
+def test_freeze_asks_attended_for_an_earlier_tickets_tests_and_names_the_owner(git_repo, capsys, monkeypatch):
+    earlier_ticket(git_repo, capsys, "attended")
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py", tool="Write"))
+    assert decision(out) == "ask"
+    assert "ticket T1" in json.loads(out)["hookSpecificOutput"]["permissionDecisionReason"]
+    rec = evidence.records(git_repo.root, "T2")[-1]
+    assert (rec["event"], rec["file"], rec["tool"], rec["owner_ticket"]) == (
+        "amendment_requested",
+        "tests/test_sub.py",
+        "Write",
+        "T1",
+    )
+    owner = evidence.records(git_repo.root, "T1")[-1]
+    assert (owner["event"], owner["file"], owner["from_ticket"]) == ("amendment_requested", "tests/test_sub.py", "T2")
+
+
+# PostToolUse --------------------------------------------------------------------
+
+
+def applied(git_repo, rel, tool="Edit"):
+    return edit(git_repo, rel, tool=tool) | {"hook_event_name": "PostToolUse", "tool_response": {}}
+
+
+def test_post_tool_use_records_an_applied_amendment_to_the_current_tickets_tests(git_repo, capsys, monkeypatch):
+    started(git_repo, "attended")
+    red(git_repo, capsys)
+    assert hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, "tests/test_sub.py")) == (0, "")
+    rec = evidence.records(git_repo.root, "T1")[-1]
+    assert (rec["event"], rec["file"], rec["tool"], rec["owner_ticket"]) == (
+        "amendment_applied",
+        "tests/test_sub.py",
+        "Edit",
+        "T1",
+    )
+
+
+def test_post_tool_use_records_an_applied_amendment_to_an_earlier_tickets_tests(git_repo, capsys, monkeypatch):
+    earlier_ticket(git_repo, capsys, "attended")
+    hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, "tests/test_sub.py", "MultiEdit"))
+    rec = evidence.records(git_repo.root, "T2")[-1]
+    assert (rec["event"], rec["tool"], rec["owner_ticket"]) == ("amendment_applied", "MultiEdit", "T1")
+    owner = evidence.records(git_repo.root, "T1")[-1]
+    assert (owner["event"], owner["from_ticket"]) == ("amendment_applied", "T2")
+
+
+def test_post_tool_use_ignores_files_that_are_not_frozen(git_repo, capsys, monkeypatch):
+    started(git_repo, "attended")
+    red(git_repo, capsys)
+    before = evidence.records(git_repo.root, "T1")
+    for rel in ("src/app.py", "tests/test_app.py"):
+        assert hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, rel)) == (0, "")
+    assert evidence.records(git_repo.root, "T1") == before
+
+
+def test_post_tool_use_exits_0_silently_without_a_marker(git_repo, capsys, monkeypatch):
+    assert hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, "tests/x.py")) == (0, "")
+
+
 def test_no_freeze_before_red(git_repo, capsys, monkeypatch):
     started(git_repo)
     _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_app.py"))

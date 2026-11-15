@@ -11,6 +11,17 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook post-tool-use"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

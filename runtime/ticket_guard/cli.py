@@ -171,6 +171,7 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
 
 HOOKS = {
     "pre-tool-use": hooks.pre_tool_use,
+    "post-tool-use": hooks.post_tool_use,
     "session-start": hooks.session_start,
     "stop": hooks.stop,
 }
