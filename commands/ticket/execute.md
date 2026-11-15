@@ -57,14 +57,15 @@ Read the files the ticket names and the patterns the overview's Reuse section po
 Write the failing test before any implementation edit.
 
 1. Write tests for the acceptance criteria in the repo's test suite, where CI runs them. Import the symbol under test **inside the test body**, not at the top of the file: RED is strict, and a collection or import error never counts as RED.
-2. Run them through the runtime, which records the RED evidence and then freezes the test files:
+2. When the project has a typecheck or compile step (the plan's typecheck command, `tsc --noEmit`, `mypy`, `cargo check`), run it on the new test files first and fix what it reports. The guard can't tell a type error from a real failure in every language, and a test that doesn't typecheck fails for the wrong reason.
+3. Run them through the runtime, which records the RED evidence and then freezes the test files:
 
    ```bash
    guard run red -- <command that runs the new tests>
    ```
 
    It counts as RED only when the command fails, no non-test file has changed since the start SHA, and the failure is not a collection or import error. When it doesn't count, fix the test (not the code) and run it again.
-3. Other ticket types:
+4. Other ticket types:
    - **No code** (docs, prompts, configuration): `guard run red --type stand-in -- <check>`, where the check is the one the plan names (a validator, a grep, a fixture run) and fails before the change.
    - **Refactor fix ticket:** `guard run red --type refactor -- <full suite>`. The suite must pass, and every test file is frozen.
 
@@ -77,6 +78,7 @@ Follow the ticket's steps until the new tests and the existing suite pass. Reuse
 - **Deviation** (the steps must change): attended, stop and ask with the planned approach, the change, why, and the impact; record an approved deviation for the summary. Goal mode: `guard block <ticket> "<why the steps must change>"`.
 - **Blocker** (missing access or prerequisite, a denied action, three failed attempts at the same problem, a contradiction with the spec): attended, report and wait; goal mode, `guard block`, then block each dependent with `"depends on <ticket>"`.
 - **A question only someone else can answer:** add it to the plan's Open questions table, then attended ask the owner; goal mode `guard block <ticket> "question: <question>"`.
+- **A test added after RED:** allowed only for coverage the RED tests couldn't hold, such as a helper's own unit test or a regression the implementation exposed. A missing acceptance-criterion test is a deviation, handled as above, because RED can't be rerun once implementation has started. The guard doesn't freeze a file added after RED, so list each one with its reason under **Tests added after RED** in the summary.
 - **New issue found:** never work it. Append it to the plan's Proposed tracker changes (title, plain example, files, duplicate check against open tickets) and continue.
 
 ## Step 6: GREEN
@@ -121,6 +123,7 @@ Show this summary, then run `ticket:complete <ticket>` (goal mode: at once; atte
 **Files changed:** <list>
 **Docs:** each affected doc, updated or checked with its reason, or none
 **Deviations:** <approved deviations, or none>
+**Tests added after RED:** <file: reason, or none>
 **Proposed tracker changes added:** <titles, or none>
 **Suggested commit subject:** <type(scope): summary>
 ```
