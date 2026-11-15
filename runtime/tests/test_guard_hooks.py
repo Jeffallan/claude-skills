@@ -186,14 +186,68 @@ def test_freeze_asks_attended_and_records_the_amendment(git_repo, capsys, monkey
     assert evidence.records(git_repo.root, "T1")[-1]["event"] == "amendment_requested"
 
 
-def earlier_ticket(git_repo, capsys, mode="goal"):
-    """T1 records RED on tests/test_sub.py and commits; then T2 starts in the same session."""
-    started(git_repo, mode)
-    red(git_repo, capsys)
-    git_repo.commit("T1")
+def next_ticket(git_repo, mode="goal"):
     marker.clear(git_repo.root)
     marker.start(git_repo.root, "demo", "T2", mode)
     marker.claim(git_repo.root, "s1")
+
+
+def earlier_ticket(git_repo, capsys, mode="goal"):
+    """On a spec branch, T1 records RED on tests/test_sub.py and commits; then T2 starts in the same session."""
+    git_repo.git("checkout", "-q", "-b", "spec/demo")
+    started(git_repo, mode)
+    red(git_repo, capsys)
+    git_repo.commit("T1")
+    next_ticket(git_repo, mode)
+
+
+def test_freeze_skips_an_earlier_ticket_started_on_another_branch(git_repo, capsys, monkeypatch):
+    git_repo.git("checkout", "-q", "-b", "spec/demo")
+    git_repo.write("docs/specs/todo/demo/notes.md", "spec branch commit\n")
+    git_repo.commit("spec")
+    started(git_repo)
+    red(git_repo, capsys)
+    git_repo.commit("T1")
+    marker.clear(git_repo.root)
+    git_repo.git("checkout", "-q", "main")
+    git_repo.git("checkout", "-q", "-b", "spec/other")
+    next_ticket(git_repo)
+    assert hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py")) == (0, "")
+
+
+def test_freeze_skips_an_earlier_ticket_started_before_the_fork_point(git_repo, capsys, monkeypatch):
+    started(git_repo)
+    red(git_repo, capsys)
+    git_repo.commit("T1 on main")
+    marker.clear(git_repo.root)
+    git_repo.git("checkout", "-q", "-b", "spec/demo")
+    next_ticket(git_repo)
+    assert hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py")) == (0, "")
+
+
+def test_freeze_skips_an_earlier_tickets_refactor_red(git_repo, capsys, monkeypatch):
+    git_repo.git("checkout", "-q", "-b", "spec/demo")
+    started(git_repo)
+    assert main(["run", "red", "--type", "refactor", "--", sys.executable, "-c", "pass"]) == 0
+    capsys.readouterr()
+    next_ticket(git_repo)
+    assert hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_app.py")) == (0, "")
+
+
+def test_freeze_skips_an_earlier_ticket_without_a_start_sha(git_repo, capsys, monkeypatch):
+    earlier_ticket(git_repo, capsys)
+    path = evidence.path(git_repo.root, "T1")
+    recs = [{k: v for k, v in r.items() if k != "start_sha"} for r in evidence.records(git_repo.root, "T1")]
+    path.write_text("".join(json.dumps(r) + "\n" for r in recs), encoding="utf-8")
+    assert hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py")) == (0, "")
+
+
+def test_freeze_keeps_the_current_tickets_refactor_red(git_repo, capsys, monkeypatch):
+    started(git_repo)
+    assert main(["run", "red", "--type", "refactor", "--", sys.executable, "-c", "pass"]) == 0
+    capsys.readouterr()
+    _, out = hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_app.py"))
+    assert decision(out) == "deny"
 
 
 def test_freeze_denies_an_earlier_tickets_red_tests_in_goal_mode(git_repo, capsys, monkeypatch):

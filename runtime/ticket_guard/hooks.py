@@ -6,10 +6,13 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import subprocess
 from typing import Any
 
 from ticket_guard import evidence, marker, runs, settings
-from ticket_guard.gitutil import top
+from ticket_guard.errors import GuardError
+from ticket_guard.gitutil import git, top
+from ticket_guard.specstatus import default_branch
 
 EDIT_TOOLS = {
     "Write": "file_path",
@@ -46,11 +49,37 @@ def _decision(kind: str, reason: str) -> str:
     )
 
 
+def _ancestor(cwd: Path, old: str, new: str) -> bool:
+    return (
+        subprocess.run(["git", "merge-base", "--is-ancestor", old, new], cwd=cwd, capture_output=True).returncode == 0
+    )
+
+
+def _on_this_branch(cwd: Path, sha: str | None) -> bool:
+    """`sha` lies between this branch's fork point from the default branch and HEAD; False when git can't tell."""
+    if not sha:
+        return False
+    try:
+        fork = git(cwd, "merge-base", "HEAD", default_branch(cwd))
+    except GuardError:
+        return False
+    return _ancestor(cwd, fork, sha) and _ancestor(cwd, sha, "HEAD")
+
+
 def _frozen_by(cwd: Path, ticket: str, rel: str) -> str | None:
-    """The ticket whose latest valid RED froze `rel`: the current ticket first, then any other with evidence."""
-    for owner in [ticket, *(t for t in evidence.tickets(cwd) if t != ticket)]:
-        red = runs.latest(evidence.current(cwd, owner), "red")
-        if red is not None and rel in red["test_files"]:
+    """The ticket whose latest valid RED froze `rel`: the current ticket first, then an earlier one
+    started on this branch whose RED was not a refactor (that records the whole suite)."""
+    recs = evidence.current(cwd, ticket)
+    red = runs.latest(recs, "red")
+    if red is not None and rel in red["test_files"]:
+        return ticket
+    for owner in (t for t in evidence.tickets(cwd) if t != ticket):
+        recs = evidence.current(cwd, owner)
+        red = runs.latest(recs, "red")
+        if red is None or red.get("red_type") == "refactor" or rel not in red["test_files"]:
+            continue
+        start = next((r.get("start_sha") for r in recs if r["event"] == "marker_start"), None)
+        if _on_this_branch(cwd, start):
             return owner
     return None
 
