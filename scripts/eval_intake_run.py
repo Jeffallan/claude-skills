@@ -750,8 +750,11 @@ def matrix_check(repo: Path) -> dict:
     if not inventory:
         problems.append("no ## Operations inventory with OP-NNN rows")
     listed = re.search(r"\((\d+) routes?\b", ops)
-    if listed and int(listed.group(1)) != len(inventory):
-        problems.append(f"route listing counts {listed.group(1)}, inventory has {len(inventory)}")
+    # more rows than the listing is fine: JOB/EVENT rows, a static mount, an expanded catch-all
+    if listed and int(listed.group(1)) > len(inventory):
+        problems.append(
+            f"route listing counts {listed.group(1)}, inventory has only {len(inventory)}: a listed route is missing"
+        )
     if not rows:
         problems.append("no ## Access matrix with OP-NNN rows")
     if missing := [op for op in inventory if op not in rows]:
@@ -849,7 +852,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 10  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests
+CHECKS_VERSION = 11  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing
 
 
 def main() -> int:

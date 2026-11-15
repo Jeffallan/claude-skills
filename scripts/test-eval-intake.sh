@@ -685,6 +685,19 @@ sed -i 's/(2 routes at/(3 routes at/' "$V/docs/architecture/api-reference.md"
 commit_item "$V" intake:document-api "docs(intake): api"
 v5 "$V" access-matrix 0 "an inventory shorter than the route listing fails access-matrix"
 
+# Version 11: the inventory may hold rows the router can't list (JOB/EVENT, a static mount, an expanded catch-all)
+for case in "63:65:1:a listing of 63 with 65 rows passes" "65:63:0:a listing of 65 with 63 rows fails" "65:65:1:equal counts of 65 pass"; do
+    IFS=: read -r listed nrows want label <<<"$case"
+    V=$(fresh "v11-$listed-$nrows")
+    for i in $(seq 3 "$nrows"); do
+        printf '| OP-%03d | GET | /r%d/ | app | `app.py::visible` | token | any |\n' "$i" "$i" >>"$V/docs/architecture/api-reference.md"
+        printf '| OP-%03d | deny 401 [t] | allow [t] | allow [t] |\n' "$i" >>"$V/docs/security/authorization.md"
+    done
+    sed -i "s/(2 routes at/($listed routes at/" "$V/docs/architecture/api-reference.md"
+    commit_item "$V" intake:document-api "docs(intake): api"
+    v5 "$V" access-matrix "$want" "$label"
+done
+
 V=$(fresh v7-no-api)
 sed -i '/^## Operations/,$d' "$V/docs/architecture/api-reference.md"
 sed -i '/^## Access matrix/,$d' "$V/docs/security/authorization.md"
