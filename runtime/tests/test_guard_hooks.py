@@ -387,3 +387,66 @@ def test_a_rerun_after_block_judges_only_its_own_evidence(git_repo, capsys, monk
     reds = [r for r in evidence.current(git_repo.root, "T1") if r["event"] == "run" and r["phase"] == "red"]
     assert len(reds) == 1
     assert len([r for r in evidence.records(git_repo.root, "T1") if r["event"] == "run"]) == 2  # the file keeps both
+
+
+# Approved amendments and GREEN (eval repo #7) ------------------------------------
+
+OK = [sys.executable, "-c", "pass"]
+AMENDED = "def test_sub():\n    from src.app import sub\n    assert sub(4, 1) == 3\n"
+
+
+def test_green_accepts_a_frozen_test_changed_by_an_approved_amendment(git_repo, capsys, monkeypatch):
+    started(git_repo, "attended")
+    red(git_repo, capsys)
+    git_repo.write("tests/test_sub.py", AMENDED)
+    hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, "tests/test_sub.py"))
+    assert main(["run", "green", "--", *OK]) == 0
+    rec = evidence.records(git_repo.root, "T1")[-1]
+    assert (rec["tests_changed"], rec["amended_tests"]) == (False, ["tests/test_sub.py"])
+
+
+def test_green_still_refuses_a_frozen_test_changed_without_an_amendment(git_repo, capsys, monkeypatch):
+    started(git_repo, "attended")
+    git_repo.write("tests/test_other.py", FAIL_TEST.replace("test_sub", "test_other"))
+    red(git_repo, capsys)
+    git_repo.write("tests/test_sub.py", AMENDED)
+    git_repo.write("tests/test_other.py", "def test_other():\n    pass\n")
+    hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, "tests/test_sub.py"))
+    assert main(["run", "green", "--", *OK]) == 1
+    assert evidence.records(git_repo.root, "T1")[-1]["tests_changed"] is True
+
+
+def test_green_ignores_an_amendment_recorded_before_red(git_repo, capsys, monkeypatch):
+    started(git_repo, "attended")
+    evidence.append(git_repo.root, "T1", "amendment_applied", file="tests/test_sub.py", tool="Edit", owner_ticket="T1")
+    red(git_repo, capsys)
+    git_repo.write("tests/test_sub.py", AMENDED)
+    assert main(["run", "green", "--", *OK]) == 1
+
+
+def test_green_accepts_a_legacy_red_with_an_attended_amendment_request(git_repo, capsys, monkeypatch):
+    """RED records from builds before per-file digests, with only amendment_requested logged."""
+    started(git_repo, "attended")
+    red(git_repo, capsys)
+    log = evidence.path(git_repo.root, "T1")
+    recs = [json.loads(line) for line in log.read_text().splitlines()]
+    for r in recs:
+        r.pop("test_file_digests", None)
+    log.write_text("".join(json.dumps(r) + "\n" for r in recs))
+    hook(capsys, monkeypatch, "pre-tool-use", edit(git_repo, "tests/test_sub.py"))
+    git_repo.write("tests/test_sub.py", AMENDED)
+    assert main(["run", "green", "--", *OK]) == 0
+    assert evidence.records(git_repo.root, "T1")[-1]["amended_tests"] == ["tests/test_sub.py"]
+
+
+def test_summary_names_the_amended_tests(git_repo, capsys, monkeypatch):
+    from ticket_guard import boundary
+
+    started(git_repo, "attended")
+    red(git_repo, capsys)
+    git_repo.write("tests/test_sub.py", AMENDED)
+    hook(capsys, monkeypatch, "post-tool-use", applied(git_repo, "tests/test_sub.py"))
+    main(["run", "green", "--", *OK])
+    notes, missing = boundary.summary(git_repo.root)
+    assert not [m for m in missing if m.startswith("GREEN")]
+    assert "tests amended after RED with approval: tests/test_sub.py" in notes

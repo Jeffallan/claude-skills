@@ -69,7 +69,7 @@ Write the failing test before any implementation edit.
    - **No code** (docs, prompts, configuration): `guard run red --type stand-in -- <check>`, where the check is the one the plan names (a validator, a grep, a fixture run) and fails before the change.
    - **Refactor fix ticket:** `guard run red --type refactor -- <full suite>`. The suite must pass, and every test file is frozen.
 
-After RED, the frozen tests can't be edited. In goal mode the hook denies the edit; attended it asks, and each approved edit is logged as an amendment.
+After RED, the frozen tests can't be edited. In goal mode the hook denies the edit; attended it asks, and each approved edit is logged as an amendment. GREEN accepts an amended test, and the ticket's summary names it.
 
 ## Step 5: Implement
 

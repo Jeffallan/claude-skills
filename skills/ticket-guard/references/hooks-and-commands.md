@@ -33,11 +33,12 @@ When `uv` is missing or can't get a Python 3.11 or later, the hook exits non-zer
 
 | Event | Matcher | What the runtime does |
 |-------|---------|------------------------|
-| `PreToolUse` | `Write`, `Edit`, `MultiEdit`, `NotebookEdit`, `Bash` | Claims the marker on first call. On an edit to a frozen RED test: goal mode denies it; attended mode asks, and an approved edit is logged as `amendment_requested`. In goal mode it also denies edits under `text.ticketsDir`. `Bash` is matched only so the claim happens early; Bash calls are never denied |
+| `PreToolUse` | `Write`, `Edit`, `MultiEdit`, `NotebookEdit`, `Bash` | Claims the marker on first call. On an edit to a frozen RED test: goal mode denies it; attended mode asks and logs `amendment_requested`. In goal mode it also denies edits under `text.ticketsDir`. `Bash` is matched only so the claim happens early; Bash calls are never denied |
+| `PostToolUse` | `Write`, `Edit`, `MultiEdit`, `NotebookEdit` | After an approved edit to a frozen RED test runs, logs `amendment_applied`. GREEN accepts a frozen test changed after RED only when such a record covers it, and the summary names the file |
 | `Stop` | none | Goal mode only. Re-runs the latest GREEN command (else the RED one) and blocks the stop while it fails or a frozen test changed, naming the command and the log tail. It ignores `stop_hook_active`. After `guard.greenFailLimit` consecutive failures (default 3) it lets the stop through and records `green_failure`, so `ticket:complete` fails the ticket. A final message starting with `BLOCKED:` always passes |
 | `SessionStart` | `compact` | Prints the ticket, the mode and the next step, so the session can continue after a compaction drops earlier context. It runs in every session start after a compaction, and costs a file check when no ticket is in progress |
 
-All three hooks ship in the plugin's `hooks/hooks.json` (F11, 2026-11-11). They used to live in this skill's frontmatter, which registered them only once the skill was invoked, so a resumed session had no guard until its next ticket. Plugin hooks run in every session of every plugin user: with no marker each one costs one `git rev-parse` and a file test, about 1.9 ms per hooked call (measured 2026-11-11; a bare `bash -c true` is 0.8 ms).
+All four hooks ship in the plugin's `hooks/hooks.json` (F11, 2026-11-11). They used to live in this skill's frontmatter, which registered them only once the skill was invoked, so a resumed session had no guard until its next ticket. Plugin hooks run in every session of every plugin user: with no marker each one costs one `git rev-parse` and a file test, about 1.9 ms per hooked call (measured 2026-11-11; a bare `bash -c true` is 0.8 ms).
 
 ## Marker fields
 
@@ -58,7 +59,7 @@ All three hooks ship in the plugin's `hooks/hooks.json` (F11, 2026-11-11). They 
 |------|---------|-------|
 | Start | `guard marker start <spec> <ticket> --mode goal\|attended` | Refuses a dirty tree, except the spec's `implementation-plan.md`. Resumes the same ticket; refuses another ticket's marker |
 | RED | `guard run red [--type test\|stand-in\|refactor] -- <command>` | RED only when the command fails, no non-test file changed since the start SHA, and the failure is not a collection or import error. `stand-in` needs only a failure; `refactor` needs the full suite passing and freezes every test file |
-| GREEN | `guard run green -- <command>` | Records command, exit code, HEAD and log digest |
+| GREEN | `guard run green -- <command>` | Records command, exit code, HEAD and log digest; refuses when a frozen test changed without an approved amendment |
 | Block | `guard block <ticket> "<reason>" [--start <sha>]` | On the marker's ticket: saves the patch and untracked files, restores the start SHA, writes the Blocked row, clears the marker. Without a marker (a lost one): the same, from the start SHA of the ticket's last `marker_start` event or `--start`, logging `marker_clear` with `lost: true`. For a dependent with no evidence: writes only the row. Refuses when HEAD moved past the start SHA, and refuses `--start` while another ticket holds the marker |
 | Re-run | `guard rerun` | Runs `verify` commands (else the last GREEN) on HEAD plus the uncommitted work in a temporary worktree |
 | RED replay | `guard red-replay` | Copies only the RED test files onto the start SHA and expects them to fail. Refactor tickets skip it |
@@ -75,7 +76,7 @@ Exit codes: 0 success, 1 refusal, 2 outside a git repo. Hooks always exit 0.
 
 ## Evidence record
 
-`ticket-guard/evidence/<ticket>.jsonl` holds one JSON object per event: `marker_start`, `marker_claim`, `red`, `green`, `amendment_requested`, `green_failure`, `blocked`, `marker_clear`, `docs_checked` and the boundary results. Logs of each run sit in `ticket-guard/logs/` with their sha256 in the record. `ticket:complete` copies the summary line into the plan; the record itself stays local and is never committed.
+`ticket-guard/evidence/<ticket>.jsonl` holds one JSON object per event: `marker_start`, `marker_claim`, `red`, `green`, `amendment_requested`, `amendment_applied`, `green_failure`, `blocked`, `marker_clear`, `docs_checked` and the boundary results. Logs of each run sit in `ticket-guard/logs/` with their sha256 in the record. `ticket:complete` copies the summary line into the plan; the record itself stays local and is never committed.
 
 ## Troubleshooting
 

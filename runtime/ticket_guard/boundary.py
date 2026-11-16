@@ -296,6 +296,8 @@ def summary(cwd: Path, ticket: str | None = None, accept_lost: bool = False) -> 
         missing.append("GREEN: no passing GREEN record with the RED tests unchanged")
     else:
         parts.append(f"GREEN `{green['command']}` exit 0")
+        if green.get("amended_tests"):
+            parts.append(f"tests amended after RED with approval: {', '.join(green['amended_tests'])}")
     if red is not None:
         parts.append(f"tests sha256 {red['test_files_digest'][:12]} ({len(red['test_files'])} files)")
     for check, label in (("rerun", "clean re-run"), ("red-replay", "RED replay")):

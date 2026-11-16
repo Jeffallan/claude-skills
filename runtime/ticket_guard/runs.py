@@ -119,6 +119,7 @@ def red(cwd: Path, command: list[str], kind: str = "test") -> dict[str, Any]:
         red_type=kind,
         test_files=tests,
         test_files_digest=files.digest(cwd, tests),
+        test_file_digests={rel: files.digest(cwd, [rel]) for rel in tests},
         valid=reason is None,
         reason=reason,
     )
@@ -127,13 +128,15 @@ def red(cwd: Path, command: list[str], kind: str = "test") -> dict[str, Any]:
 def green(cwd: Path, command: list[str], source: str = "wrapper", echo: bool = True) -> dict[str, Any]:
     data = active(cwd)
     ticket = data["ticket"]
-    red_rec = latest(evidence.current(cwd, ticket), "red")
+    recs = evidence.current(cwd, ticket)
+    red_rec = latest(recs, "red")
     if red_rec is None:
         raise GuardError("no valid RED record for this ticket; record RED first")
     run = execute(cwd, ticket, "green", command, echo)
     run.pop("output")
     tests = red_rec["test_files"]
     digest = files.digest(cwd, tests)
+    changed, amended = _changed_and_amended(cwd, data, recs, red_rec, digest)
     return evidence.append(
         cwd,
         ticket,
@@ -142,5 +145,32 @@ def green(cwd: Path, command: list[str], source: str = "wrapper", echo: bool = T
         source=source,
         test_files=tests,
         test_files_digest=digest,
-        tests_changed=digest != red_rec["test_files_digest"],
+        tests_changed=bool(changed - amended),
+        amended_tests=sorted(changed & amended),
     )
+
+
+def _changed_and_amended(
+    cwd: Path, data: dict[str, Any], recs: list[dict[str, Any]], red_rec: dict[str, Any], digest: str
+) -> tuple[set[str], set[str]]:
+    """The frozen tests changed since RED, and those an owner-approved amendment after RED covers."""
+    if digest == red_rec["test_files_digest"]:
+        return set(), set()
+    tests = red_rec["test_files"]
+    after_red = recs[next(i for i, r in enumerate(recs) if r is red_rec) + 1 :]
+    events = {"amendment_applied"}
+    per_file = red_rec.get("test_file_digests")
+    if per_file is None:
+        # shortcut: RED from a build before per-file digests can't say which file changed, so an attended
+        # amendment request counts and every frozen file is treated as changed; drop once those runs are done.
+        changed = set(tests)
+        if data["mode"] == "attended":
+            events.add("amendment_requested")
+    else:
+        changed = {rel for rel in tests if files.digest(cwd, [rel]) != per_file.get(rel)}
+    amended = {
+        r["file"] for r in after_red if r["event"] in events and r.get("owner_ticket", data["ticket"]) == data["ticket"]
+    }
+    if per_file is None and amended & changed:
+        return amended & changed, amended
+    return changed, amended
