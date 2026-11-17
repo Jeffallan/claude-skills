@@ -351,3 +351,12 @@ def test_kickoff_reserves_blocked_for_spec_wide_stops():
     text = kickoff("docs/specs/todo/demo/goal-prompt.md", ["T1", "T2"])
     assert "each Done or Blocked with its reason" in text
     assert "names a spec-wide stop from <stops>" in text
+
+
+def test_says_the_batch_is_running_after_the_batch_line(git_repo, capsys, tmp_path, monkeypatch):
+    goal_prompt(git_repo)
+    claude, _ = fake_claude(tmp_path, monkeypatch)
+    main(["run-batches", "demo", "--batch-size", "2", "--claude", claude])
+    lines = capsys.readouterr().out.splitlines()
+    i = lines.index("batch: T1, T2")
+    assert lines[i + 1].startswith("running: a headless Claude session is working on this batch")

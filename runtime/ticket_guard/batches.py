@@ -177,6 +177,11 @@ def run_batches(cwd: Path, spec: str, batch_size: int | None = None, claude: str
             )
         batch = remaining[:size]
         print(f"batch: {', '.join(batch)}", flush=True)
+        print(
+            "running: a headless Claude session is working on this batch. "
+            "Nothing prints until it ends, which can take a while.",
+            flush=True,
+        )
         resume = ["--resume", session] if session else []
         data = _claude(
             cwd,
