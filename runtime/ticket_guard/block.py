@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from pathlib import Path
 import tarfile
 from typing import Any
@@ -79,4 +80,8 @@ def block(
         marker.clear(cwd)
     elif saved:
         evidence.append(cwd, ticket, "marker_clear", lost=True)
-    return record
+    committed = False
+    if marker.read(cwd) is None:  # with a marker the row would land in that ticket's commit
+        with contextlib.suppress(GuardError):  # other files dirty: leave the row for `guard commit-plan`
+            committed = plan.commit(cwd, spec)
+    return record | {"committed": committed}

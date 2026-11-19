@@ -28,8 +28,11 @@ def test_block_saves_work_restores_start_and_clears_marker(git_repo, capsys):
     assert "return 0" in patch and "implementation-plan" not in patch
     with tarfile.open(blocked / "T1-untracked.tar.gz") as tar:
         assert sorted(tar.getnames()) == ["src/new.py", "tests/test_new.py"]
-    assert git_repo.head() == start
-    assert git_repo.git("status", "--porcelain") == ("M docs/specs/todo/demo/implementation-plan.md")
+    assert git_repo.git("rev-parse", "HEAD~1") == start
+    assert git_repo.git("log", "-1", "--format=%s") == "docs(demo): record Blocked rows in the plan"
+    assert git_repo.git("show", "--name-only", "--format=", "HEAD") == "docs/specs/todo/demo/implementation-plan.md"
+    assert git_repo.git("status", "--porcelain") == ""
+    assert "committed the Blocked row" in capsys.readouterr().out
     assert "return a + b" in (git_repo.root / "src/app.py").read_text()
     assert not (git_repo.root / "src/new.py").exists()
     assert rows(git_repo)["T1"] == ["T1", "Blocked", "-", "contradicts the spec"]
@@ -62,6 +65,7 @@ def test_block_a_dependent_writes_only_the_row(git_repo, capsys):
     assert marker.read(git_repo.root)["ticket"] == "T1"
     assert (git_repo.root / "src/app.py").read_text() == "wip\n"
     assert evidence.records(git_repo.root, "T2")[-1]["event"] == "blocked"
+    assert "implementation-plan.md" in git_repo.git("status", "--porcelain")  # T1 holds the marker: not committed
 
 
 def test_block_without_marker_finds_the_plan(git_repo, capsys):
@@ -118,7 +122,7 @@ def test_block_with_a_lost_marker_saves_and_restores_from_evidence(git_repo, cap
     assert "return 0" in (blocked / "T1.patch").read_text()
     with tarfile.open(blocked / "T1-untracked.tar.gz") as tar:
         assert tar.getnames() == ["src/new.py"]
-    assert git_repo.head() == start
+    assert git_repo.git("rev-parse", "HEAD~1") == start  # the Blocked row's own commit
     assert "return a + b" in (git_repo.root / "src/app.py").read_text()
     assert not (git_repo.root / "src/new.py").exists()
     assert rows(git_repo)["T1"][1:] == ["Blocked", "-", "marker lost"]
@@ -152,3 +156,19 @@ def test_block_start_refuses_while_another_ticket_holds_the_marker(git_repo, cap
     assert main(["block", "T2", "why", "--start", start]) == 1
     assert "T1" in capsys.readouterr().err
     assert (git_repo.root / "src/app.py").read_text() == "wip\n"
+
+
+def test_block_without_marker_commits_the_row(git_repo, capsys):
+    before = git_repo.head()
+    assert main(["block", "T3", "needs a decision"]) == 0
+    assert git_repo.git("rev-parse", "HEAD~1") == before
+    assert git_repo.git("status", "--porcelain") == ""
+
+
+def test_block_leaves_the_row_uncommitted_when_other_files_are_dirty(git_repo, capsys):
+    git_repo.write("notes.txt", "mine\n")
+    before = git_repo.head()
+    assert main(["block", "T3", "needs a decision"]) == 0
+    assert git_repo.head() == before
+    assert rows(git_repo)["T3"][1] == "Blocked"
+    assert "guard commit-plan demo" in capsys.readouterr().out

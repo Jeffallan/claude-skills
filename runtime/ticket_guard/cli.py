@@ -236,6 +236,10 @@ def cmd_run_green(args) -> int:
 def cmd_block(args) -> int:
     rec = block.block(Path.cwd(), args.ticket, args.reason, args.spec, args.start)
     print(f"{args.ticket} Blocked in {rec['spec']}: {args.reason}")
+    if rec["committed"]:
+        print(f"committed the Blocked row: docs({rec['spec']}): record Blocked rows in the plan")
+    else:
+        print(f"the Blocked row is uncommitted; once no ticket is in progress, run `guard commit-plan {rec['spec']}`")
     if rec.get("patch"):
         print(f"saved: {rec['patch']}" + (f", {rec['untracked']}" if rec["untracked"] else ""))
     return EXIT_OK

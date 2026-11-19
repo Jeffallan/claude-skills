@@ -165,4 +165,4 @@ Judge every run by its final message, never by its exit status. A headless goal 
 
 ## Blocked rows left uncommitted
 
-`guard block` writes Blocked rows into the plan without committing them. A whole-spec run commits them in its `<final_report>` step with `guard commit-plan <spec-name>`. When a run ended before that step, `spec:review` runs the same command first. The batch runner does it after its last batch.
+`guard block` commits the Blocked row on its own, as `docs(<spec-name>): record Blocked rows in the plan`, once no ticket holds the marker, so the row never lands in another ticket's commit. It leaves the row uncommitted only when another ticket is in progress or other files are dirty. A whole-spec run commits what's left in its `<final_report>` step with `guard commit-plan <spec-name>`. When a run ended before that step, `spec:review` runs the same command first. The batch runner does it after its last batch.

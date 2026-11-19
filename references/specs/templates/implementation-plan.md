@@ -31,7 +31,7 @@ Only Ready tickets from the overview's Readiness table get rows and sections.
 |--------|--------|----------------|-------|
 | <ID> | Pending | - | - |
 
-`ticket:complete` updates a row and commits it with the ticket, so the table holds no SHAs; `git log --grep "Ticket: <ID>"` finds the commit. Notes carry the evidence summary from `guard summary`. `guard block` writes Blocked rows.
+`ticket:complete` updates a row and commits it with the ticket, so the table holds no SHAs; `git log --grep "Ticket: <ID>"` finds the commit. Notes carry the evidence summary from `guard summary`. `guard block` writes Blocked rows and commits each one on its own.
 
 ---
 

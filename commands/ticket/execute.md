@@ -32,7 +32,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md` before Step 1.
 
 ## Step 2: Start clean and claim the ticket
 
-1. Run `git status --porcelain`. Only the spec's own `implementation-plan.md` may show (Blocked rows that `guard block` left). Anything else:
+1. Run `git status --porcelain`. Only the spec's own `implementation-plan.md` may show (a Blocked row that `guard block` couldn't commit). Anything else:
    - Attended: ask the owner to commit or stash it, then rerun.
    - Goal mode: run `guard block <ticket> "dirty working tree at start"` and go to the next ticket.
 2. Start the marker. It records the mode, the branch and the start SHA, and resumes the same ticket when it already exists:
