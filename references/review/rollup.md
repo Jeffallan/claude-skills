@@ -90,4 +90,4 @@ Exit 0 only when all of these hold:
 - Every ticket in the Completion Status table is Done, Already done, or Blocked and accepted with `guard decide <ticket> accepted --spec <spec-name>`. Pending tickets fail it.
 - Every row of `review/docs-waivers.md` has a ruling in the `## Waivers` table of `review/code-documenter.md`: `holds`, or `wrong` naming its finding. When the plan's notes record a waiver and `review/docs-waivers.md` is missing, the gate refuses and names `guard docs-waivers`.
 
-`answered` closes a PR-feedback row, never a review finding. The gate also lists the Readiness table's Blocked tickets, which never entered the run. Exit 1 lists every refusal; exit 2 means the rollup or the plan is missing, and the gate fails closed.
+`answered` closes a PR-feedback row, never a review finding. The gate also notes Blocked tickets: one with a `marker_start` record is listed as Blocked during a run, with its plan reason, and a Readiness table Blocked ticket without one as never having entered the run. Exit 1 lists every refusal; exit 2 means the rollup or the plan is missing, and the gate fails closed.

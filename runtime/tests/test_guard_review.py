@@ -2,7 +2,7 @@ import json
 import stat
 import sys
 
-from ticket_guard import metrics, review
+from ticket_guard import evidence, metrics, review
 from ticket_guard.__main__ import main
 
 REVIEW = "docs/specs/todo/demo/review"
@@ -224,6 +224,23 @@ def test_gate_lists_readiness_blocked_tickets(git_repo, capsys):
     )
     code, out = gate(capsys)
     assert code == 0 and "T8" in out and "Which DB?" in out
+
+
+def test_gate_labels_a_ticket_blocked_during_a_run_as_blocked(git_repo, capsys):
+    done_plan(git_repo, t2="Blocked", t2_note="docs/units.md never written")
+    rollup(git_repo, capsys, [dict(FINDINGS[0], status="fixed-verified")])
+    git_repo.write(
+        "docs/specs/todo/demo/overview.md",
+        "# Demo\n\n## Readiness\n\n| Ticket | Readiness | Note |\n"
+        "|---|---|---|\n| T2 | Blocked | fix round |\n| T8 | Blocked: question | Which DB? |\n",
+    )
+    evidence.append(git_repo.root, "T2", "marker_start", mode="goal", start_sha=git_repo.head())
+    main(["decide", "T2", "accepted", "--spec", "demo"])
+    code, out = gate(capsys)
+    assert code == 0
+    assert "Blocked during a run: T2 (docs/units.md never written)" in out
+    assert "never entered the run: T2" not in out
+    assert "Readiness-blocked, never entered the run: T8" in out
 
 
 # metrics --------------------------------------------------------------------------

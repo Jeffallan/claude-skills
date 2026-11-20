@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ticket_guard import decisions, docs, plan, settings
+from ticket_guard import decisions, docs, evidence, plan, settings
 from ticket_guard.errors import GuardError
 from ticket_guard.gitutil import read_jsonl
 
@@ -170,7 +170,18 @@ def gate(cwd: Path, spec: str, spec_dir: Path | None = None) -> tuple[list[str],
             f"{exported} holds owner decisions this clone lacks; "
             f"the owner runs `guard decisions import {spec}` (attended), then reruns the gate"
         )
-    notes = [f"Readiness-blocked, never entered the run: {r}" for r in readiness_blocked(spec_dir)]
+    # A ticket with a marker_start entered a run, so its Blocked row is the run's, not Readiness's.
+    entered = {t for t in evidence.tickets(cwd) if any(r["event"] == "marker_start" for r in evidence.records(cwd, t))}
+    notes = [
+        f"Blocked during a run: {t} ({cells[3] if len(cells) > 3 else ''})"
+        for t, cells in plan.status_rows(plan_md).items()
+        if t in entered and len(cells) > 1 and cells[1].startswith(plan.BLOCKED)
+    ]
+    notes += [
+        f"Readiness-blocked, never entered the run: {r}"
+        for r in readiness_blocked(spec_dir)
+        if r.split()[0] not in entered
+    ]
     return refusals, notes
 
 

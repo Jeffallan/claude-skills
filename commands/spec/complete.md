@@ -24,7 +24,7 @@ Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When
 guard gate <spec-name>
 ```
 
-It passes only when every blocking rollup row is `fixed-verified`, `wontfix` or `rejection-accepted`, every PR-feedback row is `fixed-verified` or carries a logged owner status, every ticket is Done, Already done, or Blocked and accepted, and every row of `review/docs-waivers.md` has the docs reviewer's ruling. Pending tickets fail it. The gate rules are in `${CLAUDE_PLUGIN_ROOT}/references/review/rollup.md`. Show its refusals and notes (Readiness-blocked tickets that never entered the run).
+It passes only when every blocking rollup row is `fixed-verified`, `wontfix` or `rejection-accepted`, every PR-feedback row is `fixed-verified` or carries a logged owner status, every ticket is Done, Already done, or Blocked and accepted, and every row of `review/docs-waivers.md` has the docs reviewer's ruling. Pending tickets fail it. The gate rules are in `${CLAUDE_PLUGIN_ROOT}/references/review/rollup.md`. Show its refusals and notes (tickets Blocked during a run, with their reasons, and Readiness-blocked tickets that never entered one).
 
 The gate reads owner decisions only from this clone's store under the git directory. On a clone other than the one where the owner decided, the owner first runs `guard decisions import <spec-name>` (attended only), which adds the records from the spec's committed `review/decisions.jsonl`. When the gate refuses a row that file would satisfy, its refusal says so.
 
