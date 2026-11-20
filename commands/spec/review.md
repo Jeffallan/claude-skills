@@ -76,7 +76,7 @@ In this session: check each finding's file, line range and quote against `head_s
 
 ## Step 4: Verify
 
-Follow `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: one fresh `debugging-wizard` verifier per merged blocking or warning finding, limited to Reproduce, Isolate and Hypothesize; the advisories in one read-only batch; one second look for a rejected blocker. Each verifier works in its own scratch worktree at `head_sha` (`git worktree add --detach`), with no gitignored files, and gets a packet holding the claim, location, quoted code, failure scenario and the ticket's acceptance criteria, never the reviewer's name, tier or reasoning, other findings or commit messages.
+Follow `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: one fresh `debugging-wizard` verifier per merged blocking or warning finding, limited to Reproduce, Isolate and Hypothesize; the advisories in one read-only batch; one second look for a rejected blocker. Each verifier works in its own scratch worktree at `head_sha` (`git worktree add --detach`), with no gitignored files, and gets a packet holding the claim, location, quoted code, failure scenario and the ticket's acceptance criteria, never the reviewer's name, tier or reasoning, other findings or commit messages. A worktree doesn't separate a shared database or fixed ports, so verifiers whose reproductions use them run one at a time.
 
 Before copying, read each reproduction and verdict for environment dumps, tokens, keys, socket paths and session ids, and cut them (a verifier once captured a whole `strace -v` environment). Copy each reproduction into `review/repro/` with its sha256, then remove the worktrees. There is no budget cap; cost is recorded instead.
 

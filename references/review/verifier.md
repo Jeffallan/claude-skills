@@ -48,6 +48,8 @@ A fresh worktree has no gitignored files, so no `.env`, keys or local settings r
 
 Subagent `isolation: worktree` branches from the default branch, not `head_sha`, so create the worktree yourself and pass its path.
 
+A worktree separates files, not services. Verifiers whose reproductions use the test database, fixed ports or other machine-wide state (a dev server, a container name, a shared cache) collide when they run at once. Run those one at a time, or in groups that share nothing, unless the project gives each run its own database and ports. Read-only verifiers and reproductions that touch no shared service can run in parallel. The same rule holds for the recheck.
+
 ## The brief
 
 ```
@@ -100,7 +102,7 @@ Never mutate the working tree to get a RED. A mutation left in the source ends u
 
 1. A fresh verifier with no triage history sees the diff without commit messages.
 2. The main session maps each fix commit to its row IDs.
-3. The frozen reproduction, digest unchanged, runs at the fix commit's parent (it must fail) and at the fix (it must pass). Read-level rows get a re-read against the new code.
+3. The frozen reproduction, digest unchanged, runs at the fix commit's parent (it must fail) and at the fix (it must pass). Read-level rows get a re-read against the new code. Reproductions that share a database or ports run one at a time (see The worktree).
 4. Search the spec diff for the same mistake elsewhere.
 5. Inspect changed lines plus direct callers and tests of changed symbols; anything new becomes a new row, verified by a different instance.
 6. Re-verify any rejected or unresolved row whose cited lines the fix changed.
