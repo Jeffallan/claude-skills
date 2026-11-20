@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- terraform-engineer: current Terraform and provider practice across `SKILL.md` and all five references: provider majors (aws 6, azurerm 5, google 8, kubernetes 3, helm 3), `use_lockfile` instead of a DynamoDB lock table, `import`/`moved`/`removed` blocks instead of state commands, ephemeral and write-only attributes for secrets, `mock_provider` unit tests, and Trivy instead of tfsec (#318)
+- CI: merged the Dependabot update for `softprops/action-gh-release` 3.0.3 → 3.0.4 (#319)
 - Docs site: skill page titles lead with the skill's name, as "Game Developer Agent Skill for Claude Code | Claude Skills" (was "Agent Skills for Claude Code | Game Developer | Claude Skills"), so search results show what the page is about first
 - Dependabot skips the workflows the handbook delivers (`handbook-update.yml`, `docs-site.yml`, `docs-deploy.yml`); the handbook bumps their actions and sends them with each release
 - The shared site packages (Astro, Starlight and the others listed in `CLAUDE.md`) take their versions from the handbook, which sends them with each release. `handbook-update.yml` sets up Node and runs `copier update --trust` for that step
