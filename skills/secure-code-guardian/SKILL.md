@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: fullstack-guardian, security-reviewer, architecture-designer
+  related-skills: fullstack-guardian, security-reviewer, architecture-designer, firebase-expert
 ---
 
 # Secure Code Guardian

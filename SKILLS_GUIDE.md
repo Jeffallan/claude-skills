@@ -88,6 +88,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Shopify Expert](https://jeffallan.github.io/claude-skills/skills/platform/shopify-expert/)**: Liquid templating, Storefront API, Shopify apps, checkout extensions
 - **[WordPress Pro](https://jeffallan.github.io/claude-skills/skills/platform/wordpress-pro/)**: WordPress themes, plugins, Gutenberg blocks, WooCommerce
 - **[Atlassian MCP](https://jeffallan.github.io/claude-skills/skills/platform/atlassian-mcp/)**: Jira/Confluence integration via MCP, JQL, CQL queries
+- **[Firebase Expert](https://jeffallan.github.io/claude-skills/skills/platform/firebase-expert/)**: Firestore, Security Rules, Firebase Auth, Cloud Functions 2nd gen, Hosting and App Hosting
 
 ### Specialized
 - **[Legacy Modernizer](https://jeffallan.github.io/claude-skills/skills/specialized/legacy-modernizer/)**: Legacy code modernization, migration strategies
@@ -189,6 +190,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **Shopify E-commerce** → Shopify Expert
 - **WordPress Sites** → WordPress Pro
 - **Jira/Confluence** → Atlassian MCP
+- **Firebase / Firestore backend** → Firebase Expert
 
 ### Testing
 - **E2E Browser Tests** → Playwright Expert
