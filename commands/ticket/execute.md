@@ -67,8 +67,8 @@ Write the failing test before any implementation edit.
 
    It counts as RED only when the command fails, no non-test file has changed since the start SHA, and the failure is not a collection or import error. When it doesn't count, fix the test (not the code) and run it again.
 4. Other ticket types:
-   - **No code** (docs, prompts, configuration): `guard run red --type stand-in -- <check>`, where the check is the one the plan names (a validator, a grep, a fixture run) and fails before the change.
-   - **Refactor fix ticket:** `guard run red --type refactor -- <full suite>`. The suite must pass, and every test file is frozen.
+   - **No code** (docs, prompts, configuration): `guard run red --type stand-in -- "<check>"`, where the check is the one the plan names (a validator, a grep, a fixture run) and fails before the change. Quote a check with spaces or `&&` as one string, as in `guard run red --type stand-in -- "test -f docs/units.md && grep -q x docs/units.md"`; the guard refuses `sh -c` followed by unquoted words.
+   - **Refactor fix ticket:** `guard run red --type refactor -- "<full suite>"`, quoted the same way. The suite must pass, and every test file is frozen.
 
 After RED, the frozen tests can't be edited. In goal mode the hook denies the edit; attended it asks, and each approved edit is logged as an amendment. GREEN accepts an amended test, and the ticket's summary names it.
 

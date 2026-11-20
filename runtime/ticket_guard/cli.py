@@ -227,6 +227,12 @@ def _command(args) -> list[str]:
     cmd = args.cmd[1:] if args.cmd[:1] == ["--"] else args.cmd
     if not cmd:
         raise GuardError("give the command after --")
+    # `-- sh -c test -f x` hands sh only `test`; the rest become $0, $1 and the check never runs as written.
+    if Path(cmd[0]).name in {"sh", "bash", "zsh", "dash"} and cmd[1:2] == ["-c"] and len(cmd) > 3:
+        raise GuardError(
+            f"`{' '.join(cmd)}` passes {cmd[0]} -c only `{cmd[2]}`; give the whole check as one quoted string,"
+            f' e.g. guard run {args.run_command} -- "{" ".join(cmd[2:])}"'
+        )
     return cmd
 
 

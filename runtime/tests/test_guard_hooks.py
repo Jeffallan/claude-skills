@@ -135,6 +135,23 @@ def test_green_needs_a_red_record(git_repo, capsys):
     assert "no valid RED record" in capsys.readouterr().err
 
 
+@pytest.mark.parametrize("phase", ["red", "green"])
+@pytest.mark.parametrize("shell", ["sh", "bash", "/bin/zsh", "dash"])
+def test_run_refuses_an_unquoted_shell_c_command(git_repo, capsys, phase, shell):
+    started(git_repo)
+    argv = [shell, "-c", "test", "-f", "docs/units.md"]
+    assert main(["run", phase, "--", *argv]) == 1
+    err = capsys.readouterr().err
+    assert "one quoted string" in err and '-- "test -f docs/units.md"' in err
+    assert all(r["event"] != "run" for r in evidence.records(git_repo.root, "T1"))
+
+
+def test_run_accepts_a_quoted_shell_string_and_sh_c_with_one_script(git_repo, capsys):
+    started(git_repo)
+    assert main(["run", "red", "--type", "stand-in", "--", "test -f docs/units.md && grep -q x docs/units.md"]) == 0
+    assert main(["run", "red", "--type", "stand-in", "--", "sh", "-c", "test -f docs/units.md"]) == 0
+
+
 def test_run_needs_a_marker(git_repo, capsys):
     assert main(["run", "red", "--", *RED_CMD]) == 1
     assert "no marker" in capsys.readouterr().err
