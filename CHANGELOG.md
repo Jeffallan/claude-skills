@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- firebase-expert: Firebase skill for the modular JS SDK 13, firebase-admin 14 and Cloud Functions 2nd gen, with references on Firestore, Security Rules and their emulator tests, Authentication and Identity Platform, Cloud Functions, Storage with App Check and AI Logic, the Emulator Suite, and Hosting and App Hosting deploys. cloud-architect, secure-code-guardian, nextjs-developer, react-expert, flutter-expert and react-native-expert link to it (closing #217)
 - flask-expert: Flask 3.1 and SQLAlchemy 2 skill for JSON APIs and server-rendered apps, with references on app structure, the database layer, REST APIs, templates and forms, authentication, testing and deployment. django-expert and fastapi-expert link to it (#323)
 - CI: `notes-check.yml` and the base schema under `.handbook/base-schema/` arrive with handbook v0.5.3 and check notes front matter. The default path, `notes/**/*.md`, matches nothing here, so it passes until the repo sets `notes_paths` (#324)
 - Docs site: each deploy tells search engines that support IndexNow (Bing, Yandex and others) which pages changed, so they recrawl them sooner. Only the deploy build submits, and only pages whose HTML changed since the last deploy (the first deploy submits all). The key is served once for every site at `https://jeffallan.github.io/17c975f34bbe97c32cf68c4f58503478.txt`

@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: react-expert, flutter-expert, test-master
+  related-skills: react-expert, flutter-expert, test-master, firebase-expert
 ---
 
 # React Native Expert
