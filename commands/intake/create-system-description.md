@@ -1,6 +1,6 @@
 ---
 name: create-system-description
-description: Write the baseline spec and a living system description from the intake docs, the spec index and every completed spec.
+description: Write the baseline spec and a living system description from the intake docs, or from discovery and the code when the project skipped intake, plus the spec index and every completed spec. Use after intake or once a discovery-started project has completed specs; optionally writes a planned architecture view from outstanding specs.
 argument-hint: "[--full] [--roadmap]"
 ---
 
@@ -87,7 +87,7 @@ Re-check every component, data store, integration, control and dependency agains
 1. When `docs/system-description.md` doesn't exist, stop: "No system description yet. Run `intake:create-system-description` without `--roadmap` first."
 2. Run `guard spec-status`. Every spec it lists is outstanding (any state but Completed: Triaged, Drafting, Planned, In progress, Ready for review, In review, Ready to complete, PR open). Read each one's `overview.md`; a Triaged spec with no overview yet is read from its triage tickets.
 3. Copy the component diagram from section 2 of the system description unchanged as the current view. Draw the target diagram from it, adding, changing or removing only what an outstanding overview says it will, and mark each changed node with the spec name.
-4. Write the page with the template below. Every table row cites the spec's overview. Never copy a roadmap claim into the system description or another doc.
+4. Write the page with the template below. Every table row cites the spec's overview. Never copy a roadmap claim into the system description or another doc. Add `architecture-roadmap.md` to the docs index as "Architecture roadmap (plan, not current state)" in the same commit; when the project has no docs index, skip this, as the full pass does.
 
 The frontmatter has no `sources:`, `related:` or `verified:` and the page holds no `path::symbol` citations, so `guard docs-affected` never lists it for a ticket, `guard docs-drift` never reports it and `guard docs-check` has nothing to resolve.
 
@@ -160,4 +160,4 @@ related: [<docs this one depends on or that depend on it, paths under docs/>]
 
 ## Output
 
-`docs/system-description.md`, the baseline spec and refreshed `INDEX.md` on the first run, and a summary: pass type, sections written or changed, specs folded in, gaps and findings raised. With `--roadmap`: `docs/architecture-roadmap.md` only, and the outstanding specs it covered.
+`docs/system-description.md`, the baseline spec and refreshed `INDEX.md` on the first run, and a summary: pass type, sections written or changed, specs folded in, gaps and findings raised. With `--roadmap`: `docs/architecture-roadmap.md` and its docs index entry only, and the outstanding specs it covered.
