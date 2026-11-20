@@ -61,7 +61,7 @@ Intake runs once, when you adopt an existing codebase, before the first spec. It
 - **`intake:document-codebase`** adds docstrings across the code. It runs your tests before and after and checks that no executable line changed.
 - **Twelve `intake:document-*` commands** each write one reference doc under `docs/` (data model, file tree, integrations, API, user model, features, glossary, security, authorization, user flow, configuration, analytics), and each ends with an accuracy audit. **`intake:create-onboarding`** links them from `docs/README.md`.
 - **`intake:testing-setup`** builds the test harness and proves each layer with a smoke test. **`intake:testing-features`**, **`-authorization`**, **`-owasp`** and **`-user-flows`** then write characterization tests, each reading its matching doc. Together these five are the capture-behavior step.
-- **`intake:create-system-description`** writes a baseline spec into `docs/specs/completed/baseline/`, so the spec index knows the existing system, and `docs/system-description.md`. Later, `spec:complete` proposes updates to it once per spec.
+- **`intake:create-system-description`** writes a baseline spec into `docs/specs/completed/baseline/`, so the spec index knows the existing system, and `docs/system-description.md`. Later, `spec:complete` proposes updates to it once per spec. With `--roadmap` it writes only `docs/architecture-roadmap.md`, a plan view of where the outstanding specs take the architecture.
 
 Every intake command can run in a goal run: none asks a question there, and a checkpoint becomes a draft plus an open question in the findings tracker. [Intake](INTAKE.md) covers the checklist, the goal run and close-out.
 
@@ -151,7 +151,7 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 
 | Command | Arguments | Attended only |
 |---------|-----------|---------------|
-| `intake:*` | `[directory]`; `create-system-description` takes `[--full]` | No, runs in goal runs |
+| `intake:*` | `[directory]`; `create-system-description` takes `[--full] [--roadmap]` | No, runs in goal runs |
 | `discovery:create` | `<topic-or-ticket>` | No |
 | `discovery:synthesize` | `<topic>` | No |
 | `discovery:approve` | `<topic> [--decision=<id>:<value>...]` | Yes |

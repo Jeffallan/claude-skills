@@ -7,6 +7,10 @@ inputs:
     type: flag
     required: false
     description: Rewrite the whole description instead of folding in only the specs it hasn't seen
+  - name: roadmap
+    type: flag
+    required: false
+    description: Write only the planned architecture view from the specs not yet completed
 outputs:
   - name: system-description
     type: file
@@ -16,9 +20,13 @@ outputs:
     type: file
     path: "docs/specs/completed/baseline/overview.md"
     description: Baseline spec written on the first run, so the spec index knows the system as intake found it
+  - name: architecture-roadmap
+    type: file
+    path: "docs/architecture-roadmap.md"
+    description: With --roadmap, a plan page with the current and target component diagrams and one row per outstanding spec
 requires: []
 status: existing
-argument-hint: "[--full]"
+argument-hint: "[--full] [--roadmap]"
 repeat: true
 unattended: true
 adapter-operations: []

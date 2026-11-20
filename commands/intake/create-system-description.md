@@ -1,12 +1,12 @@
 ---
 name: create-system-description
 description: Write the baseline spec and a living system description from the intake docs, the spec index and every completed spec.
-argument-hint: "[--full]"
+argument-hint: "[--full] [--roadmap]"
 ---
 
 # intake:create-system-description
 
-**Argument:** `$ARGUMENTS`: optional `--full` to rewrite the whole description instead of folding in the specs it hasn't seen.
+**Argument:** `$ARGUMENTS`: optional `--full` to rewrite the whole description instead of folding in the specs it hasn't seen, or `--roadmap` to write only the planned architecture view in `docs/architecture-roadmap.md` (see "Roadmap").
 
 Write `docs/system-description.md`: one document that tells an auditor, a new senior engineer or an agent what the system is, what it is made of, how data moves, how it is secured and what it depends on. It is built from the intake docs and the completed specs, never from memory. On its first run it also writes the **baseline spec**, so the spec index knows the system that existed before the workflow started. **Describe only what the docs and the code prove; cite the source of each section.**
 
@@ -14,7 +14,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/
 
 ## When to use
 
-Run once as the last intake command, after the documentation commands; that first run is a full pass. Rerun later to fold in specs completed since the last run; `spec:complete` proposes the same update for one spec at a time. Use `--full` when the description has drifted far from the code. A project that started from discovery and never ran intake runs it once its first specs are completed; the first pass then works from those specs, the discovery outputs and the code.
+Run once as the last intake command, after the documentation commands; that first run is a full pass. Rerun later to fold in specs completed since the last run; `spec:complete` proposes the same update for one spec at a time. Use `--full` when the description has drifted far from the code. A project that started from discovery and never ran intake runs it once its first specs are completed; the first pass then works from those specs, the discovery outputs and the code. Use `--roadmap` when the owner wants to see where the outstanding specs take the architecture; it needs an existing `docs/system-description.md`.
 
 ## Skills to load
 
@@ -80,6 +80,38 @@ Write or update `docs/system-description.md` with the template below, with `rela
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`): wording only, never a claim. Then audit:
 Re-check every component, data store, integration, control and dependency against its source doc and the code. Remove anything not proven. Add a row to the Change history for each spec folded in, then an `## Accuracy audit` section with the date, the commit and what was checked.
 
+## Roadmap (`--roadmap`)
+
+`--roadmap` skips the phases above and leaves the description and the baseline alone. It writes `docs/architecture-roadmap.md`, a plan regenerated whole on each run.
+
+1. When `docs/system-description.md` doesn't exist, stop: "No system description yet. Run `intake:create-system-description` without `--roadmap` first."
+2. Run `guard spec-status`. Every spec it lists is outstanding (any state but Completed: Triaged, Drafting, Planned, In progress, Ready for review, In review, Ready to complete, PR open). Read each one's `overview.md`; a Triaged spec with no overview yet is read from its triage tickets.
+3. Copy the component diagram from section 2 of the system description unchanged as the current view. Draw the target diagram from it, adding, changing or removing only what an outstanding overview says it will, and mark each changed node with the spec name.
+4. Write the page with the template below. Every table row cites the spec's overview. Never copy a roadmap claim into the system description or another doc.
+
+The frontmatter has no `sources:`, `related:` or `verified:` and the page holds no `path::symbol` citations, so `guard docs-affected` never lists it for a ticket, `guard docs-drift` never reports it and `guard docs-check` has nothing to resolve.
+
+```markdown
+---
+command: intake:create-system-description --roadmap
+---
+# Architecture roadmap
+
+> **This page is a plan.** Built on <YYYY-MM-DD> at <short-sha> from the specs not yet completed. Regenerate it with `intake:create-system-description --roadmap`. Never cite it as fact or use it as a source for `guard docs-affected` or the system description; `docs/system-description.md` describes the system as built.
+
+## Current
+<the Mermaid component diagram from docs/system-description.md, unchanged>
+
+## Target
+<Mermaid diagram once every outstanding spec lands; changed nodes labeled with the spec name>
+
+## Outstanding specs
+
+| Spec | State | Adds, changes or removes | Source |
+|------|-------|--------------------------|--------|
+| <spec-name> | <state from guard spec-status> | <components and flows it touches> | <relative link to its overview.md> |
+```
+
 ## Output template
 
 ```markdown
@@ -128,4 +160,4 @@ related: [<docs this one depends on or that depend on it, paths under docs/>]
 
 ## Output
 
-`docs/system-description.md`, the baseline spec and refreshed `INDEX.md` on the first run, and a summary: pass type, sections written or changed, specs folded in, gaps and findings raised.
+`docs/system-description.md`, the baseline spec and refreshed `INDEX.md` on the first run, and a summary: pass type, sections written or changed, specs folded in, gaps and findings raised. With `--roadmap`: `docs/architecture-roadmap.md` only, and the outstanding specs it covered.
