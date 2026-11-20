@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: typescript-pro
+  related-skills: typescript-pro, nuxt-expert, firebase-expert
 ---
 
 # Next.js Developer

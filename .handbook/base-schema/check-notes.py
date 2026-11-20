@@ -45,8 +45,12 @@ def validator(schema_path: Path) -> Draft202012Validator:
     schema = json.loads(schema_path.read_text())
     schema["$id"] = schema_path.as_uri()
 
-    def retrieve(uri: str) -> Resource:  # sibling profiles, e.g. envelope-lite.schema.json
-        return Resource.from_contents(json.loads(Path(uri.removeprefix("file://")).read_text()))
+    def retrieve(
+        uri: str,
+    ) -> Resource:  # sibling profiles, e.g. envelope-lite.schema.json
+        return Resource.from_contents(
+            json.loads(Path(uri.removeprefix("file://")).read_text())
+        )
 
     return Draft202012Validator(schema, registry=Registry(retrieve=retrieve))
 
@@ -55,7 +59,11 @@ def notes(paths: list[str]) -> tuple[list[Path], list[str]]:
     found, missing = [], []
     for p in paths:
         if glob.has_magic(p):
-            found += [Path(m) for m in sorted(glob.glob(p, recursive=True)) if m.endswith(".md")]
+            found += [
+                Path(m)
+                for m in sorted(glob.glob(p, recursive=True))
+                if m.endswith(".md")
+            ]
         elif Path(p).is_dir():
             found += sorted(Path(p).rglob("*.md"))
         elif Path(p).is_file():
@@ -84,15 +92,24 @@ def errors(path: Path, check: Draft202012Validator) -> list[str]:
         return [f"{path}: front matter is not a mapping of fields"]
     return [
         f"{path}: {'.'.join(map(str, e.absolute_path)) or '(top)'}: {e.message}"
-        for e in sorted(check.iter_errors(data), key=lambda e: list(map(str, e.absolute_path)))
+        for e in sorted(
+            check.iter_errors(data), key=lambda e: list(map(str, e.absolute_path))
+        )
     ]
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA, help="profile to check against")
-    ap.add_argument("--from-answers", nargs="?", const=".copier-answers.yml", metavar="ANSWERS",
-                    help="take notes_paths and notes_schema from a Copier answers file")
+    ap.add_argument(
+        "--schema", type=Path, default=DEFAULT_SCHEMA, help="profile to check against"
+    )
+    ap.add_argument(
+        "--from-answers",
+        nargs="?",
+        const=".copier-answers.yml",
+        metavar="ANSWERS",
+        help="take notes_paths and notes_schema from a Copier answers file",
+    )
     ap.add_argument("paths", nargs="*")
     args = ap.parse_args()
 
@@ -106,7 +123,11 @@ def main() -> int:
         if not paths:
             ap.error(f"{args.from_answers} has no notes_paths")
         if schema == DEFAULT_SCHEMA:
-            schema = HERE / "profiles" / f"{answers.get('notes_schema', 'envelope-lite')}.schema.json"
+            schema = (
+                HERE
+                / "profiles"
+                / f"{answers.get('notes_schema', 'envelope-lite')}.schema.json"
+            )
     if not paths:
         ap.error("name at least one path, or use --from-answers")
 

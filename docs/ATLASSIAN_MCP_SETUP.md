@@ -1,11 +1,18 @@
-# Atlassian MCP Server Setup Guide
+# Connect Jira and Confluence to Claude Code (Atlassian MCP Setup)
 
-This guide provides step-by-step instructions for configuring the Atlassian MCP (Model Context Protocol) server to enable Claude to interact with Jira and Confluence.
+An Atlassian MCP (Model Context Protocol) server connects Claude Code to Jira and Confluence, so Claude can search, read and update your issues and pages from the terminal. You can set one up in two ways:
+
+- Atlassian's remote MCP server (the Rovo MCP Server) takes one command and a browser sign-in. It works with Atlassian Cloud only.
+- The community `mcp-atlassian` server runs in Docker with API tokens. It also works with Jira and Confluence Server or Data Center, and it can limit Claude to chosen projects and spaces or run read-only.
+
+If the Atlassian connector already works in Claude chat or Cowork and only Claude Code can't see it, go to [Atlassian Connector Works in Claude Chat but Not in Claude Code](#atlassian-connector-works-in-claude-chat-but-not-in-claude-code).
 
 ---
 
 ## Table of Contents
 
+- [Atlassian Remote MCP Server Setup (Cloud)](#atlassian-remote-mcp-server-setup-cloud)
+- [Atlassian Connector Works in Claude Chat but Not in Claude Code](#atlassian-connector-works-in-claude-chat-but-not-in-claude-code)
 - [Prerequisites](#prerequisites)
 - [Getting API Tokens](#getting-api-tokens)
 - [Environment Setup](#environment-setup)
@@ -16,9 +23,49 @@ This guide provides step-by-step instructions for configuring the Atlassian MCP 
 
 ---
 
+## Atlassian Remote MCP Server Setup (Cloud)
+
+Atlassian hosts an official MCP server at `https://mcp.atlassian.com/v2/mcp`. It needs an Atlassian Cloud site and signs you in with OAuth, so you store no tokens. Add it to Claude Code:
+
+```bash
+claude mcp add --transport http atlassian https://mcp.atlassian.com/v2/mcp
+```
+
+Start `claude`, run `/mcp`, select `atlassian` and sign in to Atlassian in the browser window that opens. Claude then works with your Jira and Confluence permissions.
+
+The command uses the default `local` scope, which makes the server available to you in the current project only. Add `--scope user` to use it in every project, or `--scope project` to save it in the project's `.mcp.json` for your teammates. Each person still signs in with their own Atlassian account.
+
+```bash
+claude mcp add --transport http --scope user atlassian https://mcp.atlassian.com/v2/mcp
+```
+
+Things to know before you rely on it:
+
+- Older guides use `https://mcp.atlassian.com/v1/sse`. Atlassian stopped supporting that endpoint after June 30, 2026, so use the v2 URL.
+- If your organization restricts Atlassian Cloud to an IP allowlist, tool calls must come from an allowed address, even after a successful sign-in.
+- Tool calls draw on your organization's Rovo credits.
+- For Jira or Confluence Server and Data Center, use the Docker setup below.
+
+---
+
+## Atlassian Connector Works in Claude Chat but Not in Claude Code
+
+Claude chat and Cowork use the connectors added at [claude.ai/customize/connectors](https://claude.ai/customize/connectors). Claude Code keeps its own list of MCP servers, and it adds your claude.ai connectors to that list only when you sign in to Claude Code with your claude.ai subscription account. If `/mcp` in Claude Code doesn't show the Atlassian connector:
+
+1. Run `/status` in Claude Code to see which authentication method is active.
+2. Claude Code skips claude.ai connectors when it authenticates with `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, an `apiKeyHelper` setting, a cloud provider such as Amazon Bedrock or Google Cloud, or a `claude setup-token` token in `CLAUDE_CODE_OAUTH_TOKEN`. Unset the variable or setting, run `/login` and choose your claude.ai account.
+3. Run `/mcp` again. Connectors from claude.ai carry a claude.ai label, and one you have never signed in to sits under **Show unused connectors**.
+4. If it is still missing, check that `ENABLE_CLAUDEAI_MCP_SERVERS=false` isn't set in your shell and that no settings file contains `"disableClaudeAiConnectors": true`.
+
+On Team and Enterprise plans, an Owner adds the Atlassian connector for the organization, and each member then connects their own Atlassian account.
+
+To keep signing in to Claude Code with an API key or a cloud provider, add Atlassian's server to Claude Code directly, as shown in [Atlassian Remote MCP Server Setup (Cloud)](#atlassian-remote-mcp-server-setup-cloud). A server you add in Claude Code takes precedence over a claude.ai connector with the same URL, and `/mcp` then lists the connector as hidden.
+
+---
+
 ## Prerequisites
 
-Before setting up the Atlassian MCP server, ensure you have:
+The rest of this guide sets up the community `mcp-atlassian` server in Docker. Before you start, make sure you have:
 
 1. **Docker installed and running**
    - Verify with: `docker --version`
@@ -48,8 +95,9 @@ API tokens are the standard authentication method for Atlassian Cloud products.
 
 1. Click **Create API token**
 2. Enter a descriptive label (e.g., "Claude MCP Integration")
-3. Click **Create**
-4. **Copy the token immediately** - it will not be shown again
+3. Choose an expiry date between 1 and 365 days (new tokens default to one year)
+4. Click **Create**
+5. **Copy the token immediately** - it will not be shown again
 
 **Step 3: Note Your Credentials**
 
@@ -296,7 +344,7 @@ When working correctly:
 Causes and solutions:
 1. **Invalid API token**: Regenerate your API token from Atlassian
 2. **Wrong username**: For Cloud, use your email address, not username
-3. **Token expired**: Server/DC tokens may expire; create a new one
+3. **Token expired**: Cloud API tokens last at most 365 days, and Server/DC tokens can expire too; create a new one
 4. **Wrong URL format**:
    - Jira Cloud: `https://yourcompany.atlassian.net`
    - Confluence Cloud: `https://yourcompany.atlassian.net/wiki`
@@ -466,4 +514,6 @@ If you suspect a token has been compromised:
 
 - [Atlassian API Token Documentation](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/)
 - [MCP Atlassian GitHub Repository](https://github.com/sooperset/mcp-atlassian)
+- [Atlassian Rovo MCP Server](https://github.com/atlassian/atlassian-mcp-server)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp), including [MCP servers from claude.ai](https://code.claude.com/docs/en/mcp#use-mcp-servers-from-claude-ai)
 - [Workflow Commands Reference](./WORKFLOW_COMMANDS.md) - Commands that use Atlassian integration

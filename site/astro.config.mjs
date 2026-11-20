@@ -7,7 +7,7 @@ import { indexNowOptions } from './src/components/site-seo/indexnow.mjs';
 
 const SITE_URL = 'https://jeffallan.github.io/claude-skills';
 const DESCRIPTION =
-  '68 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
+  '70 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
 
 export default defineConfig({
   site: 'https://jeffallan.github.io',
@@ -111,7 +111,6 @@ export default defineConfig({
           items: [
             { label: 'Workflow Commands', link: '/guides/workflow-commands/' },
             { label: 'Common Ground', link: '/guides/common-ground/' },
-            { label: 'Code Review Skill', link: '/guides/code-review-skill/' },
             {
               label: 'Atlassian MCP Setup',
               link: '/guides/atlassian-mcp-setup/',

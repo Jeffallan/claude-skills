@@ -1,6 +1,4 @@
-# Code Review Skill for Claude Code
-
-The code review skill in Claude Skills is [Code Reviewer](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/). Point it at a pull request, a branch diff or a set of files, and it reviews them the way a senior engineer would: bugs, security holes, slow queries, missing tests. You get back a report sorted by severity that ends in a verdict. It runs in Claude Code and in any agent that supports the [Agent Skills specification](https://agentskills.io/specification).
+Code Reviewer is the code review skill in Claude Skills. Point it at a pull request, a branch diff or a set of files, and it reviews them the way a senior engineer would: bugs, security holes, slow queries, missing tests. You get back a report sorted by severity that ends in a verdict. It runs in Claude Code and in any agent that supports the [Agent Skills specification](https://agentskills.io/specification).
 
 ## What the code review skill checks
 
@@ -90,4 +88,4 @@ Code Reviewer covers correctness, performance, maintainability and tests in a si
 - [Test Master](https://jeffallan.github.io/claude-skills/skills/quality/test-master/) to write the tests a review finds missing
 - [Architecture Designer](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/) for design-level review and architecture decision records
 
-The [Code Reviewer skill page](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/) has the full workflow, constraints and reference files.
+The skill's full workflow, constraints and reference files follow below.

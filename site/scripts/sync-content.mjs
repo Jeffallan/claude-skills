@@ -22,6 +22,8 @@ syncSite({
   base: BASE_PATH,
   githubBlob: GITHUB_BLOB,
   pageTitle: '{title} Agent Skill for Claude Code',
+  // An intro for people above a skill's own content, kept out of SKILL.md (handbook#116)
+  skillIntros: { 'code-reviewer': 'docs/CODE_REVIEW_SKILL.md' },
   docs: [
     {
       src: 'QUICKSTART.md',
@@ -82,8 +84,9 @@ syncSite({
     {
       src: 'docs/ATLASSIAN_MCP_SETUP.md',
       dest: 'guides/atlassian-mcp-setup.md',
-      title: 'Atlassian MCP Setup',
-      description: 'Configure Jira and Confluence MCP integration',
+      title: 'Connect Jira and Confluence to Claude Code',
+      description:
+        "Set up Atlassian MCP in Claude Code so Claude can search and update Jira issues and Confluence pages, and fix a Claude chat connector that Claude Code can't see.",
       category: 'guides',
     },
     {
@@ -91,14 +94,6 @@ syncSite({
       dest: 'guides/local-development.md',
       title: 'Local Development',
       description: 'Develop and test skills locally',
-      category: 'guides',
-    },
-    {
-      src: 'docs/CODE_REVIEW_SKILL.md',
-      dest: 'guides/code-review-skill.md',
-      title: 'Code Review Skill for Claude Code',
-      description:
-        'Install the Code Reviewer skill in Claude Code, see what it checks in a pull request, from SQL injection to N+1 queries, and read an example review report.',
       category: 'guides',
     },
     {
