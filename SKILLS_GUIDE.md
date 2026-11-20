@@ -124,6 +124,8 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 2. **Security Reviewer** - Security-focused review
 3. **Architecture Designer** - Architectural review (if needed)
 
+To install the code review skill and see an example report, open the [Code Reviewer page](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/).
+
 ### Legacy Code Analysis
 1. **Spec Miner** - Reverse-engineer specs
 2. **Architecture Designer** - Document architecture

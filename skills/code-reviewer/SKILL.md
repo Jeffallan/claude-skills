@@ -6,13 +6,15 @@ allowed-tools: Read Grep Glob
 metadata:
   author: https://github.com/Jeffallan
   company: https://synergetic.solutions
-  version: "1.1.0"
+  version: "1.1.1"
   domain: quality
   triggers: code review, PR review, pull request, review code, code quality
   role: specialist
   scope: review
   output-format: report
   related-skills: security-reviewer, test-master, architecture-designer
+  seo-title: Code Review
+  seo-description: Install the Code Reviewer skill in Claude Code, see what it checks in a pull request, from SQL injection to N+1 queries, and read an example review report.
 ---
 
 # Code Reviewer

@@ -22,6 +22,8 @@ syncSite({
   base: BASE_PATH,
   githubBlob: GITHUB_BLOB,
   pageTitle: '{title} Agent Skill for Claude Code',
+  // An intro for people above a skill's own content, kept out of SKILL.md (handbook#116)
+  skillIntros: { 'code-reviewer': 'docs/CODE_REVIEW_SKILL.md' },
   docs: [
     {
       src: 'QUICKSTART.md',
