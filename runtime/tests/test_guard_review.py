@@ -324,3 +324,83 @@ def test_rollup_reads_transcripts_from_several_folders(git_repo, capsys):
     rows = table(git_repo)
     assert rows["F3"]["Tokens"] == "604,000"  # still found in the first folder
     assert rows["S2"]["Tokens"] == "302,000"
+
+
+# decisions export / import ---------------------------------------------------------
+
+
+def decided_and_exported(git_repo, capsys):
+    """F7 decided by the owner, the decisions exported, then the local store lost (a fresh clone)."""
+    done_plan(git_repo)
+    rollup(git_repo, capsys, [dict(FINDINGS[0], status="fixed-verified"), FINDINGS[1]])
+    main(["decide", "F7", "rejection-accepted", "--spec", "demo"])
+    main(["decide", "X1", "wontfix", "--spec", "other"])
+    assert main(["decisions", "export", "demo"]) == 0
+    capsys.readouterr()
+    (git_repo.guard / "decisions.jsonl").unlink()
+    return git_repo.root / REVIEW / "decisions.jsonl"
+
+
+def test_decisions_export_writes_the_specs_records_to_review(git_repo, capsys):
+    main(["decide", "T2", "accepted"])  # no spec: the gate applies it to every spec
+    main(["decide", "F7", "wontfix", "--spec", "demo"])
+    main(["decide", "X1", "wontfix", "--spec", "other"])
+    assert main(["decisions", "export", "demo"]) == 0
+    assert "2 decisions" in capsys.readouterr().out
+    recs = [json.loads(x) for x in (git_repo.root / REVIEW / "decisions.jsonl").read_text().splitlines()]
+    assert [(r["row"], r["spec"]) for r in recs] == [("T2", None), ("F7", "demo")]
+
+
+def test_decisions_import_into_a_fresh_store_makes_the_gate_pass(git_repo, capsys):
+    exported = decided_and_exported(git_repo, capsys)
+    assert gate(capsys)[0] == 1
+    assert main(["decisions", "import", "demo"]) == 0
+    assert "F7" in capsys.readouterr().out
+    rec = json.loads((git_repo.guard / "decisions.jsonl").read_text())
+    assert rec["imported_from"] == str(exported)
+    assert gate(capsys)[0] == 0
+
+
+def test_decisions_import_is_idempotent(git_repo, capsys):
+    decided_and_exported(git_repo, capsys)
+    main(["decisions", "import", "demo"])
+    assert main(["decisions", "import", "demo"]) == 0
+    assert "nothing to import" in capsys.readouterr().out
+    assert len((git_repo.guard / "decisions.jsonl").read_text().splitlines()) == 1
+
+
+def test_decisions_import_refuses_in_goal_mode(git_repo, capsys):
+    from ticket_guard import marker
+
+    decided_and_exported(git_repo, capsys)
+    git_repo.commit("review")
+    marker.start(git_repo.root, "demo", "T1", "goal")
+    assert main(["decisions", "import", "demo"]) == 1
+    assert "attended" in capsys.readouterr().err
+    assert not (git_repo.guard / "decisions.jsonl").exists()
+
+
+def test_gate_hints_at_import_when_the_committed_decisions_would_satisfy_it(git_repo, capsys):
+    decided_and_exported(git_repo, capsys)
+    code, out = gate(capsys)
+    assert code == 1 and "guard decisions import demo" in out
+
+
+def test_gate_gives_no_import_hint_when_the_export_would_not_help(git_repo, capsys):
+    done_plan(git_repo)
+    rollup(git_repo, capsys)
+    code, out = gate(capsys)
+    assert code == 1 and "decisions import" not in out
+
+
+def test_an_imported_older_decision_does_not_override_a_newer_local_one(git_repo, capsys):
+    exported = git_repo.write(
+        f"{REVIEW}/decisions.jsonl",
+        json.dumps({"row": "F7", "status": "wontfix", "spec": "demo", "at": "2026-01-01T00:00:00+00:00"}) + "\n",
+    )
+    main(["decide", "F7", "accepted", "--spec", "demo"])
+    main(["decisions", "import", "demo"])
+    from ticket_guard import decisions
+
+    assert decisions.latest(git_repo.root, "demo")["F7"] == "accepted"
+    assert exported.is_file()

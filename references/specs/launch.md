@@ -38,7 +38,7 @@ Every launch carries these rules, each as its own `--disallowedTools` argument. 
 | `Bash(gh issue create:*)`, `Bash(gh issue edit:*)`, `Bash(gh issue close:*)`, `Bash(gh issue comment:*)`, `Bash(gh issue reopen:*)`, `Bash(gh issue delete:*)`, `Bash(gh issue transfer:*)` | Issue writes |
 | `Bash(gh api -X*)`, `Bash(gh api * -X*)`, `Bash(gh api -f*)`, `Bash(gh api * -f*)`, `Bash(gh api -F*)`, `Bash(gh api * -F*)`, `Bash(gh api --method*)`, `Bash(gh api * --method*)`, `Bash(gh api --field*)`, `Bash(gh api * --field*)`, `Bash(gh api --raw-field*)`, `Bash(gh api * --raw-field*)`, `Bash(gh api --input*)`, `Bash(gh api * --input*)` | API writes, in every form `gh api` accepts: a method flag anywhere, attached or not (`-X POST`, `-XPOST`, `--method=POST`), and fields or `--input`, which make the request a POST. GraphQL mutations go through `-f query=`. Reads with fields (a GraphQL query, `-X GET`) match too: attended they ask, and a goal run, which is denied them, reads through `gh issue view`, `gh issue list` and `gh pr view` |
 | `Bash(gh project close:*)`, `Bash(gh project copy:*)`, `Bash(gh project create:*)`, `Bash(gh project delete:*)`, `Bash(gh project edit:*)`, `Bash(gh project field-create:*)`, `Bash(gh project field-delete:*)`, `Bash(gh project item-add:*)`, `Bash(gh project item-archive:*)`, `Bash(gh project item-create:*)`, `Bash(gh project item-delete:*)`, `Bash(gh project item-edit:*)`, `Bash(gh project link:*)`, `Bash(gh project mark-template:*)`, `Bash(gh project unlink:*)`, `Bash(gh release:*)` | Project writes and releases; Project reads (`list`, `view`, `field-list`, `item-list`) stay allowed |
-| `Bash(*guard.pyz* decide *)`, `Bash(*ticket_guard* decide *)`, `Bash(*runtime* decide *)` | Owner-only decisions; a goal run must never record its own |
+| `Bash(*guard.pyz* decide *)`, `Bash(*ticket_guard* decide *)`, `Bash(*runtime* decide *)`, `Bash(*guard.pyz* decisions import*)`, `Bash(*ticket_guard* decisions import*)`, `Bash(*runtime* decisions import*)` | Owner-only decisions; a goal run must never record its own or import an exported file it could have edited |
 | `Bash(git rebase:*)`, `Bash(git reset:*)`, `Bash(git commit --amend:*)` | Rewriting history. A goal run never removes, squashes or amends a commit; a ticket found wrong after its commit stays committed and goes in the final report |
 | Each tool name in `goal.deny` | The tracker MCP server's write tools, listed per project in `.claude/workflow-config.json` |
 
@@ -86,6 +86,9 @@ claude \
   --disallowedTools 'Bash(*guard.pyz* decide *)' \
   --disallowedTools 'Bash(*ticket_guard* decide *)' \
   --disallowedTools 'Bash(*runtime* decide *)' \
+  --disallowedTools 'Bash(*guard.pyz* decisions import*)' \
+  --disallowedTools 'Bash(*ticket_guard* decisions import*)' \
+  --disallowedTools 'Bash(*runtime* decisions import*)' \
   --disallowedTools 'Bash(git rebase:*)' --disallowedTools 'Bash(git reset:*)' \
   --disallowedTools 'Bash(git commit --amend:*)' \
   <one --disallowedTools per goal.deny entry> \
@@ -153,7 +156,10 @@ Attended commands (`spec:triage`, `spec:create`, `spec:complete`) push, write PR
       "Bash(gh release:*)",
       "Bash(*guard.pyz* decide *)",
       "Bash(*ticket_guard* decide *)",
-      "Bash(*runtime* decide *)"
+      "Bash(*runtime* decide *)",
+      "Bash(*guard.pyz* decisions import*)",
+      "Bash(*ticket_guard* decisions import*)",
+      "Bash(*runtime* decisions import*)"
     ]
   }
 }

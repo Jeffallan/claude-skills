@@ -29,7 +29,7 @@ Finish a spec: run the gate, open the PR, handle review feedback, merge on appro
 - every ticket is Done, Already done, or Blocked and accepted with `guard decide <ticket> accepted` (a Pending ticket fails it);
 - every row in `review/docs-waivers.md` has the docs reviewer's ruling.
 
-A Blocked ticket either moves out of the spec through `spec:create`'s Proposed tracker changes, or you accept it. Decisions live in `.git/ticket-guard/decisions.jsonl`. Editing the markdown changes nothing.
+A Blocked ticket either moves out of the spec through `spec:create`'s Proposed tracker changes, or you accept it. Decisions live in `.git/ticket-guard/decisions.jsonl`. Editing the markdown changes nothing. The completion commit carries a copy in `review/decisions.jsonl` (`guard decisions export`) for history; on another clone you run `guard decisions import <spec-name>` before the gate, which reads only the local file.
 
 ### 2. The PR
 

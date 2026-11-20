@@ -129,7 +129,7 @@ A goal run works through a spec's tickets without you. `spec:create` prints two 
 - **Whole spec:** one run across compactions.
 - **Next batch:** the next few tickets (`goal.batchSize`, default 3), then stop. For headless runs, `guard run-batches <spec-name>` loops batches in one session and compacts between them.
 
-Each launch command starts a new session with `--disallowedTools` for every write the run must not make: `AskUserQuestion`, `git push`, PR and issue writes, API writes and `guard decide`. It also allows the `ticket-guard` skill, which the hooks need. Judge a run by its final message, never by its exit code. [Goal Runs](GOAL_RUNS.md) covers what happens inside a run.
+Each launch command starts a new session with `--disallowedTools` for every write the run must not make: `AskUserQuestion`, `git push`, PR and issue writes, API writes, `guard decide` and `guard decisions import`. It also allows the `ticket-guard` skill, which the hooks need. Judge a run by its final message, never by its exit code. [Goal Runs](GOAL_RUNS.md) covers what happens inside a run.
 
 ## What each command writes
 

@@ -80,6 +80,9 @@ DENY = (
     "Bash(*guard.pyz* decide *)",
     "Bash(*ticket_guard* decide *)",
     "Bash(*runtime* decide *)",
+    "Bash(*guard.pyz* decisions import*)",
+    "Bash(*ticket_guard* decisions import*)",
+    "Bash(*runtime* decisions import*)",
 )
 SETTLED = (*review.FINISHED, plan.BLOCKED)
 

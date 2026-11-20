@@ -68,6 +68,16 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
     dec.add_argument("--spec")
     dec.add_argument("--session", help="session id (default: $CLAUDE_SESSION_ID, then the marker)")
     dec.set_defaults(func=cmd_decide)
+    dl = gsub.add_parser("decisions", help="carry owner decisions between clones through the spec's review/ folder")
+    dlsub = dl.add_subparsers(dest="decisions_command", required=True)
+    ex = dlsub.add_parser(
+        "export", help="write the spec's decisions to review/decisions.jsonl (the gate never reads it)"
+    )
+    ex.add_argument("spec")
+    ex.set_defaults(func=cmd_decisions_export)
+    im = dlsub.add_parser("import", help="add review/decisions.jsonl records to this clone's store (attended only)")
+    im.add_argument("spec")
+    im.set_defaults(func=cmd_decisions_import)
 
     rr = gsub.add_parser("rerun", help="run the checks on the uncommitted work in a clean worktree")
     who = rr.add_mutually_exclusive_group()
@@ -252,6 +262,20 @@ def cmd_block(args) -> int:
 def cmd_decide(args) -> int:
     rec = decisions.decide(Path.cwd(), args.row, args.status, args.spec, args.session)
     print(f"recorded {rec['row']}: {rec['status']} ({decisions.path(Path.cwd())})")
+    return EXIT_OK
+
+
+def cmd_decisions_export(args) -> int:
+    out, count = decisions.export(Path.cwd(), args.spec)
+    print(f"wrote {count} decisions to {out}")
+    return EXIT_OK
+
+
+def cmd_decisions_import(args) -> int:
+    added = decisions.import_(Path.cwd(), args.spec)
+    for rec in added:
+        print(f"imported {rec['row']}: {rec['status']} ({rec['at']})")
+    print(f"imported {len(added)} into {decisions.path(Path.cwd())}" if added else "nothing to import")
     return EXIT_OK
 
 

@@ -1,6 +1,6 @@
 # Hooks and Guard Commands
 
-What each ticket-guard hook does, and the guard commands the ticket commands call. The guard ships with the plugin as one Python file, `runtime/guard.pyz`; every call is written `guard ...` and runs as `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" ...`. uv supplies a Python 3.11 or later when the machine has none, and nothing is fetched from PyPI. Its state lives under the git directory, in `$(git rev-parse --git-dir)/ticket-guard/`, so nothing it writes is committed and each worktree has its own.
+What each ticket-guard hook does, and the guard commands the ticket commands call. The guard ships with the plugin as one Python file, `runtime/guard.pyz`; every call is written `guard ...` and runs as `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" ...`. uv supplies a Python 3.11 or later when the machine has none, and nothing is fetched from PyPI. Its state lives under the git directory, in `$(git rev-parse --git-dir)/ticket-guard/`, so nothing it writes there is committed and each worktree has its own. The one exception is the owner decision log, `decisions.jsonl`: `guard decisions export` copies a spec's decisions to its `review/` folder for git history, and on another clone the owner runs `guard decisions import` to add them to that clone's log. The gate reads only the local log.
 
 ## When to use this reference
 
@@ -11,7 +11,7 @@ What each ticket-guard hook does, and the guard commands the ticket commands cal
 ## When not to use it
 
 - To decide what a ticket should do: the ticket's section of the plan decides that.
-- To record an owner decision: `guard decide` is attended only and never part of a ticket.
+- To record an owner decision: `guard decide` and `guard decisions import` are attended only and never part of a ticket.
 
 ## The marker gate
 
@@ -71,6 +71,7 @@ All four hooks ship in the plugin's `hooks/hooks.json` (F11, 2026-11-11). They u
 | Docs check | `guard docs-check` | Exits 1 on a `related:` doc that is missing or doesn't link back, a citation whose file or symbol is gone, and a `verified:` that isn't a commit |
 | Summary | `guard summary [--accept-lost-marker]` | Prints the Completion Status notes line, with the docs updated or checked; exits 1 listing missing evidence, including an affected doc still pending. `--accept-lost-marker` is attended only |
 | Finish | `guard marker clear` | Called by `ticket:complete` after the commit |
+| Owner decisions | `guard decisions export <spec>`, `guard decisions import <spec>` | Not a ticket step: `spec:review` and `spec:complete` call them. `export` overwrites the spec's `review/decisions.jsonl` with every local decision the gate reads for that spec, sorted by time. `import` is attended only and refuses in goal mode: it appends each exported record the local log lacks, tagged `imported_from`, and prints them |
 
 Exit codes: 0 success, 1 refusal, 2 outside a git repo. Hooks always exit 0.
 

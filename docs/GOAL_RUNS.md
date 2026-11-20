@@ -24,7 +24,7 @@ Every launch command passes `--disallowedTools` for each write the run must not 
 - PR writes (`gh pr create`, `merge`, `comment`, `review`, `edit`, `close`, `reopen`, `ready`) and issue writes (`gh issue create`, `edit`, `close`, `comment`, `reopen`, `delete`, `transfer`)
 - `gh api` with a method flag, fields or `--input`, attached or not, which covers every way it sends a write, including GraphQL mutations. GraphQL reads are denied too; a goal run reads through `gh issue` and `gh pr`
 - every `gh project` write (reads such as `item-list` and `view` stay allowed) and `gh release`
-- `guard decide`, because only you record owner decisions
+- `guard decide` and `guard decisions import`, because only you record owner decisions
 - the tracker MCP write tools you list in `goal.deny`
 
 Reads stay allowed. The launch also passes `--allowedTools 'Skill(fullstack-dev-skills:ticket-guard)'`, so a headless session can load the skill that carries the ticket rules. The guard hooks don't depend on it: they ship in the plugin's `hooks/hooks.json` and run in every session while a ticket's marker exists. `ticket:execute` checks that the hooks claimed the marker and stops the run if they didn't.

@@ -344,6 +344,22 @@ def test_deny_set_blocks_every_way_to_call_decide(command):
     assert denied_by(DENY, command)
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        'python3 "/plugins/fullstack-dev-skills/runtime/guard.pyz" decisions import demo',
+        "PYTHONPATH=runtime python3 -m ticket_guard decisions import demo",
+        "cd /plugin && python3 ./runtime decisions import demo",
+    ],
+)
+def test_deny_set_blocks_decisions_import_but_not_export(command):
+    """Import turns a committed file a goal run could edit into trusted decisions; export only copies them out."""
+    from ticket_guard.batches import DENY
+
+    assert denied_by(DENY, command)
+    assert not denied_by(DENY, command.replace("import", "export"))
+
+
 def test_kickoff_reserves_blocked_for_spec_wide_stops():
     """A ticket-level stop ends the batch normally; only a spec-wide stop earns BLOCKED:."""
     from ticket_guard.batches import kickoff

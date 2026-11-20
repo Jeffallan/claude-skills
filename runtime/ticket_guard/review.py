@@ -9,6 +9,7 @@ from typing import Any
 
 from ticket_guard import decisions, docs, plan, settings
 from ticket_guard.errors import GuardError
+from ticket_guard.gitutil import read_jsonl
 
 COLUMNS = (
     "ID",
@@ -162,7 +163,28 @@ def gate(cwd: Path, spec: str, spec_dir: Path | None = None) -> tuple[list[str],
     ):
         if not need.is_file():
             raise GateError(f"the gate cannot run: {need} is absent ({what}); refusing")
-    owner = decisions.latest(cwd, spec)
+    refusals = _refusals(spec_dir, decisions.latest(cwd, spec))
+    exported = spec_dir / "review" / "decisions.jsonl"
+    if refusals and exported.is_file() and _export_would_help(cwd, spec, spec_dir, exported, len(refusals)):
+        refusals.append(
+            f"{exported} holds owner decisions this clone lacks; "
+            f"the owner runs `guard decisions import {spec}` (attended), then reruns the gate"
+        )
+    notes = [f"Readiness-blocked, never entered the run: {r}" for r in readiness_blocked(spec_dir)]
+    return refusals, notes
+
+
+def _export_would_help(cwd: Path, spec: str, spec_dir: Path, exported: Path, count: int) -> bool:
+    """Only for the hint: the committed export is never trusted, so a broken one just gives no hint."""
+    try:
+        both = read_jsonl(decisions.path(cwd)) + read_jsonl(exported)
+        return len(_refusals(spec_dir, decisions.latest(cwd, spec, both))) < count
+    except (ValueError, KeyError, TypeError, AttributeError):
+        return False
+
+
+def _refusals(spec_dir: Path, owner: dict[str, str]) -> list[str]:
+    rollup_md, plan_md = spec_dir / "review" / "rollup.md", spec_dir / "implementation-plan.md"
     refusals = []
     for row in _rollup_rows(rollup_md):
         tiers = {row.get("Tier", "").lower(), row.get("Suggested", "").lower()}
@@ -193,5 +215,4 @@ def gate(cwd: Path, spec: str, spec_dir: Path | None = None) -> tuple[list[str],
         elif state not in FINISHED:
             refusals.append(f"{ticket}: {state or 'no status'}, not Done")
     refusals += docs.gate_refusals(spec_dir, plan_md.read_text(encoding="utf-8"))
-    notes = [f"Readiness-blocked, never entered the run: {r}" for r in readiness_blocked(spec_dir)]
-    return refusals, notes
+    return refusals

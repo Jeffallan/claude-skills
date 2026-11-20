@@ -43,7 +43,7 @@ Every row in `review/rollup.md` and `review/pr-feedback-<round>.md` uses these t
 | `rejection-accepted` | `guard decide <ID> rejection-accepted --spec <spec-name>` | Owner agreed the finding is not a defect |
 | `answered` | `guard decide <P-id> answered --spec <spec-name>` | PR feedback only: a question replied to with no code change |
 
-Owner statuses come only from the decision log, `$(git rev-parse --git-dir)/ticket-guard/decisions.jsonl`, written by `guard decide` in an attended session after the owner's answer. Goal runs deny the command. The log is local to the clone.
+Owner statuses come only from the decision log, `$(git rev-parse --git-dir)/ticket-guard/decisions.jsonl`, written by `guard decide` in an attended session after the owner's answer. Goal runs deny the command. The log is local to the clone. `guard decisions export <spec-name>` copies the spec's decisions to `review/decisions.jsonl`, committed for history; the gate never reads that copy, since a goal run could edit it. On another clone the owner runs `guard decisions import <spec-name>` (attended only, denied in goal launches) to add them to that clone's log. When the gate refuses a row the exported file would satisfy, its refusal names that command.
 
 ## Verdicts file
 

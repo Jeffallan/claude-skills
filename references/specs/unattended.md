@@ -77,7 +77,7 @@ End the turn with `BLOCKED: <stop>`, what is needed, and `git status --short` on
 
 Some flags and commands record owner decisions. A run under unattended rules never uses them:
 
-- `guard decide` (denied in goal launches).
+- `guard decide` and `guard decisions import` (denied in goal launches).
 - `guard tamper-scan --reason ID=TEXT`: in goal mode the runtime ignores `--reason`, so a flagged ticket goes through `guard block`.
 - `guard summary --accept-lost-marker`: attended only, after the owner accepts.
 
