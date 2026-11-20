@@ -1,4 +1,4 @@
-"""Read and edit the Completion Status and Execution Order tables of an implementation plan."""
+"""Read and edit the Completion Status, Execution Order and Open questions tables of an implementation plan."""
 
 from __future__ import annotations
 
@@ -19,6 +19,11 @@ def cells(line: str) -> list[str]:
 
 def _table(lines: list[str], heading: str) -> list[int]:
     """Line indexes of the data rows of the first table under `## <heading>`."""
+    return _table_lines(lines, heading)[2:]  # header and separator
+
+
+def _table_lines(lines: list[str], heading: str) -> list[int]:
+    """Line indexes of every row, header included, of the first table under `## <heading>`."""
     found, rows, seen_table = False, [], False
     for index, line in enumerate(lines):
         if line.startswith("## "):
@@ -33,7 +38,7 @@ def _table(lines: list[str], heading: str) -> list[int]:
             rows.append(index)
         elif seen_table:
             break
-    return rows[2:]  # header and separator
+    return rows
 
 
 def status_rows(path: Path) -> dict[str, list[str]]:
@@ -65,6 +70,28 @@ def set_status(path: Path, ticket: str, status: str, notes: str, date: str = "-"
             )
             return
     raise GuardError(f"ticket {ticket} has no row in the Completion Status table of {path}")
+
+
+def question_rows(lines: list[str]) -> list[list[str]]:
+    return [cells(lines[i]) for i in _table(lines, "Open questions")]
+
+
+def questions_table(path: Path, lines: list[str] | None = None) -> list[int]:
+    """Row indexes of the Open questions table, header included; refuses a plan without one."""
+    table = _table_lines(lines or path.read_text(encoding="utf-8").splitlines(), "Open questions")
+    if len(table) < 2:
+        raise GuardError(f"{path} has no Open questions table; add one from the plan template")
+    return table
+
+
+def add_question(path: Path, ticket: str, question: str, asked_by: str) -> None:
+    """Append a row to the plan's Open questions table."""
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    table = questions_table(path, lines)
+    row = [str(len(table) - 1), ticket, question.replace("|", "\\|"), asked_by]
+    lines.insert(table[-1] + 1, "| " + " | ".join(row) + " |")
+    path.write_text("\n".join(lines) + ("\n" if text.endswith("\n") else ""), encoding="utf-8")
 
 
 def plan_path(cwd: Path, spec: str) -> Path:

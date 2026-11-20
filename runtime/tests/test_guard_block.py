@@ -172,3 +172,32 @@ def test_block_leaves_the_row_uncommitted_when_other_files_are_dirty(git_repo, c
     assert git_repo.head() == before
     assert rows(git_repo)["T3"][1] == "Blocked"
     assert "guard commit-plan demo" in capsys.readouterr().out
+
+
+def questions(git_repo):
+    lines = (git_repo.root / "docs/specs/todo/demo/implementation-plan.md").read_text().splitlines()
+    return plan.question_rows(lines)
+
+
+def test_block_question_lands_in_the_same_commit(git_repo, capsys):
+    before = git_repo.head()
+    assert main(["block", "T3", "question: which a | b?", "--question", "Use a | b?"]) == 0
+    assert git_repo.git("rev-parse", "HEAD~1") == before
+    assert git_repo.git("status", "--porcelain") == ""
+    assert rows(git_repo)["T3"][1] == "Blocked"
+    assert questions(git_repo) == [["1", "T3", "Use a \\| b?", "attended"]]
+    marker.start(git_repo.root, "demo", "T1", "goal")
+    assert main(["block", "T1", "question: next", "--question", "Second?"]) == 0
+    assert questions(git_repo)[1] == ["2", "T1", "Second?", "goal"]
+    assert git_repo.git("status", "--porcelain") == ""
+
+
+def test_block_question_refuses_without_an_open_questions_table(git_repo, capsys):
+    path = git_repo.root / "docs/specs/todo/demo/implementation-plan.md"
+    git_repo.write(path.relative_to(git_repo.root).as_posix(), path.read_text().split("## Open questions")[0])
+    git_repo.commit("drop questions")
+    before = git_repo.head()
+    assert main(["block", "T3", "question: x", "--question", "x?"]) == 1
+    assert "Open questions" in capsys.readouterr().err
+    assert rows(git_repo)["T3"][1] == "Pending"
+    assert git_repo.head() == before

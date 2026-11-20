@@ -1,4 +1,4 @@
-"""`guard block`: save the ticket's work, restore the start SHA, write the Blocked row, clear the marker."""
+"""`guard block`: save the ticket's work, restore the start SHA, write the Blocked row (and an Open question), clear the marker."""
 
 from __future__ import annotations
 
@@ -55,6 +55,7 @@ def block(
     reason: str,
     spec: str | None = None,
     start: str | None = None,
+    question: str | None = None,
 ) -> dict[str, Any]:
     data = marker.read(cwd)
     own = data is not None and data["ticket"] == ticket
@@ -73,8 +74,12 @@ def block(
     plan_file = plan.plan_path(cwd, spec)
     if ticket not in plan.status_rows(plan_file):
         raise GuardError(f"ticket {ticket} has no row in the Completion Status table of {plan_file}")
+    if question:
+        plan.questions_table(plan_file)  # refuse before anything changes
     saved = _save_and_restore(cwd, ticket, start, plan_file) if start else {}
     plan.set_status(plan_file, ticket, plan.BLOCKED, reason)
+    if question:
+        plan.add_question(plan_file, ticket, question, data["mode"] if data else "attended")
     record = evidence.append(cwd, ticket, "blocked", reason=reason, spec=spec, **saved)
     if own:
         marker.clear(cwd)

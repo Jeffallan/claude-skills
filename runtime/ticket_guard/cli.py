@@ -60,6 +60,7 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
         "--start",
         help="with no marker: save and restore to this SHA (default: the evidence's marker_start when the marker was lost)",
     )
+    blk.add_argument("--question", help="also append this to the plan's Open questions table, in the same commit")
     blk.set_defaults(func=cmd_block)
     dec = gsub.add_parser("decide", help="record an owner decision (attended only)")
     dec.add_argument("row", help="finding or ticket ID, such as F3 or T2")
@@ -236,7 +237,7 @@ def cmd_run_green(args) -> int:
 
 
 def cmd_block(args) -> int:
-    rec = block.block(Path.cwd(), args.ticket, args.reason, args.spec, args.start)
+    rec = block.block(Path.cwd(), args.ticket, args.reason, args.spec, args.start, args.question)
     print(f"{args.ticket} Blocked in {rec['spec']}: {args.reason}")
     if rec["committed"]:
         print(f"committed the Blocked row: docs({rec['spec']}): record Blocked rows in the plan")

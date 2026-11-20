@@ -29,7 +29,7 @@ The ticket commands take their mode from the caller: the goal prompt's per-ticke
 - **Never rewrite history.** No `git rebase`, `git reset`, `git commit --amend` or squash, even to tidy the commit count. A ticket found wrong after its commit stays committed: report it as a deviation, add it to Open questions, and let `spec:review` handle it. Goal launches deny these commands.
 - **Subagents only read** and return text. Every edit happens in the main session, where the companion skill's hooks apply.
 - **Frozen scope.** Never work a new issue found during the ticket. Append it to the plan's Proposed tracker changes (title, plain-language example, file references, duplicate check against open tickets) and carry on with the ticket.
-- **Questions are collected, never defaulted.** When the ticket or a skill needs an answer the run can't get, add the question to the plan's Open questions table and block the ticket as `Blocked: question`.
+- **Questions are collected, never defaulted.** When the ticket or a skill needs an answer the run can't get, block the ticket with `guard block <ticket> "question: <question>" --question "<question>"`, which writes the Blocked row and the plan's Open questions row in one commit.
 
 ## Blocking a ticket
 

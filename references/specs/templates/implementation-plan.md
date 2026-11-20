@@ -1,9 +1,10 @@
 # Implementation Plan Template
 
-`spec:create` writes this file from the approved overview. The ticket commands, `guard block`, `guard gate` and `guard run-batches` parse two of its tables, so keep their headings and columns exactly as shown:
+`spec:create` writes this file from the approved overview. The ticket commands, `guard block`, `guard gate` and `guard run-batches` parse or write its Completion Status, Execution Order and Open questions tables, so keep their headings and columns exactly as shown:
 
 - `## Completion Status`: the first column is the ticket ID, then Status, Completed Date and Notes.
 - `## Execution Order`: the second column is the ticket ID.
+- `## Open questions`: `#`, Ticket, Question, Asked by. `guard block --question` appends rows here.
 
 Only Ready tickets from the overview's Readiness table get rows and sections.
 
@@ -72,7 +73,7 @@ Changes `spec:create` may not make on its own (create, split, close, transition,
 
 ## Open questions
 
-Questions a skill or ticket needed answered that no one could answer during the run. Each blocks its ticket as `Blocked: question`.
+Questions a skill or ticket needed answered that no one could answer during the run. Each blocks its ticket as `Blocked: question`; a goal run adds the row with `guard block <ticket> "question: ..." --question "<question>"`.
 
 | # | Ticket | Question | Asked by |
 |---|--------|----------|----------|

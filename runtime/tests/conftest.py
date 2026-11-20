@@ -24,6 +24,11 @@ PLAN = """# Demo plan
 | 1 | T1 | One | Low | None |
 | 2 | T2 | Two | Low | T1 |
 | 3 | T3 | Three | Low | None |
+
+## Open questions
+
+| # | Ticket | Question | Asked by |
+|---|--------|----------|----------|
 """
 
 

@@ -28,7 +28,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md` before Step 1.
    - Blocked: report the reason and stop.
    - A dependency is Blocked: run `guard block <ticket> "depends on <dependency>"` and stop.
    - A dependency is not Done: attended, ask whether to continue; goal mode, take the next ticket in order instead.
-4. The ticket section must name its acceptance criteria, its RED check and its `Skill:` line. When one is missing: attended, offer to draft it from the codebase for the owner's approval; goal mode, add the gap to the plan's Open questions and run `guard block <ticket> "question: <what is missing>"`.
+4. The ticket section must name its acceptance criteria, its RED check and its `Skill:` line. When one is missing: attended, offer to draft it from the codebase for the owner's approval; goal mode, run `guard block <ticket> "question: <what is missing>" --question "<what is missing>"`, which adds the gap to the plan's Open questions in the same commit as the Blocked row.
 
 ## Step 2: Start clean and claim the ticket
 
@@ -76,8 +76,8 @@ After RED, the frozen tests can't be edited. In goal mode the hook denies the ed
 Follow the ticket's steps until the new tests and the existing suite pass. Reuse what the overview names. Then refactor with the tests green.
 
 - **Deviation** (the steps must change): attended, stop and ask with the planned approach, the change, why, and the impact; record an approved deviation for the summary. Goal mode: `guard block <ticket> "<why the steps must change>"`.
-- **Blocker** (missing access or prerequisite, a denied action, three failed attempts at the same problem, a contradiction with the spec): attended, report and wait; goal mode, `guard block`, then block each dependent with `"depends on <ticket>"`.
-- **A question only someone else can answer:** add it to the plan's Open questions table, then attended ask the owner; goal mode `guard block <ticket> "question: <question>"`.
+- **Blocker** (missing access or prerequisite, a denied action, three failed attempts at the same problem, a contradiction with the spec): attended, report and wait; goal mode, `guard block`, then block each dependent with `"depends on <ticket>"`. A blocker that leaves a question for the owner passes `--question "<question>"` too.
+- **A question only someone else can answer:** attended, add it to the plan's Open questions table and ask the owner; goal mode `guard block <ticket> "question: <question>" --question "<question>"`, which writes the Open questions row in the same commit as the Blocked row. Don't edit the plan by hand first.
 - **A test added after RED:** allowed only for coverage the RED tests couldn't hold, such as a helper's own unit test or a regression the implementation exposed. A missing acceptance-criterion test is a deviation, handled as above, because RED can't be rerun once implementation has started. The guard doesn't freeze a file added after RED, so list each one with its reason under **Tests added after RED** in the summary.
 - **New issue found:** never work it. Append it to the plan's Proposed tracker changes (title, plain example, files, duplicate check against open tickets) and continue.
 
