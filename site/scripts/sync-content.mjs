@@ -94,6 +94,14 @@ syncSite({
       category: 'guides',
     },
     {
+      src: 'docs/CODE_REVIEW_SKILL.md',
+      dest: 'guides/code-review-skill.md',
+      title: 'Code Review Skill for Claude Code',
+      description:
+        'Install the Code Reviewer skill in Claude Code, see what it checks in a pull request, from SQL injection to N+1 queries, and read an example review report.',
+      category: 'guides',
+    },
+    {
       src: 'docs/SUPPORTED_AGENTS.md',
       dest: 'guides/supported-agents.md',
       title: 'Supported Agents',

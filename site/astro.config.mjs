@@ -111,6 +111,7 @@ export default defineConfig({
           items: [
             { label: 'Workflow Commands', link: '/guides/workflow-commands/' },
             { label: 'Common Ground', link: '/guides/common-ground/' },
+            { label: 'Code Review Skill', link: '/guides/code-review-skill/' },
             {
               label: 'Atlassian MCP Setup',
               link: '/guides/atlassian-mcp-setup/',
