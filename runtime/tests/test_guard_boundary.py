@@ -302,3 +302,34 @@ def test_tamper_scan_refuses_reasons_in_goal_mode(git_repo, capsys):
     assert main(["tamper-scan", "--reason", "TS1=fine"]) == 1
     assert "guard block" in capsys.readouterr().err
     assert last(git_repo, "tamper_scan")["flags"][0]["reason"] is None
+
+
+# spec-level recheck: guard rerun --spec -----------------------------------------
+
+
+def test_rerun_spec_runs_without_a_marker_and_records_under_the_spec(git_repo, capsys):
+    git_repo.write(".claude/workflow-config.json", json.dumps({"verify": [" ".join(PYTEST)]}))
+    git_repo.commit("config")
+    assert marker.read(git_repo.root) is None
+    assert main(["rerun", "--spec", "demo"]) == 0
+    rec = evidence.records(git_repo.root, "demo-recheck")[-1]
+    assert (rec["event"], rec["check"], rec["passed"]) == ("boundary", "rerun", True)
+    assert rec["cwd"] != str(git_repo.root)
+    assert "clean re-run" in capsys.readouterr().out
+
+
+def test_rerun_spec_fails_when_verify_fails(git_repo, capsys):
+    git_repo.write(
+        ".claude/workflow-config.json", json.dumps({"verify": [f"{sys.executable} -c 'raise SystemExit(3)'"]})
+    )
+    assert main(["rerun", "--spec", "demo"]) == 1
+
+
+def test_rerun_spec_needs_verify_or_a_command(git_repo, capsys):
+    assert main(["rerun", "--spec", "demo"]) == 1
+    assert "nothing to run" in capsys.readouterr().err
+
+
+def test_rerun_spec_refuses_an_unknown_spec(git_repo, capsys):
+    assert main(["rerun", "--spec", "nope", "--", *PYTEST]) == 1
+    assert "no spec" in capsys.readouterr().err

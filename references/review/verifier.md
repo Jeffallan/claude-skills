@@ -110,7 +110,7 @@ Never mutate the working tree to get a RED. A mutation left in the source ends u
 4. Search the spec diff for the same mistake elsewhere.
 5. Inspect changed lines plus direct callers and tests of changed symbols; anything new becomes a new row, verified by a different instance.
 6. Re-verify any rejected or unresolved row whose cited lines the fix changed.
-7. `guard rerun` runs the full suite at HEAD in a clean worktree.
+7. `guard rerun --spec <spec-name>` runs the `verify` commands at HEAD in a clean worktree. It needs no ticket marker and records under `<spec-name>-recheck`.
 8. Update each row's status (`fixed-verified` or `reopened`), say what wasn't rechecked, and rebuild the rollup.
 
 After three rounds on one finding, ask the owner to reconsider the approach.

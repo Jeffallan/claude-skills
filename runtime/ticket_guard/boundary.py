@@ -97,10 +97,22 @@ def _run_setup(cwd: Path, ticket: str, check: str, wt: Path, commands: list[str]
     return None
 
 
-def rerun(cwd: Path, command: list[str] | None = None, ticket: str | None = None) -> dict[str, Any]:
-    """Run the verification commands on HEAD plus the uncommitted work, in a fresh worktree."""
-    ctx = context(cwd, ticket)
+def rerun(
+    cwd: Path, command: list[str] | None = None, ticket: str | None = None, spec: str | None = None
+) -> dict[str, Any]:
+    """Run the verification commands on HEAD plus the uncommitted work, in a fresh worktree.
+
+    With `spec`, no ticket is needed: the spec-level recheck records under `<spec>-recheck`.
+    """
+    if spec is not None:
+        if not settings.spec_dir(cwd, spec).is_dir():
+            raise GuardError(f"no spec {spec} under the specs root")
+        ctx = {"ticket": f"{spec}-recheck"}
+    else:
+        ctx = context(cwd, ticket)
     commands = [command] if command else [[c] for c in settings.get(cwd, "verify") or []]
+    if not commands and spec is not None:
+        raise GuardError("nothing to run: give a command or set `verify` in the workflow config")
     if not commands:
         green = runs.latest(evidence.current(cwd, ctx["ticket"]), "green", valid_only=False)
         if green is None:

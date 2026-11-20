@@ -69,7 +69,9 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
     dec.set_defaults(func=cmd_decide)
 
     rr = gsub.add_parser("rerun", help="run the checks on the uncommitted work in a clean worktree")
-    rr.add_argument("--ticket")
+    who = rr.add_mutually_exclusive_group()
+    who.add_argument("--ticket")
+    who.add_argument("--spec", help="spec-level recheck at HEAD: no marker needed")
     rr.add_argument("cmd", nargs=argparse.REMAINDER)
     rr.set_defaults(func=cmd_rerun)
     rp = gsub.add_parser("red-replay", help="the new tests must fail against the start SHA")
@@ -253,7 +255,7 @@ def cmd_decide(args) -> int:
 
 def cmd_rerun(args) -> int:
     cmd = args.cmd[1:] if args.cmd[:1] == ["--"] else args.cmd
-    rec = boundary.rerun(Path.cwd(), cmd or None, args.ticket)
+    rec = boundary.rerun(Path.cwd(), cmd or None, args.ticket, args.spec)
     print(f"clean re-run: `{rec['command']}` exit {rec['exit_code']}")
     return EXIT_OK if rec["passed"] else EXIT_REFUSED
 
