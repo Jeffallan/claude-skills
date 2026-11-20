@@ -14,6 +14,10 @@ A goal is active when the session was started with `/goal`, or the goal prompt i
 
 **The wrong-session stop.** `AskUserQuestion` unavailable with no goal active almost always means a goal-run session was kept for attended work: `/goal clear` ends the goal, but the `--disallowedTools` flags from the launch command last for the whole session. Never fall back to unattended rules then. Run the command's steps up to its first one that needs the owner, write nothing from that step on, and end the turn with `BLOCKED: <command> needs an attended session`, then tell the owner: this session was launched with the goal-run flags (or otherwise denies `AskUserQuestion`); start a new session with only `--plugin-dir` and the usual permission mode, and rerun `<command>`.
 
+## No self-scheduling
+
+In every mode, attended or goal, workflow commands never schedule wakeups, loops, cron jobs or remote triggers: no `ScheduleWakeup`, `CronCreate`, `RemoteTrigger` or `/loop` skill. A step that waits on something (CI, a reviewer, a fix round, a recheck) ends the turn and tells the owner what to rerun and when. Goal launches deny these tools as well.
+
 ## Two kinds of command
 
 | Kind | Commands | Under a goal |

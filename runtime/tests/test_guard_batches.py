@@ -105,6 +105,9 @@ def test_every_call_carries_the_write_deny_set(git_repo, capsys, tmp_path, monke
             "Bash(git rebase:*)",
             "Bash(git reset:*)",
             "Bash(git commit --amend:*)",
+            "ScheduleWakeup",
+            "CronCreate",
+            "RemoteTrigger",
             "mcp__jira__createIssue",
         ):
             assert rule in denied

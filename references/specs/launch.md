@@ -28,7 +28,7 @@ After a batch, the owner runs `/compact` and launches the next batch in the same
 
 ## The deny set
 
-Every launch carries these rules, each as its own `--disallowedTools` argument. They deny writes only; reads stay allowed, since the frozen-scope duplicate check reads open tickets.
+Every launch carries these rules, each as its own `--disallowedTools` argument. They deny writes and self-scheduling only; reads stay allowed, since the frozen-scope duplicate check reads open tickets.
 
 | Rule | Blocks |
 |------|--------|
@@ -40,6 +40,7 @@ Every launch carries these rules, each as its own `--disallowedTools` argument. 
 | `Bash(gh project close:*)`, `Bash(gh project copy:*)`, `Bash(gh project create:*)`, `Bash(gh project delete:*)`, `Bash(gh project edit:*)`, `Bash(gh project field-create:*)`, `Bash(gh project field-delete:*)`, `Bash(gh project item-add:*)`, `Bash(gh project item-archive:*)`, `Bash(gh project item-create:*)`, `Bash(gh project item-delete:*)`, `Bash(gh project item-edit:*)`, `Bash(gh project link:*)`, `Bash(gh project mark-template:*)`, `Bash(gh project unlink:*)`, `Bash(gh release:*)` | Project writes and releases; Project reads (`list`, `view`, `field-list`, `item-list`) stay allowed |
 | `Bash(*guard.pyz* decide *)`, `Bash(*ticket_guard* decide *)`, `Bash(*runtime* decide *)`, `Bash(*guard.pyz* decisions import*)`, `Bash(*ticket_guard* decisions import*)`, `Bash(*runtime* decisions import*)` | Owner-only decisions; a goal run must never record its own or import an exported file it could have edited |
 | `Bash(git rebase:*)`, `Bash(git reset:*)`, `Bash(git commit --amend:*)` | Rewriting history. A goal run never removes, squashes or amends a commit; a ticket found wrong after its commit stays committed and goes in the final report |
+| `ScheduleWakeup`, `CronCreate`, `RemoteTrigger` | Self-scheduling (these also back the `/loop` skill). A wakeup, cron job or remote trigger would start work after the run ends, with nobody watching it |
 | Each tool name in `goal.deny` | The tracker MCP server's write tools, listed per project in `.claude/workflow-config.json` |
 
 Text-ticket edits are blocked separately, by the companion skill's goal-mode hook on `text.ticketsDir`.
@@ -91,6 +92,8 @@ claude \
   --disallowedTools 'Bash(*runtime* decisions import*)' \
   --disallowedTools 'Bash(git rebase:*)' --disallowedTools 'Bash(git reset:*)' \
   --disallowedTools 'Bash(git commit --amend:*)' \
+  --disallowedTools ScheduleWakeup --disallowedTools CronCreate \
+  --disallowedTools RemoteTrigger \
   <one --disallowedTools per goal.deny entry> \
   -- "/goal Every condition in <done_when> in <specsRoot>/todo/<spec-name>/goal-prompt.md holds, with every ticket in that file Done or Blocked with its reason, and your latest message shows the evidence, or your latest message starts with BLOCKED: and names a spec-wide stop from <stops> in that file. Read that file first, and again after any compaction."
 

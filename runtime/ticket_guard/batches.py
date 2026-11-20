@@ -83,6 +83,10 @@ DENY = (
     "Bash(*guard.pyz* decisions import*)",
     "Bash(*ticket_guard* decisions import*)",
     "Bash(*runtime* decisions import*)",
+    # A review session once scheduled its own wakeup; a goal run's schedule would outlive the run.
+    "ScheduleWakeup",
+    "CronCreate",
+    "RemoteTrigger",
 )
 SETTLED = (*review.FINISHED, plan.BLOCKED)
 
