@@ -110,7 +110,9 @@ export default defineConfig({
 });
 ```
 
-## Agentic E2E with e2e
+## Agentic and mobile E2E
+
+For native mobile apps, Appium and Detox are the established selector-based tools; agent-driven frameworks such as e2e describe goals in plain language instead.
 
 [e2e](https://github.com/e2e-inc/e2e) is an open-source (Apache-2.0) E2E framework for web, iOS, and Android. A test describes a goal in plain language, an agent drives the app to reach it, and locators and assertions check the result in the same test. An agent step that a later assertion verifies records its actions, and the next run replays them with no model calls until the app changes.
 
