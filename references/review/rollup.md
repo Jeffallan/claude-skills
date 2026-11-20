@@ -75,7 +75,7 @@ guard rollup <spec-name> \
   --transcripts ~/.claude/projects/<project>/<session-id>/subagents/
 ```
 
-`--transcripts` points at the folder holding each verifier's `agent-<agent_id>.jsonl`; Claude Code keeps subagent transcripts there. Tokens and Minutes stay empty for a verdict with no transcript. Every finding appears, including `invalid` and `rejected` ones, so the owner can overrule any of them. There is no budget cap; the cost columns are the record.
+`--transcripts` points at the folder holding each verifier's `agent-<agent_id>.jsonl`; Claude Code keeps subagent transcripts there. Repeat it once per session when the verifiers ran in more than one session (a recheck usually does), and each folder is searched in order. Tokens and Minutes stay empty for a verdict with no transcript. Every finding appears, including `invalid` and `rejected` ones, so the owner can overrule any of them. There is no budget cap; the cost columns are the record.
 
 ## The gate
 

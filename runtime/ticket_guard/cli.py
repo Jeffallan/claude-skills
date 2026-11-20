@@ -110,7 +110,8 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
     ro.add_argument(
         "--transcripts",
         type=Path,
-        help="folder of agent-<id>.jsonl subagent transcripts",
+        action="append",
+        help="folder of agent-<id>.jsonl subagent transcripts; repeat for verifiers from several sessions",
     )
     ro.set_defaults(func=cmd_rollup)
     gt = gsub.add_parser("gate", help="refuse while a blocking row or a Blocked ticket is open")

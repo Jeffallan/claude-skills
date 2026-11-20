@@ -88,7 +88,7 @@ Write the verdicts to `review/verdicts.jsonl` in the format in `${CLAUDE_PLUGIN_
 guard rollup <spec-name> --verdicts review/verdicts.jsonl --transcripts ~/.claude/projects/<project>/<session-id>/subagents/
 ```
 
-`review/rollup.md` lists every finding, including `invalid` and `rejected` ones, with tokens and minutes per verifier. Commit `review/`: `docs(<spec-name>): spec review`.
+Add one `--transcripts` folder per session that ran verifiers (a recheck spans sessions). `review/rollup.md` lists every finding, including `invalid` and `rejected` ones, with tokens and minutes per verifier. Commit `review/`: `docs(<spec-name>): spec review`.
 
 ## Step 6: Owner triage
 

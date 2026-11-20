@@ -312,3 +312,15 @@ def test_answered_closes_pr_feedback_questions_but_not_review_findings(git_repo,
     capsys.readouterr()
     code, out = gate(capsys)
     assert code == 1 and "F3" in out and "P2" not in out
+
+
+def test_rollup_reads_transcripts_from_several_folders(git_repo, capsys):
+    """Verifier transcripts span sessions: --transcripts repeats, and each folder is searched."""
+    other = git_repo.root.parent / "session-2"
+    other.mkdir()
+    transcript(other / "agent-def.jsonl", [("m9", U, "2026-11-09T10:03:00.000Z")])
+    batch = [dict(FINDINGS[2], id="S2", agent_id="def", tier="advisory")]
+    assert rollup(git_repo, capsys, FINDINGS + batch, extra=("--transcripts", str(other))) == 0
+    rows = table(git_repo)
+    assert rows["F3"]["Tokens"] == "604,000"  # still found in the first folder
+    assert rows["S2"]["Tokens"] == "302,000"

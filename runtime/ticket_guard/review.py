@@ -59,12 +59,14 @@ def cost(transcript: Path) -> tuple[int, int]:
     return tokens, minutes
 
 
-def _transcript(finding: dict[str, Any], transcripts: Path | None) -> Path | None:
+def _transcript(finding: dict[str, Any], transcripts: list[Path]) -> Path | None:
     if finding.get("transcript"):
         return Path(finding["transcript"])
-    if transcripts and finding.get("agent_id"):
-        path = transcripts / f"agent-{finding['agent_id']}.jsonl"
-        return path if path.is_file() else None
+    if finding.get("agent_id"):
+        for folder in transcripts:  # verifiers can span sessions, one folder each
+            path = folder / f"agent-{finding['agent_id']}.jsonl"
+            if path.is_file():
+                return path
     return None
 
 
@@ -84,12 +86,12 @@ def load_verdicts(path: Path) -> list[dict[str, Any]]:
     return found
 
 
-def rollup(cwd: Path, spec: str, verdicts: Path, transcripts: Path | None = None) -> Path:
+def rollup(cwd: Path, spec: str, verdicts: Path, transcripts: list[Path] | None = None) -> Path:
     owner = decisions.latest(cwd, spec)
     rows = ["| " + " | ".join(COLUMNS) + " |", "|" + "---|" * len(COLUMNS)]
     counted: dict[Path, str] = {}  # one batch verifier covers several findings (GH9)
     for f in load_verdicts(verdicts):
-        source = _transcript(f, transcripts)
+        source = _transcript(f, transcripts or [])
         tokens, minutes = cost(source) if source and source.is_file() else (None, None)
         if tokens is not None and source.resolve() in counted:
             tokens = minutes = f"shared with {counted[source.resolve()]}"
