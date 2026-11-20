@@ -129,7 +129,7 @@ related: [<docs this one depends on or that depend on it, paths under docs/>]
 
 ## 1. Purpose and scope
 ## 2. Components
-<services, apps, workers, data stores, queues and caches, with a Mermaid component diagram>
+<services, apps, workers, data stores, queues and caches, with a Mermaid component diagram and a table: component, what it does, status (`wired`: on a running request or job path; `built, not wired`: code and tests exist, nothing in production calls it; `planned`: named by an outstanding spec only, never drawn as current)>
 ## 3. Data flow
 <Mermaid flowchart of how data enters, moves, is stored and leaves; where personal data lives>
 ## 4. Security architecture

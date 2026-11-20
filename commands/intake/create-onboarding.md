@@ -53,7 +53,7 @@ Write the docs index using the template below. When an owner `docs/README.md` ex
 ### Phase 5: Accuracy audit (required)
 First give the document's prose its human-voice pass ("Human-voice pass" in `references/intake/rules.md`): wording only, never a claim. Then audit:
 Verify every command is grounded in a real script or runs as written, every linked doc path exists, and no step is
-invented. Fix or remove anything unverified.
+invented. Fix or remove anything unverified. Never run a command that resets shared state (a test database, a cache, fixed ports) while another run or session may be using it; ground it in the CI config or the script instead and say so in the audit.
 
 ## Output template
 
