@@ -65,7 +65,7 @@ Reminder: every commit names its item with one `Intake:` trailer on <intake-bran
 
 ## Launching it
 
-Start a new session with the deny set from `references/specs/launch.md`, so the denies hold for the whole run. Intake runs no ticket commands, so the `ticket-guard` allow rule isn't needed. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key, or `git commit --allow-empty` signs in a scratch clone): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--disallowedTools` takes a list, so the `--` before the prompt is required:
+Start a new session with the deny set from `references/specs/launch.md`, so the denies hold for the whole run. Intake runs no ticket commands, so the `ticket-guard` allow rule isn't needed. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key, or `git commit --allow-empty` signs in a scratch clone): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--disallowedTools` takes a list, so the `--` before the prompt is required. The session serves the run only: run Phase 4 and any other attended intake command in a fresh session without these flags.
 
 ```bash
 claude \

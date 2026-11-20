@@ -80,7 +80,7 @@ Through the code-host adapter, each write raising the shared "ask" prompt:
 5. When the spec already sits in `completed/`, move it back: `mkdir -p <specsRoot>/todo && git mv <specsRoot>/completed/<spec-name> <specsRoot>/todo/<spec-name>` and refresh the index. Text tracker: `reopen` the tickets Step 2 closed, restoring the statuses its commit body recorded.
 6. Add each fix as a Pending ticket (`<spec-name>-fb<round>-<n>`) to the plan, write a fresh `goal-prompt.md`, and commit the move, the feedback file, the plan and the prompt together: `docs(<spec-name>): PR feedback round <round>`. That commit is the fix round's start SHA.
 7. Post approved replies and resolve their threads (`reply-resolve`), only on the owner's yes.
-8. Print the launch commands from `${CLAUDE_PLUGIN_ROOT}/references/specs/launch.md`. After the fixes, `spec:review` rechecks the fix rows until each is `fixed-verified`, and the next `spec:complete` run pushes them to the same PR.
+8. Print the launch commands from `${CLAUDE_PLUGIN_ROOT}/references/specs/launch.md`, and tell the owner to run the follow-up `spec:review` and `spec:complete` in a fresh session without the goal flags. After the fixes, `spec:review` rechecks the fix rows until each is `fixed-verified`, and the next `spec:complete` run pushes them to the same PR.
 
 ## Step 6: Merge
 

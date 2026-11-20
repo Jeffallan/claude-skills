@@ -2,6 +2,8 @@
 
 How `spec:create`, `spec:review` and `spec:complete` print the commands that start a goal run over a spec's `goal-prompt.md`. A goal run is never started by pasting `/goal` into a running session: each launch command starts a new session with the writes-only deny set, so the denies hold for the whole run, compactions included.
 
+The goal-run session is for the run only. `/goal clear` ends the goal but keeps the session's `--disallowedTools` flags, so `AskUserQuestion`, `guard decide` and tracker writes stay denied for as long as the session lives. Do the attended work that follows a run (`spec:review` and its triage, fix-round decisions, `spec:complete`, the intake commands) in a fresh session started with only `--plugin-dir` and your usual permission mode.
+
 ## The guard
 
 The workflow runtime is the ticket guard bundled with the plugin, `runtime/guard.pyz`, versioned with it. Commands, references, templates and spec files write it as `guard <command>`; the calling command or the `ticket-guard` skill runs it as `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`. A spec file never holds the plugin path, which differs per machine. Workflow users need uv, which supplies Python 3.11 or later when the machine lacks it.
@@ -48,7 +50,7 @@ Every launch also carries `--allowedTools 'Skill(fullstack-dev-skills:ticket-gua
 
 ## The launch commands
 
-`spec:create` prints both, filled in, and the owner picks one per run. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--allowedTools` and `--disallowedTools` each take a list of values, so without the `--` before the prompt they swallow it as one more rule and the session starts with no prompt.
+`spec:create` prints both, filled in, and the owner picks one per run. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--allowedTools` and `--disallowedTools` each take a list of values, so without the `--` before the prompt they swallow it as one more rule and the session starts with no prompt. A launched session serves its run and nothing after it: start attended follow-up work in a fresh session without these flags.
 
 ```bash
 # Whole spec

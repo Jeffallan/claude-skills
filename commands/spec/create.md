@@ -107,6 +107,8 @@ Print, filled in from `${CLAUDE_PLUGIN_ROOT}/references/specs/launch.md`:
 
 Both carry the full writes-only deny set, `--permission-mode` and `goal.deny`. Never put the goal deny rules in the shared settings.
 
+Tell the owner to start attended follow-up work (`spec:review` triage, `spec:complete`) in a fresh session without the goal flags, since `/goal clear` keeps the session's denies.
+
 After the plan commit, the spec branch takes no commit before the run: the start SHA is the last commit touching `goal-prompt.md`, and any later commit would fall inside the run's range.
 
 ## Rules
