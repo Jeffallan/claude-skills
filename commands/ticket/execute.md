@@ -16,6 +16,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md` before Step 1.
 
 - **Goal mode:** the goal prompt runs this command "under its unattended rules", or a goal is active. Never call `AskUserQuestion`, skip every checkpoint, and block a stuck ticket with `guard block` instead of asking.
 - **Attended:** stop at the checkpoints marked below.
+- **Neither:** no goal is active and `AskUserQuestion` is unavailable. Take the wrong-session stop in `unattended.md` before the first checkpoint; never fall back to goal mode.
 
 `guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
 

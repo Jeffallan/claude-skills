@@ -13,7 +13,7 @@ Review a finished spec branch once, over its whole diff, before `spec:complete` 
 
 ## Unattended guard
 
-The panel and verifiers can run in any session, but the owner triage (Step 6) is attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active or `AskUserQuestion` is unavailable, stop after Step 5, record no decisions and add no fix tickets, and end with `BLOCKED: spec:review triage needs the owner`.
+The panel and verifiers can run in any session, but the owner triage (Step 6) is attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, stop after Step 5, record no decisions and add no fix tickets, and end with `BLOCKED: spec:review triage needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, stop after Step 5 the same way, through that file's wrong-session stop.
 
 ## Step 0: Start clean
 

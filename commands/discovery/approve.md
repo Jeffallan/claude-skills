@@ -13,7 +13,7 @@ The one approval gate between discovery and the tracker, on both discovery paths
 
 ## Unattended guard
 
-This command is attended only. When a goal is active or `AskUserQuestion` is unavailable, write nothing: print the proposed tickets and unresolved decisions as a read-only proposal and end with `BLOCKED: discovery:approve needs the owner`.
+This command is attended only. When a goal is active, write nothing: print the proposed tickets and unresolved decisions as a read-only proposal and end with `BLOCKED: discovery:approve needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`.
 
 ## Input
 

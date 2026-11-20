@@ -10,7 +10,7 @@ Plan one spec that `spec:triage` grouped. Write `overview.md` first, with a Read
 
 ## Unattended guard
 
-Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active or `AskUserQuestion` is unavailable, write nothing: print the proposed overview and end with `BLOCKED: spec:create needs the owner's approval`.
+Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, write nothing: print the proposed overview and end with `BLOCKED: spec:create needs the owner's approval`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
 
 ## Setup
 

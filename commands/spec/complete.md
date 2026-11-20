@@ -12,7 +12,7 @@ It is resumable: rerunning picks up at the first step not yet done, except that 
 
 ## Unattended guard
 
-Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active or `AskUserQuestion` is unavailable, write nothing: print the gate result and the next step, and end with `BLOCKED: spec:complete needs the owner`.
+Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, write nothing: print the gate result and the next step, and end with `BLOCKED: spec:complete needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
 
 ## Setup
 

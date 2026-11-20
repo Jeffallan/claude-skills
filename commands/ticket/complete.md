@@ -12,7 +12,7 @@ Finish the ticket `ticket:execute` worked on: run the boundary checks, update it
 
 ## Mode
 
-Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. In goal mode (the goal prompt runs this command "under its unattended rules", or a goal is active) never call `AskUserQuestion` and skip the checkpoints; a check that fails blocks the ticket through `guard block`. Attended, stop at the checkpoints below.
+Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. In goal mode (the goal prompt runs this command "under its unattended rules", or a goal is active) never call `AskUserQuestion` and skip the checkpoints; a check that fails blocks the ticket through `guard block`. Attended, stop at the checkpoints below. With no goal active and `AskUserQuestion` unavailable, take the wrong-session stop in `unattended.md` before the first checkpoint; never fall back to goal mode.
 
 `guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
 

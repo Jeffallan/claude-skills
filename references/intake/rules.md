@@ -162,6 +162,8 @@ Intake commands run unattended inside a `/goal` run, under the rules in `referen
 
 The rest holds unchanged: no tracker writes, no history rewrites, subagents only read, every edit in the main session. A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
 
+Outside a goal, an intake command that finds `AskUserQuestion` unavailable at its checkpoint never drafts in its place: it takes the wrong-session stop in `references/specs/unattended.md`.
+
 ## Skills
 
 Each command names its skills by exact name. The language and framework skill is chosen by detection: read the package manifest and lockfile, the framework config and the test config, then pick the matching `fullstack-dev-skills:` skill. A stack with no matching skill gets none, and the command says so rather than borrowing a neighbor's.

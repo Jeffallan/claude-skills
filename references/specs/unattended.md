@@ -1,6 +1,18 @@
 # Unattended Rules
 
-How the workflow commands behave when nobody is there to answer: inside a `/goal` run, in a headless `claude -p` session, or in any session where `AskUserQuestion` is unavailable. Goal runs launch with `AskUserQuestion` and every write denied for that session (`references/specs/launch.md`), so these rules and the deny set back each other up.
+How the workflow commands behave when nobody is there to answer: inside a `/goal` run, including the headless batches of `guard run-batches`, whose every prompt starts with `/goal`. Goal runs launch with `AskUserQuestion` and every write denied for that session (`references/specs/launch.md`), so these rules and the deny set back each other up.
+
+## Which rules apply
+
+| Session | Mode |
+|---------|------|
+| A goal is active | Goal mode: the rules in this file |
+| No goal, `AskUserQuestion` available | Attended |
+| No goal, `AskUserQuestion` unavailable | Neither: the wrong-session stop below |
+
+A goal is active when the session was started with `/goal`, or the goal prompt is running the command (it says "under its unattended rules"). A missing `AskUserQuestion` alone never means goal mode.
+
+**The wrong-session stop.** `AskUserQuestion` unavailable with no goal active almost always means a goal-run session was kept for attended work: `/goal clear` ends the goal, but the `--disallowedTools` flags from the launch command last for the whole session. Never fall back to unattended rules then. Run the command's steps up to its first one that needs the owner, write nothing from that step on, and end the turn with `BLOCKED: <command> needs an attended session`, then tell the owner: this session was launched with the goal-run flags (or otherwise denies `AskUserQuestion`); start a new session with only `--plugin-dir` and the usual permission mode, and rerun `<command>`.
 
 ## Two kinds of command
 
@@ -9,15 +21,15 @@ How the workflow commands behave when nobody is there to answer: inside a `/goal
 | Ticket commands | `ticket:execute`, `ticket:complete` | Run under the unattended rules below |
 | Attended-only commands | `discovery:approve`, `spec:triage`, `spec:create`, the owner triage in `spec:review`, `spec:complete`, the config wizard | Write nothing and end with `BLOCKED:` |
 
-`discovery:create` and `discovery:synthesize` write only local files; without `AskUserQuestion` they skip interviews and record open questions instead.
+`discovery:create` and `discovery:synthesize` write only local files; under a goal they skip interviews and record open questions instead.
 
 ## The attended-only guard
 
 Each attended-only command checks this before its first write:
 
-> When a goal is active or `AskUserQuestion` is unavailable, write nothing. Print what the command would have done as a read-only proposal, then end the turn with `BLOCKED: <command> needs the owner`, followed by `git status --short`.
+> When a goal is active, write nothing. Print what the command would have done as a read-only proposal, then end the turn with `BLOCKED: <command> needs the owner`, followed by `git status --short`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop instead.
 
-"Write" covers files, commits, branches, tracker calls and PR calls. A goal is active when the session was started with `/goal`, or the goal prompt is running the command. Nothing about this guard is checked by a hook; the launch-scoped denies stop the writes even when the guard is missed.
+"Write" covers files, commits, branches, tracker calls and PR calls. Nothing about this guard is checked by a hook; the launch-scoped denies stop the writes even when the guard is missed.
 
 ## Ticket commands under unattended rules
 

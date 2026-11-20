@@ -117,7 +117,7 @@ The config never holds credentials. Tokens stay in the tool that uses them (`gh 
 
 Every attended command that needs the config and finds none runs this wizard before anything else.
 
-**Unattended guard first.** When a goal is active or `AskUserQuestion` is unavailable, write nothing. Print the proposed config (detected values, with the questions still open) and end with `BLOCKED: no workflow config`. There is no silent default tracker.
+**Unattended guard first.** When a goal is active, write nothing. Print the proposed config (detected values, with the questions still open) and end with `BLOCKED: no workflow config`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `references/specs/unattended.md` instead. There is no silent default tracker.
 
 1. **Check the runtime.** Run `uv --version`. When it fails, tell the owner to install uv (`https://docs.astral.sh/uv/`) and stop: the bundled guard runs through `uv run`, which also supplies Python 3.11 or later when the machine lacks it.
 2. **Detect signals.**

@@ -52,7 +52,7 @@ Show the routing and let the owner move items between routes.
 
 **Feature Forge.** For each vague item, invoke the `fullstack-dev-skills:feature-forge` skill in this session, with the spec-miner findings for that item as context. Tell it to save its specification to `<specsRoot>/todo/discovery/<topic>/<feature>.md` (kebab-case feature name), not to its default `specs/` folder. Every interview question offers "Needs additional discovery"; items the owner flags that way move to the research route.
 
-When `AskUserQuestion` is unavailable (a goal is active, or the session runs headless), skip the interviews: record each vague item's open questions in `discovery.md` and tell the owner to rerun attended.
+When a goal is active, skip the interviews: record each vague item's open questions in `discovery.md` and tell the owner to rerun attended. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md` before the interviews.
 
 ## Step 4: Write `discovery.md`
 

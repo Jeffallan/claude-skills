@@ -10,7 +10,7 @@ Group open tickets into specs. After the owner approves, create or find each spe
 
 ## Unattended guard
 
-Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active or `AskUserQuestion` is unavailable, make no tracker write, branch or file edit: print the proposal read-only and end with `BLOCKED: spec:triage needs the owner's approval`.
+Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, make no tracker write, branch or file edit: print the proposal read-only and end with `BLOCKED: spec:triage needs the owner's approval`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
 
 ## Setup
 
