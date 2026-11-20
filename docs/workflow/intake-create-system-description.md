@@ -25,7 +25,7 @@ Write the baseline spec and a living system description from the intake docs, or
 
 The first run writes the baseline spec, a completed spec named `baseline` whose `Feature areas:` line comes from the documentation phase, and regenerates the spec index. Later specs on the same areas find it through the index. It then writes the whole system description from the intake docs and any completed specs.
 
-A project that started from discovery and never ran intake has no intake docs. There the baseline names the discovery topics, records no intake findings and takes its feature areas from the completed specs. The description comes from the completed specs and the code; the discovery outputs are plans, so a claim from them is stated only when the code or a completed spec confirms it.
+A project that started from discovery has no intake documentation docs, even after `intake:existing-docs` or `intake:create-onboarding`. There the baseline names the discovery topics, counts any findings the tracker holds and takes its feature areas from the completed specs. The description comes from the completed specs and the code; the discovery outputs are plans, so a claim from them is stated only when the code or a completed spec confirms it.
 
 Each later run reads the description's Change history and folds in only the completed specs it doesn't list, changing just the sections they touch. `--full` rewrites everything. Every section names its sources, and open findings that affect a section appear in it by id.
 
