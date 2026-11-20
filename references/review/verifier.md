@@ -114,3 +114,12 @@ Never mutate the working tree to get a RED. A mutation left in the source ends u
 8. Update each row's status (`fixed-verified` or `reopened`), say what wasn't rechecked, and rebuild the rollup.
 
 After three rounds on one finding, ask the owner to reconsider the approach.
+
+**Rounds per spec.** Count the recheck rounds that raised a new blocking row; a round that only raised warnings or advisories doesn't count. After the third such round, write no fix tickets. Show the owner the round history (each round's date, its new blocking rows and the fix tickets it produced), then ask, row by row or for all of them at once:
+
+- **Fix and continue:** one more fix round, as before.
+- **Accept:** the owner logs `guard decide <ID> wontfix --spec <spec-name>` with the accepted risk as the reason. The gate then passes on that row.
+- **Split off:** the same `wontfix` decision, with the reason naming the follow-up. Add a Proposed tracker changes entry to the plan for the follow-up work and list the row under the overview's Risks, so the accepted risk stays in the spec's own record. `spec:complete` files the entry once the owner approves it, and `spec:triage` groups it later.
+- **Rethink:** stop the rounds and review the approach for the code that keeps producing blocking rows before any new fix ticket.
+
+Under goal mode the review already stops before triage, so this question is only asked attended.
