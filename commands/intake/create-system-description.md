@@ -23,7 +23,7 @@ Run once as the last intake command, after the documentation commands; that firs
 - **`fullstack-dev-skills:security-reviewer`**: the security architecture section.
 - **`fullstack-dev-skills:code-documenter`**: structure and format the document.
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Workflow
 

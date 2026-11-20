@@ -9,7 +9,7 @@ argument-hint: "<topic> [--decision=<id>:<value>...]"
 The one approval gate between discovery and the tracker, on both discovery paths. It resolves blocking decisions, lets the owner edit the proposed tickets, creates the approved ones through the tracker adapter, and points to `spec:triage`. It never creates a group, spec or branch: `spec:triage` groups the new tickets.
 
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Unattended guard
 

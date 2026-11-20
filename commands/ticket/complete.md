@@ -14,7 +14,7 @@ Finish the ticket `ticket:execute` worked on: run the boundary checks, update it
 
 Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. In goal mode (the goal prompt runs this command "under its unattended rules", or a goal is active) never call `AskUserQuestion` and skip the checkpoints; a check that fails blocks the ticket through `guard block`. Attended, stop at the checkpoints below. With no goal active and `AskUserQuestion` unavailable, take the wrong-session stop in `unattended.md` before the first checkpoint; never fall back to goal mode.
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Step 1: Find the ticket and its marker
 
@@ -76,6 +76,7 @@ Ticket: <id>
 ```
 
 - Use the project's conventional commit types and any trailers the project requires after `Ticket:`.
+- Keep `Ticket:` and every other trailer (`Co-Authored-By:`, `Signed-off-by:`, any line the project or the session adds) in one final block with no blank line between them. Git reads only the last paragraph as trailers, so a separate attribution paragraph hides `Ticket:` from `git log --format='%(trailers)'`.
 - Never put a Linear issue ID or a Jira `#transition` token in the subject or body; the `Ticket: <id>` trailer is the only reference.
 - Attended checkpoint: show the message and the staged file list, and commit on the owner's yes.
 

@@ -9,7 +9,7 @@ argument-hint: "<spec-name>"
 Review a finished spec branch once, over its whole diff, before `spec:complete` opens the PR. A panel of reviewer subagents writes findings; one blind verifier per finding decides whether each is real; a script builds the rollup; the owner picks what to fix; fix tickets join the plan and run through `ticket:execute`. Rerun it after the fixes for the recheck.
 
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Unattended guard
 

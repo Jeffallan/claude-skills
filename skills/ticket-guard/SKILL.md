@@ -36,7 +36,7 @@ You are the guard for one ticket of a spec workflow. `ticket:execute` invokes th
 
 ## Core Workflow
 
-1. **Check the marker.** Run `guard marker status`; `guard <command>` means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, and spec files and goal prompts write it that way. No marker means no ticket is in progress: say so and stop.
+1. **Check the marker.** Run `guard marker status`; `guard <command>` means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>` (typed out or as a shell function, never a variable, which zsh doesn't split), and spec files and goal prompts write it that way. No marker means no ticket is in progress: say so and stop.
 2. **Load the ticket.** Read the ticket's section of the spec's `implementation-plan.md` and the mode the marker records (`goal` or `attended`).
 3. **Follow the ticket rules above** for the rest of the ticket. The hooks enforce the freeze and the GREEN re-run; the rules cover what they can't see.
 4. **Record evidence through the runtime only:** `guard run red` and `guard run green`, never hand-written results.

@@ -18,7 +18,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md` before Step 1.
 - **Attended:** stop at the checkpoints marked below.
 - **Neither:** no goal is active and `AskUserQuestion` is unavailable. Take the wrong-session stop in `unattended.md` before the first checkpoint; never fall back to goal mode.
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Step 1: Find the ticket
 
@@ -79,7 +79,7 @@ Follow the ticket's steps until the new tests and the existing suite pass. Reuse
 - **Deviation** (the steps must change): attended, stop and ask with the planned approach, the change, why, and the impact; record an approved deviation for the summary. Goal mode: `guard block <ticket> "<why the steps must change>"`.
 - **Blocker** (missing access or prerequisite, a denied action, three failed attempts at the same problem, a contradiction with the spec): attended, report and wait; goal mode, `guard block`, then block each dependent with `"depends on <ticket>"`. A blocker that leaves a question for the owner passes `--question "<question>"` too.
 - **A question only someone else can answer:** attended, add it to the plan's Open questions table and ask the owner; goal mode `guard block <ticket> "question: <question>" --question "<question>"`, which writes the Open questions row in the same commit as the Blocked row. Don't edit the plan by hand first.
-- **A test added after RED:** allowed only for coverage the RED tests couldn't hold, such as a helper's own unit test or a regression the implementation exposed. A missing acceptance-criterion test is a deviation, handled as above, because RED can't be rerun once implementation has started. The guard doesn't freeze a file added after RED, so list each one with its reason under **Tests added after RED** in the summary.
+- **A test added after RED:** allowed only for coverage the RED tests couldn't hold, such as a helper's own unit test or a regression the implementation exposed. A missing acceptance-criterion test is a deviation, handled as above, because RED can't be rerun once implementation has started. The guard doesn't freeze a file added after RED, so list each one with its reason under **Tests added after RED** in the summary. Show each one failing without the fix: copy it into a scratch worktree at the start SHA (`git worktree add --detach "$(mktemp -d)" <start-sha>`), run it there, record the exit code next to the reason, and remove the worktree. When it can't run at the start SHA (it tests a helper the ticket created), say that instead.
 - **New issue found:** never work it. Append it to the plan's Proposed tracker changes (title, plain example, files, duplicate check against open tickets) and continue.
 
 ## Step 6: GREEN
@@ -124,7 +124,7 @@ Show this summary, then run `ticket:complete <ticket>` (goal mode: at once; atte
 **Files changed:** <list>
 **Docs:** each affected doc, updated or checked with its reason, or none
 **Deviations:** <approved deviations, or none>
-**Tests added after RED:** <file: reason, or none>
+**Tests added after RED:** <file: reason, exit code at the start SHA, or none>
 **Proposed tracker changes added:** <titles, or none>
 **Suggested commit subject:** <type(scope): summary>
 ```

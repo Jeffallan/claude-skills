@@ -8,7 +8,7 @@ argument-hint: "[--all]"
 
 Read-only. List every spec with its state, ticket counts, build order, the ticket in progress, its PR and the next command to run. It reads each `spec/<name>` branch with git, so it works from any checkout. For a GitHub project it also asks for each branch's PR (`status.pullRequests` in `.claude/workflow-config.json` turns that off or on).
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Steps
 

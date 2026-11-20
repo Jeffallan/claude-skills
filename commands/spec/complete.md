@@ -16,7 +16,7 @@ Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When
 
 ## Setup
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Read `.claude/workflow-config.json`, the tracker's adapter file and `${CLAUDE_PLUGIN_ROOT}/references/adapters/code-host-github.md` (or the manual steps when `codeHost.type` is `none`). Find the spec in `<specsRoot>/todo/` or `completed/` and check out `spec/<spec-name>`. The working tree must be clean.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words. Read `.claude/workflow-config.json`, the tracker's adapter file and `${CLAUDE_PLUGIN_ROOT}/references/adapters/code-host-github.md` (or the manual steps when `codeHost.type` is `none`). Find the spec in `<specsRoot>/todo/` or `completed/` and check out `spec/<spec-name>`. The working tree must be clean.
 
 ## Step 1: Gate
 
