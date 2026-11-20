@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "published-article",
+  "description": "An article on the hub or the corporate site. Lite envelope (D-005) plus the corporate site's article fields in snake_case (D-016, D-010), canonical and origin. id equals slug; pub_date and updated_date are the dates the site shows, created and updated are the envelope's.",
+  "allOf": [{ "$ref": "envelope-lite.schema.json" }],
+  "required": ["type", "title", "description", "slug", "pub_date"],
+  "properties": {
+    "type": { "const": "published-article" },
+    "title": { "type": "string" },
+    "seo_title": { "type": "string", "description": "Search title for <title> and og:title; the page headline stays title" },
+    "description": { "type": "string" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "pub_date": { "$ref": "envelope-lite.schema.json#/$defs/date" },
+    "updated_date": { "$ref": "envelope-lite.schema.json#/$defs/date" },
+    "draft": { "type": "boolean" },
+    "author": { "type": "string" },
+    "series": { "type": "string" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "related_hubs": { "type": "array", "items": { "type": "string" }, "description": "Corporate directory hub paths (segments/<slug>, platforms/<slug>, providers/<slug>)" },
+    "featured_image": { "type": "string", "format": "uri" },
+    "canonical": { "type": "string", "format": "uri", "description": "URL of the original when this is a syndicated copy (D-002)" },
+    "origin": { "type": "string", "description": "The site the article first appeared on" }
+  }
+}

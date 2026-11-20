@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Full envelope",
+  "description": "Anything an agent produces or ingests, and all workflow evidence (D-005): the lite envelope plus schema_version, source and sensitivity.",
+  "allOf": [{ "$ref": "envelope-lite.schema.json" }],
+  "required": ["schema_version", "source", "sensitivity"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "source": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ref", "type"],
+        "properties": { "ref": { "type": "string", "minLength": 1 }, "type": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "sensitivity": { "enum": ["public", "internal", "client-confidential", "restricted"] }
+  }
+}
