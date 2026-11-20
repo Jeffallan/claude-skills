@@ -407,16 +407,21 @@ io.on('connection', (socket) => {
     lastActivity: Date.now()
   });
 
-  // Timeout inactive sessions
-  const timeout = setTimeout(() => {
-    socket.disconnect(true);
-  }, 30 * 60 * 1000); // 30 minutes
+  // Timeout inactive sessions; each message restarts the 30-minute window
+  let timeout;
+  const resetTimeout = () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      socket.disconnect(true);
+    }, 30 * 60 * 1000); // 30 minutes
+  };
+  resetTimeout();
 
   socket.on('message', () => {
     const session = sessions.get(socket.id);
     if (session) {
       session.lastActivity = Date.now();
-      clearTimeout(timeout);
+      resetTimeout();
     }
   });
 

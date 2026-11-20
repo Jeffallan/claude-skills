@@ -250,15 +250,17 @@ data:
            pods insecure
            fallthrough in-addr.arpa ip6.arpa
         }
-        # Forward to cluster2 DNS
-        cluster2.local:53 {
-            forward . 10.0.0.10
-        }
         forward . /etc/resolv.conf
         cache 30
         loop
         reload
         loadbalance
+    }
+    # Forward to cluster2 DNS (a separate server block, not nested in .:53)
+    cluster2.local:53 {
+        errors
+        cache 30
+        forward . 10.0.0.10
     }
 ```
 

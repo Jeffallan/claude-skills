@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.20-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.21-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -33,7 +33,7 @@ For all installation methods and first steps, see the [**Quick Start Guide**](QU
 
 ## Skills
 
-<!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
+<!-- SKILL_COUNT -->70<!-- /SKILL_COUNT --> specialized skills across 12 categories covering languages, backend/frontend frameworks, infrastructure, APIs, testing, DevOps, security, data/ML, and platform specialists.
 
 See [**Skills Guide**](SKILLS_GUIDE.md) for the full list, decision trees, and workflow combinations.
 
@@ -122,4 +122,4 @@ Fullstack engineering, security engineering, compliance, and technical due dilig
 
 ---
 
-**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->371<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->67<!-- /SKILL_COUNT --> Skills**
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->392<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->70<!-- /SKILL_COUNT --> Skills**

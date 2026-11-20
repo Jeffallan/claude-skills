@@ -168,7 +168,7 @@ const redis = new Redis();
 
 // Store user connection info
 io.on('connection', async (socket) => {
-  const userId = socket.handshake.auth.userId;
+  const userId = socket.userId; // set by the JWT auth middleware in security.md
 
   // Track which server has this user
   await redis.hset('user:connections', userId, process.env.SERVER_ID);

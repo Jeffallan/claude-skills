@@ -250,8 +250,14 @@ kubectl run test-connectivity --image=nicolaka/netshoot:latest -it --rm -n produ
 curl -v http://web-app:80
 nc -zv web-app 80
 
-# Temporarily allow all traffic (testing only)
-kubectl delete networkpolicy --all -n production
+# Find the policies that select the destination pod (compare podSelector with these labels)
+kubectl get pods -n production -l app=web-app --show-labels
+kubectl get networkpolicy -n production -o custom-columns=NAME:.metadata.name,SELECTOR:.spec.podSelector
+
+# Fix forward: add a narrow allow rule for the blocked path (see networking.md) instead of removing policies.
+# Never delete production policies to test; if you must bisect, reproduce in a staging
+# namespace and remove one named policy at a time there.
+kubectl delete networkpolicy default-deny-all -n staging
 ```
 
 ### Issue 7: High Resource Usage

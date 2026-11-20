@@ -1,5 +1,5 @@
 command: "common-ground"
-path: commands/common-ground/COMMAND.md
+path: commands/common-ground.md
 description: docs/workflow/common-ground.md
 inputs:
   - name: list

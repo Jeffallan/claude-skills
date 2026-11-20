@@ -5,7 +5,7 @@ license: MIT
 metadata:
   author: https://github.com/Jeffallan
   company: https://synergetic.solutions
-  version: "1.1.0"
+  version: "1.2.0"
   domain: platform
   triggers: Jira, Confluence, Atlassian, MCP, tickets, issues, wiki, JQL, CQL, sprint, backlog, project management
   role: expert
@@ -72,25 +72,29 @@ space = "ENG" AND type = page AND text ~ "deployment runbook"
 ```
 
 ### Minimal MCP Server Configuration
+Atlassian Cloud: connect to the hosted Atlassian Rovo MCP Server, then run `/mcp` to sign in with OAuth.
+```bash
+claude mcp add --transport http atlassian https://mcp.atlassian.com/v2/mcp
+```
+
+Server/Data Center: run the community `mcp-atlassian` server (sooperset) with personal access tokens.
 ```json
 {
   "mcpServers": {
     "atlassian": {
-      "command": "npx",
-      "args": ["-y", "@sooperset/mcp-atlassian"],
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
       "env": {
-        "JIRA_URL": "https://your-domain.atlassian.net",
-        "JIRA_EMAIL": "user@example.com",
-        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
-        "CONFLUENCE_URL": "https://your-domain.atlassian.net/wiki",
-        "CONFLUENCE_EMAIL": "user@example.com",
-        "CONFLUENCE_API_TOKEN": "${CONFLUENCE_API_TOKEN}"
+        "JIRA_URL": "https://jira.internal.example.com",
+        "JIRA_PERSONAL_TOKEN": "${JIRA_PERSONAL_TOKEN}",
+        "CONFLUENCE_URL": "https://confluence.internal.example.com",
+        "CONFLUENCE_PERSONAL_TOKEN": "${CONFLUENCE_PERSONAL_TOKEN}"
       }
     }
   }
 }
 ```
-> **Note:** Always load `JIRA_API_TOKEN` and `CONFLUENCE_API_TOKEN` from environment variables or a secrets manager — never hardcode credentials.
+> **Note:** Always load tokens from environment variables or a secrets manager; never hardcode credentials. Tool names differ between servers, see `references/mcp-server-setup.md`.
 
 ## Constraints
 

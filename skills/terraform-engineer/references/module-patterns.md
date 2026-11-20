@@ -7,14 +7,15 @@ terraform-aws-vpc/
 ├── main.tf           # Primary resource definitions
 ├── variables.tf      # Input variable declarations
 ├── outputs.tf        # Output value definitions
-├── versions.tf       # Provider version constraints
+├── terraform.tf      # Terraform and provider version constraints
 ├── README.md         # Module documentation
 ├── examples/
 │   └── complete/
 │       ├── main.tf
 │       └── variables.tf
 └── tests/
-    └── vpc_test.go
+    ├── defaults_unit_test.tftest.hcl
+    └── complete_integration_test.tftest.hcl
 ```
 
 ## Basic Module Pattern
@@ -124,19 +125,22 @@ output "private_subnet_cidrs" {
 }
 ```
 
-**versions.tf**
+**terraform.tf**
 ```hcl
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.14"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 }
 ```
+
+A reusable module should declare minimum versions (`>= 6.0`) rather than a tight
+`~>` pin when many consumers share it; the root configuration pins and locks.
 
 ## Module Composition
 
@@ -237,7 +241,7 @@ resource "aws_route53_zone" "private" {
 # Pin to specific version
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.1.2"
+  version = "6.7.3"
 
   # ... configuration
 }
@@ -245,7 +249,7 @@ module "vpc" {
 # Use version constraints
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.0"  # >= 19.0, < 20.0
+  version = "~> 21.0" # >= 21.0, < 22.0
 
   # ... configuration
 }

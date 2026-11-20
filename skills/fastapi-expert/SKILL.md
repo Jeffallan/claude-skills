@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: fullstack-guardian, django-expert, test-master
+  related-skills: fullstack-guardian, django-expert, test-master, flask-expert
 ---
 
 # FastAPI Expert

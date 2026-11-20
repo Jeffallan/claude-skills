@@ -248,7 +248,7 @@ class PresenceManager {
 const presence = new PresenceManager();
 
 io.on('connection', async (socket) => {
-  const userId = socket.handshake.auth.userId;
+  const userId = socket.userId; // set by the JWT auth middleware in security.md
 
   await presence.userConnected(userId, socket.id);
   socket.join(`user:${userId}`);
@@ -272,7 +272,7 @@ io.on('connection', async (socket) => {
 const messageQueue = new Map();
 
 io.on('connection', (socket) => {
-  const userId = socket.handshake.auth.userId;
+  const userId = socket.userId; // set by the JWT auth middleware in security.md
 
   // Deliver queued messages on connect
   const queuedMessages = messageQueue.get(userId) || [];
@@ -286,7 +286,7 @@ io.on('connection', (socket) => {
     setTimeout(() => {
       const userSockets = io.sockets.sockets;
       const hasOtherConnection = Array.from(userSockets.values())
-        .some(s => s.handshake.auth.userId === userId);
+        .some(s => s.userId === userId);
 
       if (!hasOtherConnection) {
         // User fully disconnected, queue new messages
