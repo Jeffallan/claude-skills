@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- nuxt-expert: Nuxt 4.6 skill for full-stack Nuxt apps, with references on project structure and upgrades (Nuxt 3 to 4, the Nuxt 5 compatibility flag), data fetching, server routes with `nuxt/server`, rendering (route rules, islands, lazy hydration), security (runtime config secrets, nuxt-auth-utils, nuxt-security), deployment and testing. vue-expert's Nuxt 3 reference becomes `references/ssr.md`, limited to Vue SSR without Nuxt, and vue-expert and nextjs-developer link to the new skill (closing #316)
 - flask-expert: Flask 3.1 and SQLAlchemy 2 skill for JSON APIs and server-rendered apps, with references on app structure, the database layer, REST APIs, templates and forms, authentication, testing and deployment. django-expert and fastapi-expert link to it (#323)
 - CI: `notes-check.yml` and the base schema under `.handbook/base-schema/` arrive with handbook v0.5.3 and check notes front matter. The default path, `notes/**/*.md`, matches nothing here, so it passes until the repo sets `notes_paths` (#324)
 - Docs site: each deploy tells search engines that support IndexNow (Bing, Yandex and others) which pages changed, so they recrawl them sooner. Only the deploy build submits, and only pages whose HTML changed since the last deploy (the first deploy submits all). The key is served once for every site at `https://jeffallan.github.io/17c975f34bbe97c32cf68c4f58503478.txt`

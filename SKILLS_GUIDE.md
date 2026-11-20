@@ -36,6 +36,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Next.js Developer](https://jeffallan.github.io/claude-skills/skills/frontend/nextjs-developer/)**: Next.js App Router, Server Components, Server Actions
 - **[Vue Expert](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert/)**: Vue 3 applications with Composition API and Pinia (TypeScript)
 - **[Vue Expert (JS)](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert-js/)**: Vue 3 applications with JavaScript only (JSDoc typing)
+- **[Nuxt Expert](https://jeffallan.github.io/claude-skills/skills/frontend/nuxt-expert/)**: Nuxt 4 full-stack apps: SSR, server routes, hybrid rendering, deployment
 - **[Angular Architect](https://jeffallan.github.io/claude-skills/skills/frontend/angular-architect/)**: Angular applications with standalone components
 - **[React Native Expert](https://jeffallan.github.io/claude-skills/skills/frontend/react-native-expert/)**: Building cross-platform mobile apps (React Native)
 - **[Flutter Expert](https://jeffallan.github.io/claude-skills/skills/frontend/flutter-expert/)**: Building cross-platform apps with Flutter
@@ -157,6 +158,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **React SSR/SSG** → Next.js Developer
 - **Vue Apps (TypeScript)** → Vue Expert
 - **Vue Apps (JavaScript)** → Vue Expert (JS)
+- **Vue SSR/SSG / Nuxt** → Nuxt Expert
 - **Angular Apps** → Angular Architect
 - **Mobile (JavaScript)** → React Native Expert
 - **Mobile (Dart)** → Flutter Expert
