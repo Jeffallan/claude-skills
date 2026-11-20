@@ -48,7 +48,7 @@ A fresh worktree has no gitignored files, so no `.env`, keys or local settings r
 
 Subagent `isolation: worktree` branches from the default branch, not `head_sha`, so create the worktree yourself and pass its path.
 
-A worktree separates files, not services. Verifiers whose reproductions use the test database, fixed ports or other machine-wide state (a dev server, a container name, a shared cache) collide when they run at once. Run those one at a time, or in groups that share nothing, unless the project gives each run its own database and ports. Read-only verifiers and reproductions that touch no shared service can run in parallel. The same rule holds for the recheck.
+A worktree separates files, not services. Verifiers whose reproductions use the test database, fixed ports or other machine-wide state (a dev server, a container name, a shared cache) collide when they run at once. Run those one at a time, or in groups that share nothing, unless the project gives each run its own database and ports. Read-only verifiers and reproductions that touch no shared service can run in parallel. The same rule holds for the recheck. A run against a shared test database cleans up the rows it created, or the group resets the test database when it finishes, so the next run starts from the same state.
 
 ## The brief
 
@@ -104,7 +104,7 @@ Never mutate the working tree to get a RED. A mutation left in the source ends u
 
 1. A fresh verifier with no triage history sees the diff without commit messages.
 2. The main session maps each fix commit to its row IDs.
-3. The frozen reproduction, digest unchanged, runs at the fix commit's parent (it must fail) and at the fix (it must pass). Read-level rows get a re-read against the new code. Reproductions that share a database or ports run one at a time (see The worktree). When the frozen file gives the same result at both commits, because the fix changed setup it hardcodes (a port, a status code, seeded state), record it as non-discriminating. Then run an adapted copy beside it, never an edit of the frozen file, and quote the changed lines in the evidence. The row is `fixed-verified` only when the copy fails at the parent and passes at the fix; otherwise it is `reopened`.
+3. The frozen reproduction, digest unchanged, runs at the fix commit's parent (it must fail) and at the fix (it must pass). Read-level rows get a re-read against the new code. Reproductions that share a database or ports run one at a time (see The worktree). When the frozen file gives the same result at both commits, because the fix changed setup it hardcodes (a port, a status code, seeded state), record it as non-discriminating. Then run an adapted copy beside it, never an edit of the frozen file, and quote the changed lines in the evidence. The row is `fixed-verified` only when the copy fails at the parent and passes at the fix; otherwise it is `reopened`. A `test-gap` row's frozen mutant goes stale the same way when a later fix rewrites its lines: apply an equivalent mutant beside the frozen diff, quote it in the evidence, and count the row only when the new test fails on it with an assertion.
 4. Search the spec diff for the same mistake elsewhere.
 5. Inspect changed lines plus direct callers and tests of changed symbols; anything new becomes a new row, verified by a different instance.
 6. Re-verify any rejected or unresolved row whose cited lines the fix changed.
