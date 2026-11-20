@@ -83,6 +83,8 @@ The verifier records a `suggested` tier and never changes the tier. The gate use
 
 After the verdicts return, the main session copies each reproduction from its worktree into `review/repro/<ID>.repro.<ext>` (a name no test runner collects; a `*.test.ts` copy there broke the suite in the pilot), notes the path the recheck copies it to before running it, records its sha256 in the verdict's `evidence`, and removes the worktrees. The copy stays frozen as evidence: nobody edits it.
 
+Before copying, check that each reproduction imports or calls the project code it claims to exercise. One that only drives its own setup, such as a hand-written `docker run` or a mocked module, doesn't count: send it back to its verifier, or record the verdict as `unresolved`.
+
 The fix ticket never reuses the frozen file as its test. It **writes its own RED test** adapted to the suite, through `ticket:execute`. The recheck runs the frozen file; `ticket:complete`'s RED replay runs the new test.
 
 ## Fix tickets from findings
@@ -102,7 +104,7 @@ Never mutate the working tree to get a RED. A mutation left in the source ends u
 
 1. A fresh verifier with no triage history sees the diff without commit messages.
 2. The main session maps each fix commit to its row IDs.
-3. The frozen reproduction, digest unchanged, runs at the fix commit's parent (it must fail) and at the fix (it must pass). Read-level rows get a re-read against the new code. Reproductions that share a database or ports run one at a time (see The worktree).
+3. The frozen reproduction, digest unchanged, runs at the fix commit's parent (it must fail) and at the fix (it must pass). Read-level rows get a re-read against the new code. Reproductions that share a database or ports run one at a time (see The worktree). When the frozen file gives the same result at both commits, because the fix changed setup it hardcodes (a port, a status code, seeded state), record it as non-discriminating. Then run an adapted copy beside it, never an edit of the frozen file, and quote the changed lines in the evidence. The row is `fixed-verified` only when the copy fails at the parent and passes at the fix; otherwise it is `reopened`.
 4. Search the spec diff for the same mistake elsewhere.
 5. Inspect changed lines plus direct callers and tests of changed symbols; anything new becomes a new row, verified by a different instance.
 6. Re-verify any rejected or unresolved row whose cited lines the fix changed.
