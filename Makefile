@@ -60,12 +60,10 @@ lint:
 	ruff format --check scripts/
 	pyright scripts/
 	cd site && npx prettier --plugin prettier-plugin-astro --check "src/**" "scripts/**" astro.config.mjs
-	npx prettier --check "skills/**/*.md" "docs/**/*.md" "*.md" "research/**/*.md"
 
 format:
 	ruff check --fix scripts/
 	ruff format scripts/
 	cd site && npx prettier --plugin prettier-plugin-astro --write "src/**" "scripts/**" astro.config.mjs
-	npx prettier --write "skills/**/*.md" "docs/**/*.md" "*.md" "research/**/*.md"
 
 lint-fix: format
