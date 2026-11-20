@@ -2,9 +2,12 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.7
     hooks:
+      # .handbook/ is delivered by the handbook (Copier) and keeps its own style.
       - id: ruff
         args: [--fix]
+        exclude: ^\.handbook/
       - id: ruff-format
+        exclude: ^\.handbook/
 
   - repo: local
     hooks:
@@ -30,6 +33,7 @@ repos:
         entry: pyright
         language: python
         types: [python]
+        exclude: ^\.handbook/
         files: ^scripts/.*\.py$
         pass_filenames: false
         additional_dependencies:
