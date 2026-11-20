@@ -29,7 +29,7 @@ A project that started from discovery and never ran intake has no intake docs. T
 
 Each later run reads the description's Change history and folds in only the completed specs it doesn't list, changing just the sections they touch. `--full` rewrites everything. Every section names its sources, and open findings that affect a section appear in it by id.
 
-`--roadmap` writes `docs/architecture-roadmap.md` instead and touches nothing else. It sets the current component diagram from the system description beside a target diagram built from every spec `guard spec-status` lists as not yet completed, with a table of what each one adds, changes or removes. The page is marked as a plan, carries no `sources:` or `related:` frontmatter so no ticket's docs check ever lists it, and is never a source for the description. It refuses until `docs/system-description.md` exists.
+`--roadmap` writes `docs/architecture-roadmap.md` instead and touches nothing else. It places the current component diagram, taken from the system description, beside a target diagram built from every spec `guard spec-status` lists as not yet completed, with a table of what each one adds, changes or removes. The page is marked as a plan, carries no `sources:` or `related:` frontmatter so no ticket's docs check ever lists it, and is never a source for the description. It refuses until `docs/system-description.md` exists.
 
 `spec:complete` keeps the description current one spec at a time: in its completion commit, before the PR opens, it proposes updates for the finished spec and applies the ones the owner approves.
 
