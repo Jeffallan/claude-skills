@@ -12,7 +12,7 @@ It is resumable: rerunning picks up at the first step not yet done, except that 
 
 ## Unattended guard
 
-Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, write nothing: print the gate result and the next step, and end with `BLOCKED: spec:complete needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
+Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, write nothing and never merge: print the gate result and the next step (with `codeHost.type` `none`, the manual steps in full), and end with `BLOCKED: spec:complete needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
 
 ## Setup
 
@@ -50,7 +50,9 @@ Commit `docs(<spec-name>): complete the spec`. When review feedback later sends 
 
 ## Step 3: PR
 
-Through the code-host adapter, each write raising the shared "ask" prompt:
+With `codeHost.type` `none`, Step 2's completion commit comes first, every time: check `git log -1 --format=%s` shows `docs(<spec-name>): complete the spec` before going on. Then ask the owner with `AskUserQuestion` how to finish: merge `spec/<spec-name>` into the default branch locally now, then go to Step 7; or take the manual steps at the end of `code-host-github.md`, printed in full with the PR body, and stop. Skip the rest of this step and Steps 4 to 6.
+
+Otherwise, through the code-host adapter, each write raising the shared "ask" prompt:
 
 1. Push the spec branch.
 2. Reuse the open PR for `spec/<spec-name>`, or open one into the default branch. The body is the record of what the merge closes:

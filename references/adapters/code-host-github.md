@@ -34,7 +34,7 @@ The body is the record of what the merge closes:
 
 ## Manual steps for other hosts
 
-When `codeHost.type` is `none`, `spec:complete` prints:
+When `codeHost.type` is `none`, `spec:complete` makes its completion commit first, then asks the owner whether to merge locally now or take these steps. For the steps, it prints:
 
 1. `git push -u origin spec/<spec-name>`
 2. Open a PR from `spec/<spec-name>` into the default branch with the generated body (printed in full).
