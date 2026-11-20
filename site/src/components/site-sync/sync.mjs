@@ -19,7 +19,11 @@ const WORKFLOW_DESCRIPTION_MAX = 160;
  *   repoRoot, siteDir     absolute paths
  *   base                  the site's base path, e.g. '/claude-skills'
  *   githubBlob            e.g. 'https://github.com/Jeffallan/claude-skills/blob/main'
- *   pageTitle             skill page <title> template, e.g. 'Writing With Agents | {title}'
+ *   pageTitle             skill page <title> template, e.g. '{title} Agent Skill for Claude Code | Claude Skills';
+ *                         {title} is the skill's metadata.seo-title when set, else its display title
+ *   skillIntros           optional { skillName: repo-relative Markdown file }: an intro written for
+ *                         people, placed before the metadata table. Keep these files outside the
+ *                         skills folder so they stay out of the plugin. Front matter is dropped
  *   docs                  [{ src, dest, title, description, category }] copied as they are
  *   workflowsDir          repo-relative folder of workflow docs, or null
  *   linkMap               extra { sourceLink: siteUrl } entries
@@ -43,7 +47,7 @@ export function syncSite(config) {
   cleanSyncedContent(ctx);
   syncDocs(ctx);
   syncWorkflowDocs(ctx);
-  syncSkillPages(ctx, buildSkillIndex(ctx));
+  syncSkillPages(ctx, buildSkillIndex(ctx), readSkillIntros(ctx));
   cleanPublic(ctx);
   writeMarkdownCopies(ctx);
   writeIndexCopy(ctx);
@@ -250,7 +254,29 @@ function buildSkillIndex(ctx) {
   return new Map(ctx.skills.map((s) => [s.name, s]));
 }
 
-function syncSkillPages(ctx, index) {
+// A typo in skillIntros fails the sync rather than silently dropping an intro (#116)
+function readSkillIntros(ctx) {
+  const names = new Set(ctx.skills.map((s) => s.name));
+  const intros = new Map();
+  for (const [name, file] of Object.entries(ctx.skillIntros ?? {})) {
+    if (!names.has(name))
+      throw new Error(`site-sync: skillIntros names "${name}", which is not a skill`);
+    const full = path.join(ctx.repoRoot, file);
+    if (!fs.existsSync(full))
+      throw new Error(`site-sync: skillIntros file ${file} for "${name}" does not exist`);
+    const text = fs.readFileSync(full, 'utf-8').replace(/^---\n[\s\S]*?\n---\n/, '');
+    // Links in the intro are relative to its own folder; make them repo-relative for the link map
+    const dir = path.posix.dirname(file);
+    const local = text.replace(
+      /\]\((?!https?:|#|\/)([^)]+)\)/g,
+      (_m, url) => `](${path.posix.normalize(path.posix.join(dir, url))})`,
+    );
+    intros.set(name, rewriteLinks(ctx, local).trim() + '\n\n');
+  }
+  return intros;
+}
+
+function syncSkillPages(ctx, index, intros) {
   const labels = Object.fromEntries(ctx.linter.domains.map((d) => [d.id, d.label]));
   for (const { name, data, body: raw, domain, title } of ctx.skills) {
     const meta = data.metadata ?? {};
@@ -290,14 +316,21 @@ function syncSkillPages(ctx, index) {
     body = stripTrailingLines(body, [backlink, ctx.linter.credit]);
     body = rewriteLinks(ctx, body);
 
-    // D-028: the meta description is the skill description as written
+    // D-048 (amends D-028): optional search title and meta description written for people;
+    // the sidebar, llms.txt and llms-full.txt keep the display title and the skill description
     const frontmatter = starlightFrontmatter({
-      title: ctx.pageTitle.replace('{title}', title),
-      description,
+      title: ctx.pageTitle.replace('{title}', meta['seo-title'] || title),
+      description: meta['seo-description'] || description,
       sidebar: { label: title },
     });
     const dest = `skills/${domain}/${name}.md`;
-    writePage(ctx, dest, frontmatter, metaBlock + triggersBlock + relatedBlock + body.trim());
+    const intro = intros.get(name) ?? '';
+    writePage(
+      ctx,
+      dest,
+      frontmatter,
+      intro + metaBlock + triggersBlock + relatedBlock + body.trim(),
+    );
     ctx.pages.push({
       siteUrl: `/skills/${domain}/${name}/`,
       title,
