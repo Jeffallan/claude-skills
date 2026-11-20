@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- test-master: the E2E reference covers agentic and mobile E2E, naming Appium and Detox as the established mobile tools and e2e as an agent-driven option, with Playwright kept for deterministic flows (#322)
 - CI: the ruff, ruff-format and pyright hooks skip `.handbook/`, which the handbook delivers in its own Python style (#325)
 - terraform-engineer: current Terraform and provider practice across `SKILL.md` and all five references: provider majors (aws 6, azurerm 5, google 8, kubernetes 3, helm 3), `use_lockfile` instead of a DynamoDB lock table, `import`/`moved`/`removed` blocks instead of state commands, ephemeral and write-only attributes for secrets, `mock_provider` unit tests, and Trivy instead of tfsec (#318)
 - CI: merged the Dependabot update for `softprops/action-gh-release` 3.0.3 → 3.0.4 (#319)
