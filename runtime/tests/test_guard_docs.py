@@ -275,6 +275,14 @@ def test_a_doc_edited_outside_the_workflow_is_reported(git_repo, capsys):
     assert "edited outside the workflow since its audit" in drift(git_repo)["architecture/api.md"]["reasons"]
 
 
+def test_a_ticket_line_above_a_separate_trailer_paragraph_still_counts(git_repo, capsys):
+    """Claude Code adds Co-Authored-By as its own paragraph, so git no longer parses Ticket: as a trailer."""
+    sha = drift_repo(git_repo)
+    git_repo.write("docs/architecture/api.md", FULL.format(sha=sha[:7]) + "\nUpdated by a ticket.\n")
+    git_repo.commit("feat: swap\n\nTicket: T1\n\nCo-Authored-By: Someone <a@example.com>")
+    assert "architecture/api.md" not in drift(git_repo)
+
+
 def test_affected_follows_sources_globs(git_repo, capsys):
     base = drift_repo(git_repo)
     base = git_repo.head()

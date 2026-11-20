@@ -329,10 +329,11 @@ def drift(cwd: Path) -> list[dict[str, Any]]:
         for sha in git(cwd, "rev-list", "--reverse", "--no-merges", f"{verified}..HEAD").split():
             files = set(git(cwd, "show", "--name-only", "--format=", "--no-renames", sha).split())
             if prefix + doc in files:
-                trailers = git(
-                    cwd, "log", "-1", "--format=%(trailers:key=Intake,valueonly)%(trailers:key=Ticket,valueonly)", sha
-                )
-                if not trailers.strip() and "edited outside the workflow since its audit" not in reasons:
+                # A line match, not git's trailer parser: Claude Code's Co-Authored-By paragraph, added after
+                # a blank line, makes git stop reading an earlier Ticket: line as a trailer.
+                body = git(cwd, "log", "-1", "--format=%B", sha)
+                marked = re.search(r"^(Intake|Ticket): \S", body, re.M)
+                if not marked and "edited outside the workflow since its audit" not in reasons:
                     reasons.append("edited outside the workflow since its audit")
                 continue
             code = {f for f in files if not f.startswith(prefix)}
