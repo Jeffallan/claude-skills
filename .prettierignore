@@ -1,3 +1,6 @@
+# Prettier doesn't format Markdown here: skill-linter checks Markdown structure
+# (fences, tables, headings, line endings), and a repo-wide reflow would churn
+# every skill for list markers and table padding (#275).
 *.md
 site/dist/
 site/.astro/

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- nuxt-expert: Nuxt 4.6 skill for full-stack Nuxt apps, with references on project structure and upgrades (Nuxt 3 to 4, the Nuxt 5 compatibility flag), data fetching, server routes with `nuxt/server`, rendering (route rules, islands, lazy hydration), security (runtime config secrets, nuxt-auth-utils, nuxt-security), deployment and testing. vue-expert's Nuxt 3 reference becomes `references/ssr.md`, limited to Vue SSR without Nuxt, and vue-expert and nextjs-developer link to the new skill (closing #316)
 - firebase-expert: Firebase skill for the modular JS SDK 13, firebase-admin 14 and Cloud Functions 2nd gen, with references on Firestore, Security Rules and their emulator tests, Authentication and Identity Platform, Cloud Functions, Storage with App Check and AI Logic, the Emulator Suite, and Hosting and App Hosting deploys. cloud-architect, secure-code-guardian, nextjs-developer, react-expert, flutter-expert and react-native-expert link to it (closing #217)
 - flask-expert: Flask 3.1 and SQLAlchemy 2 skill for JSON APIs and server-rendered apps, with references on app structure, the database layer, REST APIs, templates and forms, authentication, testing and deployment. django-expert and fastapi-expert link to it (#323)
 - CI: `notes-check.yml` and the base schema under `.handbook/base-schema/` arrive with handbook v0.5.3 and check notes front matter. The default path, `notes/**/*.md`, matches nothing here, so it passes until the repo sets `notes_paths` (#324)
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- Atlassian MCP guide: titled "Connect Jira and Confluence to Claude Code" with a description naming Claude Code, Jira and Confluence. It adds setup for Atlassian's remote MCP server (`claude mcp add` with the v2 URL and OAuth) and a section on a claude.ai connector that works in Claude chat or Cowork but doesn't appear in Claude Code. API token steps now include the expiry date Atlassian requires (closing #314)
 - test-master: the E2E reference covers agentic and mobile E2E, naming Appium and Detox as the established mobile tools and e2e as an agent-driven option, with Playwright kept for deterministic flows (#322)
 - CI: the ruff, ruff-format and pyright hooks skip `.handbook/`, which the handbook delivers in its own Python style (#325)
 - terraform-engineer: current Terraform and provider practice across `SKILL.md` and all five references: provider majors (aws 6, azurerm 5, google 8, kubernetes 3, helm 3), `use_lockfile` instead of a DynamoDB lock table, `import`/`moved`/`removed` blocks instead of state commands, ephemeral and write-only attributes for secrets, `mock_provider` unit tests, and Trivy instead of tfsec (#318)

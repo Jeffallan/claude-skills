@@ -82,8 +82,9 @@ syncSite({
     {
       src: 'docs/ATLASSIAN_MCP_SETUP.md',
       dest: 'guides/atlassian-mcp-setup.md',
-      title: 'Atlassian MCP Setup',
-      description: 'Configure Jira and Confluence MCP integration',
+      title: 'Connect Jira and Confluence to Claude Code',
+      description:
+        "Set up Atlassian MCP in Claude Code so Claude can search and update Jira issues and Confluence pages, and fix a Claude chat connector that Claude Code can't see.",
       category: 'guides',
     },
     {
