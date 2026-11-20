@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- CI: `notes-check.yml` and the base schema under `.handbook/base-schema/` arrive with handbook v0.5.3 and check notes front matter. The default path, `notes/**/*.md`, matches nothing here, so it passes until the repo sets `notes_paths` (#324)
 - Docs site: each deploy tells search engines that support IndexNow (Bing, Yandex and others) which pages changed, so they recrawl them sooner. Only the deploy build submits, and only pages whose HTML changed since the last deploy (the first deploy submits all). The key is served once for every site at `https://jeffallan.github.io/17c975f34bbe97c32cf68c4f58503478.txt`
 - Docs site: the build fails on a broken internal link (`starlight-links-validator`)
 - CI: `docs-site.yml` lints and builds the docs site on every pull request and push to `main`, so a broken link or lint error shows up in review instead of at release. The workflow is shared with the other docs sites and kept in step from the same private repo as the site code
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
+- CI: the ruff, ruff-format and pyright hooks skip `.handbook/`, which the handbook delivers in its own Python style (#325)
 - terraform-engineer: current Terraform and provider practice across `SKILL.md` and all five references: provider majors (aws 6, azurerm 5, google 8, kubernetes 3, helm 3), `use_lockfile` instead of a DynamoDB lock table, `import`/`moved`/`removed` blocks instead of state commands, ephemeral and write-only attributes for secrets, `mock_provider` unit tests, and Trivy instead of tfsec (#318)
 - CI: merged the Dependabot update for `softprops/action-gh-release` 3.0.3 → 3.0.4 (#319)
 - Docs site: skill page titles lead with the skill's name, as "Game Developer Agent Skill for Claude Code | Claude Skills" (was "Agent Skills for Claude Code | Game Developer | Claude Skills"), so search results show what the page is about first
