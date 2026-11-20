@@ -22,6 +22,8 @@ syncSite({
   base: BASE_PATH,
   githubBlob: GITHUB_BLOB,
   pageTitle: '{title} Agent Skill for Claude Code',
+  // An intro for people above a skill's own content, kept out of SKILL.md (handbook#116)
+  skillIntros: { 'code-reviewer': 'docs/CODE_REVIEW_SKILL.md' },
   docs: [
     {
       src: 'QUICKSTART.md',
@@ -73,29 +75,6 @@ syncSite({
       category: 'guides',
     },
     {
-      src: 'docs/TRACKER_SETUP.md',
-      dest: 'guides/tracker-setup.md',
-      title: 'Tracker Setup',
-      description:
-        'Configure the workflow for Jira, GitHub Issues, GitHub Projects, Linear or text tickets',
-      category: 'guides',
-    },
-    {
-      src: 'docs/INTAKE.md',
-      dest: 'guides/intake.md',
-      title: 'Intake',
-      description:
-        'Adopt an existing codebase: reference docs, characterization tests and a findings tracker',
-      category: 'guides',
-    },
-    {
-      src: 'docs/GOAL_RUNS.md',
-      dest: 'guides/goal-runs.md',
-      title: 'Goal Runs',
-      description: 'Launch and check unattended goal runs over a spec',
-      category: 'guides',
-    },
-    {
       src: 'docs/COMMON_GROUND.md',
       dest: 'guides/common-ground.md',
       title: 'Common Ground',
@@ -105,8 +84,9 @@ syncSite({
     {
       src: 'docs/ATLASSIAN_MCP_SETUP.md',
       dest: 'guides/atlassian-mcp-setup.md',
-      title: 'Atlassian MCP Setup',
-      description: 'Configure Jira and Confluence MCP integration',
+      title: 'Connect Jira and Confluence to Claude Code',
+      description:
+        "Set up Atlassian MCP in Claude Code so Claude can search and update Jira issues and Confluence pages, and fix a Claude chat connector that Claude Code can't see.",
       category: 'guides',
     },
     {
@@ -128,9 +108,6 @@ syncSite({
   linkMap: {
     '../commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
     'commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
-    '../GOAL_RUNS.md': `${BASE_PATH}/guides/goal-runs/`,
-    '../INTAKE.md': `${BASE_PATH}/guides/intake/`,
-    '../TRACKER_SETUP.md': `${BASE_PATH}/guides/tracker-setup/`,
     LICENSE: `${GITHUB_BLOB}/LICENSE`,
     'docs/v0.5.0-plan.md': `${GITHUB_BLOB}/docs/v0.5.0-plan.md`,
   },

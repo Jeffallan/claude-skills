@@ -1,10 +1,14 @@
 # Changes here will be overwritten by Copier. Do not edit by hand.
-_commit: v0.3.0
+_commit: v0.6.1
 _src_path: https://github.com/Jeffallan/handbook.git
 ci_workflows:
 - docs-site
 - docs-deploy
 handbook_docs: []
+notes_paths:
+- notes/**/*.md
+notes_schema: envelope-lite
+ship_template_sources: false
 site_dir: site
 site_pieces:
 - site-nav

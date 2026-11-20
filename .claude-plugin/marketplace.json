@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
-    "version": "0.4.20"
+    "version": "0.4.21"
   },
   "plugins": [
     {
@@ -15,8 +15,8 @@
         "repo": "jeffallan/claude-skills",
         "ref": "plugin"
       },
-      "description": "68 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 8 backend frameworks, 7 frontend/mobile, plus infrastructure, DevOps, security, and testing skills. Includes 9 project workflow commands for epic planning, discovery, execution, and retrospectives.",
-      "version": "0.4.20",
+      "description": "71 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 9 backend frameworks, 8 frontend/mobile, plus infrastructure, DevOps, security, and testing skills. Includes 9 project workflow commands for epic planning, discovery, execution, and retrospectives.",
+      "version": "0.4.21",
       "author": {
         "name": "jeffallan",
         "email": "jeff@synergetic.solutions",

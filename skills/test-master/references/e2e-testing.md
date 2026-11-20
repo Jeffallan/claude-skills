@@ -110,6 +110,41 @@ export default defineConfig({
 });
 ```
 
+## Agentic and mobile E2E
+
+For native mobile apps, Appium and Detox are the established selector-based tools; agent-driven frameworks such as e2e describe goals in plain language instead.
+
+[e2e](https://github.com/e2e-inc/e2e) is an open-source (Apache-2.0) E2E framework for web, iOS, and Android. A test describes a goal in plain language, an agent drives the app to reach it, and locators and assertions check the result in the same test. An agent step that a later assertion verifies records its actions, and the next run replays them with no model calls until the app changes.
+
+Use it when:
+
+- The app is native or cross-platform mobile (iOS simulator, Android emulator), not only web
+- The flow is easier to describe in plain language than in selectors, such as a long form or a multi-step journey
+- UI changes keep breaking selector-based tests
+
+Keep Playwright for flows that need exact, deterministic control. Tests without agent steps need no model.
+
+```typescript
+// tests/checkout.e2e.ts
+import { test, expect } from 'e2e';
+
+test('a member upgrades to Pro', async ({ app, agent, screen }) => {
+  await app.open('/settings/billing');
+
+  await agent.act('upgrade the workspace to the Pro plan');
+  await agent.assert('the invoice preview shows a prorated amount');
+
+  await expect(screen.getByRole('status')).toContainText('Pro');
+});
+```
+
+```bash
+npx e2e init   # choose web or mobile and a model provider; writes a config and an example test
+npx e2e run    # run every test
+```
+
+See the [quickstart](https://e2e.com/docs/quickstart) for setup details.
+
 ## Quick Reference
 
 | Pattern | When to Use |

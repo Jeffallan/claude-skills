@@ -25,6 +25,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Django Expert](https://jeffallan.github.io/claude-skills/skills/backend/django-expert/)**: Building Python web apps with Django/DRF
 - **[Django Storages S3](https://jeffallan.github.io/claude-skills/skills/backend/django-storages-s3/)**: Production AWS S3 file storage with django-storages and boto3
 - **[FastAPI Expert](https://jeffallan.github.io/claude-skills/skills/backend/fastapi-expert/)**: Building async Python APIs with FastAPI
+- **[Flask Expert](https://jeffallan.github.io/claude-skills/skills/backend/flask-expert/)**: Building Flask 3.x web apps and APIs with SQLAlchemy 2.x
 - **[Spring Boot Engineer](https://jeffallan.github.io/claude-skills/skills/backend/spring-boot-engineer/)**: Java enterprise applications with Spring Boot
 - **[Laravel Specialist](https://jeffallan.github.io/claude-skills/skills/backend/laravel-specialist/)**: PHP web applications with Laravel
 - **[Rails Expert](https://jeffallan.github.io/claude-skills/skills/backend/rails-expert/)**: Ruby on Rails web applications
@@ -35,6 +36,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Next.js Developer](https://jeffallan.github.io/claude-skills/skills/frontend/nextjs-developer/)**: Next.js App Router, Server Components, Server Actions
 - **[Vue Expert](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert/)**: Vue 3 applications with Composition API and Pinia (TypeScript)
 - **[Vue Expert (JS)](https://jeffallan.github.io/claude-skills/skills/frontend/vue-expert-js/)**: Vue 3 applications with JavaScript only (JSDoc typing)
+- **[Nuxt Expert](https://jeffallan.github.io/claude-skills/skills/frontend/nuxt-expert/)**: Nuxt 4 full-stack apps: SSR, server routes, hybrid rendering, deployment
 - **[Angular Architect](https://jeffallan.github.io/claude-skills/skills/frontend/angular-architect/)**: Angular applications with standalone components
 - **[React Native Expert](https://jeffallan.github.io/claude-skills/skills/frontend/react-native-expert/)**: Building cross-platform mobile apps (React Native)
 - **[Flutter Expert](https://jeffallan.github.io/claude-skills/skills/frontend/flutter-expert/)**: Building cross-platform apps with Flutter
@@ -86,6 +88,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Shopify Expert](https://jeffallan.github.io/claude-skills/skills/platform/shopify-expert/)**: Liquid templating, Storefront API, Shopify apps, checkout extensions
 - **[WordPress Pro](https://jeffallan.github.io/claude-skills/skills/platform/wordpress-pro/)**: WordPress themes, plugins, Gutenberg blocks, WooCommerce
 - **[Atlassian MCP](https://jeffallan.github.io/claude-skills/skills/platform/atlassian-mcp/)**: Jira/Confluence integration via MCP, JQL, CQL queries
+- **[Firebase Expert](https://jeffallan.github.io/claude-skills/skills/platform/firebase-expert/)**: Firestore, Security Rules, Firebase Auth, Cloud Functions 2nd gen, Hosting and App Hosting
 
 ### Specialized
 - **[Legacy Modernizer](https://jeffallan.github.io/claude-skills/skills/specialized/legacy-modernizer/)**: Legacy code modernization, migration strategies
@@ -122,6 +125,8 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 2. **Security Reviewer** - Security-focused review
 3. **Architecture Designer** - Architectural review (if needed)
 
+To install the code review skill and see an example report, open the [Code Reviewer page](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/).
+
 ### Legacy Code Analysis
 1. **Spec Miner** - Reverse-engineer specs
 2. **Architecture Designer** - Document architecture
@@ -146,6 +151,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **TypeScript API** → NestJS Expert
 - **Python Django** → Django Expert
 - **Python Async** → FastAPI Expert
+- **Python Lightweight / Flask** → Flask Expert
 - **Java Enterprise** → Spring Boot Engineer
 - **PHP Modern** → Laravel Specialist
 - **Ruby Web** → Rails Expert
@@ -156,6 +162,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **React SSR/SSG** → Next.js Developer
 - **Vue Apps (TypeScript)** → Vue Expert
 - **Vue Apps (JavaScript)** → Vue Expert (JS)
+- **Vue SSR/SSG / Nuxt** → Nuxt Expert
 - **Angular Apps** → Angular Architect
 - **Mobile (JavaScript)** → React Native Expert
 - **Mobile (Dart)** → Flutter Expert
@@ -186,6 +193,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **Shopify E-commerce** → Shopify Expert
 - **WordPress Sites** → WordPress Pro
 - **Jira/Confluence** → Atlassian MCP
+- **Firebase / Firestore backend** → Firebase Expert
 
 ### Testing
 - **E2E Browser Tests** → Playwright Expert

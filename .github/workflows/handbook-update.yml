@@ -1,6 +1,7 @@
 # Delivered by the handbook (Copier). Opens a PR when a new handbook version is available.
 # Triggered by the handbook's publish workflow, with a weekly check in case a push is missed.
 # Needs the handbook GitHub App: variable HANDBOOK_APP_ID and secret HANDBOOK_APP_PRIVATE_KEY.
+# A repo in an org also needs that org's own app: variable ORG_APP_ID and secret ORG_APP_PRIVATE_KEY.
 # Until HANDBOOK_APP_ID is set, the job is skipped instead of failing.
 name: Handbook update
 
@@ -19,24 +20,33 @@ jobs:
     if: vars.HANDBOOK_APP_ID != ''
     runs-on: ubuntu-latest
     steps:
+      # Two tokens, so a repo outside Jeffallan (an org repo) can take the handbook too: the handbook
+      # app reads the private handbook; the org's own app (ORG_APP_ID, when set) writes to this repo.
       - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        id: app
+        id: handbook
         with:
           app-id: ${{ vars.HANDBOOK_APP_ID }}
           private-key: ${{ secrets.HANDBOOK_APP_PRIVATE_KEY }}
+          owner: Jeffallan
+          repositories: handbook
+      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        id: app
+        with:
+          app-id: ${{ vars.ORG_APP_ID || vars.HANDBOOK_APP_ID }}
+          private-key: ${{ secrets.ORG_APP_PRIVATE_KEY || secrets.HANDBOOK_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-          repositories: |
-            handbook
-            ${{ github.event.repository.name }}
+          repositories: ${{ github.event.repository.name }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app.outputs.token }}
+          # A kept token would go to every github.com URL, so copier would read the handbook with the org app
+          persist-credentials: false
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
       - name: Let git read the private handbook
-        run: git config --global url."https://x-access-token:${{ steps.app.outputs.token }}@github.com/".insteadOf "https://github.com/"
+        run: git config --global url."https://x-access-token:${{ steps.handbook.outputs.token }}@github.com/Jeffallan/handbook".insteadOf "https://github.com/Jeffallan/handbook"
       - name: Check for a new handbook version
         id: check
         run: |
@@ -50,7 +60,7 @@ jobs:
         run: uvx copier update --defaults --trust
       - name: Open the update PR
         if: steps.check.outputs.available == 'true'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ steps.app.outputs.token }}
           branch: handbook/update

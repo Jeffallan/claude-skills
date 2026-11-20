@@ -2,10 +2,10 @@
 
 ## Current Status
 
-**Version:** v<!-- VERSION -->0.4.20<!-- /VERSION --> (Released October 2026)
+**Version:** v<!-- VERSION -->0.4.21<!-- /VERSION --> (Released October 2026)
 
-- **<!-- SKILL_COUNT -->68<!-- /SKILL_COUNT --> Skills** across 12 domains
-- **<!-- REFERENCE_COUNT -->372<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
+- **<!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> Skills** across 12 domains
+- **<!-- REFERENCE_COUNT -->393<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
 - **30+ Frameworks** and technologies covered
 - **<!-- WORKFLOW_COUNT -->31<!-- /WORKFLOW_COUNT --> Project Workflow Commands** for discovery, specs and test-first tickets
 - **50% Token Reduction** through selective disclosure architecture
@@ -201,4 +201,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: October 2026 (v0.4.20)*
+*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: October 2026 (v0.4.21)*

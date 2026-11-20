@@ -23,6 +23,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workflow: an intake checklist and goal-prompt template, so intake runs as one goal with a commit per item (`references/intake/checklist.md`, `goal-prompt.md`)
 - Evals: `evals/intake/` and `make eval-intake` score a finished intake run (docs with audits, tests citing findings, a green suite, a diff limited to docs and tests, clean goal sessions), tested on synthetic runs in `make test`
 - Docs: an Intake guide and an intake section in Workflow Commands
+
+### Changed
+- Workflow: commands move to `commands/{discovery,spec,ticket}/` and are named `discovery:*`, `spec:*` and `ticket:*` (#123). "Spec" replaces "epic". Discovery takes topics or tickets instead of an epic key and creates tickets only; `spec:triage` forms groups (#121, #122, #103)
+- Workflow: ticket commands write the failing test first, never write to the tracker, and commit with a neutral `Ticket: <id>` trailer. Only `spec:complete` closes tickets, after the merge
+- skill-linter 0.3.5 is pinned through one stamped value, `runtimePin`, which `stamp` writes into commands, references, docs, scripts, `Makefile`, `CLAUDE.md` and CI. CI's Validate job moves from skill-linter 0.2.0
+
+### Removed
+- Workflow: `complete-sprint` and the `project:<phase>:<command>` names. `create-implementation-plan` folds into `spec:create`, `complete-epic` into `spec:complete`, and the retrospective phase is dropped
+
+
+## [0.4.21] - 2026-11-20
+
+### Added
+- nuxt-expert: Nuxt 4.6 skill for full-stack Nuxt apps, with references on project structure and upgrades (Nuxt 3 to 4, the Nuxt 5 compatibility flag), data fetching, server routes with `nuxt/server`, rendering (route rules, islands, lazy hydration), security (runtime config secrets, nuxt-auth-utils, nuxt-security), deployment and testing. vue-expert's Nuxt 3 reference becomes `references/ssr.md`, limited to Vue SSR without Nuxt, and vue-expert and nextjs-developer link to the new skill (closing #316)
+- firebase-expert: Firebase skill for the modular JS SDK 13, firebase-admin 14 and Cloud Functions 2nd gen, with references on Firestore, Security Rules and their emulator tests, Authentication and Identity Platform, Cloud Functions, Storage with App Check and AI Logic, the Emulator Suite, and Hosting and App Hosting deploys. cloud-architect, secure-code-guardian, nextjs-developer, react-expert, flutter-expert and react-native-expert link to it (closing #217)
+- flask-expert: Flask 3.1 and SQLAlchemy 2 skill for JSON APIs and server-rendered apps, with references on app structure, the database layer, REST APIs, templates and forms, authentication, testing and deployment. django-expert and fastapi-expert link to it (#323)
+- CI: `notes-check.yml` and the base schema under `.handbook/base-schema/` arrive with handbook v0.5.3 and check notes front matter. The default path, `notes/**/*.md`, matches nothing here, so it passes until the repo sets `notes_paths` (#324)
 - Docs site: each deploy tells search engines that support IndexNow (Bing, Yandex and others) which pages changed, so they recrawl them sooner. Only the deploy build submits, and only pages whose HTML changed since the last deploy (the first deploy submits all). The key is served once for every site at `https://jeffallan.github.io/17c975f34bbe97c32cf68c4f58503478.txt`
 - Docs site: the build fails on a broken internal link (`starlight-links-validator`)
 - CI: `docs-site.yml` lints and builds the docs site on every pull request and push to `main`, so a broken link or lint error shows up in review instead of at release. The workflow is shared with the other docs sites and kept in step from the same private repo as the site code
@@ -34,9 +51,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: skill-linter runs as a report-only job, configured in `pyproject.toml`, and `make skill-lint` runs it locally. It will replace `validate-skills.py`, `validate-markdown.py` and `update-docs.py` once its current findings are fixed (#279)
 
 ### Changed
-- Workflow: commands move to `commands/{discovery,spec,ticket}/` and are named `discovery:*`, `spec:*` and `ticket:*` (#123). "Spec" replaces "epic". Discovery takes topics or tickets instead of an epic key and creates tickets only; `spec:triage` forms groups (#121, #122, #103)
-- Workflow: ticket commands write the failing test first, never write to the tracker, and commit with a neutral `Ticket: <id>` trailer. Only `spec:complete` closes tickets, after the merge
-- skill-linter 0.3.5 is pinned through one stamped value, `runtimePin`, which `stamp` writes into commands, references, docs, scripts, `Makefile`, `CLAUDE.md` and CI. CI's Validate job moves from skill-linter 0.2.0
+- Docs site: handbook v0.6.1 lets a skill page carry its own search title and description (`seo-title`, `seo-description` in `SKILL.md` metadata) and an intro for people from a file outside `skills/` (`skillIntros` in `site/scripts/sync-content.mjs`) (#331)
+- Docs site: the code-reviewer page answers "code review skill" searches. Its search title is "Code Review Agent Skill for Claude Code" with a description for people (the skill's new `seo-title` and `seo-description` metadata), and an intro from `docs/CODE_REVIEW_SKILL.md` above the skill reference says what it checks, how to install it in Claude Code, and shows an example review report. The intro comes from the handbook's `skillIntros` option and stays out of `SKILL.md` and the plugin (closing #313)
+- Atlassian MCP guide: titled "Connect Jira and Confluence to Claude Code" with a description naming Claude Code, Jira and Confluence. It adds setup for Atlassian's remote MCP server (`claude mcp add` with the v2 URL and OAuth) and a section on a claude.ai connector that works in Claude chat or Cowork but doesn't appear in Claude Code. API token steps now include the expiry date Atlassian requires (closing #314)
+- test-master: the E2E reference covers agentic and mobile E2E, naming Appium and Detox as the established mobile tools and e2e as an agent-driven option, with Playwright kept for deterministic flows (#322)
+- CI: the ruff, ruff-format and pyright hooks skip `.handbook/`, which the handbook delivers in its own Python style (#325)
+- terraform-engineer: current Terraform and provider practice across `SKILL.md` and all five references: provider majors (aws 6, azurerm 5, google 8, kubernetes 3, helm 3), `use_lockfile` instead of a DynamoDB lock table, `import`/`moved`/`removed` blocks instead of state commands, ephemeral and write-only attributes for secrets, `mock_provider` unit tests, and Trivy instead of tfsec (#318)
+- CI: merged the Dependabot update for `softprops/action-gh-release` 3.0.3 → 3.0.4 (#319)
 - Docs site: skill page titles lead with the skill's name, as "Game Developer Agent Skill for Claude Code | Claude Skills" (was "Agent Skills for Claude Code | Game Developer | Claude Skills"), so search results show what the page is about first
 - Dependabot skips the workflows the handbook delivers (`handbook-update.yml`, `docs-site.yml`, `docs-deploy.yml`); the handbook bumps their actions and sends them with each release
 - The shared site packages (Astro, Starlight and the others listed in `CLAUDE.md`) take their versions from the handbook, which sends them with each release. `handbook-update.yml` sets up Node and runs `copier update --trust` for that step
@@ -55,7 +76,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Workflow: `complete-sprint` and the `project:<phase>:<command>` names. `create-implementation-plan` folds into `spec:create`, `complete-epic` into `spec:complete`, and the retrospective phase is dropped
 - `.serena/`, the Serena project config and memories, which the repo no longer uses; `.gitignore` keeps it out
 
 ### Fixed
@@ -70,6 +90,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `atlassian-mcp`: documented the hosted Atlassian Rovo MCP Server (`https://mcp.atlassian.com/v2/mcp`) as the official option, with Claude Code, Claude Desktop, `mcp-remote` and API-token setup; kept sooperset `mcp-atlassian` for Server/Data Center. Removed the nonexistent `@anthropic/mcp-atlassian` and `@sooperset/mcp-atlassian` packages, corrected the xuanxt package to `@xuandev/atlassian-mcp`, and replaced invented environment variables with the ones sooperset reads (#269, closing #265)
 
 ### Contributors
+- @uridium: Brought terraform-engineer up to current Terraform and provider practice (#318)
+- @Saifullah1999Pk: Added the flask-expert skill (#323)
+- @kacperkapusciak: Added agentic and mobile E2E to the test-master E2E reference (#322)
+- @DomeT99: Requested the nuxt-expert skill (#316)
+- @Whxuan0701: Proposed documentation backlink checks and a skill scaffold generator, now covered by skill-linter (#232, #233)
 - @MannXo: Aligned `CONTRIBUTING.md` and `CLAUDE.md` with what the validator enforces (#277)
 - @ShryukGrandhi: Made six SKILL.md frontmatter values spec-compliant (#289), corrected the QUICKSTART per-domain counts and the `complete-ticket` argument-hint (#287), and proposed the `llms.txt` base-path fix that #295 took over (#286)
 - @s1ngh-code: Reported the `common-ground` command registering as `/fullstack-dev-skills:common-ground:COMMAND` (#264)
@@ -616,7 +641,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...HEAD
+[0.4.21]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...v0.4.21
 [0.4.20]: https://github.com/jeffallan/claude-skills/compare/v0.4.19...v0.4.20
 [0.4.19]: https://github.com/jeffallan/claude-skills/compare/v0.4.18...v0.4.19
 [0.4.18]: https://github.com/jeffallan/claude-skills/compare/v0.4.17...v0.4.18
