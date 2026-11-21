@@ -567,7 +567,10 @@ for case in \
     "vue-expert, vue-expert-js skipped (Vue 2 app):1" \
     "vue-expert declined; written by hand:1" \
     "written with vue-expert; javascript-pro not loaded:0" \
-    "written with vue-expert; skipped tests cite F-001:0"; do
+    "written with vue-expert; skipped tests cite F-001:0" \
+    "written with vue-expert and javascript-pro not loaded:0" \
+    "using vue-expert/javascript-pro not loaded:0" \
+    "loaded vue-expert, javascript-pro skipped:0"; do
     note=${case%:*}; want=${case##*:}; n=$((n + 1))
     repo="$WORK/skills-declined-v14-$n"
     rm -rf "$repo"; cp -r "$SK" "$repo"
@@ -692,6 +695,15 @@ v5 "$V" symbol-citations 1 "a bind address, host:port or URL with a port passes 
 printf '\nSee `src/Makefile:12`.\n' >>"$V/docs/operations/configuration.md"
 commit_item "$V" intake:document-config "docs(intake): config"
 v5 "$V" symbol-citations 0 "a path with a separator and no extension still fails symbol-citations"
+
+# Version 17: a domain host:port is not a file:line; only a separator or a known source or doc extension makes a file
+V=$(fresh v17-host)
+printf '\nCalls `example.com:443` and `api.example.org:8080`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 1 "a domain host:port passes symbol-citations"
+printf '\nSee `config.yml:3`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 0 "a file with a known extension and a line still fails symbol-citations"
 
 V=$(fresh v5-tests-none)
 sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none|' "$V/docs/intake-findings.md"
@@ -1176,6 +1188,48 @@ v16 "a writer resumed by SendMessage keeps its item" human-voice-pass 1 "" \
 { s_user 1 aold "Review this diff"; s_load 2 aold $SM; s_load 2 aold $HVS; } >"$S16/old-agent-aold.jsonl"
 v16 "before v0.5.0 a linked agent's loads count by time (skills-loaded)" skills-loaded 1 "" "$S16/old-main.jsonl" "$S16/old-agent-aold.jsonl"
 v16 "before v0.5.0 a linked agent's loads count by time (human-voice-pass)" human-voice-pass 1 "" "$S16/old-main.jsonl" "$S16/old-agent-aold.jsonl"
+
+# Version 17: a testing agent's reported counts (its report's Checks: block) against the scorer's own suite run.
+# Optional: only for items whose last commit leaves the suite as the run ends it (later commits touch docs only)
+W17=$(fresh v17-counts)
+S17="$WORK/v17"
+mkdir -p "$S17"
+printf 'echo "3 passed in 0.10s"\n' >"$S17/green.sh"
+printf 'echo "2 passed, 1 failed in 0.10s"\nexit 1\n' >"$S17/red.sh"
+s_report() { # s_report <min> <agent id> <command> <exit> <summary>: the agent's final report
+    printf '{"type":"assistant","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"content":[{"type":"text","text":"Done.\\n\\nChanged files:\\ntests/test_visible.py\\nChecks:\\n%s (exit %s)\\n%s\\nChecklist note:\\n  - 2026-11-12: tests written. Findings: none.\\nCommit message:\\ntest(intake): x"}]}}\n' "$2" "$(at "$1")" "$3" "$4" "$5"
+}
+v17() { # v17 <label> <suite> <want: 1|0|none> <detail grep or ''> <transcript>...
+    local label=$1 suite=$2 want=$3 grep=$4 out args=()
+    shift 4
+    for t in "$@"; do args+=(--transcript "$t"); done
+    set +e
+    out=$(score "$W17" --test-cmd "sh $S17/$suite.sh" "${args[@]}")
+    set -e
+    if [ "$want" = none ]; then
+        if printf '%s' "$out" | grep -q '"reported-counts"'; then fail "$label: $out"; else pass "$label"; fi
+    elif has "$out" reported-counts "$want" && { [ -z "$grep" ] || printf '%s' "$out" | grep -q -- "$grep"; } \
+        && printf '%s' "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); sys.exit('reported-counts' in [c['id'] for c in d['checks']])"; then
+        pass "$label"
+    else
+        fail "$label: $out"
+    fi
+}
+{ t_goal 0; t_agent 1 atf "$(proc testing-features)"; t_done 9; } >"$S17/main.jsonl"
+{ t_goal 0; t_agent 1 ata "$(proc testing-authorization)"; t_done 9; } >"$S17/main-auth.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 8 atf "sh $S17/green.sh" 0 "3 passed"; } >"$S17/agent-honest-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 8 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-claims-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 8 atf "sh $S17/red.sh" 1 "5 passed, 1 failed"; } >"$S17/agent-more-passes.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; } >"$S17/agent-honest-red.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 4 atf "sh $S17/red.sh" 0 "3 passed"; s_user 6 atf "Rerun the suite"; s_report 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; } >"$S17/agent-resumed.jsonl"
+{ s_user 1 ata "$(proc testing-authorization)"; s_report 8 ata "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-auth.jsonl"
+v17 "reported counts that match the suite pass reported-counts, outside the score" green 1 "" "$S17/main.jsonl" "$S17/agent-honest-green.jsonl"
+v17 "a reported exit 0 and 0 failed on a red suite fails reported-counts" red 0 testing-features "$S17/main.jsonl" "$S17/agent-claims-green.jsonl"
+v17 "a reported pass count above the suite's for the same command fails reported-counts" red 0 "5 passed" "$S17/main.jsonl" "$S17/agent-more-passes.jsonl"
+v17 "a red suite reported as red passes reported-counts" red 1 "" "$S17/main.jsonl" "$S17/agent-honest-red.jsonl"
+v17 "only an item's last report counts" red 1 "" "$S17/main.jsonl" "$S17/agent-resumed.jsonl"
+v17 "an item whose state later commits changed is not compared" red none "" "$S17/main-auth.jsonl" "$S17/agent-auth.jsonl"
+v17 "without transcripts there is no reported-counts check" red none ""
 
 # human-voice-tells: the finished prose carries none of the tells the pass removes
 V=$(fresh v9-tells-good)
