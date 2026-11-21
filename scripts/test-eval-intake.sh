@@ -682,6 +682,62 @@ for case in "OP-001-member-F-001-current:1" "OP-009-member-F-001-current:0"; do
     if has "$out" findings-evidence "$want"; then pass "a generated title the suite printed as $printed scores $want"; else fail "generated title $printed: $out"; fi
 done
 
+# Version 13: with a test command known, the runner's own listing names runtime-built titles,
+# e2e titles outside the default command included. Stub runners print a saved listing.
+STUB="$WORK/stub-bin"
+mkdir -p "$STUB"
+cat >"$STUB/npx" <<'EOF'
+#!/usr/bin/env bash
+# a stand-in npx: prints the listing saved beside it; no listing saved means the runner failed
+case "$*" in
+    *"vitest list"*) f=vitest ;;
+    *"playwright test --list"*) f=playwright ;;
+    *) exit 1 ;;
+esac
+[ -f "$(dirname "$0")/$f.out" ] || exit 1
+cat "$(dirname "$0")/$f.out"
+EOF
+cat >"$STUB/pytest" <<'EOF'
+#!/usr/bin/env bash
+# a stand-in pytest: --collect-only prints node ids, a plain run passes
+case "$*" in *--collect-only*) printf 'tests/test_gen.py::test_F001_gen[op1]\n\n1 test collected\n' ;; esac
+exit 0
+EOF
+chmod +x "$STUB/npx" "$STUB/pytest"
+listed() { # listed <dir> <want> <label> [score args...]: score with the stub runners first on PATH
+    local d=$1 want=$2 label=$3 out
+    shift 3
+    set +e
+    out=$(PATH="$STUB:$PATH" score "$d" "$@")
+    set -e
+    if has "$out" findings-evidence "$want"; then pass "$label"; else fail "$label: $out"; fi
+}
+V=$(fresh v13-vitest)
+mkdir -p "$V/tests/unit"
+printf '{"devDependencies": {"vitest": "^2.0.0"}}\n' >"$V/package.json"
+printf 'for (const op of ops) it.fails(`${op} F-001 hidden`, () => {})\n' >"$V/tests/unit/ops.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/ops.spec.js::OP-001 F-001 hidden`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): ops"
+printf 'tests/unit/ops.spec.js > OP-001 F-001 hidden\n' >"$STUB/vitest.out"
+listed "$V" 1 "a template-literal title vitest list prints passes findings-evidence"
+rm "$STUB/vitest.out"
+listed "$V" 0 "when vitest list fails, a title found nowhere still fails findings-evidence"
+V=$(fresh v13-playwright)
+mkdir -p "$V/web/e2e"
+printf 'export default {}\n' >"$V/web/playwright.config.ts"
+printf "test.describe('checkout', () => {\n  for (const n of [1, 2]) test(\`F-001 step \${n}\`, async () => {})\n})\n" >"$V/web/e2e/flow.spec.ts"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `web/e2e/flow.spec.ts::checkout F-001 step 2`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-user-flows "test(intake): flow"
+printf '  [chromium] \xe2\x80\xba e2e/flow.spec.ts:2:30 \xe2\x80\xba checkout \xe2\x80\xba F-001 step 2\nTotal: 1 test in 1 file\n' >"$STUB/playwright.out"
+listed "$V" 1 "an e2e title playwright test --list prints passes findings-evidence outside the default command"
+rm "$STUB/playwright.out"
+V=$(fresh v13-pytest)
+printf 'import pytest\n\n\n@pytest.mark.parametrize("op", ["op1"])\ndef test_F001_gen(op):\n    pass\n' >"$V/tests/test_gen.py"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/test_gen.py::test_F001_gen[op1]`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): gen"
+listed "$V" 1 "a parametrized id pytest --collect-only prints passes findings-evidence" --test-cmd "$STUB/pytest -q"
+listed "$V" 0 "a test command that is not pytest runs no collection, so the parametrized id fails findings-evidence" --test-cmd "true"
+
 # Version 7: the access matrix covers the whole inventory and leaves no cell unexamined
 V=$(fresh v7-good)
 v5 "$V" access-matrix 1 "the good run passes access-matrix"

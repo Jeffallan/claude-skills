@@ -198,6 +198,37 @@ def suite_check(repo: Path, cmd: str | None) -> tuple[dict, str]:
     return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}"), out
 
 
+def test_listing(repo: Path, cmd: str | None) -> str:
+    """Test titles as the runners list them, so names built at runtime and e2e titles outside `cmd` are found.
+
+    pytest collects through the test command's own invocation; vitest and Playwright list from each tracked
+    package.json naming vitest or playwright.config.*, e2e suites the test command skips included. A runner that
+    fails or times out adds nothing, which leaves the file-text match as before.
+    """
+    if not cmd:
+        return ""
+    runs = []
+    if m := re.match(r"(.*?\bpytest)\b", cmd):
+        runs.append((repo, f"{m.group(1)} --collect-only -q"))
+    for rel in git(repo, "ls-files").splitlines():
+        name = Path(rel).name
+        if name == "package.json" and '"vitest"' in (repo / rel).read_text(encoding="utf-8", errors="replace"):
+            runs.append(((repo / rel).parent, "npx --no vitest list"))
+        elif re.fullmatch(r"playwright\.config\.[cm]?[jt]s", name):
+            runs.append(((repo / rel).parent, "npx --no playwright test --list"))
+    out = []
+    for cwd, run in runs:
+        try:
+            r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=600)
+        except subprocess.TimeoutExpired:
+            continue
+        if r.returncode == 0:
+            out.append(r.stdout)
+    text = "\n".join(out)
+    # vitest joins describe and title with " > ", Playwright with " \u203a "; a cited full name joins them with a space
+    return text + "\n" + re.sub(" (?:>|\u203a) ", " ", text)
+
+
 def strip_docstrings(src: str) -> str:
     tree = ast.parse(src)
     for node in ast.walk(tree):
@@ -727,7 +758,8 @@ def test_exists(path: Path, name: str) -> bool:
 def evidence_check(repo: Path, suite_out: str = "") -> dict:
     """Every finding not invalid names a real test (`path::name`), or says why none can and names its evidence command.
 
-    A name absent from its file still counts when the suite run printed it (a title built at runtime).
+    A name absent from its file still counts when the suite run or a runner's test listing printed it (a title
+    built at runtime).
     """
     rows, bad = findings(repo), []
     for f in rows:
@@ -881,7 +913,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 12  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code
+CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings
 
 
 def main() -> int:
@@ -948,7 +980,7 @@ def main() -> int:
                 else "docs/intake-findings.md missing or holds no F-NNN ids",
             ),
             bug_tests_check(a.repo, start, ids or set(), globs),
-            evidence_check(a.repo, suite_out),
+            evidence_check(a.repo, suite_out + test_listing(a.repo, a.test_cmd)),
             citations_check(a.repo),
             index_check(a.repo),
             matrix_check(a.repo),
