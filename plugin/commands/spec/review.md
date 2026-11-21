@@ -68,7 +68,7 @@ flowchart TD
   r --> t[Step 6: owner triage, attended]
 ```
 
-Start one `fullstack-dev-skills:reviewer` agent per row, naming the row's skill in its brief. Reviewers only read and write their own file, so they may run at once. Give each reviewer the spec's overview, the diff **without commit messages** (`git diff <merge-base>..HEAD`, never `git log -p`), and the repository at `head_sha`. Strip PR text and ticket status blocks. Brief:
+Start one `fullstack-dev-skills:reviewer` agent per row, naming the row's skill in its brief. Reviewers only read and write their own file: start every reviewer in one message so they run together. Give each reviewer the spec's overview, the diff **without commit messages** (`git diff <merge-base>..HEAD`, never `git log -p`), and the repository at `head_sha`. Strip PR text and ticket status blocks. Brief:
 
 ```
 Use the fullstack-dev-skills:<skill> skill to review this diff for defects in your area.
@@ -85,7 +85,7 @@ In this session: check each finding's file, line range and quote against `head_s
 
 ## Step 4: Verify
 
-Follow `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: one fresh `fullstack-dev-skills:verifier` agent, briefed with the `debugging-wizard` skill, per merged blocking or warning finding, limited to Reproduce, Isolate and Hypothesize; the advisories in one read-only batch; one second look for a rejected blocker. Each verifier works in its own scratch worktree at `head_sha` (`git worktree add --detach`), with no gitignored files, and gets a packet holding the claim, location, quoted code, failure scenario and the ticket's acceptance criteria, never the reviewer's name, tier or reasoning, other findings or commit messages. A worktree doesn't separate a shared database or fixed ports, so verifiers whose reproductions use them run one at a time.
+Follow `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: one fresh `fullstack-dev-skills:verifier` agent, briefed with the `debugging-wizard` skill, per merged blocking or warning finding, limited to Reproduce, Isolate and Hypothesize; the advisories in one read-only batch; one second look for a rejected blocker. Each verifier works in its own scratch worktree at `head_sha` (`git worktree add --detach`), with no gitignored files, and gets a packet holding the claim, location, quoted code, failure scenario and the ticket's acceptance criteria, never the reviewer's name, tier or reasoning, other findings or commit messages. Start the verifiers in one message so they run together. A worktree doesn't separate a shared database or fixed ports, so verifiers whose reproductions use them run one at a time.
 
 Before copying, read each reproduction and verdict for environment dumps, tokens, keys, socket paths and session ids, and cut them (a verifier once captured a whole `strace -v` environment). Copy each reproduction into `review/repro/` with its sha256, then remove the worktrees. There is no budget cap; cost is recorded instead.
 

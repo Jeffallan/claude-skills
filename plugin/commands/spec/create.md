@@ -39,7 +39,7 @@ End your report with the skills you loaded.
 | `api-designer` | It touches routes, schemas, public interfaces or third-party integrations | API design constraints |
 | `code-documenter` | The docs root (`docsRoot`, default `docs`) holds docs outside the specs root | Per ticket, the docs it will affect: each doc citing a symbol the ticket changes (`` `path::symbol` ``), plus the docs those name in their `related:` frontmatter, one hop. Return the doc paths with the cited symbol or link that puts each on the list |
 
-Rerun a subagent whose report doesn't list the skill it was told to load.
+They only read: start every subagent the table calls for in one message so they run together. Rerun a subagent whose report doesn't list the skill it was told to load.
 
 ## Step 2: Readiness
 
@@ -67,7 +67,7 @@ Show the overview. Offer an optional challenge pass with the `fullstack-dev-skil
 
 ## Step 4: Plan
 
-After approval, start `fullstack-dev-skills:code-reader` agents per Ready ticket and fold their output into the plan:
+After approval, start `fullstack-dev-skills:code-reader` agents per Ready ticket, all of them in one message so they run together (they only read), and fold their output into the plan:
 
 | Subagent | Task | Skill |
 |----------|------|-------|

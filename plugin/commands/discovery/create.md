@@ -38,7 +38,7 @@ For each item return: existing code that does part of it (paths), helpers or pat
 Do not write files or change the tracker. End your report with the skills you loaded.
 ```
 
-This is a light pass, so proposed tickets don't duplicate or contradict existing code. Architecture, security and API analysis wait for `spec:create`.
+With more than ten items, split them across several such agents and start them all in one message so they run together. This is a light pass, so proposed tickets don't duplicate or contradict existing code. Architecture, security and API analysis wait for `spec:create`.
 
 ## Step 3: Route each item
 

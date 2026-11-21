@@ -34,7 +34,7 @@ Read `discovery.md`, every Feature Forge file in the folder, and everything in `
 
 ### Analyze across sources
 
-Start one `fullstack-dev-skills:code-reader` agent per source group when there are more than five sources; otherwise work in this session. Brief:
+Start one `fullstack-dev-skills:code-reader` agent per source group when there are more than five sources, all of them in one message so they run together; otherwise work in this session. Brief:
 
 ```
 Read <sources>. For each open question in discovery.md (Q1, Q2, ...), return what these sources say, quoting the line and file that supports it, and whether it answers the question, contradicts another source, or leaves it open.

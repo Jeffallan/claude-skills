@@ -30,7 +30,7 @@ Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When
 | A grouping ("A, B and C together; D alone") | Those tickets, grouped as given |
 | Nothing | Open ungrouped tickets: `list-ungrouped`, or all open tickets minus those already in a group |
 
-For Jira and Linear, every list applies the `repoScope` filter, so only this repo's tickets are read. GitHub tickets carry their repo, and text tickets live in it. Read each ticket with `read`. For large sets, start `fullstack-dev-skills:code-reader` agents that summarize tickets and return text.
+For Jira and Linear, every list applies the `repoScope` filter, so only this repo's tickets are read. GitHub tickets carry their repo, and text tickets live in it. Read each ticket with `read`. For large sets, start `fullstack-dev-skills:code-reader` agents that summarize tickets and return text, all of them in one message so they run together.
 
 With no tickets in scope, say so, suggest `discovery:create`, and stop without writing.
 

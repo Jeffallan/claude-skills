@@ -51,7 +51,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md` before Step 1.
 
 ## Step 3: Read the code
 
-Read the files the ticket names and the patterns the overview's Reuse section points to. For broad searches, start `fullstack-dev-skills:code-reader` agents, which only read and return text; brief them as "Use the <skill> skill to ...", tell them not to write files or change the tracker, and ask them to end with the skills they loaded. Every edit happens in this session.
+Read the files the ticket names and the patterns the overview's Reuse section points to. For broad searches, start `fullstack-dev-skills:code-reader` agents, which only read and return text, in one message so they run together; brief them as "Use the <skill> skill to ...", tell them not to write files or change the tracker, and ask them to end with the skills they loaded. Every edit happens in this session.
 
 ## Step 4: RED
 

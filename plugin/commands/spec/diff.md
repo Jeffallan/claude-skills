@@ -32,7 +32,7 @@ flowchart TD
 
 ## Step 2: Build the views
 
-Start these two agents at once; both only read and write nothing.
+Start these two agents in one message so they run together; both only read and write nothing.
 
 - One `fullstack-dev-skills:architect` agent:
 
