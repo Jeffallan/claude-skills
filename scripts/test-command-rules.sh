@@ -65,6 +65,12 @@ assert_contains "$TRIAGE" "Contradictions are \`spec:create\`'s job" "spec:triag
 assert_contains "$TRIAGE" "a suggestion the owner can take" "spec:triage proposes splits only as a suggestion"
 assert_not_contains "$TRIAGE" "| Real unknowns (nobody can write acceptance criteria yet) | Left ungrouped;" "spec:triage never leaves an asked-about unknown out"
 
+echo "ticket evidence lives in the repo"
+for f in ticket/execute ticket/complete; do
+    assert_contains "$CMD/$f.md" "never a scratch path" "$f keeps RED and GREEN scripts in the repo"
+done
+assert_contains "$CMD/ticket/execute.md" "review/repro/" "ticket:execute runs a fix ticket's reproduction from review/repro/"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

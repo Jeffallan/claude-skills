@@ -51,6 +51,8 @@ guard summary
 
 It prints the notes line (RED and GREEN commands with exit codes, the test digest, the re-run, the replay, the tamper flags with reasons, the docs updated or checked) and exits 1 with a list when any evidence is missing. An affected doc that is neither updated nor checked is missing evidence: go back to `ticket:execute` Step 6a. A ticket with no RED or GREEN record fails here: attended, report what is missing and stop; goal mode, `guard block <ticket> "evidence missing: <list>"`.
 
+Then check that every script the RED and GREEN commands run is in the repo, committed already or staged for this commit (with the ticket's tests, or under the spec's `review/` folder), never a scratch path such as `/tmp`, `$TMPDIR` or a session scratchpad. Evidence that points outside the repo is missing evidence: a reboot deletes it, and `guard red-replay` can't rerun it later. Attended, report it and stop; goal mode, `guard block <ticket> "evidence outside the repo: <path>"`.
+
 ## Step 4: Update the plan
 
 In the spec's `implementation-plan.md`, set the ticket's Completion Status row:
