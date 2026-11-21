@@ -27,7 +27,7 @@ flowchart TD
 ## Step 1: Pick the specs
 
 1. When `docs/system-description.md` is missing, stop: "No system description yet. Run `spec:current` first, or `intake create-system-description` when it has never run."
-2. Spec names in `$ARGUMENTS`, in that order. With none, every outstanding spec from `guard spec-status` (any state but Completed: Triaged, Drafting, Planned, In progress, Ready for review, In review, Ready to complete, PR open), in its order. Refuse a name that isn't outstanding, listing the ones that are.
+2. Spec names in `$ARGUMENTS`, in that order. With none, every outstanding spec from `guard spec-status` (any state but Completed: `Unbranched` (any branch), Triaged, Drafting, Planned, In progress, Ready for review, In review, Ready to complete, PR open; match `Unbranched` by its prefix, since the state reads `Unbranched (on <branch>)`), in its order. Refuse a name that isn't outstanding, listing the ones that are.
 3. Read `docs/current-state.json` when it exists. When its `built_at.system_description` doesn't match the description's `Last updated` SHA, say the state is stale and suggest `spec:current`; continue with the description.
 
 ## Step 2: Build the views

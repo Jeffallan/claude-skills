@@ -19,6 +19,7 @@ Read-only. List every spec with its state, ticket counts, build order, the ticke
 
 | State | Meaning |
 |-------|---------|
+| Unbranched (on <branch>) | The spec exists only under `<specsRoot>/todo/<name>/` on the current branch: no `spec/<name>` branch, no folder on the default branch. Branch and PR are empty; put it on a branch with `spec:triage`, or merge it into the default branch |
 | Triaged | The branch exists; no overview yet |
 | Drafting | An overview, no plan yet |
 | Planned | A plan, no ticket finished |

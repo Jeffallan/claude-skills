@@ -68,6 +68,12 @@ doc_row=$(grep -F '| Docs under the docs root | `code-documenter` |' "$CMD/spec/
 case "$doc_row" in *'`updated`'*) pass "the code-documenter reviews the docs the diff updated" ;; *) fail "the code-documenter reviews the docs the diff updated" ;; esac
 assert_contains "$CMD/spec/complete.md" "each doc listed \`added in the diff\`" "spec:complete adds each added doc to the docs index"
 
+echo "specs that live only on the current branch"
+assert_contains "$CMD/spec/status.md" "| Unbranched (on <branch>) |" "spec:status explains the Unbranched state"
+for f in spec/diff common-ground; do
+    assert_contains "$CMD/$f.md" "\`Unbranched\` (any branch)" "$f counts an Unbranched spec as outstanding"
+done
+
 echo "owner revokes a decision"
 assert_contains "$CMD/spec/review.md" "guard decide <F-id> revoke --spec <spec-name>" "spec:review lists revoke with the owner statuses"
 if printf '%s\n' "$step6" | grep -qF "revoke that row first"; then pass "spec:review revokes a recorded decision before turning it into a fix ticket"; else fail "spec:review revokes a recorded decision before turning it into a fix ticket"; fi
