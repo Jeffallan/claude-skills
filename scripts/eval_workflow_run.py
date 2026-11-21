@@ -36,9 +36,9 @@ def cells(line: str) -> list[str]:
     return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
-def table(path: Path, heading: str | None) -> dict[str, str]:
-    """Ticket -> second column, from the first table under `## heading` (or every table)."""
-    rows: dict[str, str] = {}
+def table(path: Path, heading: str | None) -> dict[str, list[str]]:
+    """Ticket -> its row's cells, from the first table under `## heading` (or every table)."""
+    rows: dict[str, list[str]] = {}
     inside = heading is None
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.startswith("## "):
@@ -47,8 +47,21 @@ def table(path: Path, heading: str | None) -> dict[str, str]:
         if inside and line.startswith("|") and not set(line) <= set("|-: "):
             row = cells(line)
             if len(row) > 1 and row[0] not in ("Ticket", "#"):
-                rows.setdefault(row[0], row[1])
+                rows.setdefault(row[0], row)
     return rows
+
+
+def fix_ticket(ticket: str) -> bool:
+    """A `<spec>-rv-<n>` ticket that spec:review added; its id depends on the findings, so gold skips it."""
+    return "-rv-" in ticket
+
+
+def settled(row: list[str]) -> bool:
+    """Done, or Blocked with a reason: in the Notes cell, or after the status (`Blocked: question`)."""
+    status, notes = row[1], row[3] if len(row) > 3 else ""
+    return status == "Done" or (
+        status.startswith("Blocked") and bool(status.partition(":")[2].strip() or notes.strip("- "))
+    )
 
 
 def spec_dir(repo: Path, spec: str) -> Path:
@@ -83,14 +96,15 @@ def repo_checks(
     reflog: Path | None = None,
 ) -> list[dict]:
     d = spec_dir(repo, spec)
-    status = table(d / "implementation-plan.md", "Completion Status")
-    readiness = table(d / "overview.md", None) if (d / "overview.md").is_file() else {}
+    plan_rows = table(d / "implementation-plan.md", "Completion Status")
+    status = {t: r[1] for t, r in plan_rows.items()}
+    readiness = {t: r[1] for t, r in table(d / "overview.md", None).items()} if (d / "overview.md").is_file() else {}
     done = [t for t, s in status.items() if s == "Done"]
     ev = evidence(repo)
     results = []
 
     if gold is not None:
-        want = gold.get(spec, {})
+        want = {t: s for t, s in gold.get(spec, {}).items() if not fix_ticket(t)}
         got = {t: status.get(t) or readiness.get(t, "missing") for t in want}
         wrong = {t: g for t, g in got.items() if not g.startswith(want[t])}
         results.append(
@@ -100,6 +114,17 @@ def repo_checks(
                 f"{len(want) - len(wrong)}/{len(want)} match" + (f"; wrong: {wrong}" if wrong else ""),
             )
         )
+
+    fixes = {t: r for t, r in plan_rows.items() if fix_ticket(t)}
+    open_fixes = {t: r[1] for t, r in fixes.items() if not settled(r)}
+    results.append(
+        check(
+            "fix-tickets",
+            not open_fixes,
+            f"{len(fixes) - len(open_fixes)}/{len(fixes)} fix tickets Done, or Blocked with a reason"
+            + (f"; open: {open_fixes}" if open_fixes else ""),
+        )
+    )
 
     log = git(repo, "log", "--all", "--no-merges", "--format=%H%x00%B%x1e")
     counts: dict[str, int] = {}
