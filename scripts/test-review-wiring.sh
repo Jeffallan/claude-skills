@@ -22,9 +22,9 @@ assert_contains() {
 }
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GUARD=(python3 "$REPO_ROOT/runtime")  # the guard source runs as a directory; the plugin ships it as runtime/guard.pyz
-VERIFIER="$REPO_ROOT/references/review/verifier.md"
-ROLLUP_REF="$REPO_ROOT/references/review/rollup.md"
+GUARD=(python3 "$REPO_ROOT/runtime")  # the guard source runs as a directory; the plugin ships it as plugin/runtime/guard.pyz
+VERIFIER="$REPO_ROOT/plugin/references/review/verifier.md"
+ROLLUP_REF="$REPO_ROOT/plugin/references/review/rollup.md"
 
 echo "review references"
 

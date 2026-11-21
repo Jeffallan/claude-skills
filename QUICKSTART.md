@@ -148,13 +148,13 @@ cp -r ./skills/* ~/.claude/skills/
 
 ### Need Help
 - Check [Skills Guide](SKILLS_GUIDE.md) for skill-specific guidance
-- Review individual `skills/*/SKILL.md` files
+- Review individual `plugin/skills/*/SKILL.md` files
 - Open an [issue on GitHub](https://github.com/jeffallan/claude-skills/issues)
 
 ## Next Steps
 
 ### Explore Skills
-Browse the `skills/` directory for available skills.
+Browse the `plugin/skills/` directory for available skills.
 
 ### Customize
 Edit any `SKILL.md` to match team conventions.

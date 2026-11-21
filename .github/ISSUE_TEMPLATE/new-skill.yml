@@ -83,10 +83,10 @@ body:
         ---
         ## Implementation Details (per CLAUDE.md)
         1. Check existing skills for overlap
-        2. Create `skills/{skill-name}/SKILL.md` (~80-100 lines):
+        2. Create `plugin/skills/{skill-name}/SKILL.md` (~80-100 lines):
            - Frontmatter: name, description (trigger-only!), triggers, role, scope, output-format
            - Core sections: Role Definition, When to Use, Core Workflow, Constraints (MUST DO/MUST NOT DO), Routing Table
-        3. Create reference files in `skills/{skill-name}/references/` (100-600 lines each)
+        3. Create reference files in `plugin/skills/{skill-name}/references/` (100-600 lines each)
         4. Update SKILLS_GUIDE.md with new skill entry
 
         ## Acceptance Criteria

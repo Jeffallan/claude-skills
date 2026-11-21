@@ -20,9 +20,6 @@ RETIRED=${RETIRED:-'spec:reopen\|create-epic\|complete-sprint\|execute-ticket'}
 
 CHECKS=0
 FAILED=0
-BUILD=$(mktemp -d)
-trap 'rm -rf "$BUILD"' EXIT
-
 # check <expected exit> <command>
 check() {
     local want=$1 cmd=$2 rc
@@ -50,13 +47,12 @@ else
 fi
 check 0 "git log --oneline origin/main..HEAD"
 # grep finds nothing: exit 1 is the pass
-check 1 "grep -rn '$RETIRED' commands references skills/*/SKILL.md"
+check 1 "grep -rn '$RETIRED' plugin/commands plugin/references plugin/skills/*/SKILL.md"
 for plan in docs/specs/todo/*/implementation-plan.md; do
     check 0 "sed -n '/^## Completion Status/,/^---/p' $plan | grep '^| ' | tail -n +3 | cut -d'|' -f2-3"
 done
-check 0 "bash scripts/build-plugin-dist.sh $BUILD"
 # The session's init event lists the commands that loaded and the plugin they came from
-check 0 "claude --plugin-dir $BUILD -p ok --model haiku --setting-sources project --output-format stream-json --verbose </dev/null 2>/dev/null | head -1 | jq -re '(.slash_commands[] | select(test(\"^fullstack-dev-skills:(intake|discovery|spec|ticket):\"))), (.plugins[] | select(.name == \"fullstack-dev-skills\") | [.source, .path, .version] | join(\" \"))'"
+check 0 "claude --plugin-dir plugin -p ok --model haiku --setting-sources project --output-format stream-json --verbose </dev/null 2>/dev/null | head -1 | jq -re '(.slash_commands[] | select(test(\"^fullstack-dev-skills:(intake|discovery|spec|ticket):\"))), (.plugins[] | select(.name == \"fullstack-dev-skills\") | [.source, .path, .version] | join(\" \"))'"
 
 echo ""
 echo "Evidence: $CHECKS checks, $FAILED failed"

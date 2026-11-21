@@ -417,7 +417,9 @@ def named_skills(text: str) -> set[str]:
     """Skills a note claims: `fullstack-dev-skills:<name>`, or a bare name this plugin ships, as a whole word."""
     text = DECLINED.sub("", text)  # "javascript-pro not loaded (no call sites)" claims nothing
     claimed = {m.split(":", 1)[1] for m in SKILL_NAME.findall(text)}
-    for name in (d.name for d in (Path(__file__).resolve().parent.parent / "skills").iterdir() if d.is_dir()):
+    for name in (
+        d.name for d in (Path(__file__).resolve().parent.parent / "plugin" / "skills").iterdir() if d.is_dir()
+    ):
         if re.search(rf"(?<![\w:/-]){re.escape(name)}(?![\w-])", text):
             claimed.add(name)
     return claimed

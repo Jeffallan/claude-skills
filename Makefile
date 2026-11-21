@@ -21,9 +21,9 @@ dev-link:
 		exit 1; \
 	fi
 	mv "$(CACHE_DIR)" "$(CACHE_DIR).bak"
-	ln -s "$(CURDIR)" "$(CACHE_DIR)"
+	ln -s "$(CURDIR)/plugin" "$(CACHE_DIR)"
 	@echo ""
-	@echo "Linked: $(CACHE_DIR) -> $(CURDIR)"
+	@echo "Linked: $(CACHE_DIR) -> $(CURDIR)/plugin"
 	@echo "Restart Claude Code to load changes from your working copy."
 
 dev-unlink:
@@ -42,10 +42,10 @@ dev-unlink:
 	@echo "Restart Claude Code to load the released version."
 
 guard:
-	python3 scripts/build-guard.py runtime runtime/guard.pyz
+	python3 scripts/build-guard.py runtime plugin/runtime/guard.pyz
 
 guard-check:
-	python3 scripts/build-guard.py runtime runtime/guard.pyz --check
+	python3 scripts/build-guard.py runtime plugin/runtime/guard.pyz --check
 
 guard-test:
 	cd runtime && PYTHONPATH=. uv run --no-project --with pytest python -m pytest tests -q -p no:cacheprovider
@@ -56,7 +56,7 @@ validate:
 
 test: guard-check guard-test
 	bash scripts/test-makefile.sh
-	bash scripts/test-build-plugin-dist.sh
+	bash scripts/test-plugin-tree.sh
 	bash scripts/test-review-wiring.sh
 	bash scripts/test-launch-command.sh
 	bash scripts/test-eval-workflow.sh

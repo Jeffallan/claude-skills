@@ -1,0 +1,20 @@
+command: "discovery:synthesize"
+phase: discovery
+path: plugin/commands/discovery/synthesize.md
+description: docs/workflow/discovery-synthesize.md
+inputs:
+  - name: topic
+    type: string
+    required: true
+    description: Discovery topic name whose research is complete
+outputs:
+  - name: synthesis-document
+    type: file
+    path: "{specsRoot}/todo/discovery/{topic}/synthesis.md"
+    description: Consolidated findings with proposed tickets and blocking decisions
+requires: []
+status: existing
+argument-hint: "<topic>"
+repeat: false
+unattended: false
+adapter-operations: []

@@ -106,8 +106,8 @@ syncSite({
   ],
   workflowsDir: 'docs/workflow',
   linkMap: {
-    '../commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
-    'commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
+    '../plugin/commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
+    'plugin/commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
     LICENSE: `${GITHUB_BLOB}/LICENSE`,
     'docs/v0.5.0-plan.md': `${GITHUB_BLOB}/docs/v0.5.0-plan.md`,
   },

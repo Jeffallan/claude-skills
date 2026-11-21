@@ -16,7 +16,7 @@ pass() { PASS=$((PASS + 1)); echo "  PASS: $1"; }
 fail() { FAIL=$((FAIL + 1)); echo "  FAIL: $1"; }
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-LAUNCH="$REPO_ROOT/references/specs/launch.md"
+LAUNCH="$REPO_ROOT/plugin/references/specs/launch.md"
 
 echo "goal launch command"
 

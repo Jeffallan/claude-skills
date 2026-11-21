@@ -1,0 +1,20 @@
+command: "spec:review"
+phase: spec
+path: plugin/commands/spec/review.md
+description: docs/workflow/spec-review.md
+inputs:
+  - name: spec-name
+    type: string
+    required: true
+    description: Spec whose branch diff is reviewed
+outputs:
+  - name: review-folder
+    type: directory
+    path: "{specsRoot}/todo/{spec-name}/review/"
+    description: Metrics, one file per reviewer, frozen reproductions and the rollup
+requires: []
+status: existing
+argument-hint: "<spec-name>"
+repeat: true
+unattended: false
+adapter-operations: []

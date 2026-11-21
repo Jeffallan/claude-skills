@@ -2,15 +2,15 @@
 # CI and `make validate` run `skill-linter release` and `skill-linter stamp --check`.
 
 [tool.skill-linter]
-skills_dir = "skills"
-commands_dir = "commands"
-manifest = "commands/workflow-manifest.yaml"
+skills_dir = "plugin/skills"
+commands_dir = "plugin/commands"
+manifest = "plugin/commands/workflow-manifest.yaml"
 workflow_glob = "*/*.md"
 docs_url = "https://jeffallan.github.io/claude-skills/skills/{domain}/{name}/"
 index_files = ["SKILLS_GUIDE.md"]
 sidebar_file = "site/astro.config.mjs"
 sidebar_route = "workflows"  # the site serves docs/workflow/ pages at /workflows/<name>/
-ship = ["skills", "commands", "references", "hooks", "runtime/guard.pyz", ".claude-plugin", "README.md", "LICENSE"]
+plugin_root = "plugin"
 domains = [
   { id = "language", label = "Language" },
   { id = "backend", label = "Backend Frameworks" },
@@ -60,11 +60,11 @@ plugin-icon = "off"  # #245: keep the GitHub avatar as the listing icon
 sidebar-links-workflows = "warning"  # H15: report workflow docs missing from the sidebar without failing
 
 [tool.skill-linter.stamp.values]
-runtimePin = "0.4.0"  # the skill-linter release this repo's lint and stamp checks run; the workflow runtime ships in runtime/
+runtimePin = "0.4.0"  # the skill-linter release this repo's lint and stamp checks run; the workflow runtime ships in plugin/runtime/
 
 # The runtime pin, written out wherever a command, reference, script or doc calls skill-linter
 [[tool.skill-linter.stamp.files]]
-paths = ["commands/**/*.md", "references/**/*.md", "hooks/hooks.json", "docs/*.md", "docs/workflow/*.md", "skills/ticket-guard/**/*.md", "scripts/*.sh", "Makefile", "CLAUDE.md", "CONTRIBUTING.md"]
+paths = ["plugin/commands/**/*.md", "plugin/references/**/*.md", "plugin/hooks/hooks.json", "docs/*.md", "docs/workflow/*.md", "plugin/skills/ticket-guard/**/*.md", "scripts/*.sh", "Makefile", "CLAUDE.md", "CONTRIBUTING.md"]
 patterns = [{ key = "runtimePin", regex = 'skill-linter@([\d.]+)' }]
 [[tool.skill-linter.stamp.files]]
 path = ".github/workflows/validate.yml"
@@ -81,7 +81,7 @@ patterns = [{ key = "version", regex = 'Last updated:.*?\(v([\d.]+)\)' }]
 [[tool.skill-linter.stamp.files]]
 path = "assets/social-preview.html"
 [[tool.skill-linter.stamp.files]]
-path = ".claude-plugin/plugin.json"
+path = "plugin/.claude-plugin/plugin.json"
 json = { "/version" = "version" }
 patterns = [
   { key = "skillCount", regex = '(\d+) specialized skills' },

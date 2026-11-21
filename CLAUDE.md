@@ -309,13 +309,13 @@ After running validation, manually verify:
 grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
 ```
 
-### 7. Plugin Branch
+### 7. Plugin Folder
 
-The plugin ships from the `plugin` branch, not from `main`. Pushing the `vX.Y.Z` tag runs `.github/workflows/publish-plugin.yml`, which rebuilds that branch from `scripts/build-plugin-dist.sh` (only `.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `hooks/`, `README.md`, `LICENSE`). Both the marketplace entry and the Claude plugin directory read from it.
+The plugin ships from the `plugin/` folder on `main`: `.claude-plugin/marketplace.json` at the repo root lists it with `"source": "./plugin"`, the layout `writing-with-agents` uses. Only what is inside `plugin/` ships (`.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `hooks/`, `runtime/guard.pyz`, `README.md`, `LICENSE`).
 
-- Never edit the `plugin` branch by hand; the next publish overwrites it
-- After the tag push, confirm the workflow succeeded and the branch's latest commit names the new tag
-- A file the plugin needs at runtime must live under one of the shipped paths, or it will be missing from installs
+- Marketplace users get whatever `main` holds when they update, so merge to `main` only at release
+- A file the plugin needs at runtime must live under `plugin/`, or it will be missing from installs
+- `plugin/LICENSE` is a copy of the root `LICENSE`; change both together
 
 ---
 

@@ -44,7 +44,7 @@ git checkout -b fix/your-bug-fix
 **For New Skills:**
 ```bash
 # Create skill directory
-mkdir -p skills/my-new-skill
+mkdir -p plugin/skills/my-new-skill
 
 # Create SKILL.md following the structure below
 ```
@@ -52,7 +52,7 @@ mkdir -p skills/my-new-skill
 #### 4. Test Your Changes
 ```bash
 # Copy skills to test location
-cp -r skills/* ~/.claude/skills/
+cp -r plugin/skills/* ~/.claude/skills/
 
 # Restart Claude Code and test
 # Verify your skill activates correctly
@@ -242,7 +242,7 @@ For skills with extensive reference material, use the progressive disclosure pat
 
 **Structure:**
 ```text
-skills/my-skill/
+plugin/skills/my-skill/
 ├── SKILL.md           # Lean main file (~80-100 lines)
 └── references/        # Domain-specific reference files
     ├── topic-a.md     # Loaded when topic A is relevant

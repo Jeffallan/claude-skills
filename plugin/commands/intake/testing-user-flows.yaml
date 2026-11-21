@@ -1,0 +1,20 @@
+command: "intake:testing-user-flows"
+phase: intake
+path: plugin/commands/intake/testing-user-flows.md
+description: docs/workflow/intake-testing-user-flows.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: user-flow-tests
+    type: directory
+    path: (integration flow tests + e2e UI specs)
+    description: "End-to-end tests for critical journeys at two layers: backend flows through the real datastore/handlers (integration harness) asserting end-state and side effects, and UI flows driven through the actual screens with an e2e driver. Each journey adds UI and API parity cases (INV-5: every control the UI hides or disables is refused by the server, and every action the UI offers is confirmed by re-reading server state) and one negative variant where the wrong principal or state attempts the key step. The coverage map has a column for each. Driver-unreachable steps stay in the backend layer; known-bug end-states are characterized and paired with a skipped intended-state test cross-referencing the finding id."
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

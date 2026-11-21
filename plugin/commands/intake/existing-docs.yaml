@@ -1,0 +1,20 @@
+command: "intake:existing-docs"
+phase: intake
+path: plugin/commands/intake/existing-docs.md
+description: docs/workflow/intake-existing-docs.md
+inputs:
+  - name: directory
+    type: string
+    required: false
+    description: Root directory to analyze. Defaults to the project root.
+outputs:
+  - name: existing-docs-inventory
+    type: file
+    path: docs/intake-existing-docs.md
+    description: Every doc the project already had, the intake topics it covers, and its claims checked against the code, each wrong claim a finding.
+requires: []
+status: existing
+argument-hint: "[directory]"
+repeat: true
+unattended: true
+adapter-operations: []

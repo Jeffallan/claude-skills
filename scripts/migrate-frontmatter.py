@@ -26,7 +26,7 @@ try:
 except ImportError:
     HAS_PYYAML = False
 
-SKILLS_DIR = Path("skills")
+SKILLS_DIR = Path("plugin/skills")
 
 # Skill-to-domain mapping derived from SKILLS_GUIDE.md
 SKILL_DOMAIN_MAP = {

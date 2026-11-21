@@ -20,17 +20,14 @@ jobs:
       - name: Install skill-linter
         run: pip install skill-linter==0.4.0
 
-      - name: Fetch the plugin branch the marketplace entry points at
-        run: git fetch --no-tags --depth=1 origin +refs/heads/plugin:refs/remotes/origin/plugin
-
       - name: Check skills and the shipped plugin tree
         run: skill-linter release
 
       - name: Check stamped counts and versions
         run: skill-linter stamp --check
 
-      - name: Test plugin distribution build
-        run: bash scripts/test-build-plugin-dist.sh
+      - name: Test the plugin tree
+        run: bash scripts/test-plugin-tree.sh
 
   lint:
     name: Lint & Format Check

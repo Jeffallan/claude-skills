@@ -1,7 +1,7 @@
 """Build the bundled guard: zip runtime/ticket_guard and its entry point into one runnable file.
 
 The archive is reproducible (sorted entries, fixed timestamps), so `--check` can rebuild it in
-memory and fail when the committed runtime/guard.pyz no longer matches the source.
+memory and fail when the committed plugin/runtime/guard.pyz no longer matches the source.
 
 Usage: python3 scripts/build-guard.py <runtime dir> <output .pyz> [--check]
 """

@@ -15,19 +15,13 @@ Restart Claude Code after running either command.
 
 ### One session only: `--plugin-dir`
 
-To try the working copy in a single session without touching the plugin cache, start Claude Code with the repo as a plugin directory:
+To try the working copy in a single session without touching the plugin cache, start Claude Code with the repo's `plugin/` folder as a plugin directory. That folder is exactly what ships:
 
 ```bash
-claude --plugin-dir ~/path/to/claude-skills
+claude --plugin-dir ~/path/to/claude-skills/plugin
 ```
 
-That session loads the skills, commands and hooks from your working copy; every other session keeps the installed version. To test exactly what ships, build the distribution and point at it:
-
-```bash
-out=$(mktemp -d) && bash scripts/build-plugin-dist.sh "$out" && claude --plugin-dir "$out"
-```
-
-The build uses committed files only, so commit first. `make evidence` runs this build and checks which commands load from it.
+That session loads the skills, commands and hooks from your working copy; every other session keeps the installed version. `make evidence` loads `plugin/` this way and checks which commands load from it.
 
 ---
 
@@ -77,7 +71,7 @@ mv ~/.claude/plugins/cache/<plugin>/<name>/<version> \
 Point the cache path to your local development clone:
 
 ```bash
-ln -s /path/to/your/working/copy \
+ln -s /path/to/your/working/copy/plugin \
    ~/.claude/plugins/cache/<plugin>/<name>/<version>
 ```
 
@@ -160,7 +154,7 @@ To compare against the released version, temporarily revert the symlink (see abo
 ```bash
 # Setup (one-time)
 CACHE=~/.claude/plugins/cache/<plugin>/<name>/<version>
-WORKDIR=/path/to/your/working/copy
+WORKDIR=/path/to/your/working/copy/plugin
 
 mv "$CACHE" "${CACHE}.bak"
 ln -s "$WORKDIR" "$CACHE"

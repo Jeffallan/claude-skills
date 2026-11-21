@@ -10,11 +10,7 @@
   "plugins": [
     {
       "name": "fullstack-dev-skills",
-      "source": {
-        "source": "github",
-        "repo": "jeffallan/claude-skills",
-        "ref": "plugin"
-      },
+      "source": "./plugin",
       "description": "71 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 9 backend frameworks, 8 frontend/mobile, plus infrastructure, DevOps, security, and testing skills. Includes 9 project workflow commands for epic planning, discovery, execution, and retrospectives.",
       "version": "0.4.21",
       "author": {
