@@ -196,6 +196,8 @@ has "$INTAKE" "never a procedure path" "an early fact brief opens no eval window
 has "$INTAKE" "Start the next writer only after the current item is committed" "intake keeps one writer at a time"
 has "$IREF/rules.md" "\`code-reader\` agents may run beside the writer" "rules: readers run beside the writer"
 has "$IREF/procedures/document-authorization.md" "all in one message" "authorization's blind batches start together"
+# A repo with no git remote has unknown visibility, so High security detail goes to the restricted file
+has "$IREF/findings.md" "A repo with no git remote counts as unknown" "findings: no remote means visibility unknown"
 for p in $PROCS; do
     if [ "$(grep -c '^## Skills to load$' "$IREF/procedures/$p.md")" = 1 ]; then pass "$p has one Skills to load heading"; else fail "$p has one Skills to load heading"; fi
 done
