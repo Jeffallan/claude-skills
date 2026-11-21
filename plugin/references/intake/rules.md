@@ -136,9 +136,33 @@ In a goal run there is no stop, since nobody would answer it. The agent runs the
 The procedures run in writing agents (`doc-writer`, `test-writer`, `security-prober`, `architect`); `code-reader` agents only read.
 
 - One writing agent runs at a time. `code-reader` agents may run beside the writer and each other, since they never write: the `intake` command starts the next item's fact pass while the current item writes.
-- Agents never commit, stage or branch. After each writing agent, the `intake` command reviews its diff against "What intake may change" and commits it with the item's trailer.
+- Agents never commit, stage or branch. After each writing agent, the `intake` command reviews its diff against "What intake may change" and commits it with the item's trailer, using the note and message the agent drafted ("The item report").
 - An agent can't start agents. A procedure that needs independent readers (the second pass of `document-authorization`) returns their inputs, and the `intake` command starts `code-reader` agents and resumes the writer with their reports.
 - While a ticket marker exists, no agent writes: ticket work happens in the main session, where the guard's hooks apply. The plugin's hooks also fire on an agent's tool calls, so they still catch an agent edit there.
+
+## The item report
+
+A writing agent runs its item's own check after its last edit and before it reports: `guard docs-check` for a documentation item, the project's test command for a testing item. The `intake` command commits from the report without rerunning that check, so the output must be fresh and complete. The agent ends its report with this block, then its `Skills loaded:` line:
+
+```
+Changed files:
+<every path created, edited or deleted, one per line>
+Checks:
+<the command as run> (exit <code>)
+<its summary: pass, fail and skip counts, or every row docs-check listed>
+Checklist note:
+  - <YYYY-MM-DD>: <evidence>. Findings: <ids raised, or none>. Skills: <skills loaded, and `<skill> not loaded: <reason>` for any it didn't load>. human-voice: <writing-with-agents:human-voice | by hand>
+  - Checkpoint draft: <the scope, in a goal run only>
+Commit message:
+<docs|test>(intake): <procedure>
+
+Intake: intake:<procedure>
+```
+
+- The note follows "Human-voice pass" and "Skills" below. The human-voice line is for a documentation item only.
+- The message's last paragraph holds only trailers. The `intake` command adds its own (`Co-Authored-By:`) to that paragraph, with no blank line between them.
+- Report a check's output as it ran, failing or not. A failure the agent can fix within "What intake may change" is fixed and the check rerun before reporting.
+- An item that commits twice (`intake:testing-authorization`'s matrix update) drafts a message for each, naming which changed files go in which.
 
 ## Human-voice pass
 
