@@ -62,7 +62,7 @@ The ground file lives in the repository next to the system description, so it is
 
 ## Spec Assumptions Check
 
-Runs first in the default mode and is the core of `--check`, whenever an outstanding spec exists (`guard spec-status`, where `guard` is `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz"`).
+Runs first in the default mode and is the core of `--check`, whenever an outstanding spec exists: any state `guard spec-status` lists but Completed, `Unbranched` (any branch) included, matched by its prefix since the state reads `Unbranched (on <branch>)`. Here `guard` is `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz"`.
 
 1. **Ground it.** Read `docs/current-state.json`. When it is missing, or its `built_at.system_description` doesn't match the `Last updated` SHA in `docs/system-description.md`, stop and suggest `spec:current`: checking against a stale state flags the wrong specs.
 2. **List the assumptions** of the specs in scope, in order, with `${CLAUDE_PLUGIN_ROOT}/references/specs/assumptions.md`. Start one `fullstack-dev-skills:code-reader` agent for the list when there are more than three specs.

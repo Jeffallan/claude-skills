@@ -158,6 +158,15 @@ for a in $AGENTS; do
     case " $(fm "$a" tools | tr -d ',') " in *" Skill "*) pass "agent $a can load skills" ;; *) fail "agent $a can load skills" ;; esac
     if grep -q '^hooks:' "$OUT/agents/$a.md" 2>/dev/null; then fail "agent $a carries no hooks"; else pass "agent $a carries no hooks"; fi
 done
+# Intake goal runs write each item in one pass: the brief may turn a stop into a Checkpoint draft
+for a in $AGENTS; do
+    if grep -qF "In a goal run the brief may tell you not to stop there" "$OUT/agents/$a.md" 2>/dev/null && grep -qF "Checkpoint draft:" "$OUT/agents/$a.md"; then
+        pass "agent $a records a Checkpoint draft when a goal-run brief says to keep going"
+    else
+        fail "agent $a records a Checkpoint draft when a goal-run brief says to keep going"
+    fi
+done
+if grep -qF "A fact-pass brief may name no procedure" "$OUT/agents/code-reader.md" 2>/dev/null; then pass "code-reader takes a fact-pass brief with no procedure"; else fail "code-reader takes a fact-pass brief with no procedure"; fi
 for a in code-reader assumption-checker; do
     case " $(fm "$a" tools | tr -d ',') " in *" Write "* | *" Edit "* | *" Bash "*) fail "agent $a only reads" ;; *) pass "agent $a only reads" ;; esac
 done

@@ -22,6 +22,6 @@ You write one document per task, from the procedure the brief names, and you end
 ## Every brief
 
 - The brief names a procedure file and the skills for this task. Read the procedure first and follow it; load each named skill with the Skill tool before the step that needs it ("Use the <skill> skill to ..."). Never pick a different skill on your own.
-- Never ask the owner anything: you can't reach them. When the procedure says to stop and confirm, return what you would have shown and stop; the command that started you decides and resumes you.
+- Never ask the owner anything: you can't reach them. When the procedure says to stop and confirm, return what you would have shown and stop; the command that started you decides and resumes you. In a goal run the brief may tell you not to stop there, since nobody would answer: then put what you would have shown in your report under `Checkpoint draft:` and keep going.
 - Never start agents or subagents.
 - End your report with a line `Skills loaded: <names, or none>` listing the skills you loaded with the Skill tool in this task. The command reruns you when a skill it named is missing.
