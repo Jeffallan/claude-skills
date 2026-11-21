@@ -125,13 +125,34 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
 }
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
+# The eight capability agents (decision 1); plugin agents ignore frontmatter hooks, so none carry any (decision 5a)
+AGENTS="architect assumption-checker code-reader doc-writer reviewer security-prober test-writer verifier"
+assert_equal "$(cd "$OUT/agents" 2>/dev/null && ls *.md | sed 's/\.md$//' | LC_ALL=C sort | tr '\n' ' ')" "$AGENTS " "ships exactly the eight agents"
+fm() { sed -n '2,/^---$/p' "$OUT/agents/$1.md" 2>/dev/null | grep "^$2:" | cut -d: -f2- | sed 's/^ *//'; }
+for a in $AGENTS; do
+    assert_equal "$(fm "$a" name)" "$a" "agent $a names itself"
+    if [ -n "$(fm "$a" description)" ]; then pass "agent $a has a description"; else fail "agent $a has a description"; fi
+    case " $(fm "$a" tools | tr -d ',') " in *" Skill "*) pass "agent $a can load skills" ;; *) fail "agent $a can load skills" ;; esac
+    if grep -q '^hooks:' "$OUT/agents/$a.md" 2>/dev/null; then fail "agent $a carries no hooks"; else pass "agent $a carries no hooks"; fi
+done
+for a in code-reader assumption-checker; do
+    case " $(fm "$a" tools | tr -d ',') " in *" Write "* | *" Edit "* | *" Bash "*) fail "agent $a only reads" ;; *) pass "agent $a only reads" ;; esac
+done
+
+# One intake command over the 21 procedures under references/intake/procedures/
+PROCS="create-onboarding create-system-description document-analytics document-api document-authorization document-codebase document-config document-data-model document-features document-file-tree document-glossary document-integrations document-security document-user-flow document-user-model existing-docs testing-authorization testing-features testing-owasp testing-setup testing-user-flows"
+assert_equal "$(cd "$OUT/references/intake/procedures" 2>/dev/null && ls *.md | sed 's/\.md$//' | LC_ALL=C sort | tr '\n' ' ')" "$PROCS " "ships the 21 intake procedures"
+assert_exists "$OUT/commands/intake.md" "ships commands/intake.md"
+assert_not_exists "$OUT/commands/intake" "ships no intake:* commands"
+assert_equal "$(python3 -c "import json,sys; print(sorted(k for k in json.load(open(sys.argv[1]))['commands'] if k.startswith('intake')))" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "['intake']" "plugin.json maps intake and no intake:* command"
+
 # Repo-only content stays out
 for path in .claude-plugin/marketplace.json CLAUDE.md site docs scripts assets research specs evals .serena .github version.json pyproject.toml; do
     assert_not_exists "$OUT/$path" "excludes $path"
 done
 
 # Only these top-level entries ship
-assert_equal "$(cd "$OUT" 2>/dev/null && ls -A | LC_ALL=C sort | tr '\n' ' ')" ".claude-plugin LICENSE README.md commands hooks references runtime skills " "ships only the plugin's own entries"
+assert_equal "$(cd "$OUT" 2>/dev/null && ls -A | LC_ALL=C sort | tr '\n' ' ')" ".claude-plugin LICENSE README.md agents commands hooks references runtime skills " "ships only the plugin's own entries"
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"

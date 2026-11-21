@@ -69,68 +69,8 @@
     "common-ground": {
       "source": "./commands/common-ground.md"
     },
-    "intake:existing-docs": {
-      "source": "./commands/intake/existing-docs.md"
-    },
-    "intake:document-codebase": {
-      "source": "./commands/intake/document-codebase.md"
-    },
-    "intake:document-data-model": {
-      "source": "./commands/intake/document-data-model.md"
-    },
-    "intake:document-file-tree": {
-      "source": "./commands/intake/document-file-tree.md"
-    },
-    "intake:document-integrations": {
-      "source": "./commands/intake/document-integrations.md"
-    },
-    "intake:document-api": {
-      "source": "./commands/intake/document-api.md"
-    },
-    "intake:document-user-model": {
-      "source": "./commands/intake/document-user-model.md"
-    },
-    "intake:document-features": {
-      "source": "./commands/intake/document-features.md"
-    },
-    "intake:document-glossary": {
-      "source": "./commands/intake/document-glossary.md"
-    },
-    "intake:document-security": {
-      "source": "./commands/intake/document-security.md"
-    },
-    "intake:document-authorization": {
-      "source": "./commands/intake/document-authorization.md"
-    },
-    "intake:document-user-flow": {
-      "source": "./commands/intake/document-user-flow.md"
-    },
-    "intake:document-config": {
-      "source": "./commands/intake/document-config.md"
-    },
-    "intake:document-analytics": {
-      "source": "./commands/intake/document-analytics.md"
-    },
-    "intake:create-onboarding": {
-      "source": "./commands/intake/create-onboarding.md"
-    },
-    "intake:testing-setup": {
-      "source": "./commands/intake/testing-setup.md"
-    },
-    "intake:testing-features": {
-      "source": "./commands/intake/testing-features.md"
-    },
-    "intake:testing-authorization": {
-      "source": "./commands/intake/testing-authorization.md"
-    },
-    "intake:testing-owasp": {
-      "source": "./commands/intake/testing-owasp.md"
-    },
-    "intake:testing-user-flows": {
-      "source": "./commands/intake/testing-user-flows.md"
-    },
-    "intake:create-system-description": {
-      "source": "./commands/intake/create-system-description.md"
+    "intake": {
+      "source": "./commands/intake.md"
     },
     "discovery:create": {
       "source": "./commands/discovery/create.md"

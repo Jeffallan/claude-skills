@@ -1,6 +1,6 @@
 # Intake Goal Prompt Template
 
-Runs the intake checklist (`references/intake/checklist.md`) as one `/goal` session: one checklist item per command, in order, with a commit per item. It follows the shape of `references/specs/templates/goal-prompt.md` and the checklist-runner loop: all state lives in the checklist file, and the run re-reads it after every compaction. The intake commands carry their own steps and goal-run rules (`references/intake/rules.md`), so never copy those steps here.
+Runs the intake checklist (`references/intake/checklist.md`) as one `/goal` session: one checklist item per procedure, in order, with a commit per item. It follows the shape of `references/specs/templates/goal-prompt.md` and the checklist-runner loop: all state lives in the checklist file, and the run re-reads it after every compaction. The `intake` command and its procedures carry their own steps and goal-run rules (`references/intake/rules.md`), so never copy those steps here.
 
 Save the filled prompt as `docs/intake-goal-prompt.md` on the intake branch and commit it with the checklist. That commit is the start SHA: `git log -1 --format=%h -- docs/intake-goal-prompt.md`.
 
@@ -21,7 +21,7 @@ Rerun these in your final turn and show the output:
 - Never commit vendored or installed packages. Never change runtime dependencies or what ships (dependencies, main, bin, type, engines, the build). Test dev-dependencies, test configuration and test-only package.json files are allowed, since intake must be able to install test tooling to write tests on observed behavior. Pick test dev-dependency versions that fit the runtime dependencies already installed, never the reverse: never upgrade, downgrade or re-resolve a runtime dependency to make newer test tools fit, and leave the lockfile's existing runtime entries byte-identical (Vue 2.6 takes `@vue/test-utils` 1.x and a runner that supports Vue 2 and the project's Node, not the latest releases that pull Vue 3).
 - Prove each harness layer with a smoke test before writing any real test in that layer.
 - Never call AskUserQuestion. A routine scope confirmation goes in the item's checklist note; an Open questions row in docs/intake-findings.md is only for a choice the owner could reasonably reverse. The run continues either way.
-- Reach the intake references only through the intake commands, which name their plugin path. Never search the filesystem for them.
+- Reach the intake references only through the intake command, which names their plugin path. Never search the filesystem for them.
 - Never push, tag, open PRs or write to a tracker. Never rewrite history: no rebase, reset, amend or squash.
 - Never delete, skip or weaken a test to get a pass, other than the intended-behavior twin of a finding.
 - <limits specific to this project: paths not to touch, services not to call>
@@ -37,13 +37,13 @@ End your turn with `BLOCKED: <stop>`, what you need, and `git status --short` on
 <per_item_loop>
 Each item, in order:
 1. Re-read docs/intake-checklist.md and take the first unchecked item without an unresolved BLOCKED note.
-2. Load the skills in its command's "Skills to load" list with the Skill tool ("Skills" in references/intake/rules.md), then run the command under the goal-run rules there.
-3. Verify with fresh output: the command's accuracy audit or run-and-verify phase, then `<test:all command>`.
-4. Check the box with an indented note (date, evidence, finding ids raised), then commit the item's files and the checklist together: `<docs|test>(intake): <command>` with the trailer `Intake: <command>` in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
+2. For an item that names a procedure, call the Skill tool with `fullstack-dev-skills:intake` and the procedure name as its argument, and follow it under the goal-run rules in references/intake/rules.md: it runs the item's agents, records the checkpoint as a draft, reviews their diff and commits. Do an item that names no procedure in this session.
+3. Verify with fresh output: the procedure's accuracy audit or run-and-verify phase, then `<test:all command>`.
+4. The box is checked with an indented note (date, evidence, finding ids raised, skills the agents loaded), and the item's files and the checklist are committed together: `<docs|test>(intake): <procedure>` with the trailer `Intake: intake:<procedure>` in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
 5. Check the commit you just made: `git log -1 --format='%(trailers:key=Intake,valueonly)'` prints this item's command, and `git show --stat HEAD` lists only this item's files. When either is wrong, never amend: fix it with a follow-up commit carrying the same item's trailer.
 </per_item_loop>
 <context_hygiene>
-After a compaction or resume, re-read this file and the checklist, and rebuild state from them and `git log`, never from memory. Delegate broad code searches to read-only subagents; every edit happens in the main session.
+After a compaction or resume, re-read this file and the checklist, and rebuild state from them and `git log`, never from memory. Writing happens in the agents the intake command starts, one at a time; commits happen only in this session.
 </context_hygiene>
 <final_report>
 Save the scoring files to <results-dir> (outside the repo):
@@ -65,7 +65,7 @@ Reminder: every commit names its item with one `Intake:` trailer on <intake-bran
 
 ## Launching it
 
-Start a new session with the deny set from `references/specs/launch.md`, so the denies hold for the whole run. Intake runs no ticket commands, so the `ticket-guard` allow rule isn't needed. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key, or `git commit --allow-empty` signs in a scratch clone): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--disallowedTools` takes a list, so the `--` before the prompt is required. The session serves the run only: run Phase 4 and any other attended intake command in a fresh session without these flags.
+Start a new session with the deny set from `references/specs/launch.md`, so the denies hold for the whole run. Intake runs no ticket commands, so the `ticket-guard` allow rule isn't needed. Never deny `SendMessage`: every checkpoint resumes an agent with it. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key, or `git commit --allow-empty` signs in a scratch clone): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--disallowedTools` takes a list, so the `--` before the prompt is required. The session serves the run only: run Phase 4 and any attended `intake` run in a fresh session without these flags.
 
 ```bash
 claude \

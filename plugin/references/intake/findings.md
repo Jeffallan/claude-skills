@@ -1,6 +1,6 @@
 # Intake Findings Tracker
 
-Every intake command records the bugs, drift and dead code it finds in one file, `docs/intake-findings.md`, instead of fixing them. This file defines that tracker, its finding ids and the rule that governs the tests built on it. The eval in `evals/intake/` reads the tracker and the tests with these rules.
+Every intake procedure records the bugs, drift and dead code it finds in one file, `docs/intake-findings.md`, instead of fixing them. This file defines that tracker, its finding ids and the rule that governs the tests built on it. The eval in `evals/intake/` reads the tracker and the tests with these rules.
 
 ## Characterize, don't fix
 
@@ -79,7 +79,7 @@ The tests still pin the behavior either way; their names say what they check, no
 
 | Section | Written by |
 |---------|-----------|
-| Summary and Findings | Every intake command, appending |
+| Summary and Findings | Every intake procedure, appending |
 | Open questions | A command in a goal run that makes a choice the owner could reasonably reverse (see `references/intake/rules.md`); routine scope confirmations stay in the checklist note |
 | Test coverage, and each finding's `Tests:` line | The `intake:testing-*` commands, both in the same commit as the test |
 | A finding's text after a test confirms or disproves it (drop "suspected", correct the claim, set `invalid`) | The testing command whose test settled it |

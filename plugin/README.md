@@ -8,7 +8,7 @@ Each skill covers one language, framework or discipline. Claude loads a skill wh
 
 The workflow commands cover a project from intake to merge:
 
-- `intake:` documents an existing codebase and pins its current behavior in tests
+- `intake` documents an existing codebase and pins its current behavior in tests
 - `discovery:` turns rough input into tickets
 - `spec:` groups tickets into specs, then plans, reviews and completes each one
 - `ticket:execute` and `ticket:complete` build one ticket test first
@@ -27,7 +27,7 @@ The workflow commands need [uv](https://docs.astral.sh/uv/) and a `.claude/workf
 
 Skills are Markdown instructions, so they read and write only what you ask Claude to work on.
 
-Workflow commands write specs and docs into your repository. They change tickets in your tracker through the tools you already have connected, and ask before each tracker change.
+Workflow commands write specs and docs into your repository. Some of that work runs in the plugin's agents (`agents/`): readers that only read, and writers that edit docs and tests in your repository one at a time and never commit; the command reviews each writer's diff and commits it. They change tickets in your tracker through the tools you already have connected, and ask before each tracker change.
 
 The plugin registers hooks on edits, tool calls, session stop and compaction. A hook exits at once unless a ticket is in progress, which a marker under `.git/ticket-guard/` records. During ticket work the hooks run the bundled guard, `runtime/guard.pyz`, with `uv run`; it records test evidence under `.git/ticket-guard/` and blocks edits to frozen tests.
 

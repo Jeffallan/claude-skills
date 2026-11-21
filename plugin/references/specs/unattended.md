@@ -43,7 +43,7 @@ The ticket commands take their mode from the caller: the goal prompt's per-ticke
 - **No tracker writes,** attended or not. Neither ticket command calls any adapter write operation, and neither moves a ticket's status. Commits reference the ticket with a neutral `Ticket: <id>` trailer, never a Linear issue ID or a Jira `#transition` token.
 - **RED first.** The failing test and its RED record come before any implementation edit.
 - **Never rewrite history.** No `git rebase`, `git reset`, `git commit --amend` or squash, even to tidy the commit count. A ticket found wrong after its commit stays committed: report it as a deviation, add it to Open questions, and let `spec:review` handle it. Goal launches deny these commands.
-- **Subagents only read** and return text. Every edit happens in the main session, where the companion skill's hooks apply.
+- **Subagents only read** and return text. Every edit happens in the main session, where the companion skill's hooks apply. This holds while a ticket marker exists; outside ticket work, the writing agents of `intake` follow "Agents and commits" in `references/intake/rules.md`.
 - **Frozen scope.** Never work a new issue found during the ticket. Append it to the plan's Proposed tracker changes (title, plain-language example, file references, duplicate check against open tickets) and carry on with the ticket.
 - **Questions are collected, never defaulted.** When the ticket or a skill needs an answer the run can't get, block the ticket with `guard block <ticket> "question: <question>" --question "<question>"`, which writes the Blocked row and the plan's Open questions row in one commit.
 

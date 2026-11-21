@@ -391,7 +391,8 @@ def rewrite_check(repo: Path, start: str, windows, reflog: Path | None) -> dict:
 
 SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
 DECLINED = re.compile(r"[\w:-]+\s+(?:skill\s+)?(?:was\s+)?not loaded")
-ITEM_SKILL = "fullstack-dev-skills:intake:"
+ITEM_SKILL = "fullstack-dev-skills:intake:"  # the pre-0.5.0 layout: one command per item
+ITEM_READ = re.compile(r"/references/intake/procedures/([a-z-]+)\.md$")  # 0.5.0: the intake command reads the procedure
 CONTINUED = "This session is being continued from a previous conversation"
 
 
@@ -425,6 +426,20 @@ def named_skills(text: str) -> set[str]:
     return claimed
 
 
+def item_opens(m: dict) -> list[str]:
+    """Items whose window this record opens: a Skill call to an intake command, or a Read of a procedure file."""
+    content = m.get("message", {}).get("content") if isinstance(m.get("message"), dict) else None
+    out = []
+    for c in content if isinstance(content, list) else []:
+        if c.get("type") != "tool_use":
+            continue
+        if c.get("name") == "Skill" and str(c.get("input", {}).get("skill", "")).startswith(ITEM_SKILL):
+            out.append(str(c["input"]["skill"]).removeprefix(ITEM_SKILL))
+        elif c.get("name") == "Read" and (r := ITEM_READ.search(str(c.get("input", {}).get("file_path", "")))):
+            out.append(r.group(1))
+    return out
+
+
 def skill_uses(m: dict) -> list[str]:
     content = m.get("message", {}).get("content") if isinstance(m.get("message"), dict) else None
     return [
@@ -439,8 +454,8 @@ def timeline(
 ) -> tuple[list[tuple[str, datetime, datetime]], list[tuple[datetime, str]], list[datetime]]:
     """Item windows (cmd, start, end), Skill loads (time, skill) and compaction times from the goal sessions.
 
-    A window opens at a Skill call to `fullstack-dev-skills:intake:<cmd>` and runs to the next one or the
-    session's end. A subagent's loads count when their time falls inside a window.
+    A window opens at a Skill call to `fullstack-dev-skills:intake:<cmd>` or a Read of
+    `references/intake/procedures/<cmd>.md`, and runs to the next one or the session's end. A subagent's loads count when their time falls inside a window.
     """
     windows, loads, compactions, side = [], [], [], []
     for p in paths:
@@ -454,12 +469,11 @@ def timeline(
             content = m["message"].get("content", "") if isinstance(m.get("message"), dict) else ""
             if m.get("type") == "user" and (m.get("isCompactSummary") or text_of(content).startswith(CONTINUED)):
                 compactions.append(t)
-            for s in skill_uses(m):
-                loads.append((t, s))
-                if s.startswith(ITEM_SKILL):
-                    if opened:
-                        windows.append((*opened, t))
-                    opened = (s.removeprefix(ITEM_SKILL), t)
+            loads += [(t, s) for s in skill_uses(m)]
+            for cmd in item_opens(m):
+                if opened:
+                    windows.append((*opened, t))
+                opened = (cmd, t)
         if opened:
             windows.append((*opened, timed[-1][0]))
     loads += [(t, s) for t, s in side if any(a <= t <= b for _, a, b in windows)]

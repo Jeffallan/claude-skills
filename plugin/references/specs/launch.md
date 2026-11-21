@@ -2,7 +2,7 @@
 
 How `spec:create`, `spec:review` and `spec:complete` print the commands that start a goal run over a spec's `goal-prompt.md`. A goal run is never started by pasting `/goal` into a running session: each launch command starts a new session with the writes-only deny set, so the denies hold for the whole run, compactions included.
 
-The goal-run session is for the run only. `/goal clear` ends the goal but keeps the session's `--disallowedTools` flags, so `AskUserQuestion`, `guard decide` and tracker writes stay denied for as long as the session lives. Do the attended work that follows a run (`spec:review` and its triage, fix-round decisions, `spec:complete`, the intake commands) in a fresh session started with only `--plugin-dir` and your usual permission mode.
+The goal-run session is for the run only. `/goal clear` ends the goal but keeps the session's `--disallowedTools` flags, so `AskUserQuestion`, `guard decide` and tracker writes stay denied for as long as the session lives. Do the attended work that follows a run (`spec:review` and its triage, fix-round decisions, `spec:complete`, an attended `intake` run) in a fresh session started with only `--plugin-dir` and your usual permission mode.
 
 ## The guard
 

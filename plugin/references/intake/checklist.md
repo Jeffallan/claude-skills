@@ -1,6 +1,6 @@
 # Intake Checklist
 
-The whole intake phase on one page: four phases, run in order, one command per item. Copy the template below into the project as `docs/intake-checklist.md` and work it top to bottom, attended or as a goal run (`references/intake/goal-prompt.md`). The checklist file is the run's memory: a checked box, its completion note and any `BLOCKED:` note are all the next session knows.
+The whole intake phase on one page: four phases, run in order, one procedure per item. The `intake` command copies the template below into the project as `docs/intake-checklist.md` when it is missing and works it top to bottom, attended or as a goal run (`references/intake/goal-prompt.md`). The checklist file is the run's memory: a checked box, its completion note and any `BLOCKED:` note are all the next session knows.
 
 The operating rule for every item: **characterize, don't fix** (`references/intake/findings.md`). Docs and tests record what the code does today. Every bug goes in `docs/intake-findings.md`, never into a fix.
 
@@ -77,5 +77,5 @@ When the branch isn't pushed, the gate can't be seen running on CI. Check it loc
 
 ## When not to use it
 
-- A codebase that already has current reference docs and a test suite: run `intake:existing-docs` first, then only the commands for the gaps it finds.
+- A codebase that already has current reference docs and a test suite: run `intake existing-docs` first, then `intake <procedure>` for each gap it finds.
 - A brand-new project with no code yet: there is nothing to characterize. Start at discovery.

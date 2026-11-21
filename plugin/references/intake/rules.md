@@ -1,6 +1,6 @@
 # Intake Rules
 
-The rules every `intake:*` command shares: where the output goes, how a documentation command checks scope and audits its document, how a testing command proves its tests run, and how both behave in a goal run. Each command reads this file before its first phase. Findings and the tests that pin them follow `references/intake/findings.md`.
+The rules every intake procedure shares: where the output goes, how a documentation procedure checks scope and audits its document, how a testing procedure proves its tests run, and how both behave in a goal run. The `intake` command runs each procedure (`references/intake/procedures/<procedure>.md`, called `intake:<procedure>` in the checklist, doc frontmatter and commit trailers) in an agent, and the agent reads this file before its first phase. "Command" below means the procedure. Findings and the tests that pin them follow `references/intake/findings.md`.
 
 ## Output layout
 
@@ -45,7 +45,7 @@ Docs the project had before intake are the owner's. Intake never edits them. `in
 
 - A claim the code contradicts is a finding with its evidence (the doc and the symbol), like any other bug.
 - A claim no code can settle ("deploys take five minutes") is marked unverified in the inventory, never a finding.
-- A topic an existing doc covers fully is linked from the intake doc for that topic, not repeated. A topic it covers in part or not at all is written by the intake command, as usual.
+- A topic an existing doc covers fully is linked from the intake doc for that topic, not repeated. A topic it covers in part or not at all is written by the intake procedure for it, as usual.
 - When an owner doc sits at an intake doc's path, the intake doc goes beside it as `<name>-intake.md`, and each lists the other in `related:`.
 
 The docs index lists the owner docs too, marking each "owner-written" with its open finding ids. When the owner's `docs/README.md` holds the index path, intake's index is `docs/README-intake.md` and lists that README among the owner docs.
@@ -67,7 +67,7 @@ related: [security/authorization.md, architecture/data-model.md]
 
 | Key | Holds | Written |
 |-----|-------|---------|
-| `command` | The intake command that owns the doc. A doc without it is the project's own | When the command first writes the doc |
+| `command` | The intake procedure that owns the doc (`intake:<procedure>`). A doc without it is the project's own | When the command first writes the doc |
 | `verified` | The short SHA of HEAD when the doc's accuracy audit last ran: the code the doc was checked against | At every full audit: the command's first run, a rerun, a drift repair. A ticket that edits the doc leaves it alone, since a commit that changes code and the doc together counts as the doc's update |
 | `sources` | Globs of the code the doc describes, matched against repo paths (`*` crosses folders). They catch new code no citation names yet. Keep them narrow: the files this doc's claims come from (`backend/api/urls.py`, `backend/api/apps/*/views.py`), never a whole tree (`backend/**`). A ticket that adds a file matching a doc's glob must update or waive that doc | When the command writes the doc; widened when the doc's scope grows |
 | `related` | The docs that state facts this one depends on, or that depend on it, as paths under `docs/`, each link two-way | Whenever a cross-link changes |
@@ -123,7 +123,20 @@ Never leave the suite red. The goal run's `<done_when>` and the intake eval's `c
 
 Every command stops once before it writes: the documentation commands after discovery, the testing commands after designing their cases. The checkpoint shows the scope (what was found, what will be written, where) so a wrong scope costs nothing.
 
-Attended, the command presents the scope and waits for the owner. It writes nothing until the owner confirms or corrects it.
+It runs as pause and resume, because an agent can't ask the owner:
+
+1. The `intake` command starts the procedure's agent for discovery (or case design). The agent returns its scope as its report and writes nothing.
+2. Attended, the `intake` command shows the scope and waits for the owner. In a goal run it records the scope as the draft in the item's checklist note ("In a goal run" below).
+3. The `intake` command resumes the same agent with `SendMessage`, giving the confirmed or corrected scope, and the agent writes with its discovery still in context.
+
+## Agents and commits
+
+The procedures run in writing agents (`doc-writer`, `test-writer`, `security-prober`, `architect`); `code-reader` agents only read.
+
+- One writing agent runs at a time.
+- Agents never commit, stage or branch. After each writing agent, the `intake` command reviews its diff against "What intake may change" and commits it with the item's trailer.
+- An agent can't start agents. A procedure that needs independent readers (the second pass of `document-authorization`) returns their inputs, and the `intake` command starts `code-reader` agents and resumes the writer with their reports.
+- While a ticket marker exists, no agent writes: ticket work happens in the main session, where the guard's hooks apply. The plugin's hooks also fire on an agent's tool calls, so they still catch an agent edit there.
 
 ## Human-voice pass
 
@@ -160,14 +173,14 @@ Intake commands run unattended inside a `/goal` run, under the rules in `referen
 - **Never call `AskUserQuestion`.** The checkpoint becomes a draft: the command writes the scope it would have shown in its checklist note and continues with it. It never stops the run to wait. A routine scope confirmation is not a question. Add an Open questions row to `docs/intake-findings.md`, with a draft decision, only when the owner could reasonably choose differently and the choice changes what gets written: a layer skipped, a surface left out, a contradiction picked one way.
 - **Never block on a missing document.** A command whose input doc is absent works from the code alone and adds an Open question saying so.
 
-The rest holds unchanged: no tracker writes, no history rewrites, subagents only read, every edit in the main session. A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
+The rest holds unchanged: no tracker writes, no history rewrites, agents write one at a time and never commit ("Agents and commits"). A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
 
-Outside a goal, an intake command that finds `AskUserQuestion` unavailable at its checkpoint never drafts in its place: it takes the wrong-session stop in `references/specs/unattended.md`.
+Outside a goal, an `intake` run that finds `AskUserQuestion` unavailable at its checkpoint never drafts in its place: it takes the wrong-session stop in `references/specs/unattended.md`.
 
 ## Skills
 
 Each command names its skills by exact name. The language and framework skill is chosen by detection: read the package manifest and lockfile, the framework config and the test config, then pick the matching `fullstack-dev-skills:` skill. A stack with no matching skill gets none, and the command says so rather than borrowing a neighbor's.
 
-Before a command's first step, call the Skill tool for each skill in its "Skills to load" list that this session has not loaded since its last compaction. A skill loaded earlier in the session and still in context needs no second call.
+The `intake` command names the skills in the agent's brief ("Use the <skill> skill to ..."): the procedure's "Skills to load" list plus the detected stack skills. The agent calls the Skill tool for each before the step that needs it, and ends its report with `Skills loaded: ...`. The `intake` command resumes or reruns an agent whose list lacks a skill it was given.
 
-The checklist note records only what this session did. Name a skill there only when this session made the Skill call for it. A skill the command lists but you didn't load gets `<skill> not loaded: <reason>` instead. The next session trusts the note, and the intake eval checks every named skill against the transcript.
+The checklist note records only what the item's agents did. Name a skill there only when an agent reported loading it in this item. A skill the procedure lists but no agent loaded gets `<skill> not loaded: <reason>` instead. The next session trusts the note, and the intake eval checks every named skill against the transcripts, the agents' included.

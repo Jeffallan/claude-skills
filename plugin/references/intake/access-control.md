@@ -1,6 +1,6 @@
 # Intake Access Control
 
-How the intake commands find access-control and business-logic bugs: one operation inventory, one access matrix that joins it with every principal and state, a set of default rules that say what "wrong" looks like, and table-driven tests that execute every cell. Each command named below reads this file before its first phase. Findings follow `references/intake/findings.md`; everything else follows `references/intake/rules.md`.
+How the intake procedures find access-control and business-logic bugs: one operation inventory, one access matrix that joins it with every principal and state, a set of default rules that say what "wrong" looks like, and table-driven tests that execute every cell. Each procedure named below reads this file before its first phase. Findings follow `references/intake/findings.md`; everything else follows `references/intake/rules.md`.
 
 ## Why a matrix and not a reminder
 

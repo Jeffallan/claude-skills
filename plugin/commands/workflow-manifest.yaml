@@ -6,48 +6,8 @@ phases:
     depends_on: []
     run_once: true
     commands:
-      - command: "intake:existing-docs"
-        definition: plugin/commands/intake/existing-docs.yaml
-      - command: "intake:document-codebase"
-        definition: plugin/commands/intake/document-codebase.yaml
-      - command: "intake:document-data-model"
-        definition: plugin/commands/intake/document-data-model.yaml
-      - command: "intake:document-file-tree"
-        definition: plugin/commands/intake/document-file-tree.yaml
-      - command: "intake:document-integrations"
-        definition: plugin/commands/intake/document-integrations.yaml
-      - command: "intake:document-api"
-        definition: plugin/commands/intake/document-api.yaml
-      - command: "intake:document-user-model"
-        definition: plugin/commands/intake/document-user-model.yaml
-      - command: "intake:document-features"
-        definition: plugin/commands/intake/document-features.yaml
-      - command: "intake:document-glossary"
-        definition: plugin/commands/intake/document-glossary.yaml
-      - command: "intake:document-security"
-        definition: plugin/commands/intake/document-security.yaml
-      - command: "intake:document-authorization"
-        definition: plugin/commands/intake/document-authorization.yaml
-      - command: "intake:document-user-flow"
-        definition: plugin/commands/intake/document-user-flow.yaml
-      - command: "intake:document-config"
-        definition: plugin/commands/intake/document-config.yaml
-      - command: "intake:document-analytics"
-        definition: plugin/commands/intake/document-analytics.yaml
-      - command: "intake:create-onboarding"
-        definition: plugin/commands/intake/create-onboarding.yaml
-      - command: "intake:testing-setup"
-        definition: plugin/commands/intake/testing-setup.yaml
-      - command: "intake:testing-features"
-        definition: plugin/commands/intake/testing-features.yaml
-      - command: "intake:testing-authorization"
-        definition: plugin/commands/intake/testing-authorization.yaml
-      - command: "intake:testing-owasp"
-        definition: plugin/commands/intake/testing-owasp.yaml
-      - command: "intake:testing-user-flows"
-        definition: plugin/commands/intake/testing-user-flows.yaml
-      - command: "intake:create-system-description"
-        definition: plugin/commands/intake/create-system-description.yaml
+      - command: "intake"
+        definition: plugin/commands/intake.yaml
 
   discovery:
     description: docs/workflow/discovery-phase.md
