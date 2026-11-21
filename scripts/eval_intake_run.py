@@ -146,10 +146,38 @@ def marker_helper(lines: list[str], i: int) -> str | None:
     return None
 
 
+# Where prose starts: a docstring or block comment opening, or a line comment after whitespace (never `http://`)
+PROSE_START = re.compile(r"\"\"\"|'''|/\*|(?<!\S)(?:#|//)")
+
+
+def code_text(lines: list[str]) -> list[str]:
+    """Each line with its comments, docstrings and block comments removed, so prose naming a marker is not one."""
+    out, close = [], ""
+    for line in lines:
+        kept, pos = "", 0
+        while True:
+            if close:
+                end = line.find(close, pos)
+                if end < 0:
+                    break
+                pos, close = end + len(close), ""
+            m = PROSE_START.search(line, pos)
+            if not m:
+                kept += line[pos:]
+                break
+            kept += line[pos : m.start()]
+            if m.group() in ("#", "//"):
+                break
+            close, pos = ("*/" if m.group() == "/*" else m.group()), m.end()
+        out.append(kept)
+    return out
+
+
 def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> dict:
     """Every skipped or expected-fail test written by intake names a finding id the tracker knows.
 
-    A helper that wraps a marker is checked where it is called, not where it is defined.
+    A helper that wraps a marker is checked where it is called, not where it is defined. Markers count only in
+    code: a comment or docstring that names one is prose.
     """
     bad, unknown, seen = [], [], 0
     files = {}
@@ -157,15 +185,16 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
         p = repo / rel
         if is_test(rel, globs) and p.exists():
             files[rel] = p.read_text(encoding="utf-8", errors="replace").splitlines()
+    codes = {rel: code_text(lines) for rel, lines in files.items()}
     helpers = {
         n
-        for lines in files.values()
-        for i, line in enumerate(lines)
+        for rel, lines in files.items()
+        for i, line in enumerate(codes[rel])
         if SKIP_MARK.search(line) and (n := marker_helper(lines, i))
     }
     call = re.compile(r"\b(" + "|".join(map(re.escape, sorted(helpers))) + r")\s*\(") if helpers else None
     for rel, lines in files.items():
-        for i, line in enumerate(lines):
+        for i, line in enumerate(codes[rel]):
             if SKIP_MARK.search(line):
                 if marker_helper(lines, i):
                     continue
@@ -913,7 +942,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings
+CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings
 
 
 def main() -> int:

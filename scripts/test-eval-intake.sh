@@ -416,6 +416,28 @@ else
     fail "bare @expectedFailure and @skip count as markers: $out"
 fi
 
+# Marker words in comments, docstrings and block comments are prose, not markers; a real one still counts
+PR="$WORK/prose"
+make_run "$PR"
+mkdir -p "$PR/e2e"
+printf "// Twins use it.fails until the fix lands; never skip( a test silently.\n/*\n * test.skip is for flaky cases only\n */\ntest('totals round', () => {}) // not it.fails\n" >"$PR/e2e/notes.spec.js"
+printf '"""Characterization tests.\n\nUse @pytest.mark.xfail for intended behavior; skip() nothing.\n"""\n\n\ndef test_total_prose():\n    pass  # pytest.mark.skip would hide this\n' >"$PR/tests/test_prose.py"
+commit_item "$PR" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$PR")
+set -e
+if has "$out" bug-tests-cite-findings 1; then pass "marker words in comments and docstrings are not markers"; else fail "marker words in comments and docstrings are not markers: $out"; fi
+printf "\nit.skip('later', () => {}) /* it.fails */\n" >>"$PR/e2e/notes.spec.js"
+commit_item "$PR" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$PR")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q 'notes.spec.js:7' && ! printf '%s' "$out" | grep -qE 'notes.spec.js:[1-5]\b|test_prose.py'; then
+    pass "a real marker beside prose still needs its finding id"
+else
+    fail "a real marker beside prose still needs its finding id: $out"
+fi
+
 # Accuracy tally: found/total against a gold file, given rows left out, mismatched mappings refused
 ACC="$REPO_ROOT/scripts/eval_intake_accuracy.py"
 printf '# Gold\n\n- **Version:** 3 (test)\n\n## Findings (4)\n\n| Gold id | Verdict | Source |\n|---|---|---|\n| F-001 | valid | review |\n| F-002 | valid | review |\n| MISSED-1 | valid | review |\n| ADDED-1 | valid | run 2 |\n\n## Docs (0)\n' >"$WORK/gold.md"
