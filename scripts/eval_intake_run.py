@@ -286,32 +286,91 @@ def suite_check(repo: Path, cmd: str | None) -> tuple[dict, str]:
     return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}"), out
 
 
+def jest_titles(out: str) -> str:
+    """Each test's full name and title from `jest --json`, one per line; nothing when the output isn't its JSON."""
+    try:
+        data = json.loads(out)
+    except ValueError:
+        return ""
+    if not isinstance(data, dict):
+        return ""
+    return "\n".join(
+        f"{a.get('fullName', '')}\n{a.get('title', '')}"
+        for r in data.get("testResults", [])
+        for a in r.get("assertionResults", [])
+    )
+
+
+def node_test_runs(package_json: str, cmd: str) -> list[str]:
+    """The package's `node --test` scripts the test command doesn't reach by `npm run`, each with the spec reporter."""
+    try:
+        scripts = json.loads(package_json).get("scripts") or {}
+    except (ValueError, AttributeError):
+        return []
+    reached, todo = set(), [cmd]
+    while todo:
+        for n in re.findall(r"\b(?:npm|pnpm|yarn)\s+(?:run(?:-script)?\s+)?([\w:.-]+)", todo.pop()):
+            if n in scripts and n not in reached:
+                reached.add(n)
+                todo.append(str(scripts[n]))
+    return [
+        re.sub(r"(\bnode\b[^&|;]*?\s--test)(?![\w=-])", r"\1 --test-reporter=spec", str(body), count=1)
+        for name, body in scripts.items()
+        if name not in reached
+        and re.search(r"\bnode\b[^&|;]*?\s--test(?![\w=-])", str(body))
+        and "--test-reporter" not in str(body)
+    ]
+
+
+def node_titles(out: str) -> str:
+    """The spec reporter's titles, each also joined to its enclosing describe titles by indent, as a cited full name."""
+    lines, stack = [], []
+    for m in re.finditer(r"^( *)[▶✔✖﹣] (.+?)(?: \([\d.]+ms\))?(?: # \w+.*)?$", out, re.M):
+        stack = [*stack[: len(m.group(1)) // 2], m.group(2)]
+        lines += [m.group(2), " ".join(stack)]
+    return "\n".join(lines)
+
+
 def test_listing(repo: Path, cmd: str | None) -> str:
     """Test titles as the runners list them, so names built at runtime and e2e titles outside `cmd` are found.
 
-    pytest collects through the test command's own invocation; vitest and Playwright list from each tracked
-    package.json naming vitest or playwright.config.*, e2e suites the test command skips included. A runner that
+    pytest collects through the test command's own invocation, and Django's runner reruns it at verbosity 2, which
+    prints each test id. vitest and Playwright list from each tracked package.json naming vitest or
+    playwright.config.*, e2e suites the test command skips included. Jest has no listing with titles
+    (`--listTests` prints files), so each package naming jest runs once with `--json`. A package script running
+    `node --test` that the test command doesn't reach through `npm run` runs with the spec reporter. A runner that
     fails or times out adds nothing, which leaves the file-text match as before.
     """
     if not cmd:
         return ""
-    runs = []
+    runs: list[tuple[Path, str, str]] = []  # (cwd, command, how to read its output)
     if m := re.match(r"(.*?\bpytest)\b", cmd):
-        runs.append((repo, f"{m.group(1)} --collect-only -q"))
+        runs.append((repo, f"{m.group(1)} --collect-only -q", "stdout"))
+    if m := re.match(r"(.*?\bmanage\.py\s+test\b[^&|;]*)", cmd):
+        runs.append((repo, f"{m.group(1).rstrip()} -v 2", "both"))  # a later -v wins
     for rel in git(repo, "ls-files").splitlines():
-        name = Path(rel).name
-        if name == "package.json" and '"vitest"' in (repo / rel).read_text(encoding="utf-8", errors="replace"):
-            runs.append(((repo / rel).parent, "npx --no vitest list"))
+        name, cwd = Path(rel).name, (repo / rel).parent
+        if name == "package.json":
+            text = (repo / rel).read_text(encoding="utf-8", errors="replace")
+            if '"vitest"' in text:
+                runs.append((cwd, "npx --no vitest list", "stdout"))
+            elif '"jest"' in text:
+                runs.append((cwd, "npx --no jest --json", "jest"))
+            runs += [(cwd, run, "node") for run in node_test_runs(text, cmd)]
         elif re.fullmatch(r"playwright\.config\.[cm]?[jt]s", name):
-            runs.append(((repo / rel).parent, "npx --no playwright test --list"))
+            runs.append((cwd, "npx --no playwright test --list", "stdout"))
+        elif re.fullmatch(r"jest\.config\.[cm]?[jt]s", name):
+            runs.append((cwd, "npx --no jest --json", "jest"))
     out = []
-    for cwd, run in runs:
+    for cwd, run, how in dict.fromkeys(runs):
         try:
             r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=600)
         except subprocess.TimeoutExpired:
             continue
-        if r.returncode == 0:
-            out.append(r.stdout)
+        if how == "jest":  # a red test still prints its JSON; no JSON means jest never ran
+            out.append(jest_titles(r.stdout))
+        elif r.returncode == 0:
+            out.append({"stdout": r.stdout, "both": r.stdout + r.stderr, "node": node_titles(r.stdout)}[how])
     text = "\n".join(out)
     # vitest joins describe and title with " > ", Playwright with " \u203a "; a cited full name joins them with a space
     return text + "\n" + re.sub(" (?:>|\u203a) ", " ", text)
@@ -1009,7 +1068,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 14  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines
+CHECKS_VERSION = 14  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles
 
 
 def main() -> int:

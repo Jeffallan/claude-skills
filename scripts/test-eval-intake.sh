@@ -767,6 +767,7 @@ cat >"$STUB/npx" <<'EOF'
 case "$*" in
     *"vitest list"*) f=vitest ;;
     *"playwright test --list"*) f=playwright ;;
+    *"jest --json"*) f=jest ;;
     *) exit 1 ;;
 esac
 [ -f "$(dirname "$0")/$f.out" ] || exit 1
@@ -778,7 +779,14 @@ cat >"$STUB/pytest" <<'EOF'
 case "$*" in *--collect-only*) printf 'tests/test_gen.py::test_F001_gen[op1]\n\n1 test collected\n' ;; esac
 exit 0
 EOF
-chmod +x "$STUB/npx" "$STUB/pytest"
+cat >"$STUB/node" <<'EOF'
+#!/usr/bin/env bash
+# a stand-in node: the spec reporter prints the listing saved beside it, as node --test does
+case "$*" in *"--test --test-reporter=spec e2e/"*) ;; *) exit 1 ;; esac
+[ -f "$(dirname "$0")/node.out" ] || exit 1
+cat "$(dirname "$0")/node.out"
+EOF
+chmod +x "$STUB/npx" "$STUB/pytest" "$STUB/node"
 listed() { # listed <dir> <want> <label> [score args...]: score with the stub runners first on PATH
     local d=$1 want=$2 label=$3 out
     shift 3
@@ -812,6 +820,44 @@ sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/test_gen.py::test_F001_gen[op
 commit_item "$V" intake:testing-features "test(intake): gen"
 listed "$V" 1 "a parametrized id pytest --collect-only prints passes findings-evidence" --test-cmd "$STUB/pytest -q"
 listed "$V" 0 "a test command that is not pytest runs no collection, so the parametrized id fails findings-evidence" --test-cmd "true"
+
+# Version 14: Jest titles from a --json run, Django's from its verbosity-2 output, node --test's from the spec reporter
+V=$(fresh v14-jest)
+mkdir -p "$V/tests/unit"
+printf '{"devDependencies": {"jest": "^29.0.0"}}\n' >"$V/package.json"
+printf "describe.each([['a']])('%%s ops', (op) => { test(\`\${op} F-001 hidden\`, () => {}) })\n" >"$V/tests/unit/ops.test.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/ops.test.js::a ops a F-001 hidden`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): ops"
+printf '{"testResults": [{"assertionResults": [{"fullName": "a ops a F-001 hidden", "title": "a F-001 hidden"}]}]}\n' >"$STUB/jest.out"
+listed "$V" 1 "a describe.each title a jest --json run prints passes findings-evidence"
+printf 'not json\n' >"$STUB/jest.out"
+listed "$V" 0 "when jest prints no JSON, a title found nowhere still fails findings-evidence"
+rm "$STUB/jest.out"
+V=$(fresh v14-django)
+mkdir -p "$V/apps/matrix"
+printf 'from django.test import TestCase\n\n\nclass Matrix(TestCase):\n    for op in ["op1"]:\n        locals()["test_" + op + "_F001_current"] = lambda self: None\n' >"$V/apps/matrix/tests.py"
+cat >"$V/manage.py" <<'EOF'
+import sys
+
+if sys.argv[-2:] == ["-v", "2"]:
+    print("test_op1_F001_current (apps.matrix.tests.Matrix.test_op1_F001_current) ... ok", file=sys.stderr)
+print("OK", file=sys.stderr)
+EOF
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `apps/matrix/tests.py::Matrix::test_op1_F001_current`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): matrix"
+listed "$V" 1 "a runtime-built Django test id its verbosity-2 run prints passes findings-evidence" --test-cmd "python3 manage.py test"
+listed "$V" 0 "a test command that is not Django's runs no verbose pass, so the built id fails findings-evidence" --test-cmd "true"
+V=$(fresh v14-node-test)
+mkdir -p "$V/e2e"
+printf '{"scripts": {"test:e2e": "node --test e2e/"}}\n' >"$V/package.json"
+printf "const { describe, it } = require('node:test')\ndescribe('checkout', () => { for (const n of [1, 2]) it(\`F-001 step \${n}\`, () => {}) })\n" >"$V/e2e/flow.test.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `e2e/flow.test.js::checkout F-001 step 2`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-user-flows "test(intake): flow"
+printf '\xe2\x96\xb6 checkout\n  \xe2\x9c\x94 F-001 step 1 (0.4ms)\n  \xe2\x9c\x94 F-001 step 2 (0.1ms)\n\xe2\x9c\x94 checkout (1.3ms)\n\xe2\x84\xb9 tests 2\n' >"$STUB/node.out"
+listed "$V" 1 "a node --test title from a script the test command skips passes findings-evidence"
+listed "$V" 0 "a node --test script the test command runs is not run again" --test-cmd "echo npm run test:e2e"
+rm "$STUB/node.out"
+listed "$V" 0 "when the node --test run fails, a title found nowhere still fails findings-evidence"
 
 # Version 7: the access matrix covers the whole inventory and leaves no cell unexamined
 V=$(fresh v7-good)
