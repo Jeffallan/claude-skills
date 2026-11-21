@@ -125,6 +125,14 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
 }
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
+# Parallel testing writers: each procedure says how it reports tracker edits in a batch; agents know the item report
+for p in testing-features testing-authorization testing-owasp; do
+    if grep -q "Parallel testing writers" "$OUT/references/intake/procedures/$p.md"; then pass "$p explains its batch tracker edits"; else fail "$p explains its batch tracker edits"; fi
+done
+for a in doc-writer test-writer security-prober architect; do
+    if grep -q "item report" "$OUT/agents/$a.md"; then pass "agent $a ends with the item report"; else fail "agent $a ends with the item report"; fi
+done
+
 # The assumptions loop: spec:current, spec:diff and common-ground, with the ground file in the repo
 for c in current diff; do assert_exists "$OUT/commands/spec/$c.md" "ships spec:$c"; done
 assert_exists "$OUT/references/specs/assumptions.md" "ships the shared assumptions reference"

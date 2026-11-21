@@ -13,6 +13,8 @@ This command covers functional behavior at the unit level. End-to-end journeys b
 
 Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` before the first phase. They set the output layout, the findings tracker, the checkpoint, the run-and-verify phase and the goal-run behavior.
 
+**In a parallel batch** ("Parallel testing writers" in the `intake` command, which runs this procedure beside the other two testing procedures): never edit `docs/intake-findings.md`. Give each new finding a provisional id from the range your brief names, run only your own test files, and report every tracker change under `Tracker edits:` in your item report (`references/intake/rules.md`, "The item report"). The command assigns the real ids in checklist order and applies the edits. Everything else in this procedure applies as written.
+
 ## When to use
 
 Run during the capture-behavior step, after `intake:testing-setup` and (ideally) `intake:document-features`.
