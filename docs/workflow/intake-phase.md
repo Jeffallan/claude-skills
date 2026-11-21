@@ -10,7 +10,7 @@ Before feature work starts, agents need documented code, docs that describe what
 
 ## Command
 
-One command runs the phase: `intake [procedure]`. It works `docs/intake-checklist.md` from the first unchecked item; a procedure name runs or reruns that one. Each procedure runs in one agent, stops at a checkpoint to show its scope, then writes; the command reviews the diff and commits the item. The phase runs once (`run_once` in the manifest). Procedures within a step can run in any order unless a row says otherwise.
+One command runs the phase: `intake [procedure]`. It works `docs/intake-checklist.md` from the first unchecked item; a procedure name runs or reruns that one. Each procedure runs in one agent. Attended, it stops at a checkpoint to show its scope, then writes; in a goal run it does the item in one pass and its scope goes in the checklist note as a draft. Only one agent writes at a time, but read-only `code-reader` agents gather facts for the next item while the current one writes. The command reviews the diff and commits the item. The phase runs once (`run_once` in the manifest). Procedures within a step can run in any order unless a row says otherwise.
 
 | Step | Procedure | Output |
 |------|---------|--------|

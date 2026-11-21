@@ -55,14 +55,14 @@ A **spec** is a named group of tickets built on one branch, `spec/<spec-name>`, 
 ## Before you start
 
 - **Install the plugin** and **[uv](https://docs.astral.sh/uv/)**, which runs the guard with a suitable Python, fetching one if needed. The commands call a small runtime that ships inside the plugin, the ticket guard (`guard ...`), for evidence, hooks, the review gate and the spec index.
-- **Configure the tracker.** The first attended command that needs `.claude/workflow-config.json` offers a setup wizard. It detects your GitHub remote, a Jira or Linear MCP server or a text-ticket tool, and asks one question at a time. See [Tracker Setup](TRACKER_SETUP.md) for every adapter.
+- **Configure the tracker.** The first attended command that needs `.claude/workflow-config.json` offers a setup wizard. It recommends a tracker only from what the repo shows (an existing config, a tickets folder, a GitHub remote), lists a connected Jira or Linear MCP server as available without recommending it, and asks one question at a time. See [Tracker Setup](TRACKER_SETUP.md) for every adapter.
 - **Know which commands need you.** `discovery:approve`, `spec:triage`, `spec:create`, the triage step of `spec:review`, `spec:complete` and the wizard are attended. Run inside a goal, they write nothing, print what they would have done and stop with `BLOCKED:`.
 
 ## Intake
 
 Intake runs once, when you adopt an existing codebase, before the first spec. It needs no tracker and no code host. It documents the code for agents, writes tests that pin current behavior and records every bug in `docs/intake-findings.md` instead of fixing it.
 
-**`intake [procedure]`** is the one command. It works `docs/intake-checklist.md` from the first unchecked item, creating the checklist when it is missing. Each item is a procedure that runs in one of the plugin's agents: the agent first reports what it found and what it plans to write, you confirm or correct that scope, and then the same agent writes. The command reviews the agent's diff and commits the item. Name a procedure to run or rerun just that one: `intake document-glossary`, or `intake create-system-description --full`.
+**`intake [procedure]`** is the one command. It works `docs/intake-checklist.md` from the first unchecked item, creating the checklist when it is missing. Each item is a procedure that runs in one of the plugin's agents: the agent first reports what it found and what it plans to write, you confirm or correct that scope, and then the same agent writes. In a goal run the agent does the item in one pass. While a writer runs, read-only `code-reader` agents gather facts for the next item. The command reviews the agent's diff and commits the item. Name a procedure to run or rerun just that one: `intake document-glossary`, or `intake create-system-description --full`.
 
 - **`existing-docs`** lists the docs the project already has, maps them to the intake topics and checks their claims against the code. Wrong claims become findings; your docs are never edited.
 - **`document-codebase`** adds docstrings across the code. It runs your tests before and after and checks that no executable line changed.
@@ -81,7 +81,7 @@ Discovery is optional. Use it when there are no tickets yet, or when `spec:triag
 
 ## Specs
 
-**`spec:triage [ticket IDs | query | discovery:<topic>]`** proposes how to group open tickets into specs, and explains each grouping by its strongest signal: tracker links, a shared discovery topic, shared labels, shared files or feature areas, then wording. A grouping you type in the argument beats every signal. It flags stale tickets without closing them, refuses to move a ticket out of a spec that has started, warns above 10 tickets per spec, and suggests a build order with `After:` lines. Once you approve, it creates or finds each spec's group in the tracker, links the tickets, appends `Spec: <spec-name>` to each one and cuts `spec/<spec-name>` from your default branch. Nothing is pushed.
+**`spec:triage [ticket IDs | query | discovery:<topic>]`** proposes how to group open tickets into specs, and explains each grouping by its strongest signal: tracker links, a shared discovery topic, shared labels, shared files or feature areas, then wording. A grouping you type in the argument beats every signal. It flags stale tickets without closing them, refuses to move a ticket out of a spec that has started, warns above 10 tickets per spec, and suggests a build order with `After:` lines. Every ticket you name lands in a spec: a ticket that contradicts another, the code or a settled decision stays in its group, flagged for `spec:create` to settle, and a split is only a suggestion. Once you approve, it creates or finds each spec's group in the tracker, links the tickets, appends `Spec: <spec-name>` to each one and cuts `spec/<spec-name>` from your default branch. Nothing is pushed.
 
 **`spec:create <spec-name>`** plans one spec:
 
@@ -102,23 +102,23 @@ Discovery is optional. Use it when there are no tickets yet, or when `spec:triag
 - After RED, the code is written until `guard run green` passes, along with the project's `verify` commands.
 - New issues found along the way go to the plan's Proposed tracker changes. Questions go to its Open questions. Neither is worked during the run.
 
-**`ticket:complete [ticket-id]`** reruns the work in a clean worktree, replays the new tests against the start commit (they must fail there), and scans for deleted tests, added skips and assertion-free tests. It writes the evidence summary into the ticket's Completion Status row and commits the work and the row together with a neutral `Ticket: <id>` trailer, then clears the marker.
+**`ticket:complete [ticket-id]`** reruns the work in a clean worktree, replays the new tests against the start commit (they must fail there), and scans for deleted tests, added skips and assertion-free tests. Every script the RED and GREEN commands ran must be in the repo, never a scratch path such as `/tmp`. It writes the evidence summary into the ticket's Completion Status row and commits the work and the row together with a neutral `Ticket: <id>` trailer, then clears the marker.
 
 Neither ticket command writes to the tracker or moves a ticket's status. A ticket that can't be finished is blocked with `guard block <ticket> "<reason>"`, which saves its changes as a patch, restores the tree and marks it Blocked. Tickets that depend on it are marked "depends on" it. The run carries on with everything else.
 
 ## Where each spec stands
 
-**`spec:status`** lists every spec with its state (Triaged, Drafting, Planned, In progress, Ready for review, In review, Ready to complete, PR open, Completed), its ticket counts, what it waits on, the ticket in progress, its pull request and the next command to run. It reads each spec branch from git. In a GitHub project it also shows each spec's pull request, through `gh`; `status.pullRequests` in the config turns that off. Completed specs are hidden unless you add `--all`.
+**`spec:status`** lists every spec with its state (Unbranched, Triaged, Drafting, Planned, In progress, Ready for review, In review, Ready to complete, PR open, Completed), its ticket counts, what it waits on, the ticket in progress, its pull request and the next command to run. It reads each spec branch from git. In a GitHub project it also shows each spec's pull request, through `gh`; `status.pullRequests` in the config turns that off. Completed specs are hidden unless you add `--all`. A spec that exists only as a folder on your current branch shows as `Unbranched (on <branch>)`, with no branch or PR, until `spec:triage` gives it a branch or you merge it into the default branch.
 
 ## Review and completion
 
 **`spec:review <spec-name>`** reviews the whole branch diff once.
 
-1. `guard metrics` writes duplication, dead code and complexity numbers for the changed files.
+1. `guard metrics` writes duplication, dead code and complexity numbers for the changed files. When a metric tool isn't installed, it says which checks did not run (exit 3 when none ran), and the command warns you before the panel starts.
 2. A panel of `reviewer` agents reads the diff without commit messages: `code-reviewer` and `test-master` always, plus `security-reviewer`, `architecture-designer`, `api-designer`, `secure-code-guardian` and the stack skill when the diff touches their area. Each one writes its own file.
-3. Each blocking or warning finding goes to a fresh, blind `verifier` agent. It sees the claim, the code and the ticket's acceptance criteria, but not who raised it, the tier or the reasoning. It returns confirmed, rejected or unresolved, with proof.
+3. Each blocking or warning finding goes to a fresh, blind `verifier` agent. It sees the claim, the code and the ticket's acceptance criteria, but not who raised it, the tier or the reasoning. It returns confirmed, rejected or unresolved, with proof. The verifiers start together, and the command waits for their reports without scheduling a fallback.
 4. `guard rollup` builds `review/rollup.md`, including each verifier's token and minute cost.
-5. You decide what to fix. Won't-fix and accepted rejections are recorded with `guard decide`. Fixes become new tickets in the plan, typed behavior (their own failing test) or refactor (suite green before and after, tests untouched), with a fresh goal prompt. A later `spec:review` rechecks them.
+5. You decide what to fix. Won't-fix and accepted rejections are recorded with `guard decide`, and `guard decide <row> revoke` withdraws one, which you do before a decided row becomes a fix. Fixes become new tickets in the plan, typed behavior (their own failing test) or refactor (suite green before and after, tests untouched), with a fresh goal prompt. A later `spec:review` rechecks them.
 
 **`spec:complete <spec-name>`** finishes the spec, and you can rerun it at any point. It is the only command that closes tickets. See the [spec:complete page](workflow/spec-complete.md) for the full PR loop. In short:
 
@@ -151,7 +151,7 @@ Long or parallel work runs in the plugin's agents. Each one is defined by the ki
 | `verifier` | Decides whether one finding is real, in a scratch worktree | `spec:review` |
 | `assumption-checker` | Checks spec assumptions against the current state; never writes | `common-ground` |
 
-Agents never commit, and only one writing agent runs at a time; the command reviews each writer's diff and commits it. Agents can't ask you anything, so every question stays in the command. During ticket work no agent writes: `ticket:execute` and `ticket:complete` keep every edit in the main session, where the guard's hooks apply.
+Agents never commit, and only one writing agent runs at a time. Independent read-only agents start in one message so they run together; the command reviews each writer's diff and commits it. Agents can't ask you anything, so every question stays in the command. During ticket work no agent writes: `ticket:execute` and `ticket:complete` keep every edit in the main session, where the guard's hooks apply.
 
 ## Goal runs
 

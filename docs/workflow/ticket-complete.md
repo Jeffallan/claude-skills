@@ -17,7 +17,7 @@ Check a ticket's evidence, update the Completion Status table and commit the tic
 ## How it runs
 
 1. **Boundary checks.** `guard rerun` runs the work in a clean temporary worktree. `guard red-replay` puts only the new tests on the start commit and expects them to fail. `guard tamper-scan` flags deleted tests, added skips, changed snapshots and assertion-free tests.
-2. **Evidence summary.** `guard summary` prints the line for the Completion Status notes, or fails when RED or GREEN evidence is missing or an affected doc was neither updated nor checked.
+2. **Evidence summary.** `guard summary` prints the line for the Completion Status notes, or fails when RED or GREEN evidence is missing or an affected doc was neither updated nor checked. A RED or GREEN script outside the repo also counts as missing evidence: a reboot deletes it, and nothing can rerun it later.
 3. **One commit.** The work and the updated row go into the same commit, with a neutral `Ticket: <id>` trailer that no tracker integration acts on.
 4. **Clears the marker** after the commit.
 

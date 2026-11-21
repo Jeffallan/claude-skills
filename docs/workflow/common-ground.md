@@ -15,7 +15,7 @@ Claude often operates on assumptions about project context, technology choices, 
 | `list` | flag | no | Read-only view of all tracked assumptions |
 | `check` | flag | no | Quick validation of current assumptions |
 | `graph` | flag | no | Generate mermaid diagram of reasoning structure |
-| `specs` | list[string] | no | Outstanding specs whose assumptions to check, in order; every outstanding spec when omitted |
+| `specs` | list[string] | no | Outstanding specs whose assumptions to check, in order; every outstanding spec when omitted, an `Unbranched` one included |
 
 ## Outputs
 
