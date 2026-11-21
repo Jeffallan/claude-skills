@@ -167,6 +167,8 @@ PROCS="create-onboarding create-system-description document-analytics document-a
 assert_equal "$(cd "$OUT/references/intake/procedures" 2>/dev/null && ls *.md | sed 's/\.md$//' | LC_ALL=C sort | tr '\n' ' ')" "$PROCS " "ships the 21 intake procedures"
 assert_exists "$OUT/commands/intake.md" "ships commands/intake.md"
 assert_not_exists "$OUT/commands/intake" "ships no intake:* commands"
+# git reads trailers only from the last paragraph: Claude Code appends Co-Authored-By after a blank line
+if grep -q "no blank line between them" "$OUT/commands/intake.md"; then pass "intake keeps its Intake: trailer in the last paragraph"; else fail "intake keeps its Intake: trailer in the last paragraph"; fi
 assert_equal "$(python3 -c "import json,sys; print(sorted(k for k in json.load(open(sys.argv[1]))['commands'] if k.startswith('intake')))" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "['intake']" "plugin.json maps intake and no intake:* command"
 
 # Repo-only content stays out
