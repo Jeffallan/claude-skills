@@ -15,7 +15,7 @@ the evidence on the lines right below the item.
 
 ## Phase 1: Document
 
-- [ ] Start the findings tracker: `docs/intake-findings.md` with the shape in `references/intake/findings.md`
+- [ ] Start the findings tracker: `docs/intake-findings.md` with the shape in `references/intake/findings.md`, commit trailer `Intake: intake:findings-tracker`
 - [ ] `intake:existing-docs`: `docs/intake-existing-docs.md`, every doc the project already has, mapped to the intake docs and checked against the code
 - [ ] `intake:document-codebase`: docstrings across the code; tests pass before and after, no executable line changed
 - [ ] `intake:document-file-tree`

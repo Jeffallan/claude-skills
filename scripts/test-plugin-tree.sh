@@ -200,6 +200,12 @@ has "$IREF/procedures/document-authorization.md" "all in one message" "authoriza
 has "$IREF/findings.md" "A repo with no git remote counts as unknown" "findings: no remote means visibility unknown"
 # testing-owasp rates a dependency advisory by the reach shown in this app, not by the advisory's score
 has "$IREF/procedures/testing-owasp.md" "With no exposure path shown in this app, the finding is Low" "testing-owasp: an advisory with no exposure path is Low"
+# The findings-tracker item carries a fixed trailer; the eval still sees no `intake:<cmd>` item on its line
+TRACKER_ITEM=$(grep -F -- '- [ ] Start the findings tracker:' "$IREF/checklist.md")
+case "$TRACKER_ITEM" in *'commit trailer `Intake: intake:findings-tracker`') pass "the tracker item names its fixed trailer" ;; *) fail "the tracker item names its fixed trailer" ;; esac
+case "$TRACKER_ITEM" in *'`intake:'*) fail "the tracker item stays a no-procedure item for the eval" ;; *) pass "the tracker item stays a no-procedure item for the eval" ;; esac
+has "$INTAKE" "the trailer its checklist line names" "intake commits a no-procedure item with the trailer its line names"
+has "$IREF/goal-prompt.md" "the trailer its checklist line names" "the goal prompt commits a no-procedure item with the trailer its line names"
 for p in $PROCS; do
     if [ "$(grep -c '^## Skills to load$' "$IREF/procedures/$p.md")" = 1 ]; then pass "$p has one Skills to load heading"; else fail "$p has one Skills to load heading"; fi
 done
