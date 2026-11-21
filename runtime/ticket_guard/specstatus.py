@@ -49,6 +49,17 @@ def _folder(cwd: Path, ref: str, root: str, spec: str) -> str | None:
     return None
 
 
+def _specs_in(cwd: Path, ref: str, folder: str) -> set[str]:
+    """Spec folder names under `folder` on `ref`, discovery/ excluded."""
+    if _show(cwd, ref, folder) is None:
+        return set()
+    return {
+        n.rsplit("/", 1)[-1]
+        for n in git(cwd, "ls-tree", "-d", "--name-only", f"{ref}:{folder}").split()
+        if n != "discovery"
+    }
+
+
 def _gate_passes(cwd: Path, ref: str, folder: str, spec: str) -> bool:
     """Run the gate on a copy of the spec folder taken from `ref`; owner decisions come from the shared git dir."""
     data = subprocess.run(
@@ -102,21 +113,16 @@ def collect(
         for b in git(cwd, "for-each-ref", "--format=%(refname:short)", "refs/heads/spec/").split()
     }
     for where in ("todo", "completed"):
-        names |= (
-            {
-                n.rsplit("/", 1)[-1]
-                for n in git(cwd, "ls-tree", "-d", "--name-only", f"{main}:{root}/{where}").split()
-                if n != "discovery"
-            }
-            if _show(cwd, main, f"{root}/{where}") is not None
-            else set()
-        )
+        names |= _specs_in(cwd, main, f"{root}/{where}")
+    # a spec committed on the current branch with no spec/<name> branch and not on the default branch
+    current = git(cwd, "rev-parse", "--abbrev-ref", "HEAD")
+    local = _specs_in(cwd, "HEAD", f"{root}/todo") - names
     live = marker.read(cwd) or {}
     out = []
-    for spec in sorted(names):
+    for spec in sorted(names | local):
         branch = f"spec/{spec}"
         has_branch = bool(git(cwd, "branch", "--list", branch).strip())
-        ref = branch if has_branch else main
+        ref = "HEAD" if spec in local else branch if has_branch else main
         folder = _folder(cwd, ref, root, spec)
         merged = (_folder(cwd, main, root, spec) or "").split("/")[-2:-1] == ["completed"]
         row = {
@@ -138,6 +144,11 @@ def collect(
             row["done"] = sum(s in review.FINISHED for s in states)
             row["blocked"] = sum(s.startswith(plan.BLOCKED) for s in states)
             row["pending"] = len(states) - row["done"] - row["blocked"]
+        if spec in local:  # only where it lives: no tracker state without a spec branch
+            row["state"] = f"Unbranched (on {current})"
+            row["next"] = f"no spec/{spec} branch: put it on one (spec:triage), or merge it into {main}"
+            out.append(row)
+            continue
         if merged and not has_branch:
             state = "Completed"
         elif not folder or not (overview or plan_text):
