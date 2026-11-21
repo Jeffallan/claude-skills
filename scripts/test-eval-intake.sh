@@ -438,6 +438,29 @@ else
     fail "a real marker beside prose still needs its finding id: $out"
 fi
 
+# Table-driven twins: each row of the table that drives a marked test carries its finding id
+TD="$WORK/table"
+make_run "$TD"
+mkdir -p "$TD/tests/unit"
+printf "const cases = [\n  { id: 'F-001', op: 'GET /a' },\n  { id: 'F-001', op: 'GET /b' },\n]\n\n\nit.fails.each(cases)('\$op hidden (intended)', ({ op }) => {})\n" >"$TD/tests/unit/each.spec.js"
+printf "const rows: Row[] = [\n  ['GET /a', 'F-001'],\n  ['GET /b', 'F-001'],\n]\n\n\nfor (const [op] of rows) it.fails(op, () => {})\n" >"$TD/tests/unit/loop.spec.ts"
+printf 'import pytest\n\nCASES = [\n    ("op1", "x"),  # F-001: the owner'"'"'s view, op1\n    ("op2", "F-001"),\n]\n\n\n@pytest.mark.xfail(strict=True)\n@pytest.mark.parametrize("op,fid", CASES)\ndef test_hidden_intended(op, fid):\n    assert False\n' >"$TD/tests/test_table.py"
+commit_item "$TD" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$TD")
+set -e
+if has "$out" bug-tests-cite-findings 1; then pass "a finding id in each row of the table driving a marked test counts"; else fail "a finding id in each row of the table driving a marked test counts: $out"; fi
+printf "const gaps = [\n  { id: 'F-001', op: 'GET /a' },\n  { op: 'GET /b' },\n  { id: 'F-009', op: 'GET /c' },\n]\n\n\ntest.fails.each(gaps)('\$op', () => {})\n" >"$TD/tests/unit/gaps.spec.js"
+commit_item "$TD" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$TD")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q 'gaps.spec.js:8' && printf '%s' "$out" | grep -q 'F-009' && ! printf '%s' "$out" | grep -qE 'each.spec.js|loop.spec.ts|test_table.py'; then
+    pass "a table row without a finding id, or with an unknown one, fails"
+else
+    fail "a table row without a finding id, or with an unknown one, fails: $out"
+fi
+
 # Accuracy tally: found/total against a gold file, given rows left out, mismatched mappings refused
 ACC="$REPO_ROOT/scripts/eval_intake_accuracy.py"
 printf '# Gold\n\n- **Version:** 3 (test)\n\n## Findings (4)\n\n| Gold id | Verdict | Source |\n|---|---|---|\n| F-001 | valid | review |\n| F-002 | valid | review |\n| MISSED-1 | valid | review |\n| ADDED-1 | valid | run 2 |\n\n## Docs (0)\n' >"$WORK/gold.md"

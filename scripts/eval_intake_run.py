@@ -173,11 +173,64 @@ def code_text(lines: list[str]) -> list[str]:
     return out
 
 
+# A named table a test is generated from: `.each(cases)`, `for (const c of cases)`, `for c in cases`,
+# `parametrize("a,b", cases)`. An inline table's first rows sit within the marker's reach already.
+TABLE_REF = re.compile(
+    r"\.each\(\s*(\w+)|\bfor\b.*?\b(?:of|in)\s+(\w+)"
+    r"|parametrize\(\s*(?:\"[^\"]*\"|'[^']*'|\[[^\]]*\]|\([^)]*\))\s*,\s*(\w+)"
+)
+
+
+def table_rows(text: str, start: int) -> list[str]:
+    """The top-level rows of the bracketed table that opens at text[start]."""
+    rows, depth, quote, begin, k = [], 0, "", start + 1, start
+    while k < len(text):
+        ch = text[k]
+        if quote:
+            quote = "" if ch == quote and text[k - 1] != "\\" else quote
+        elif text.startswith(("#", "//"), k) and text[k - 1].isspace():
+            k = text.find("\n", k)  # a comment runs to the line end
+            if k < 0:
+                break
+            continue
+        elif ch in "'\"`":
+            quote = ch
+        elif ch in "[({":
+            depth += 1
+        elif ch in "])}":
+            depth -= 1
+            if depth == 0:
+                rows.append(text[begin:k])
+                break
+        elif ch == "," and depth == 1:
+            # a row keeps the comment that ends its line: `("op1", "x"),  # F-001`
+            eol = len(text) if (eol := text.find("\n", k)) < 0 else eol
+            rest = text[k + 1 : eol].strip()
+            end = eol if not rest or rest.startswith(("#", "//")) else k
+            rows.append(text[begin:end])
+            begin = end + 1
+        k += 1
+    return [r for r in rows if r.strip()]
+
+
+def driving_rows(lines: list[str], i: int) -> list[str]:
+    """The rows of the table the marked test on line i is generated from, if a table drives it."""
+    text = "\n".join(lines)
+    for j in range(max(0, i - 3), min(len(lines), i + 2)):
+        m = TABLE_REF.search(lines[j])
+        if not m:
+            continue
+        ref = next(g for g in m.groups() if g)
+        if d := re.search(rf"\b{re.escape(ref)}\b\s*(?::[^=\n]+)?=\s*\[", text):
+            return table_rows(text, d.end() - 1)
+    return []
+
+
 def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> dict:
     """Every skipped or expected-fail test written by intake names a finding id the tracker knows.
 
     A helper that wraps a marker is checked where it is called, not where it is defined. Markers count only in
-    code: a comment or docstring that names one is prose.
+    code: a comment or docstring that names one is prose. A test generated from a table cites through its rows.
     """
     bad, unknown, seen = [], [], 0
     files = {}
@@ -203,7 +256,12 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
             seen += 1
             near = " ".join(lines[max(0, i - 2) : i + 4])
             found = {m.group(1) for m in FINDING.finditer(near)}
-            if not found:
+            rows = [] if found else driving_rows(lines, i)
+            if rows:  # a table-driven twin: every row it is generated from names its finding
+                found = {m.group(1) for r in rows for m in FINDING.finditer(r)}
+                if any(not FINDING.search(r) for r in rows):
+                    bad.append(f"{rel}:{i + 1} (a table row)")
+            elif not found:
                 bad.append(f"{rel}:{i + 1}")
             unknown += [f"F-{f} ({rel}:{i + 1})" for f in found - ids]
     ok = not bad and not unknown
@@ -942,7 +1000,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings
+CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows
 
 
 def main() -> int:
