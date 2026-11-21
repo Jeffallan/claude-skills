@@ -67,6 +67,10 @@ phases:
         definition: plugin/commands/spec/complete.yaml
       - command: "spec:status"
         definition: plugin/commands/spec/status.yaml
+      - command: "spec:current"
+        definition: plugin/commands/spec/current.yaml
+      - command: "spec:diff"
+        definition: plugin/commands/spec/diff.yaml
 
   # Runs between spec:create and spec:review, one ticket at a time, attended or in a goal run
   ticket:

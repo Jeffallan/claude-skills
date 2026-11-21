@@ -125,6 +125,20 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
 }
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
+# The assumptions loop: spec:current, spec:diff and common-ground, with the ground file in the repo
+for c in current diff; do assert_exists "$OUT/commands/spec/$c.md" "ships spec:$c"; done
+assert_exists "$OUT/references/specs/assumptions.md" "ships the shared assumptions reference"
+MENU="common-ground discovery:approve discovery:create intake spec:complete spec:create spec:current spec:diff spec:review spec:status spec:triage ticket:complete ticket:execute"
+assert_equal "$(python3 -c "import json,sys; print(' '.join(sorted(json.load(open(sys.argv[1]))['commands'])))" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "$MENU" "plugin.json maps exactly the 13 menu commands"
+CG="$OUT/commands/common-ground.md"
+if grep -q 'argument-hint: "\[--list\] \[--check\] \[--graph\] \[spec ...\]"' "$CG"; then pass "common-ground takes spec names"; else fail "common-ground takes spec names"; fi
+if grep -rqE "~/.claude/common-ground/\{project" "$CG" "$OUT/references/common-ground" "$OUT/commands/common-ground.yaml"; then fail "the ground file lives in the repo"; else pass "the ground file lives in the repo"; fi
+for f in "$CG" "$OUT/commands/spec/diff.md"; do
+    if grep -q "references/specs/assumptions.md" "$f" 2>/dev/null; then pass "$(basename "$f") lists assumptions through the shared reference"; else fail "$(basename "$f") lists assumptions through the shared reference"; fi
+done
+if grep -q "guard.pyz\" current-state\|guard current-state" "$OUT/commands/spec/current.md" 2>/dev/null; then pass "spec:current compiles the current state"; else fail "spec:current compiles the current state"; fi
+if grep -q -- "--roadmap" "$OUT/references/intake/procedures/create-system-description.md"; then fail "create-system-description drops --roadmap"; else pass "create-system-description drops --roadmap"; fi
+
 # discovery:approve absorbs discovery:synthesize
 assert_not_exists "$OUT/commands/discovery/synthesize.md" "ships no discovery:synthesize"
 assert_equal "$(python3 -c "import json,sys; print('discovery:synthesize' in json.load(open(sys.argv[1]))['commands'])" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "False" "plugin.json maps no discovery:synthesize"

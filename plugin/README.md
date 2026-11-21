@@ -10,9 +10,9 @@ The workflow commands cover a project from intake to merge:
 
 - `intake` documents an existing codebase and pins its current behavior in tests
 - `discovery:` turns rough input into tickets
-- `spec:` groups tickets into specs, then plans, reviews and completes each one
+- `spec:` groups tickets into specs, then plans, reviews and completes each one; `spec:current` and `spec:diff` show the system as it is and what the outstanding specs change
 - `ticket:execute` and `ticket:complete` build one ticket test first
-- `common-ground` lists the assumptions Claude is making about your project so you can correct them
+- `common-ground` checks the assumptions your specs and Claude make against the system's current state so you can correct them
 
 ## Install
 
@@ -31,7 +31,7 @@ Workflow commands write specs and docs into your repository. Some of that work r
 
 The plugin registers hooks on edits, tool calls, session stop and compaction. A hook exits at once unless a ticket is in progress, which a marker under `.git/ticket-guard/` records. During ticket work the hooks run the bundled guard, `runtime/guard.pyz`, with `uv run`; it records test evidence under `.git/ticket-guard/` and blocks edits to frozen tests.
 
-`common-ground` keeps its ground file under `~/.claude/common-ground/`. The plugin itself sends nothing anywhere.
+`common-ground` keeps its ground file in your repository, next to the system description (`docs/COMMON-GROUND.md`). The plugin itself sends nothing anywhere.
 
 ## Documentation
 

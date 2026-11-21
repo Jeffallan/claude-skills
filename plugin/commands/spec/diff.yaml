@@ -1,0 +1,19 @@
+command: "spec:diff"
+phase: spec
+path: plugin/commands/spec/diff.md
+description: docs/workflow/spec-diff.md
+inputs:
+  - name: specs
+    type: list[string]
+    required: false
+    description: Specs to diff, in the order they would land. Without them, every outstanding spec.
+outputs:
+  - name: diff-report
+    type: report
+    description: Current and target component diagrams, a table per spec, overlaps and each spec's assumptions, printed only
+requires: []
+status: existing
+argument-hint: "[spec ...]"
+repeat: true
+unattended: true
+adapter-operations: []

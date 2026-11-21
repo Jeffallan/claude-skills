@@ -11,6 +11,7 @@ from ticket_guard import (
     batches,
     block,
     boundary,
+    currentstate,
     decisions,
     docs,
     evidence,
@@ -24,6 +25,7 @@ from ticket_guard import (
     specstatus,
 )
 from ticket_guard.errors import GuardError, NotARepo
+from ticket_guard.gitutil import top
 
 EXIT_OK, EXIT_REFUSED, EXIT_USAGE = 0, 1, 2
 
@@ -151,6 +153,10 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
     dd.set_defaults(func=cmd_docs_drift)
     dc = gsub.add_parser("docs-check", help="one-sided or missing related: links, citations that no longer resolve")
     dc.set_defaults(func=cmd_docs_check)
+    cs = gsub.add_parser(
+        "current-state", help="compile <docs root>/current-state.json: components, open findings, drift"
+    )
+    cs.set_defaults(func=cmd_current_state)
 
     ss = gsub.add_parser("spec-status", help="where every spec stands, read from each spec branch")
     ss.add_argument("--all", action="store_true", help="include completed specs")
@@ -405,6 +411,11 @@ def cmd_docs_check(args) -> int:
     if not problems:
         print("docs consistent")
     return EXIT_REFUSED if problems else EXIT_OK
+
+
+def cmd_current_state(args) -> int:
+    print(f"wrote {currentstate.write(Path.cwd()).relative_to(top(Path.cwd()))}")
+    return EXIT_OK
 
 
 def cmd_spec_status(args) -> int:

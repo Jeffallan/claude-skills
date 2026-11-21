@@ -90,6 +90,12 @@
     "spec:status": {
       "source": "./commands/spec/status.md"
     },
+    "spec:current": {
+      "source": "./commands/spec/current.md"
+    },
+    "spec:diff": {
+      "source": "./commands/spec/diff.md"
+    },
     "spec:complete": {
       "source": "./commands/spec/complete.md"
     },

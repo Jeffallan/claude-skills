@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline site-dev site-build lint format lint-fix
+.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -61,9 +61,10 @@ test: guard-check guard-test
 	bash scripts/test-launch-command.sh
 	bash scripts/test-eval-workflow.sh
 	bash scripts/test-eval-intake.sh
+	bash scripts/test-eval-loop.sh
 
 EXPECT_UPSTREAM ?= 0
-RETIRED ?= spec:reopen\|create-epic\|complete-sprint\|execute-ticket
+RETIRED ?= spec:reopen\|create-epic\|complete-sprint\|execute-ticket\|discovery:synthesize\|--roadmap\|commands/intake/
 
 evidence:
 	EXPECT_UPSTREAM=$(EXPECT_UPSTREAM) RETIRED='$(RETIRED)' bash scripts/evidence.sh
@@ -101,3 +102,11 @@ eval-intake:
 
 eval-baseline:
 	@python3 scripts/eval_intake_baseline.py "$(EVAL)"
+
+eval-discovery:
+	@python3 scripts/eval_discovery_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPO),--repo "$(REPO)") $(if $(TOPIC),--topic "$(TOPIC)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-common-ground:
+	@python3 scripts/eval_common_ground_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPORT),--report "$(REPORT)") $(if $(GOLD),--gold "$(GOLD)")

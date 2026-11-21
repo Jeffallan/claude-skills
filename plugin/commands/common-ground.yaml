@@ -14,16 +14,20 @@ inputs:
     type: flag
     required: false
     description: Generate mermaid diagram of reasoning structure
+  - name: specs
+    type: list[string]
+    required: false
+    description: Outstanding specs whose assumptions to check, in order. Without them, every outstanding spec.
 outputs:
   - name: ground-file
     type: file
-    path: "~/.claude/common-ground/{project-id}/COMMON-GROUND.md"
+    path: "{docsRoot}/COMMON-GROUND.md"
     description: Human-readable ground file with tracked assumptions organized by confidence tier
   - name: ground-index
     type: file
-    path: "~/.claude/common-ground/{project-id}/ground.index.json"
+    path: "{docsRoot}/ground.index.json"
     description: Machine-readable assumption index for programmatic access
 requires: []
 status: existing
-argument-hint: "[--list] [--check] [--graph]"
+argument-hint: "[--list] [--check] [--graph] [spec ...]"
 repeat: false

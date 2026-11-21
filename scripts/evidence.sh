@@ -8,7 +8,7 @@
 #   EXPECT_UPSTREAM=0  the branch has no upstream (default, local-only work)
 #   EXPECT_UPSTREAM=1  the branch has an upstream and is in sync with it
 #   RETIRED='a\|b'     grep pattern for names no shipped file may mention
-# Needs: jq, and claude on PATH (one short Haiku call to list loaded commands)
+# Needs: jq, and claude on PATH (one short Haiku call to list loaded commands and agents)
 # Exit codes: 0 = every check exited as expected, 1 = at least one did not
 
 set -uo pipefail
@@ -51,9 +51,12 @@ check 1 "grep -rn '$RETIRED' plugin/commands plugin/references plugin/skills/*/S
 for plan in docs/specs/todo/*/implementation-plan.md; do
     check 0 "sed -n '/^## Completion Status/,/^---/p' $plan | grep '^| ' | tail -n +3 | cut -d'|' -f2-3"
 done
-# The session's init event lists the commands that loaded and the plugin they came from
-check 0 "claude --plugin-dir plugin -p ok --model haiku --setting-sources project --output-format stream-json --verbose </dev/null 2>/dev/null | head -1 | jq -re '(.slash_commands[] | select(test(\"^fullstack-dev-skills:(intake|discovery|spec|ticket):\"))), (.plugins[] | select(.name == \"fullstack-dev-skills\") | [.source, .path, .version] | join(\" \"))'"
-
+# The session's init event lists what loaded: the plugin's commands (its skills subtracted) must be exactly
+# the 13 in plugin.json, and its agents the eight in plugin/agents/
+SKILLS=$(ls plugin/skills | jq -R . | jq -cs .)
+MENU=$(jq -c '.commands | keys | sort' plugin/.claude-plugin/plugin.json)
+AGENTS=$(ls plugin/agents | sed 's/\.md$//' | jq -R '"fullstack-dev-skills:" + .' | jq -cs 'sort')
+check 0 "claude --plugin-dir plugin -p ok --model haiku --setting-sources project --output-format stream-json --verbose </dev/null 2>/dev/null | head -1 | jq -re --argjson sk '$SKILLS' --argjson menu '$MENU' --argjson agents '$AGENTS' '[.slash_commands[] | select(startswith(\"fullstack-dev-skills:\")) | ltrimstr(\"fullstack-dev-skills:\") | select(. as \$c | \$sk | index(\$c) | not)] as \$cmds | [.agents[] | select(startswith(\"fullstack-dev-skills:\"))] as \$ag | (\$cmds[]), (\$ag[]), (.plugins[] | select(.name == \"fullstack-dev-skills\") | [.source, .path, .version] | join(\" \")), \"commands: \\(\$cmds | length), agents: \\(\$ag | length)\", if (\$cmds | sort) == \$menu and (\$menu | length) == 13 and (\$ag | sort) == \$agents and (\$agents | length) == 8 then \"exactly the 13 menu commands and the 8 agents\" else error(\"menu or agents differ\") end'"
 echo ""
 echo "Evidence: $CHECKS checks, $FAILED failed"
 [ "$FAILED" -eq 0 ]

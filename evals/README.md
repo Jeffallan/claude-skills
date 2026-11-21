@@ -6,6 +6,8 @@ Each eval scores finished runs of a claude-skills workflow against the guarantee
 |------|----------------|--------|
 | [Workflow](workflow/EVAL.md) | One spec run, `spec:triage` to `spec:complete` | `scripts/eval_workflow_run.py` |
 | [Intake](intake/EVAL.md) | One intake run of the checklist, and its accuracy against a gold set | `scripts/eval_intake_run.py`, `eval_intake_accuracy.py`, `eval_intake_baseline.py` |
+| [Discovery](discovery/EVAL.md) | One discovery topic, `discovery:create` to `discovery:approve`: routing, blocking decisions and created tickets | `scripts/eval_discovery_run.py` |
+| [Common-ground](common-ground/EVAL.md) | One `common-ground` assumptions check: seeded false assumptions caught, no false flags, the right spec named | `scripts/eval_common_ground_run.py` |
 
 This repo holds the scorers, their tests and the check definitions. It never holds eval data: gold sets, run bundles, transcripts and scores describe real projects and stay in a private results repo.
 
