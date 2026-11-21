@@ -367,6 +367,59 @@ else
     fail "a marker helper is checked at its call sites, not its definition: $out"
 fi
 
+# Version 18: a layer that can't run "is reported as blocked with the reason" (rules.md, "Run and verify"): a skip
+# whose reason is a BLOCKED: one, written out or returned by a helper, is listed as blocked, never as a bug test.
+# A bare skip, or one whose reason isn't a BLOCKED: one, still needs its finding id.
+BK="$WORK/blocked"
+make_run "$BK"
+mkdir -p "$BK/test/e2e" "$BK/test/support"
+cat >"$BK/test/support/browser.ts" <<'EOF'
+export async function openBrowser() {
+  if (!chromium) return { blocked: "BLOCKED: no Chromium; run `npx playwright install chromium`" };
+  if (!page) return { reason: "no page yet" };
+}
+EOF
+cat >"$BK/test/e2e/pages.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("loads the catalogue", async (t) => {
+  if ("blocked" in e2e) return t.skip(e2e.blocked);
+});
+
+it("lists loans", async (t) => {
+  if ("blocked" in e2e) return t.skip();
+});
+
+it("renews a loan", async (t) => {
+  t.skip("not fixed yet");
+});
+
+it("opens the desk", async (t) => {
+  t.skip("BLOCKED: no emulator");
+});
+
+it("shows the flash", async (t) => {
+  if ("reason" in e2e) return t.skip(e2e.reason);
+});
+EOF
+commit_item "$BK" intake:testing-user-flows "test(intake): testing-user-flows"
+set +e
+out=$(score "$BK")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, re, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "bug-tests-cite-findings")
+bad = re.search(r"no finding id: (\[[^]]*\])", c["detail"])
+want = str([f"test/e2e/pages.test.ts:{n}" for n in (8, 12, 20)])
+chromium = "; blocked (BLOCKED: no Chromium; run `npx playwright install chromium`): [\x27test/e2e/pages.test.ts:4\x27]"
+emulator = "; blocked (BLOCKED: no emulator): [\x27test/e2e/pages.test.ts:16\x27]"
+sys.exit(0 if not c["pass"] and bad and bad.group(1) == want and chromium in c["detail"] and emulator in c["detail"] else 1)
+'; then
+    pass "a skip with a BLOCKED: reason is listed as blocked; a bare skip and other reasons still need a finding"
+else
+    fail "a skip with a BLOCKED: reason is listed as blocked; a bare skip and other reasons still need a finding: $out"
+fi
+
 # A new test-only lockfile carries a root entry with no dev flag; only runtime packages count
 NL="$WORK/newlock"
 make_run "$NL"
