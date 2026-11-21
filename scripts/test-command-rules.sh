@@ -132,6 +132,16 @@ for f in ticket/execute ticket/complete; do
 done
 assert_contains "$CMD/ticket/execute.md" "review/repro/" "ticket:execute runs a fix ticket's reproduction from review/repro/"
 
+echo "intake procedure pages: the checkpoint stops only attended runs"
+n=0
+for f in "$PLUGIN"/../docs/workflow/intake-*.md; do
+    case "$f" in */intake-phase.md) continue ;; esac
+    grep -qF "checkpoint" "$f" || continue
+    n=$((n + 1))
+    assert_contains "$f" "as a draft in the checklist note and goes on" "$(basename "$f") says a goal run drafts the scope and goes on"
+done
+if [ "$n" -eq 19 ]; then pass "19 procedure pages name the checkpoint"; else fail "19 procedure pages name the checkpoint (found $n)"; fi
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

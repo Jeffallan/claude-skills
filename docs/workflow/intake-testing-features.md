@@ -20,6 +20,6 @@ Write unit and component characterization tests for domain/service logic, pure f
 
 ## How it runs
 
-The procedure reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
+The procedure reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)). A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
 
 Run it after `intake:document-codebase`. Capture-behavior procedures other than `intake:testing-setup` also need the harness that procedure builds. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).

@@ -20,7 +20,7 @@ Write a data-model reference (entities, fields, relationships, ER diagram) read 
 
 ## How it runs
 
-The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)).
 
 Each entity table has a `Flags` column. It marks fields that hold state (status enums, active or verified flags, soft-delete stamps), ownership and tenant keys, fields that grant privilege (a role, an admin flag), and money or quantity fields. The authorization doc builds its access matrix from these flags. A flagged field a caller can write with no check goes into the findings tracker.
 

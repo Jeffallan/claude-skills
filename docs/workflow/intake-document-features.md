@@ -20,7 +20,7 @@ Write a feature catalog (what the application does today, grouped by area, with 
 
 ## How it runs
 
-The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)).
 
 For each entity with a status (an order, an invoice, a subscription, a booking), the procedure builds a state machine from every place that writes the status: your code, library routes and webhooks, the admin site, background jobs, signals and hooks, and migrations. Each transition lists the operations that reach it (by id from `docs/architecture/api-reference.md`) and who may call them. A transition with no named actor is a finding. The procedure also writes down the business rules your features imply, such as "a refund never exceeds the charge", as `INV-7` onward. Each rule cites the validator, test, comment or doc showing you intend it. A path that breaks a rule is a finding, and `intake:document-authorization` and `intake:testing-owasp` test the rules by id. The table and the invariants are defined in `references/intake/access-control.md`.
 

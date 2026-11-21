@@ -20,7 +20,7 @@ Write end-to-end tests for critical user journeys at two layers: backend flows t
 
 ## How it runs
 
-The procedure reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
+The procedure reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)). A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
 
 Each journey also checks that the UI and the server agree. When the UI hides or disables a control, the test sends that operation straight to the server and expects a refusal. When the UI offers an action, the test performs it and then reads the server state back, which catches a button that reports success and changes nothing. Every journey gets one negative variant too, where the wrong user or an object in the wrong state tries the key step. A hidden operation the server accepts, an offered action that changes nothing, or a negative variant that succeeds each becomes a finding.
 

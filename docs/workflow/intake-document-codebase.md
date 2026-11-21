@@ -21,7 +21,7 @@ Add accurate, agent-readable docstrings and module comments across an existing c
 
 ## How it runs
 
-The procedure records the start commit and runs the project's tests, detects the language, the framework and the docstring style already in use, and lists what lacks a docstring with public APIs first. After the checkpoint it writes docstrings that say what each unit does, takes, returns, raises and changes, from reading the code and its callers.
+The procedure records the start commit and runs the project's tests, detects the language, the framework and the docstring style already in use, and lists what lacks a docstring with public APIs first. After the checkpoint it writes docstrings that say what each unit does, takes, returns, raises and changes, from reading the code and its callers. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)).
 
 It proves the pass changed nothing that runs in two ways: the test suite gives the same result before and after, and a diff check confirms every changed hunk is a comment or docstring (an AST comparison for Python, a comment-stripped comparison for JavaScript and TypeScript, a comment-line check elsewhere). Any hunk that touches code is reverted.
 
