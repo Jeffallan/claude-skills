@@ -24,7 +24,7 @@ Finish a spec: run the gate, open the PR, handle review feedback, merge on appro
 
 `guard gate <spec-name>` decides, with no model involved, whether the spec may leave review. It passes when:
 
-- every blocking finding in `review/rollup.md` is `fixed-verified`, or you recorded `wontfix` or `rejection-accepted` with `guard decide`;
+- every blocking finding in `review/rollup.md` is `fixed-verified`, or you recorded `wontfix` or `rejection-accepted` with `guard decide` (a decision withdrawn with `guard decide <row> revoke` no longer counts);
 - every row in every `review/pr-feedback-<round>.md` is `fixed-verified` or has a recorded decision, whatever its tier;
 - every ticket is Done, Already done, or Blocked and accepted with `guard decide <ticket> accepted` (a Pending ticket fails it);
 - every row in `review/docs-waivers.md` has the docs reviewer's ruling.
@@ -33,7 +33,7 @@ A Blocked ticket either moves out of the spec through `spec:create`'s Proposed t
 
 ### 2. The PR
 
-It writes the completion report (what happened, deviations, debt, follow-ups) and checks the docs once more over the whole spec: any doc the tickets left out gets updated, or the report says why it needs no change. Then it pushes the branch and opens the PR, or reuses the one already open. The body is the record of what the merge closes:
+It writes the completion report (what happened, deviations, debt, follow-ups) and checks the docs once more over the whole spec: any doc the tickets left out gets updated, or the report says why it needs no change. When the project has a docs index, each doc the spec added goes into it and each doc it removed comes out. Then it pushes the branch and opens the PR, or reuses the one already open. The body is the record of what the merge closes:
 
 - `Closes #N` for each Done and Already done GitHub ticket;
 - a plain list for Jira, Linear and text tickets, with no closing words, so tracker integrations don't act early;
