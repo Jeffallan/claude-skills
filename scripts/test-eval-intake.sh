@@ -562,6 +562,14 @@ out=$(python3 "$EVAL" --repo "$SA" --start "$(cat "$SA.start")" --transcript "$W
 set -e
 if has "$out" skills-loaded 1; then pass "a procedure read opens the item's window"; else fail "a procedure read opens the item's window: $out"; fi
 
+# The intake command names the procedure in the agent's brief; that Agent call opens the item's window
+ag="{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Agent\",\"input\":{\"subagent_type\":\"fullstack-dev-skills:doc-writer\",\"prompt\":\"Use the x skill. Procedure: /p/plugin/references/intake/procedures/document-glossary.md. Discovery only.\"}}]}}"
+printf '%s\n' "{\"type\":\"user\",\"timestamp\":\"$T0\",\"message\":{\"role\":\"user\",\"content\":\"/goal Every condition in <done_when> holds\"}}" "$ag" "{\"type\":\"assistant\",\"timestamp\":\"$T0\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"git log shows every done_when check\"}]}}" >"$WORK/ag-main.jsonl"
+set +e
+out=$(python3 "$EVAL" --repo "$SA" --start "$(cat "$SA.start")" --transcript "$WORK/ag-main.jsonl" --transcript "$WORK/sa-agent.jsonl" 2>&1)
+set -e
+if has "$out" skills-loaded 1; then pass "an agent brief naming the procedure opens the item's window"; else fail "an agent brief naming the procedure opens the item's window: $out"; fi
+
 # Each documentation item's note records its human-voice pass; a note naming the skill needs a Skill call
 HV="$WORK/voice"
 make_run "$HV"

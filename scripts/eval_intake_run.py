@@ -393,6 +393,7 @@ SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
 DECLINED = re.compile(r"[\w:-]+\s+(?:skill\s+)?(?:was\s+)?not loaded")
 ITEM_SKILL = "fullstack-dev-skills:intake:"  # the pre-0.5.0 layout: one command per item
 ITEM_READ = re.compile(r"/references/intake/procedures/([a-z-]+)\.md$")  # 0.5.0: the intake command reads the procedure
+ITEM_BRIEF = re.compile(r"/references/intake/procedures/([a-z-]+)\.md")  # 0.5.0: or names it in the agent's brief
 CONTINUED = "This session is being continued from a previous conversation"
 
 
@@ -427,7 +428,8 @@ def named_skills(text: str) -> set[str]:
 
 
 def item_opens(m: dict) -> list[str]:
-    """Items whose window this record opens: a Skill call to an intake command, or a Read of a procedure file."""
+    """Items whose window this record opens: a Skill call to an intake command, a Read of a procedure file, or an
+    Agent call whose brief names one."""
     content = m.get("message", {}).get("content") if isinstance(m.get("message"), dict) else None
     out = []
     for c in content if isinstance(content, list) else []:
@@ -435,8 +437,14 @@ def item_opens(m: dict) -> list[str]:
             continue
         if c.get("name") == "Skill" and str(c.get("input", {}).get("skill", "")).startswith(ITEM_SKILL):
             out.append(str(c["input"]["skill"]).removeprefix(ITEM_SKILL))
-        elif c.get("name") == "Read" and (r := ITEM_READ.search(str(c.get("input", {}).get("file_path", "")))):
-            out.append(r.group(1))
+        else:
+            pattern, field = {
+                "Read": (ITEM_READ, "file_path"),
+                "Agent": (ITEM_BRIEF, "prompt"),
+                "Task": (ITEM_BRIEF, "prompt"),
+            }.get(str(c.get("name")), (None, ""))
+            if pattern and (r := pattern.search(str(c.get("input", {}).get(field, "")))):
+                out.append(r.group(1))
     return out
 
 
@@ -454,8 +462,9 @@ def timeline(
 ) -> tuple[list[tuple[str, datetime, datetime]], list[tuple[datetime, str]], list[datetime]]:
     """Item windows (cmd, start, end), Skill loads (time, skill) and compaction times from the goal sessions.
 
-    A window opens at a Skill call to `fullstack-dev-skills:intake:<cmd>` or a Read of
-    `references/intake/procedures/<cmd>.md`, and runs to the next one or the session's end. A subagent's loads count when their time falls inside a window.
+    A window opens at a Skill call to `fullstack-dev-skills:intake:<cmd>`, a Read of
+    `references/intake/procedures/<cmd>.md`, or an Agent call whose brief names that file, and runs to the next
+    one or the session's end. A subagent's loads count when their time falls inside a window.
     """
     windows, loads, compactions, side = [], [], [], []
     for p in paths:
