@@ -218,6 +218,26 @@ has "$IREF/goal-prompt.md" "the trailer its checklist line names" "the goal prom
 for p in $PROCS; do
     if [ "$(grep -c '^## Skills to load$' "$IREF/procedures/$p.md")" = 1 ]; then pass "$p has one Skills to load heading"; else fail "$p has one Skills to load heading"; fi
 done
+# A lean main-session step: the agent runs the item's checks and drafts the note and commit message;
+# the main session reviews the diff, reruns a check only with a reason, pastes the note and commits
+has "$IREF/rules.md" "## The item report" "rules: the agent ends with a fixed item report"
+for k in "Changed files:" "Checks:" "Checklist note:" "Commit message:"; do
+    has "$IREF/rules.md" "$k" "rules: the item report carries $k"
+done
+has "$INTAKE" "the item report in rules.md" "the brief asks for the item report"
+has "$INTAKE" "Rerun a check the agent ran only when" "intake reruns an agent's check only with a reason"
+hasnt "$INTAKE" "and the project's test command for a testing item, and read the fresh output" "intake no longer reruns every item's checks"
+has "$INTAKE" "Paste the drafted note" "intake pastes the agent's drafted note"
+has "$INTAKE" "Agents never commit" "agents still never commit"
+hasnt "$IREF/goal-prompt.md" "run-and-verify phase, then \`<test:all command>\`" "the goal prompt doesn't rerun test:all after every item"
+# Parallel testing writers: the three Phase 3 items after testing-setup write at once; the command assigns ids
+has "$INTAKE" "### Parallel testing writers" "intake runs the three testing writers in parallel"
+has "$INTAKE" "\`F-901\`" "parallel writers use provisional finding ids"
+has "$INTAKE" "in checklist order (\`testing-features\`, \`testing-authorization\`, \`testing-owasp\`)" "intake assigns ids and commits in checklist order"
+has "$INTAKE" "Fall back to serial" "intake falls back to serial on a shared file"
+has "$INTAKE" "each brief names its own procedure path" "each parallel brief names its procedure for the eval"
+has "$IREF/rules.md" "except the three parallel testing items" "rules: writers run one at a time except the testing trio"
+has "$IREF/findings.md" "the \`intake\` command writes their tracker edits" "findings: the command writes the parallel items' tracker edits"
 
 # Repo-only content stays out
 for path in .claude-plugin/marketplace.json CLAUDE.md site docs scripts assets research specs evals .serena .github version.json pyproject.toml; do

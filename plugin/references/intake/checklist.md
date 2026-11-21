@@ -59,7 +59,7 @@ the evidence on the lines right below the item.
 | `<start-sha>` in the header is the commit the intake branch was cut from, and the tracker header names the same one | The eval compares the two; a header copied from an older run names the wrong base |
 | One item per command, in order | Later items read earlier output: the testing commands read the docs, the system description reads everything |
 | Prove the harness with a smoke test before any real test | A test suite that never ran is worse than none: it reads as coverage |
-| Verify before checking a box, in the same session | A checked box is the only memory the next session has; a false one is unrecoverable |
+| Verify before checking a box, with fresh output: the agent's check, or this session's rerun when the diff gives a reason | A checked box is the only memory the next session has; a false one is unrecoverable |
 | Never reorder, reword or delete items | The eval and the next session match items by their text |
 | Keep each item on one line; notes go on indented lines right below it | A note inside a wrapped item splits its text, and the next session can't tell item from note |
 | One commit per item, checklist edit included | `git log` then traces each item to its evidence |

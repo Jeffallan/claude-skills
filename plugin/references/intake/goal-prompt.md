@@ -38,12 +38,12 @@ End your turn with `BLOCKED: <stop>`, what you need, and `git status --short` on
 Each item, in order:
 1. Re-read docs/intake-checklist.md and take the first unchecked item without an unresolved BLOCKED note.
 2. For an item that names a procedure, call the Skill tool with `fullstack-dev-skills:intake` and the procedure name as its argument, and follow it under the goal-run rules in references/intake/rules.md: it runs the item's agents, records the checkpoint as a draft, reviews their diff and commits. Do an item that names no procedure in this session.
-3. Verify with fresh output: the procedure's accuracy audit or run-and-verify phase, then `<test:all command>`.
-4. The box is checked with an indented note (date, evidence, finding ids raised, skills the agents loaded), and the item's files and the checklist are committed together: `<docs|test>(intake): <procedure>` with the trailer `Intake: intake:<procedure>` (or, for an item that names no procedure, the trailer its checklist line names) in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
+3. Verify with fresh output: the procedure's accuracy audit or run-and-verify phase, and the item's check the agent ran after its last edit (docs-check, or `<test:all command>` for a testing item). The intake command reruns it only when the diff or the reported output gives a reason.
+4. The box is checked with an indented note (date, evidence, finding ids raised, skills the agents loaded; the agent drafts it), and the item's files and the checklist are committed together: `<docs|test>(intake): <procedure>` with the trailer `Intake: intake:<procedure>` (or, for an item that names no procedure, the trailer its checklist line names) in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
 5. Check the commit you just made: `git log -1 --format='%(trailers:key=Intake,valueonly)'` prints this item's command, and `git show --stat HEAD` lists only this item's files. When either is wrong, never amend: fix it with a follow-up commit carrying the same item's trailer.
 </per_item_loop>
 <context_hygiene>
-After a compaction or resume, re-read this file and the checklist, and rebuild state from them and `git log`, never from memory. Writing happens in the agents the intake command starts, one at a time; commits happen only in this session.
+After a compaction or resume, re-read this file and the checklist, and rebuild state from them and `git log`, never from memory. Writing happens in the agents the intake command starts, one at a time but for its parallel testing writers; commits happen only in this session.
 </context_hygiene>
 <final_report>
 Save the scoring files to <results-dir> (outside the repo):
