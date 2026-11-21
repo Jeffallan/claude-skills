@@ -130,3 +130,12 @@ def test_validate_rejects_a_hand_edited_shape():
     assert currentstate.validate(good) == []
     good["components"][0]["status"] = "maybe"
     assert currentstate.validate(good) != []
+
+
+def test_code_at_a_cell_edge_keeps_its_backticks(git_repo):
+    rows = "| F-004 | Rate limiting is off unless `NODE_ENV=production` | Medium | auth | open | x |\n| F-005 | `requireAdmin` is dead code | Low | auth | open | x |\n"
+    with_state(git_repo, findings=FINDINGS.replace("\n## Open questions", rows + "\n## Open questions"))
+    found = {f["id"]: f["finding"] for f in currentstate.build(git_repo.root)["findings"]}
+    assert found["F-004"] == "Rate limiting is off unless `NODE_ENV=production`"
+    assert found["F-005"] == "`requireAdmin` is dead code"
+    assert currentstate.build(git_repo.root)["components"][0]["status"] == "wired"  # a fully quoted cell is unquoted

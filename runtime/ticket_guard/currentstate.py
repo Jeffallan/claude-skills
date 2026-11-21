@@ -53,7 +53,9 @@ def _tables(text: str) -> list[list[list[str]]]:
 
 
 def _plain(cell: str) -> str:
-    return cell.strip().strip("`").strip()
+    """The cell without a code span that wraps all of it (`` `wired` ``); code at one edge keeps its backticks."""
+    c = cell.strip()
+    return c[1:-1].strip() if len(c) > 1 and c[0] == c[-1] == "`" and "`" not in c[1:-1] else c
 
 
 def components(sd_path: str, text: str) -> list[dict[str, str]]:
