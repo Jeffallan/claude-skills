@@ -125,6 +125,9 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
 }
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
+# The main session runs the full suite itself at phase boundaries, not after every item
+if grep -q "Full suite at phase boundaries" "$OUT/commands/intake.md" && grep -q "after \`document-codebase\`" "$OUT/commands/intake.md"; then pass "intake runs the full suite at phase boundaries"; else fail "intake runs the full suite at phase boundaries"; fi
+
 # Parallel testing writers: each procedure says how it reports tracker edits in a batch; agents know the item report
 for p in testing-features testing-authorization testing-owasp; do
     if grep -q "Parallel testing writers" "$OUT/references/intake/procedures/$p.md"; then pass "$p explains its batch tracker edits"; else fail "$p explains its batch tracker edits"; fi
