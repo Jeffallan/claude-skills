@@ -54,7 +54,7 @@ Each procedure lives at `${CLAUDE_PLUGIN_ROOT}/references/intake/procedures/<pro
 ## Per item
 
 1. **Pick.** Re-read the checklist and take the item (the next unchecked one, or the named procedure). An item that names no procedure (start the findings tracker, link the docs index from `CLAUDE.md`) is done here in this session, then goes to step 7.
-2. **Read the procedure** in this session: `${CLAUDE_PLUGIN_ROOT}/references/intake/procedures/<procedure>.md`. Note its "Skills to load" list and add the stack skills that apply. The intake eval opens the item at this read.
+2. **Name the procedure and its skills.** The procedure is `${CLAUDE_PLUGIN_ROOT}/references/intake/procedures/<procedure>.md`; the agent reads it, so this session doesn't. Print only its skills list, `sed -n '/^## Skills to load/,/^## /p' <path>`, and add the stack skills that apply. Name the path in every brief for the item: the intake eval opens the item at the first brief that names it.
 3. **Start the agent** with the brief below. When it needs facts from a large area, start `code-reader` agents first (they only read, so several may run at once) and pass their reports in the brief.
    - **Goal run: one pass.** The agent runs the whole procedure. At the checkpoint it puts the scope it would have shown in its report under `Checkpoint draft:`, adds an Open questions row only under the rule in `references/intake/rules.md` ("In a goal run"), and goes on to write, audit or run and verify. Nobody answers a goal-run checkpoint, so the agent never stops there.
    - **Attended: discovery, then resume.** The agent runs up to the checkpoint, returns the scope and writes nothing.

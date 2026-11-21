@@ -183,6 +183,14 @@ has "$INTAKE" "Attended: discovery, then resume" "intake keeps pause and resume 
 hasnt "$INTAKE" "every checkpoint resumes an agent" "intake no longer resumes at every checkpoint"
 has "$IREF/rules.md" "In a goal run there is no stop" "rules: a goal-run checkpoint doesn't stop the agent"
 hasnt "$IREF/goal-prompt.md" "every checkpoint resumes an agent" "goal prompt no longer resumes at every checkpoint"
+# The main session doesn't read the procedure: it takes the skills list with sed, and every brief names the path,
+# where the intake eval opens the item's window (scripts/eval_intake_run.py, item_opens)
+hasnt "$INTAKE" "**Read the procedure** in this session" "intake doesn't read the whole procedure in the main session"
+has "$INTAKE" "sed -n '/^## Skills to load/,/^## /p'" "intake takes the procedure's skills list with sed"
+has "$INTAKE" "Procedure: <plugin root>/references/intake/procedures/<procedure>.md" "the brief names the procedure path"
+for p in $PROCS; do
+    if [ "$(grep -c '^## Skills to load$' "$IREF/procedures/$p.md")" = 1 ]; then pass "$p has one Skills to load heading"; else fail "$p has one Skills to load heading"; fi
+done
 
 # Repo-only content stays out
 for path in .claude-plugin/marketplace.json CLAUDE.md site docs scripts assets research specs evals .serena .github version.json pyproject.toml; do
