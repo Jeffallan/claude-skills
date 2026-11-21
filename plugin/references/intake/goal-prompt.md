@@ -43,7 +43,7 @@ Each item, in order:
 5. Check the commit you just made: `git log -1 --format='%(trailers:key=Intake,valueonly)'` prints this item's command, and `git show --stat HEAD` lists only this item's files. When either is wrong, never amend: fix it with a follow-up commit carrying the same item's trailer.
 </per_item_loop>
 <context_hygiene>
-After a compaction or resume, re-read this file and the checklist, and rebuild state from them and `git log`, never from memory. Writing happens in the agents the intake command starts, one at a time; commits happen only in this session.
+After a compaction or resume, re-read this file and the checklist, and rebuild state from them and `git log`, never from memory. Writing happens in the agents the intake command starts, one at a time but for its parallel testing writers; commits happen only in this session.
 </context_hygiene>
 <final_report>
 Save the scoring files to <results-dir> (outside the repo):

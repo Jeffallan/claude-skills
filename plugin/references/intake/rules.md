@@ -135,7 +135,7 @@ In a goal run there is no stop, since nobody would answer it. The agent runs the
 
 The procedures run in writing agents (`doc-writer`, `test-writer`, `security-prober`, `architect`); `code-reader` agents only read.
 
-- One writing agent runs at a time. `code-reader` agents may run beside the writer and each other, since they never write: the `intake` command starts the next item's fact pass while the current item writes.
+- One writing agent runs at a time, except the three parallel testing items (`intake:testing-features`, `intake:testing-authorization`, `intake:testing-owasp`), which the `intake` command starts together after `intake:testing-setup`. They leave the tracker alone and report their findings under provisional ids, and the command assigns the real ones ("Parallel testing writers" in the command). `code-reader` agents may run beside the writer and each other, since they never write: the `intake` command starts the next item's fact pass while the current item writes.
 - Agents never commit, stage or branch. After each writing agent, the `intake` command reviews its diff against "What intake may change" and commits it with the item's trailer, using the note and message the agent drafted ("The item report").
 - An agent can't start agents. A procedure that needs independent readers (the second pass of `document-authorization`) returns their inputs, and the `intake` command starts `code-reader` agents and resumes the writer with their reports.
 - While a ticket marker exists, no agent writes: ticket work happens in the main session, where the guard's hooks apply. The plugin's hooks also fire on an agent's tool calls, so they still catch an agent edit there.
@@ -162,6 +162,7 @@ Intake: intake:<procedure>
 - The note follows "Human-voice pass" and "Skills" below. The human-voice line is for a documentation item only.
 - The message's last paragraph holds only trailers. The `intake` command adds its own (`Co-Authored-By:`) to that paragraph, with no blank line between them.
 - Report a check's output as it ran, failing or not. A failure the agent can fix within "What intake may change" is fixed and the check rerun before reporting.
+- In the parallel testing batch, a `Tracker edits:` section follows `Checks:`, as the batch lines in the `intake` command describe.
 - An item that commits twice (`intake:testing-authorization`'s matrix update) drafts a message for each, naming which changed files go in which.
 
 ## Human-voice pass
@@ -199,7 +200,7 @@ Intake commands run unattended inside a `/goal` run, under the rules in `referen
 - **Never call `AskUserQuestion`.** The checkpoint becomes a draft: the agent reports the scope it would have shown as its checkpoint draft, which goes in the item's checklist note, and continues with it. It never stops to wait. A routine scope confirmation is not a question. Add an Open questions row to `docs/intake-findings.md`, with a draft decision, only when the owner could reasonably choose differently and the choice changes what gets written: a layer skipped, a surface left out, a contradiction picked one way.
 - **Never block on a missing document.** A command whose input doc is absent works from the code alone and adds an Open question saying so.
 
-The rest holds unchanged: no tracker writes, no history rewrites, agents write one at a time and never commit ("Agents and commits"). A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
+The rest holds unchanged: no tracker writes, no history rewrites, agents write one at a time (but for the parallel testing items) and never commit ("Agents and commits"). A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
 
 Outside a goal, an `intake` run that finds `AskUserQuestion` unavailable at its checkpoint never drafts in its place: it takes the wrong-session stop in `references/specs/unattended.md`.
 

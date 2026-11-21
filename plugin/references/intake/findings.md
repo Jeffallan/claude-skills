@@ -86,6 +86,8 @@ The tests still pin the behavior either way; their names say what they check, no
 | `fixed` on a finding about the test code itself, repaired under "A red baseline" | `intake:testing-setup`, naming the repair commit |
 | Status changes to `ticketed`, `accepted-risk`, `fixed` | The owner, at close-out |
 
+`intake:testing-features`, `intake:testing-authorization` and `intake:testing-owasp` write at the same time, so their agents never edit the tracker. Each reports its new findings under provisional ids and its other tracker changes, and the `intake` command writes their tracker edits: it assigns the real ids in checklist order and appends each item's entries in that item's commit.
+
 ## Every finding has evidence
 
 A finding without evidence is not a finding. By the end of Phase 3, every finding that isn't `invalid` names its characterization test on its `Tests:` line (and its intended-behavior twin when it is a bug), in the same `path::name` form the Test coverage table uses. Each testing command takes the open findings in its area; `intake:testing-user-flows`, the last testing item, takes every finding still without a test, whatever its area.
