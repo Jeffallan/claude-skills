@@ -643,42 +643,90 @@ def skill_uses(m: dict) -> list[str]:
     ]
 
 
+def agent_briefs(m: dict, prompts: dict[str, str]) -> dict[str, str]:
+    """Agent ids this main-session record links to their briefs: an Agent call's result carries the agent's id.
+
+    `prompts` maps each Agent call's tool_use id to its brief, filled as the calls are seen.
+    """
+    content = m.get("message", {}).get("content") if isinstance(m.get("message"), dict) else None
+    out = {}
+    for c in content if isinstance(content, list) else []:
+        if c.get("type") == "tool_use" and c.get("name") in ("Agent", "Task"):
+            prompts[str(c.get("id"))] = str(c.get("input", {}).get("prompt", ""))
+        elif c.get("type") == "tool_result" and str(c.get("tool_use_id")) in prompts:
+            result = m.get("toolUseResult")
+            if isinstance(result, dict) and result.get("agentId"):
+                out[str(result["agentId"])] = prompts[str(c["tool_use_id"])]
+    return out
+
+
+def agent_id(path: Path, msgs: list[dict]) -> str:
+    """A subagent's id: its records' agentId, else the `agent-<id>.jsonl` file name. SendMessage resumes keep it."""
+    found = next((str(m["agentId"]) for m in msgs if m.get("agentId")), None)
+    return found or path.stem.removeprefix("agent-")
+
+
+def placed(t: datetime, spans: list[tuple[datetime, datetime]]) -> datetime:
+    """`t` moved into the item's window open when it happened (the last to start by then), for ordering checks."""
+    a, b = next((s for s in reversed(spans) if s[0] <= t), spans[0])
+    return min(max(t, a), b)
+
+
 def timeline(
     paths: list[Path],
-) -> tuple[list[tuple[str, datetime, datetime]], list[tuple[datetime, str]], list[datetime]]:
-    """Item windows (cmd, start, end), Skill loads (time, skill) and compaction times from the goal sessions.
+) -> tuple[list[tuple[str, datetime, datetime]], list[tuple[datetime, str, str | None]], list[datetime]]:
+    """Item windows (cmd, start, end), Skill loads (time, skill, item) and compaction times from the goal sessions.
 
     A window opens at a Skill call to `fullstack-dev-skills:intake:<cmd>`, a Read of
     `references/intake/procedures/<cmd>.md`, or an Agent call whose brief names that file, and runs to the next
-    one or the session's end. A subagent's loads count when their time falls inside a window.
+    one or the session's end. A main-session load has no item: it counts for the window its time falls in.
+
+    A subagent whose brief (its Agent call's prompt, else its first message) names a procedure belongs to that
+    item whatever its loads' times; each load's time moves into the item's window. In a run whose items open by
+    procedure (v0.5.0 on), an agent linked to an Agent call whose brief names none is a fact pass and counts
+    for no item. Any other subagent's loads count when their time falls inside a window, as before v0.5.0.
     """
-    windows, loads, compactions, side = [], [], [], []
+    windows, loads, compactions, briefs, by_procedure = [], [], [], {}, False
+    subagents = []
     for p in paths:
         msgs = [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
         timed = [(when(m["timestamp"]), m) for m in msgs if m.get("timestamp")]
         if is_subagent(p):
-            side += [(t, s) for t, m in timed for s in skill_uses(m)]
+            subagents.append((p, msgs, timed))
             continue
-        opened = None
+        opened, prompts = None, {}
         for t, m in timed:
             content = m["message"].get("content", "") if isinstance(m.get("message"), dict) else ""
             if m.get("type") == "user" and (m.get("isCompactSummary") or text_of(content).startswith(CONTINUED)):
                 compactions.append(t)
-            loads += [(t, s) for s in skill_uses(m)]
+            loads += [(t, s, None) for s in skill_uses(m)]
+            briefs.update(agent_briefs(m, prompts))
             for cmd in item_opens(m):
+                by_procedure |= ITEM_SKILL + cmd not in skill_uses(m)
                 if opened:
                     windows.append((*opened, t))
                 opened = (cmd, t)
         if opened:
             windows.append((*opened, timed[-1][0]))
-    loads += [(t, s) for t, s in side if any(a <= t <= b for _, a, b in windows)]
+    for p, msgs, timed in subagents:
+        aid = agent_id(p, msgs)
+        first = next((m for m in msgs if m.get("type") == "user"), {})
+        brief = briefs.get(aid) or text_of(first.get("message", {}).get("content", ""))
+        item = r.group(1) if (r := ITEM_BRIEF.search(brief)) else None
+        spans = sorted((a, b) for c, a, b in windows if c == item)
+        for t, s in ((t, s) for t, m in timed for s in skill_uses(m)):
+            if item and spans:
+                loads.append((placed(t, spans), s, item))
+            elif not item and not (by_procedure and aid in briefs) and any(a <= t <= b for _, a, b in windows):
+                loads.append((t, s, None))
     return windows, loads, compactions
 
 
 def skills_check(repo: Path, tl) -> dict:
     """A skill a checklist note names is loaded by the end of the first naming item's window, and again after a compaction.
 
-    The reload is due by the end of the next naming item's window after the compaction.
+    The reload is due by the end of the next naming item's window after the compaction. A subagent's load counts
+    at its time moved into its item's window (timeline).
     """
     windows, loads, compactions = tl
     by_skill: dict[str, set[str]] = {}
@@ -688,7 +736,7 @@ def skills_check(repo: Path, tl) -> dict:
     bad = []
     for name, cmds in sorted(by_skill.items()):
         spans = sorted((a, b, c) for c, a, b in windows if c in cmds)
-        times = [t for t, s in loads if s.split(":")[-1] == name]
+        times = [t for t, s, _ in loads if s.split(":")[-1] == name]
         if not spans:
             bad.append(f"{name}: named by {sorted(cmds)}, which have no window in the transcripts")
         elif not any(t <= spans[0][1] for t in times):
@@ -721,7 +769,11 @@ def voice_check(repo: Path, tl) -> dict:
         if VOICE_SKILL in text and tl:
             windows, loads, _ = tl
             spans = [(a, b) for c, a, b in windows if c == cmd]
-            if not any(a <= t <= b for t, s in loads if s == VOICE_SKILL for a, b in spans):
+            if not any(
+                item == cmd or (item is None and any(a <= t <= b for a, b in spans))
+                for t, s, item in loads
+                if s == VOICE_SKILL
+            ):
                 unbacked.append(cmd)
     ok = not missing and not unbacked
     detail = (
@@ -1085,7 +1137,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 15  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test
+CHECKS_VERSION = 16  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none
 
 
 def main() -> int:

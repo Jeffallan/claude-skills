@@ -1121,6 +1121,62 @@ if has "$out" human-voice-pass 0 && printf '%s' "$out" | grep -q 'document-gloss
 { t_goal 0; t_item 1 document-glossary; t_skill 2 $TM; t_item 3 document-features; t_item 4 document-glossary; t_skill 5 $HVS; t_done 6; } >"$WORK/v9-followup.jsonl"
 v9 "a human-voice call in an item's follow-up window passes" human-voice-pass 1 "$WORK/v9-followup.jsonl"
 
+# Version 16: a subagent's loads count for the item its brief names (Agent call, linked by toolUseResult.agentId),
+# whatever their time; a linked agent whose brief names no procedure (a fact pass) counts for no item
+proc() { printf 'Procedure: /p/plugin/references/intake/procedures/%s.md. Write the doc.' "$1"; }
+t_agent() { # t_agent <min> <agent id> <brief>: the main session's Agent call and its result
+    printf '{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"tool_use","id":"tu_%s","name":"Agent","input":{"subagent_type":"x","prompt":"%s"}}]}}\n' "$(at "$1")" "$2" "$3"
+    printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"tu_%s","content":"agentId: %s"}]},"toolUseResult":{"agentId":"%s","prompt":"%s","status":"async_launched"}}\n' "$(at "$1")" "$2" "$2" "$2" "$3"
+}
+t_send() { printf '{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"tool_use","id":"tu_s%s","name":"SendMessage","input":{"to":"%s","message":"Fix the audit"}}]}}\n' "$(at "$1")" "$1" "$2"; }
+s_user() { printf '{"type":"user","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"role":"user","content":"%s"}}\n' "$2" "$(at "$1")" "$3"; }
+s_load() { printf '{"type":"assistant","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"%s"}}]}}\n' "$2" "$(at "$1")" "$3"; }
+v16() { # v16 <label> <check> <want> <detail grep or ''> <transcript>...
+    local label=$1 c=$2 want=$3 grep=$4 out args=()
+    shift 4
+    for t in "$@"; do args+=(--transcript "$t"); done
+    set +e
+    out=$(score "$W16" "${args[@]}")
+    set -e
+    if has "$out" "$c" "$want" && { [ -z "$grep" ] || printf '%s' "$out" | grep -q -- "$grep"; }; then pass "$label"; else fail "$label: $out"; fi
+}
+W16=$(fresh v16)
+SM=fullstack-dev-skills:spec-miner
+FF=fullstack-dev-skills:feature-forge
+printf -- '- [x] `intake:document-glossary`\n  2026-11-12: written with %s; human-voice: %s\n- [x] `intake:document-features`\n  2026-11-12: written with %s; human-voice: %s\n' $SM $HVS $FF $HVS >>"$W16/docs/intake-checklist.md"
+commit_item "$W16" intake:document-glossary "docs(intake): glossary and features"
+S16="$WORK/v16"
+mkdir -p "$S16"
+# Two writers overlap: the glossary writer's loads fall in the features window
+{ t_goal 0; t_agent 1 aglos "$(proc document-glossary)"; t_agent 3 afeat "$(proc document-features)"; t_done 9; } >"$S16/overlap-main.jsonl"
+{ s_user 1 aglos "$(proc document-glossary)"; s_load 5 aglos $SM; s_load 6 aglos $HVS; } >"$S16/overlap-agent-aglos.jsonl"
+{ s_user 3 afeat "$(proc document-features)"; s_load 4 afeat $FF; s_load 4 afeat $HVS; } >"$S16/overlap-agent-afeat.jsonl"
+v16 "overlapping writers: each one's late loads count for its own item (skills-loaded)" skills-loaded 1 "" \
+    "$S16/overlap-main.jsonl" "$S16/overlap-agent-aglos.jsonl" "$S16/overlap-agent-afeat.jsonl"
+v16 "overlapping writers: each one's human-voice call counts for its own item" human-voice-pass 1 "" \
+    "$S16/overlap-main.jsonl" "$S16/overlap-agent-aglos.jsonl" "$S16/overlap-agent-afeat.jsonl"
+# The glossary writer's second human-voice call, timed in the features window, does not stand in for the features writer's
+{ s_user 1 aglos "$(proc document-glossary)"; s_load 2 aglos $SM; s_load 2 aglos $HVS; s_load 5 aglos $HVS; } >"$S16/cross-agent-aglos.jsonl"
+{ s_user 3 afeat "$(proc document-features)"; s_load 4 afeat $FF; } >"$S16/cross-agent-afeat.jsonl"
+v16 "another writer's human-voice call in an item's window fails the item's claim" human-voice-pass 0 document-features \
+    "$S16/overlap-main.jsonl" "$S16/cross-agent-aglos.jsonl" "$S16/cross-agent-afeat.jsonl"
+# A fact pass (its brief names no procedure) runs beside the glossary writer; its loads count for no item
+{ t_goal 0; t_agent 1 aglos "$(proc document-glossary)"; t_agent 2 afact "Read the auth code and report facts."; t_agent 3 afeat "$(proc document-features)"; t_done 9; } >"$S16/fact-main.jsonl"
+{ s_user 2 afact "Read the auth code and report facts."; s_load 4 afact $FF; } >"$S16/fact-agent-afact.jsonl"
+{ s_user 3 afeat "$(proc document-features)"; s_load 5 afeat $HVS; } >"$S16/fact-agent-afeat.jsonl"
+v16 "a fact-pass agent's load counts for no item" skills-loaded 0 feature-forge \
+    "$S16/fact-main.jsonl" "$S16/cross-agent-aglos.jsonl" "$S16/fact-agent-afact.jsonl" "$S16/fact-agent-afeat.jsonl"
+# The glossary writer resumed by SendMessage in the features window keeps its item
+{ t_goal 0; t_agent 1 aglos "$(proc document-glossary)"; t_agent 3 afeat "$(proc document-features)"; t_send 5 aglos; t_done 9; } >"$S16/resume-main.jsonl"
+{ s_user 1 aglos "$(proc document-glossary)"; s_load 2 aglos $SM; s_user 5 aglos "Fix the audit"; s_load 6 aglos $HVS; } >"$S16/resume-agent-aglos.jsonl"
+v16 "a writer resumed by SendMessage keeps its item" human-voice-pass 1 "" \
+    "$S16/resume-main.jsonl" "$S16/resume-agent-aglos.jsonl" "$S16/overlap-agent-afeat.jsonl"
+# Before v0.5.0 items open at intake:<cmd> Skill calls and no brief names a procedure: linked agents keep the time rule
+{ t_goal 0; t_item 1 document-glossary; t_agent 1 aold "Review this diff"; t_item 3 document-features; t_skill 4 $FF; t_skill 4 $HVS; t_done 9; } >"$S16/old-main.jsonl"
+{ s_user 1 aold "Review this diff"; s_load 2 aold $SM; s_load 2 aold $HVS; } >"$S16/old-agent-aold.jsonl"
+v16 "before v0.5.0 a linked agent's loads count by time (skills-loaded)" skills-loaded 1 "" "$S16/old-main.jsonl" "$S16/old-agent-aold.jsonl"
+v16 "before v0.5.0 a linked agent's loads count by time (human-voice-pass)" human-voice-pass 1 "" "$S16/old-main.jsonl" "$S16/old-agent-aold.jsonl"
+
 # human-voice-tells: the finished prose carries none of the tells the pass removes
 V=$(fresh v9-tells-good)
 printf '\n```\nx = 1  # a code comment — kept\n```\n\n| Term | Meaning — kept |\n|---|---|\n\nInline `a — b` code.\n' >>"$V/docs/domain/glossary.md"
