@@ -40,6 +40,33 @@ for tool in ScheduleWakeup CronCreate RemoteTrigger; do
     assert_contains "$CMD/spec/create.md" "$tool" "spec:create's settings step names $tool"
 done
 
+echo "guard decide rules: a help call never asks, every decision does, the goal deny stays broad"
+# Bash's [[ == ]] glob gives `*` the meaning Claude Code gives it: any text, spaces included.
+matches_any() { # $1 = command, $2 = rules, one Bash(...) per line
+    local rule
+    while IFS= read -r rule; do
+        rule=${rule#Bash(}; rule=${rule%)}
+        # shellcheck disable=SC2053
+        [[ $1 == $rule ]] && return 0
+    done <<< "$2"
+    return 1
+}
+ask_decide=$(printf '%s\n' "$ask_block" | grep -oE 'Bash\([^"]* decide [^"]*\)' || true)
+deny_decide=$(sed -n '/^```bash$/,/^```$/p' "$REF/specs/launch.md" | grep -oE "Bash\([^']* decide [^']*\)" || true)
+G='uv run -q --no-project --python ">=3.11" "/p/runtime/guard.pyz"'
+real=("$G decide F3 wontfix --spec demo" "$G decide F3 rejection-accepted --spec demo" "$G decide T2 accepted --spec demo"
+      "$G decide P1 answered --spec demo" "$G decide F3 revoke --spec demo" "$G decide --spec demo T2 accepted"
+      "$G decide T2 accepted" "python -m ticket_guard decide F3 \"wontfix\" --spec=demo" "/p/runtime decide F3 revoke")
+helps=("$G decide --help" "$G decide -h" "python -m ticket_guard decide --help")
+for c in "${real[@]}"; do
+    if matches_any "$c" "$ask_decide"; then pass "an ask rule matches: $c"; else fail "an ask rule matches: $c"; fi
+    if matches_any "$c" "$deny_decide"; then pass "a goal deny rule matches: $c"; else fail "a goal deny rule matches: $c"; fi
+done
+for c in "${helps[@]}"; do
+    if matches_any "$c" "$ask_decide"; then fail "no ask rule matches: $c"; else pass "no ask rule matches: $c"; fi
+    if matches_any "$c" "$deny_decide"; then pass "a goal deny rule still matches: $c"; else fail "a goal deny rule still matches: $c"; fi
+done
+
 echo "missing metrics"
 step1=$(sed -n '/^## Step 1: Metrics$/,/^## Step 2: Panel$/p' "$CMD/spec/review.md")
 for s in "did not run" "AskUserQuestion" "goal mode"; do
