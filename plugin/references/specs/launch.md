@@ -157,9 +157,18 @@ Attended commands (`spec:triage`, `spec:create`, `spec:complete`) push, write PR
       "Bash(gh project mark-template:*)",
       "Bash(gh project unlink:*)",
       "Bash(gh release:*)",
-      "Bash(*guard.pyz* decide *)",
-      "Bash(*ticket_guard* decide *)",
-      "Bash(*runtime* decide *)",
+      "Bash(*guard.pyz* decide *wontfix*)",
+      "Bash(*guard.pyz* decide *accepted*)",
+      "Bash(*guard.pyz* decide *answered*)",
+      "Bash(*guard.pyz* decide *revoke*)",
+      "Bash(*ticket_guard* decide *wontfix*)",
+      "Bash(*ticket_guard* decide *accepted*)",
+      "Bash(*ticket_guard* decide *answered*)",
+      "Bash(*ticket_guard* decide *revoke*)",
+      "Bash(*runtime* decide *wontfix*)",
+      "Bash(*runtime* decide *accepted*)",
+      "Bash(*runtime* decide *answered*)",
+      "Bash(*runtime* decide *revoke*)",
       "Bash(*guard.pyz* decisions import*)",
       "Bash(*ticket_guard* decisions import*)",
       "Bash(*runtime* decisions import*)",
@@ -170,6 +179,8 @@ Attended commands (`spec:triage`, `spec:create`, `spec:complete`) push, write PR
   }
 }
 ```
+
+Each `decide` ask rule names one of the statuses the guard accepts (`*accepted*` also covers `rejection-accepted`). Every decision carries a status, so each one still asks, while `guard decide --help` runs without a prompt. The goal deny rules keep the broader `decide *` form, because in a goal run a missed deny costs more than a denied help call.
 
 Add the tracker MCP server's write tools (the same names as `goal.deny`). Never put `AskUserQuestion` or the goal deny rules in shared settings: a deny there would break Feature Forge interviews and every attended command.
 

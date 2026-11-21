@@ -20,7 +20,7 @@ Write an API reference for the backend surface (REST, GraphQL, RPC, and serverle
 
 ## How it runs
 
-The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)).
 
 The `## Operations` table comes from the route list the framework itself prints, so routes mounted by an auth library, an admin site or an older API version appear beside the app's own. Each row has an `OP-NNN` id that stays put across reruns, its source (the app, a named library, or the framework) and the permission that actually applies, with the setting or library default behind it. The doc and the checklist note both record the listing command and how many routes it printed, and the audit checks the table against that count. A permission that breaks an access rule, or contradicts what the code or docs say was intended, goes into the findings tracker.
 

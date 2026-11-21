@@ -20,7 +20,7 @@ Write an authorization reference grounded in code. It names the project's real a
 
 ## How it runs
 
-The procedure reads the code and the docs it joins, stops at a checkpoint to confirm scope, and writes its document. Each matrix row is one operation from the API inventory, so the row count has to match the inventory. A cell that breaks an access invariant, with nothing in the code or docs saying the project meant it, goes to the findings tracker; when intent is unclear it becomes an Open question instead. The doc itself stays descriptive and cites the finding id.
+The procedure reads the code and the docs it joins, stops at a checkpoint to confirm scope, and writes its document. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)). Each matrix row is one operation from the API inventory, so the row count has to match the inventory. A cell that breaks an access invariant, with nothing in the code or docs saying the project meant it, goes to the findings tracker; when intent is unclear it becomes an Open question instead. The doc itself stays descriptive and cites the finding id.
 
 Once the matrix is written, a fresh read-only subagent goes over it a second time without seeing the findings tracker. The procedure checks each cell it reports against the code, files the ones that hold, and records both counts in the checklist note. An accuracy audit against the code comes last, because agents read the result as the implementation contract.
 

@@ -20,7 +20,7 @@ Write a security-mechanisms reference (defense layers, authentication/verificati
 
 ## How it runs
 
-The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract. In an attended run the agent stops at the checkpoint so you can confirm or correct the scope; in a goal run it records the scope as a draft in the checklist note and goes on (see the [intake phase](intake-phase.md)).
 
 The doc describes each mechanism as built. When a token lacks a property its kind needs, or a control breaks an access invariant, and nothing in the code or docs says the project meant it, the procedure files a finding and the doc cites its id. Where intent is unclear, it adds an Open question instead.
 
