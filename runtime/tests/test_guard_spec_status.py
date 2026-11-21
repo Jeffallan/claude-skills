@@ -67,6 +67,23 @@ def test_states_follow_the_files_on_each_spec_branch(git_repo):
     assert got["ready"]["state"] == "Ready to complete" and got["ready"]["next"] == "spec:complete ready"
 
 
+def test_a_spec_only_on_the_current_branch_is_listed_as_unbranched(git_repo, capsys, monkeypatch):
+    git_repo.git("switch", "-q", "-c", "feat/units")
+    git_repo.write("docs/specs/todo/units/overview.md", OVERVIEW.format(name="units", after="none", status="Approved"))
+    git_repo.write("docs/specs/todo/units/implementation-plan.md", plan(["Done", "Pending"]))
+    git_repo.commit("units spec, no spec branch")
+    got = rows(git_repo)
+    units = got["units"]
+    assert units["state"] == "Unbranched (on feat/units)"
+    assert units["branch"] is None and units["pr"] is None
+    assert (units["done"], units["blocked"], units["pending"]) == (1, 0, 1)
+    assert "spec/units" in units["next"]
+    assert got["demo"]["state"] == "Planned"  # normal specs keep their state
+    monkeypatch.setattr(specstatus, "gh_pr", lambda cwd, branch: None)
+    assert main(["spec-status"]) == 0
+    assert "| units | Unbranched (on feat/units) | 1 / 0 / 1 |" in capsys.readouterr().out
+
+
 def test_the_marker_names_the_live_ticket(git_repo):
     marker.start(git_repo.root, "demo", "T2", "goal")
     assert rows(git_repo)["demo"]["ticket"] == "T2"

@@ -84,6 +84,22 @@ def test_docs_affected_prints_status_per_doc(git_repo, capsys):
     assert rows == [{"doc": "architecture/api.md", "reasons": ["cites src/app.py::add"], "status": "pending"}]
 
 
+def test_docs_affected_lists_docs_the_diff_adds_or_changes(git_repo, capsys):
+    base = with_docs(git_repo)
+    git_repo.write("docs/units.md", "# Units\n\nNo citations, no related docs.\n")
+    git_repo.write("docs/other.md", OTHER + "\nA note.\n")
+    git_repo.commit("spec work")
+    assert main(["docs-affected", "--base", base, "--json"]) == 0
+    rows = json.loads(capsys.readouterr().out)
+    assert rows == [
+        {"doc": "other.md", "reasons": ["changed in the diff"], "status": "updated"},
+        {"doc": "units.md", "reasons": ["added in the diff"], "status": "updated"},
+    ]
+    assert main(["docs-affected", "--base", base]) == 0
+    out = capsys.readouterr().out
+    assert "updated  units.md: added in the diff" in out and "no doc affected" not in out
+
+
 # ticket boundary --------------------------------------------------------------
 
 

@@ -28,6 +28,7 @@ from ticket_guard.errors import GuardError, NotARepo
 from ticket_guard.gitutil import top
 
 EXIT_OK, EXIT_REFUSED, EXIT_USAGE = 0, 1, 2
+EXIT_NO_METRICS = 3  # guard metrics: code changed, but no metric tool that reads it is installed
 
 
 def add_parser(sub: argparse._SubParsersAction) -> None:
@@ -115,7 +116,9 @@ def add_parser(sub: argparse._SubParsersAction) -> None:
     mt = gsub.add_parser("metrics", help="write review/metrics.md for the spec diff")
     mt.add_argument("spec")
     mt.add_argument("--base", help="default: merge base with origin/HEAD, main or master")
+    mt.add_argument("--json", action="store_true", help="print each tool's outcome: ran, missing or no-files")
     mt.set_defaults(func=cmd_metrics)
+    mt.epilog = "exit 3: code changed but no metric tool that reads it is installed"
     ro = gsub.add_parser("rollup", help="write review/rollup.md from verifier verdicts")
     ro.add_argument("spec")
     ro.add_argument("--verdicts", type=Path, required=True, help="JSON list or JSONL of findings")
@@ -338,8 +341,17 @@ def cmd_summary(args) -> int:
 
 
 def cmd_metrics(args) -> int:
-    print(f"wrote {metrics.report(Path.cwd(), args.spec, args.base)}")
-    return EXIT_OK
+    path, results = metrics.report(Path.cwd(), args.spec, args.base)
+    ran = [n for n, s in results.items() if s == "ran"]
+    missing = [n for n, s in results.items() if s == "missing"]
+    note = metrics.summary(results)
+    if args.json:
+        _print({"path": str(path), "tools": results, "ran": ran, "missing": missing})
+    else:
+        print(f"wrote {path}")
+    if note:
+        print(note, file=sys.stderr)
+    return EXIT_NO_METRICS if missing and not ran else EXIT_OK
 
 
 def cmd_rollup(args) -> int:

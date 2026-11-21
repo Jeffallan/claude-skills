@@ -166,7 +166,7 @@ def _code_reasons(text: str, changed: set[str], lines_of, exists, new: set[str] 
 
 
 def affected(cwd: Path, base: str) -> dict[str, list[str]]:
-    """{doc: reasons}: docs citing a symbol the diff touches, and the `related:` docs of each changed doc."""
+    """{doc: reasons}: docs the diff adds or changes, docs citing a symbol it touches, and their `related:` docs."""
     found, changed = all_docs(cwd), set(files.changed_since(cwd, base))
     prefix = root(cwd).rstrip("/") + "/"
     diffs: dict[str, str] = {}
@@ -184,6 +184,8 @@ def affected(cwd: Path, base: str) -> dict[str, list[str]]:
         if reasons:
             out.setdefault(doc, []).extend(reasons)
     for doc in sorted(d for d in found if prefix + d in changed):
+        # the doc itself needs the docs reviewer and the index update, even with no citation or related link
+        out.setdefault(doc, []).append("added in the diff" if prefix + doc in added else "changed in the diff")
         for other in related(found[doc]):
             if other in found:
                 out.setdefault(other, []).append(f"related to {doc}")

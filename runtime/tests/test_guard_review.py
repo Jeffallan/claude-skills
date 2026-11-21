@@ -279,9 +279,39 @@ def test_metrics_with_no_tools_still_writes_the_file(git_repo, capsys, monkeypat
     git_repo.write("web/a.ts", "export const x = 1\n")
     git_repo.commit("work")
     monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
-    assert main(["metrics", "demo", "--base", base]) == 0
+    assert main(["metrics", "demo", "--base", base]) == 3  # no tool ran: distinct from pass and refuse
+    out = capsys.readouterr()
+    assert "No metric tool ran (not installed: jscpd, knip, vulture, lizard)" in out.err
     text = (git_repo.root / REVIEW / "metrics.md").read_text()
-    assert text.count("not installed") == 4
+    assert text.count("not installed, so this check did not run") == 4
+    assert "No metric tool ran" in text
+
+
+def test_metrics_json_names_each_tools_outcome(git_repo, capsys, monkeypatch, tmp_path):
+    base = git_repo.head()
+    git_repo.write("src/app.py", "def add(a, b):\n    return a + b + 0\n")
+    git_repo.commit("work")
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    tools = {"lizard": fake_tool(bin_dir, "lizard", "ok")}
+    monkeypatch.setattr(metrics.shutil, "which", lambda name: tools.get(name))
+    assert main(["metrics", "demo", "--base", base, "--json"]) == 0
+    got = json.loads(capsys.readouterr().out)
+    assert got["tools"] == {"jscpd": "missing", "knip": "no-files", "vulture": "missing", "lizard": "ran"}
+    assert got["ran"] == ["lizard"] and got["missing"] == ["jscpd", "vulture"]
+    assert got["path"].endswith("review/metrics.md")
+    monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
+    assert main(["metrics", "demo", "--base", base, "--json"]) == 3
+    got = json.loads(capsys.readouterr().out)
+    assert got["ran"] == [] and got["missing"] == ["jscpd", "vulture", "lizard"]
+
+
+def test_metrics_with_no_code_changed_is_not_a_missing_tool(git_repo, capsys, monkeypatch):
+    base = git_repo.head()
+    git_repo.write("README.md", "# hi\n")
+    git_repo.commit("docs only")
+    monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
+    assert main(["metrics", "demo", "--base", base]) == 0
 
 
 def test_metrics_skips_tools_for_languages_the_diff_lacks(git_repo, capsys, monkeypatch):
@@ -289,7 +319,7 @@ def test_metrics_skips_tools_for_languages_the_diff_lacks(git_repo, capsys, monk
     git_repo.write("web/a.ts", "export const x = 1\n")
     git_repo.commit("ts only")
     monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
-    assert main(["metrics", "demo", "--base", base]) == 0
+    assert main(["metrics", "demo", "--base", base]) == 3  # jscpd and knip read .ts and are missing
     text = (git_repo.root / REVIEW / "metrics.md").read_text()
     assert "vulture: no changed files it reads" in text and "vulture: not installed" not in text
     assert "knip: not installed" in text
@@ -421,3 +451,45 @@ def test_an_imported_older_decision_does_not_override_a_newer_local_one(git_repo
 
     assert decisions.latest(git_repo.root, "demo")["F7"] == "accepted"
     assert exported.is_file()
+
+
+# revoking a decision ----------------------------------------------------------------
+
+
+def test_revoke_withdraws_an_owner_decision_and_keeps_the_history(git_repo, capsys):
+    done_plan(git_repo)
+    fixed = dict(FINDINGS[0], status="fixed-verified")
+    main(["decide", "F7", "wontfix", "--spec", "demo"])
+    rollup(git_repo, capsys, [fixed, dict(FINDINGS[1], status="fixed-verified")])
+    assert table(git_repo)["F7"]["Status"] == "wontfix"  # the owner status hides the verified fix
+    assert main(["decide", "F7", "revoke", "--spec", "demo"]) == 0
+    assert "recorded F7: revoke" in capsys.readouterr().out
+    rollup(git_repo, capsys, [fixed, dict(FINDINGS[1], status="fixed-verified")])
+    assert table(git_repo)["F7"]["Status"] == "fixed-verified"
+    assert gate(capsys)[0] == 0
+    rollup(git_repo, capsys, [fixed, dict(FINDINGS[1], status="open")])
+    code, out = gate(capsys)
+    assert code == 1 and "F7" in out  # with no fix, the revoked row blocks again
+    store = [json.loads(x) for x in (git_repo.guard / "decisions.jsonl").read_text().splitlines()]
+    assert [r["status"] for r in store] == ["wontfix", "revoke"]
+    main(["decisions", "export", "demo"])
+    exported = [json.loads(x) for x in (git_repo.root / REVIEW / "decisions.jsonl").read_text().splitlines()]
+    assert [r["status"] for r in exported] == ["wontfix", "revoke"]
+
+
+def test_a_later_decision_replaces_a_revoked_one(git_repo, capsys):
+    from ticket_guard import decisions
+
+    for status in ("wontfix", "revoke", "rejection-accepted"):
+        main(["decide", "F7", status, "--spec", "demo"])
+    assert decisions.latest(git_repo.root, "demo")["F7"] == "rejection-accepted"
+
+
+def test_revoke_is_refused_in_goal_mode(git_repo, capsys):
+    from ticket_guard import marker
+
+    main(["decide", "F7", "wontfix", "--spec", "demo"])
+    marker.start(git_repo.root, "demo", "T1", "goal")
+    assert main(["decide", "F7", "revoke", "--spec", "demo"]) == 1
+    assert "attended" in capsys.readouterr().err
+    assert len((git_repo.guard / "decisions.jsonl").read_text().splitlines()) == 1

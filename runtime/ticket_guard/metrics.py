@@ -57,7 +57,18 @@ def default_base(cwd: Path) -> str:
     return git(cwd, "rev-list", "--max-parents=0", "HEAD").splitlines()[0]
 
 
-def report(cwd: Path, spec: str, base: str | None = None) -> Path:
+def summary(results: dict[str, str]) -> str | None:
+    """One line when a tool that had files to read was missing; None when every such tool ran."""
+    missing = [n for n, s in results.items() if s == "missing"]
+    if not missing:
+        return None
+    if not any(s == "ran" for s in results.values()):
+        return f"No metric tool ran (not installed: {', '.join(missing)}); duplication, dead code and complexity are unmeasured."
+    return f"Not installed, so unmeasured: {', '.join(missing)}."
+
+
+def report(cwd: Path, spec: str, base: str | None = None) -> tuple[Path, dict[str, str]]:
+    """Write review/metrics.md; returns its path and each tool's outcome: ran, missing or no-files."""
     root = top(cwd)
     base = base or default_base(cwd)
     changed = [
@@ -73,16 +84,20 @@ def report(cwd: Path, spec: str, base: str | None = None) -> Path:
         "Changed files: " + (", ".join(f"`{p}`" for p in changed) or "none"),
         "",
     ]
+    results: dict[str, str] = {}
     for name, (finds, exts, argv, hint) in TOOLS.items():
         lines.append(f"## {name} ({finds})")
         lines.append("")
         targets = [p for p in changed if p.endswith(exts)]
         exe = shutil.which(name) if targets else None
         if not targets:  # checked first, so a Python tool is never suggested for a TypeScript diff
+            results[name] = "no-files"
             lines.append(f"{name}: no changed files it reads.")
         elif exe is None:
+            results[name] = "missing"
             lines.append(f"{name}: not installed, so this check did not run (install: `{hint}`).")
         else:
+            results[name] = "ran"
             args = [exe, *argv] if name == "knip" else [exe, *argv, *targets]
             proc = subprocess.run(args, cwd=root, capture_output=True, text=True, check=False)
             out = (proc.stdout + proc.stderr).strip().splitlines()
@@ -91,7 +106,10 @@ def report(cwd: Path, spec: str, base: str | None = None) -> Path:
             if len(out) > MAX_LINES:
                 lines.append(f"({len(out) - MAX_LINES} more lines cut)")
         lines.append("")
+    note = summary(results)
+    if note:
+        lines[6:6] = [f"**{note}**", ""]  # under the changed files, above the tool sections
     path = settings.spec_dir(cwd, spec) / "review" / "metrics.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
-    return path
+    return path, results
