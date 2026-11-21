@@ -567,7 +567,10 @@ for case in \
     "vue-expert, vue-expert-js skipped (Vue 2 app):1" \
     "vue-expert declined; written by hand:1" \
     "written with vue-expert; javascript-pro not loaded:0" \
-    "written with vue-expert; skipped tests cite F-001:0"; do
+    "written with vue-expert; skipped tests cite F-001:0" \
+    "written with vue-expert and javascript-pro not loaded:0" \
+    "using vue-expert/javascript-pro not loaded:0" \
+    "loaded vue-expert, javascript-pro skipped:0"; do
     note=${case%:*}; want=${case##*:}; n=$((n + 1))
     repo="$WORK/skills-declined-v14-$n"
     rm -rf "$repo"; cp -r "$SK" "$repo"

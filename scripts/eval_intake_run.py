@@ -576,11 +576,24 @@ SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
 # vue-expert-js skipped (Vue 2 app)", or a clause whose verdict follows a semicolon ("vue-expert targets Vue 3; not
 # loaded"). "skipped" and "declined" count only where the clause ends, so "skipped tests cite F-001" declines nothing.
 _VERDICT = r"(?:not loaded|(?:skipped|declined)(?=\s*(?:$|[;.,(])))"
+_JOIN = r"\s*(?:/|,|&|\band\b)\s*"
 DECLINED = re.compile(
-    rf"[\w:-]+(?:\s*(?:/|,|&|\band\b)\s*[\w:-]+)*\s+(?:skills?\s+)?(?:(?:was|were)\s+)?{_VERDICT}"
+    rf"(?P<names>[\w:-]+(?:{_JOIN}[\w:-]+)*)\s+(?:skills?\s+)?(?:(?:was|were)\s+)?{_VERDICT}"
     rf"|(?:^|(?<=;)|(?<=: )|(?<=\())[^;\n]*;\s*{_VERDICT}",
     re.M,
 )
+# "written with test-master and javascript-pro not loaded": a claim verb before the list keeps all but the last name
+CLAIM_VERB = re.compile(r"\b(?:with|using|used|loaded|via)\b", re.I)
+
+
+def declined(m: re.Match[str]) -> str:
+    """What of a DECLINED match still claims: the names before the last when a claim verb opens their clause."""
+    names = m.group("names")
+    if not names or not CLAIM_VERB.search(re.split(r"[;.(\n]", m.string[: m.start()])[-1]):
+        return ""
+    return names[: len(names) - len(re.split(_JOIN, names)[-1])]
+
+
 ITEM_SKILL = "fullstack-dev-skills:intake:"  # the pre-0.5.0 layout: one command per item
 ITEM_READ = re.compile(r"/references/intake/procedures/([a-z-]+)\.md$")  # 0.5.0: the intake command reads the procedure
 ITEM_BRIEF = re.compile(r"/references/intake/procedures/([a-z-]+)\.md")  # 0.5.0: or names it in the agent's brief
@@ -607,7 +620,7 @@ def checklist_items(repo: Path) -> list[tuple[str, bool, str]]:
 
 def named_skills(text: str) -> set[str]:
     """Skills a note claims: `fullstack-dev-skills:<name>`, or a bare name this plugin ships, as a whole word."""
-    text = DECLINED.sub("", text)  # "javascript-pro not loaded (no call sites)" claims nothing
+    text = DECLINED.sub(declined, text)  # "javascript-pro not loaded (no call sites)" claims nothing
     claimed = {m.split(":", 1)[1] for m in SKILL_NAME.findall(text)}
     for name in (
         d.name for d in (Path(__file__).resolve().parent.parent / "plugin" / "skills").iterdir() if d.is_dir()
@@ -1141,7 +1154,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 17  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes
+CHECKS_VERSION = 17  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens
 
 
 def main() -> int:
