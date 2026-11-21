@@ -886,10 +886,21 @@ TEST_ID = re.compile(r"`([\w./-]+\.\w+)::([^`]+)`")
 SETATTR = re.compile(r"""setattr\(\s*\w+\s*,\s*f(["'])(.*?)\1""")
 
 
+PLACEHOLDER = re.compile(r"<[\w-]+>|\$\{[^}]*\}")
+
+
+def placeholder_title(name: str) -> re.Pattern[str] | None:
+    """A title cited with placeholders (`a <status> member`, `a ${status} member`) as a pattern, else None."""
+    parts = PLACEHOLDER.split(name)
+    return re.compile(r"(?:\$\{[^}]*\}|[^\n`'\"]+?)".join(map(re.escape, parts))) if len(parts) > 1 else None
+
+
 def test_exists(path: Path, name: str) -> bool:
     if not path.is_file():
         return False
     last, text = name.split("::")[-1], path.read_text(encoding="utf-8")
+    if (pattern := placeholder_title(last)) and pattern.search(text):
+        return True  # a parameterized test, cited with its parameter left as a placeholder
     if re.fullmatch(r"[\w.]+", last):
         if re.search(rf"\b{re.escape(last.split('.')[-1])}\b", text):
             return True
@@ -925,7 +936,13 @@ def evidence_check(repo: Path, suite_out: str = "") -> dict:
             gone = [
                 f"{path}::{name}"
                 for path, name in cited
-                if not (test_exists(repo / path, name) or (suite_out and name.split("::")[-1] in suite_out))
+                if not (
+                    test_exists(repo / path, name)
+                    or (suite_out and name.split("::")[-1] in suite_out)
+                    or (
+                        suite_out and (pattern := placeholder_title(name.split("::")[-1])) and pattern.search(suite_out)
+                    )
+                )
             ]
             if gone:
                 bad.append(f"{f['id']} names missing tests {gone}")
@@ -1068,7 +1085,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 14  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles
+CHECKS_VERSION = 15  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test
 
 
 def main() -> int:

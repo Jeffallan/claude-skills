@@ -726,6 +726,20 @@ sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/visible.spec.js::F-001 o
 commit_item "$V" intake:testing-features "test(intake): fix"
 v5 "$V" findings-evidence 1 "a Jest test named by its title passes findings-evidence"
 
+V=$(fresh v5-placeholder-title)
+mkdir -p "$V/tests/unit"
+printf 'for (const status of ["paused", "suspended"]) {\n  it(`F-001 a ${status} member sees other profiles (current)`, () => {})\n}\n' >"$V/tests/unit/visible.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/visible.spec.js::F-001 a <status> member sees other profiles (current)`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 1 "a title cited with a <placeholder> matches its template-literal test"
+
+V=$(fresh v5-placeholder-title-gone)
+mkdir -p "$V/tests/unit"
+printf 'it(`F-001 a ${status} member sees other profiles (current)`, () => {})\n' >"$V/tests/unit/visible.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/visible.spec.js::F-001 a <status> admin edits nothing`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+v5 "$V" findings-evidence 0 "a <placeholder> title that matches no test still fails"
+
 V=$(fresh v5-jest-title-gone)
 mkdir -p "$V/tests/unit"
 printf "it.skip('F-001 other profiles hidden (intended)', () => {})\n" >"$V/tests/unit/visible.spec.js"
