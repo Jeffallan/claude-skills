@@ -16,7 +16,7 @@ A goal is active when the session was started with `/goal`, or the goal prompt i
 
 ## No self-scheduling
 
-In every mode, attended or goal, workflow commands never schedule wakeups, loops, cron jobs or remote triggers: no `ScheduleWakeup`, `CronCreate`, `RemoteTrigger` or `/loop` skill. A step that waits on something (CI, a reviewer, a fix round, a recheck) ends the turn and tells the owner what to rerun and when. Goal launches deny these tools as well.
+In every mode, attended or goal, workflow commands never schedule wakeups, loops, cron jobs or remote triggers: no `ScheduleWakeup`, `CronCreate`, `RemoteTrigger` or `/loop` skill. A step that waits on something (CI, a reviewer, a fix round, a recheck) ends the turn and tells the owner what to rerun and when. A step that waits on its own subagents waits for their notifications and schedules no fallback in case one never reports back. Goal launches deny these tools as well, and the shared ask rules in `launch.md` make an attended session ask first.
 
 ## Two kinds of command
 

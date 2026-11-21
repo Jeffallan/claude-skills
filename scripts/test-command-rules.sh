@@ -31,6 +31,15 @@ for f in spec/create spec/triage spec/diff spec/review discovery/create discover
 done
 assert_contains "$CMD/spec/review.md" "shared database or fixed ports" "spec:review keeps verifiers that share a database or ports one at a time"
 
+echo "no self-scheduling"
+n=$(grep -cF "never schedule a fallback" "$CMD/spec/review.md" || true)
+if [ "$n" -ge 2 ]; then pass "spec:review repeats the no-fallback rule at the verifiers and the recheck"; else fail "spec:review repeats the no-fallback rule at the verifiers and the recheck (found $n)"; fi
+ask_block=$(sed -n '/^## Shared ask rules$/,/^## Judging a run$/p' "$REF/specs/launch.md" | sed -n '/"ask": \[/,/\]/p')
+for tool in ScheduleWakeup CronCreate RemoteTrigger; do
+    if printf '%s\n' "$ask_block" | grep -qF "\"$tool\""; then pass "shared ask rules include $tool"; else fail "shared ask rules include $tool"; fi
+    assert_contains "$CMD/spec/create.md" "$tool" "spec:create's settings step names $tool"
+done
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

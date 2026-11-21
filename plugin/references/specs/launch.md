@@ -104,7 +104,7 @@ claude \
 
 ## Shared ask rules
 
-Attended commands (`spec:triage`, `spec:create`, `spec:complete`) push, write PRs and write to the tracker, and the owner approves each write when Claude Code asks. `spec:create` proposes these rules for the project's shared `.claude/settings.json`; they ask, never deny, so attended work still runs:
+Attended commands (`spec:triage`, `spec:create`, `spec:complete`) push, write PRs and write to the tracker, and the owner approves each write when Claude Code asks. The rules also ask before `ScheduleWakeup`, `CronCreate` and `RemoteTrigger`, which no workflow command may call ("No self-scheduling" in `unattended.md`), so a session that tries is stopped in front of the owner. `spec:create` proposes these rules for the project's shared `.claude/settings.json`; they ask, never deny, so attended work still runs:
 
 ```json
 {
@@ -162,7 +162,10 @@ Attended commands (`spec:triage`, `spec:create`, `spec:complete`) push, write PR
       "Bash(*runtime* decide *)",
       "Bash(*guard.pyz* decisions import*)",
       "Bash(*ticket_guard* decisions import*)",
-      "Bash(*runtime* decisions import*)"
+      "Bash(*runtime* decisions import*)",
+      "ScheduleWakeup",
+      "CronCreate",
+      "RemoteTrigger"
     ]
   }
 }
