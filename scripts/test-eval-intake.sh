@@ -558,6 +558,27 @@ for case in loaded:1 missing:0 bare:0 declined:1; do
     if has "$out" skills-loaded "$want"; then pass "skills check case $name"; else fail "skills check case $name: $out"; fi
 done
 
+# Version 14: declines phrased as a joined list or with the verdict after a semicolon claim nothing;
+# a skill the same note says it used is still claimed
+n=0
+for case in \
+    "vue-expert/vue-expert-js target Vue 3; not loaded:1" \
+    "vue-expert and vue-expert-js not loaded (Vue 2 app):1" \
+    "vue-expert, vue-expert-js skipped (Vue 2 app):1" \
+    "vue-expert declined; written by hand:1" \
+    "written with vue-expert; javascript-pro not loaded:0" \
+    "written with vue-expert; skipped tests cite F-001:0"; do
+    note=${case%:*}; want=${case##*:}; n=$((n + 1))
+    repo="$WORK/skills-declined-v14-$n"
+    rm -rf "$repo"; cp -r "$SK" "$repo"
+    printf -- '- [x] `intake:document-analytics`\n  2026-11-12: written; %s\n' "$note" >>"$repo/docs/intake-checklist.md"
+    commit_item "$repo" intake:document-analytics "docs(intake): document-analytics"
+    set +e
+    out=$(python3 "$EVAL" --repo "$repo" --start "$(cat "$SK.start")" --transcript "$WORK/skills-declined.jsonl" 2>&1)
+    set -e
+    if has "$out" skills-loaded "$want"; then pass "declined note '$note' scores $want"; else fail "declined note '$note' scores $want: $out"; fi
+done
+
 # A fixed check set: the output names its version, optional checks sit outside the score, a saved suite result counts
 set +e
 out=$(python3 "$EVAL" --repo "$CP" --start "$(cat "$CP.start")" --transcript "$WORK/compact-good.jsonl" --suite-green 2>&1)
@@ -663,6 +684,15 @@ printf '\nSee `app.py:5`.\n' >>"$V/docs/domain/glossary.md"
 commit_item "$V" intake:document-glossary "docs(intake): glossary"
 v5 "$V" symbol-citations 0 "a path:line citation fails symbol-citations"
 
+# Version 14: an address is not a path:line citation; a token with a path separator or a file extension still is
+V=$(fresh v14-address)
+printf '\nBinds `0.0.0.0:8080`, talks to `localhost:5432` and `127.0.0.1:6379`, serves `http://localhost:8000`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 1 "a bind address, host:port or URL with a port passes symbol-citations"
+printf '\nSee `src/Makefile:12`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 0 "a path with a separator and no extension still fails symbol-citations"
+
 V=$(fresh v5-tests-none)
 sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none|' "$V/docs/intake-findings.md"
 commit_item "$V" intake:testing-features "test(intake): fix"
@@ -737,6 +767,7 @@ cat >"$STUB/npx" <<'EOF'
 case "$*" in
     *"vitest list"*) f=vitest ;;
     *"playwright test --list"*) f=playwright ;;
+    *"jest --json"*) f=jest ;;
     *) exit 1 ;;
 esac
 [ -f "$(dirname "$0")/$f.out" ] || exit 1
@@ -748,7 +779,14 @@ cat >"$STUB/pytest" <<'EOF'
 case "$*" in *--collect-only*) printf 'tests/test_gen.py::test_F001_gen[op1]\n\n1 test collected\n' ;; esac
 exit 0
 EOF
-chmod +x "$STUB/npx" "$STUB/pytest"
+cat >"$STUB/node" <<'EOF'
+#!/usr/bin/env bash
+# a stand-in node: the spec reporter prints the listing saved beside it, as node --test does
+case "$*" in *"--test --test-reporter=spec e2e/"*) ;; *) exit 1 ;; esac
+[ -f "$(dirname "$0")/node.out" ] || exit 1
+cat "$(dirname "$0")/node.out"
+EOF
+chmod +x "$STUB/npx" "$STUB/pytest" "$STUB/node"
 listed() { # listed <dir> <want> <label> [score args...]: score with the stub runners first on PATH
     local d=$1 want=$2 label=$3 out
     shift 3
@@ -782,6 +820,44 @@ sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/test_gen.py::test_F001_gen[op
 commit_item "$V" intake:testing-features "test(intake): gen"
 listed "$V" 1 "a parametrized id pytest --collect-only prints passes findings-evidence" --test-cmd "$STUB/pytest -q"
 listed "$V" 0 "a test command that is not pytest runs no collection, so the parametrized id fails findings-evidence" --test-cmd "true"
+
+# Version 14: Jest titles from a --json run, Django's from its verbosity-2 output, node --test's from the spec reporter
+V=$(fresh v14-jest)
+mkdir -p "$V/tests/unit"
+printf '{"devDependencies": {"jest": "^29.0.0"}}\n' >"$V/package.json"
+printf "describe.each([['a']])('%%s ops', (op) => { test(\`\${op} F-001 hidden\`, () => {}) })\n" >"$V/tests/unit/ops.test.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/ops.test.js::a ops a F-001 hidden`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): ops"
+printf '{"testResults": [{"assertionResults": [{"fullName": "a ops a F-001 hidden", "title": "a F-001 hidden"}]}]}\n' >"$STUB/jest.out"
+listed "$V" 1 "a describe.each title a jest --json run prints passes findings-evidence"
+printf 'not json\n' >"$STUB/jest.out"
+listed "$V" 0 "when jest prints no JSON, a title found nowhere still fails findings-evidence"
+rm "$STUB/jest.out"
+V=$(fresh v14-django)
+mkdir -p "$V/apps/matrix"
+printf 'from django.test import TestCase\n\n\nclass Matrix(TestCase):\n    for op in ["op1"]:\n        locals()["test_" + op + "_F001_current"] = lambda self: None\n' >"$V/apps/matrix/tests.py"
+cat >"$V/manage.py" <<'EOF'
+import sys
+
+if sys.argv[-2:] == ["-v", "2"]:
+    print("test_op1_F001_current (apps.matrix.tests.Matrix.test_op1_F001_current) ... ok", file=sys.stderr)
+print("OK", file=sys.stderr)
+EOF
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `apps/matrix/tests.py::Matrix::test_op1_F001_current`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): matrix"
+listed "$V" 1 "a runtime-built Django test id its verbosity-2 run prints passes findings-evidence" --test-cmd "python3 manage.py test"
+listed "$V" 0 "a test command that is not Django's runs no verbose pass, so the built id fails findings-evidence" --test-cmd "true"
+V=$(fresh v14-node-test)
+mkdir -p "$V/e2e"
+printf '{"scripts": {"test:e2e": "node --test e2e/"}}\n' >"$V/package.json"
+printf "const { describe, it } = require('node:test')\ndescribe('checkout', () => { for (const n of [1, 2]) it(\`F-001 step \${n}\`, () => {}) })\n" >"$V/e2e/flow.test.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `e2e/flow.test.js::checkout F-001 step 2`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-user-flows "test(intake): flow"
+printf '\xe2\x96\xb6 checkout\n  \xe2\x9c\x94 F-001 step 1 (0.4ms)\n  \xe2\x9c\x94 F-001 step 2 (0.1ms)\n\xe2\x9c\x94 checkout (1.3ms)\n\xe2\x84\xb9 tests 2\n' >"$STUB/node.out"
+listed "$V" 1 "a node --test title from a script the test command skips passes findings-evidence"
+listed "$V" 0 "a node --test script the test command runs is not run again" --test-cmd "echo npm run test:e2e"
+rm "$STUB/node.out"
+listed "$V" 0 "when the node --test run fails, a title found nowhere still fails findings-evidence"
 
 # Version 7: the access matrix covers the whole inventory and leaves no cell unexamined
 V=$(fresh v7-good)
