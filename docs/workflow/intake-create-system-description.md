@@ -2,7 +2,7 @@
 
 Write the baseline spec and a living system description from the intake docs, or from discovery and the code when the project skipped intake, plus the spec index and every completed spec. Use after intake or once a discovery-started project has completed specs; optionally writes a planned architecture view from outstanding specs.
 
-**Step:** system description (intake phase, last) · **Command file:** `commands/intake/create-system-description.md`
+**Step:** system description (intake phase, last) · **Procedure file:** `references/intake/procedures/create-system-description.md` · **Run:** `intake create-system-description`
 
 ---
 
@@ -11,7 +11,6 @@ Write the baseline spec and a living system description from the intake docs, or
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `--full` | flag | no | Rewrite the whole description instead of folding in only the specs it hasn't seen |
-| `--roadmap` | flag | no | Write only the planned architecture view from the specs not yet completed |
 
 ## Outputs
 
@@ -19,7 +18,6 @@ Write the baseline spec and a living system description from the intake docs, or
 |------|------|------|-------------|
 | `system-description` | file | `docs/system-description.md` | Components, data flow, security, API surface, dependencies, operations and change management, with a change history |
 | `baseline-spec` | file | `docs/specs/completed/baseline/overview.md` | The system as intake found it, written on the first run |
-| `architecture-roadmap` | file | `docs/architecture-roadmap.md` | With `--roadmap`: current and target component diagrams and one row per outstanding spec |
 
 ## How it runs
 
@@ -29,9 +27,9 @@ A project that started from discovery has no intake documentation docs, even aft
 
 Each later run reads the description's Change history and folds in only the completed specs it doesn't list, changing just the sections they touch. `--full` rewrites everything. Every section names its sources, and open findings that affect a section appear in it by id.
 
-`--roadmap` writes `docs/architecture-roadmap.md` instead and touches nothing else. It places the current component diagram, taken from the system description, beside a target diagram built from every spec `guard spec-status` lists as not yet completed, with a table of what each one adds, changes or removes. The page is marked as a plan, carries no `sources:` or `related:` frontmatter so no ticket's docs check ever lists it, and is never a source for the description. It refuses until `docs/system-description.md` exists.
+The planned view of where the outstanding specs take the architecture is `spec:diff` now; it prints the plan and writes no page.
 
-`spec:complete` keeps the description current one spec at a time: in its completion commit, before the PR opens, it proposes updates for the finished spec and applies the ones the owner approves.
+`spec:complete` keeps the description current one spec at a time: in its completion commit, before the PR opens, it proposes updates for the finished spec and applies the ones the owner approves. `spec:current` runs this procedure's rerun path through the `architect` agent to fold in anything still missing, then compiles `docs/current-state.json` from it.
 
 ## Next steps
 

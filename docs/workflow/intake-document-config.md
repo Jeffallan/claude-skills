@@ -2,7 +2,7 @@
 
 Write a configuration reference (environment model, env vars vs hardcoded config, per-environment build/deploy profiles, local-dev quickstart), worked out from how the project is configured, built, and run.
 
-**Step:** documentation (intake phase) · **Command file:** `commands/intake/document-config.md`
+**Step:** documentation (intake phase) · **Procedure file:** `references/intake/procedures/document-config.md` · **Run:** `intake document-config`
 
 ---
 
@@ -20,7 +20,7 @@ Write a configuration reference (environment model, env vars vs hardcoded config
 
 ## How it runs
 
-The command reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
 
 Two sections cover security. `## Library security settings` lists each auth, admin and API library's security settings with their effective values and where each value comes from, including defaults you never set. `## Security settings: test versus deployed` puts the test and deployed values side by side for controls such as debug mode, CORS, allowed hosts, throttles, cookie flags, password rules and the email backend. A default nobody chose that weakens a control goes into the findings tracker.
 

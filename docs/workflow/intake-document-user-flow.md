@@ -2,7 +2,7 @@
 
 Write a user-flow reference (routes, entry points, end-to-end journeys with per-journey flowcharts) read from the project's routing and navigation layer.
 
-**Step:** documentation (intake phase) · **Command file:** `commands/intake/document-user-flow.md`
+**Step:** documentation (intake phase) · **Procedure file:** `references/intake/procedures/document-user-flow.md` · **Run:** `intake document-user-flow`
 
 ---
 
@@ -20,6 +20,6 @@ Write a user-flow reference (routes, entry points, end-to-end journeys with per-
 
 ## How it runs
 
-The command reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
 
 Run it after `intake:document-codebase`. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).

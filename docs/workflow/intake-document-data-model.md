@@ -2,7 +2,7 @@
 
 Write a data-model reference (entities, fields, relationships, ER diagram) read from the project's persistence layer.
 
-**Step:** documentation (intake phase) · **Command file:** `commands/intake/document-data-model.md`
+**Step:** documentation (intake phase) · **Procedure file:** `references/intake/procedures/document-data-model.md` · **Run:** `intake document-data-model`
 
 ---
 
@@ -20,7 +20,7 @@ Write a data-model reference (entities, fields, relationships, ER diagram) read 
 
 ## How it runs
 
-The command reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
+The procedure reads the code, stops at a checkpoint to confirm scope, writes its document, then runs an accuracy audit against the code, because agents read the result as the implementation contract.
 
 Each entity table has a `Flags` column. It marks fields that hold state (status enums, active or verified flags, soft-delete stamps), ownership and tenant keys, fields that grant privilege (a role, an admin flag), and money or quantity fields. The authorization doc builds its access matrix from these flags. A flagged field a caller can write with no check goes into the findings tracker.
 

@@ -2,7 +2,7 @@
 
 Write an authorization reference grounded in code. It names the project's real authorization model (RBAC, ABAC, ownership/relationship-based, ACL, or a mix), then crosses every operation in the API inventory with every principal, blocking states included, and checks each cell against a set of access invariants.
 
-**Step:** documentation (intake phase) · **Command file:** `commands/intake/document-authorization.md`
+**Step:** documentation (intake phase) · **Procedure file:** `references/intake/procedures/document-authorization.md` · **Run:** `intake document-authorization`
 
 ---
 
@@ -20,8 +20,8 @@ Write an authorization reference grounded in code. It names the project's real a
 
 ## How it runs
 
-The command reads the code and the docs it joins, stops at a checkpoint to confirm scope, and writes its document. Each matrix row is one operation from the API inventory, so the row count has to match the inventory. A cell that breaks an access invariant, with nothing in the code or docs saying the project meant it, goes to the findings tracker; when intent is unclear it becomes an Open question instead. The doc itself stays descriptive and cites the finding id.
+The procedure reads the code and the docs it joins, stops at a checkpoint to confirm scope, and writes its document. Each matrix row is one operation from the API inventory, so the row count has to match the inventory. A cell that breaks an access invariant, with nothing in the code or docs saying the project meant it, goes to the findings tracker; when intent is unclear it becomes an Open question instead. The doc itself stays descriptive and cites the finding id.
 
-Once the matrix is written, a fresh read-only subagent goes over it a second time without seeing the findings tracker. The command checks each cell it reports against the code, files the ones that hold, and records both counts in the checklist note. An accuracy audit against the code comes last, because agents read the result as the implementation contract.
+Once the matrix is written, a fresh read-only subagent goes over it a second time without seeing the findings tracker. The procedure checks each cell it reports against the code, files the ones that hold, and records both counts in the checklist note. An accuracy audit against the code comes last, because agents read the result as the implementation contract.
 
-Run it after `intake:document-api`, `intake:document-user-model`, `intake:document-features` and `intake:document-security`. If one of those docs is missing, the command works from the code and adds an Open question. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).
+Run it after `intake:document-api`, `intake:document-user-model`, `intake:document-features` and `intake:document-security`. If one of those docs is missing, the procedure works from the code and adds an Open question. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).

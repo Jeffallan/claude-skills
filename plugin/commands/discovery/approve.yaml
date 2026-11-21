@@ -12,6 +12,10 @@ inputs:
     required: false
     description: Pre-resolved blocking decisions (e.g., --decision=D1:B --decision=D2:Y)
 outputs:
+  - name: synthesis-document
+    type: file
+    path: "{specsRoot}/todo/discovery/{topic}/synthesis.md"
+    description: Findings, unknowns, blocking decisions and proposed tickets, written first when research ran and no synthesis exists
   - name: created-tickets
     type: tickets
     description: Tickets created in the configured tracker, ready for spec:triage

@@ -1,14 +1,14 @@
 # Capture behavior
 
-The intake step that writes a runnable test suite pinning the codebase's current behavior, through the five `intake:testing-*` commands.
+The intake step that writes a runnable test suite pinning the codebase's current behavior, through the five `testing-*` procedures, which `intake` runs in the `test-writer` and `security-prober` agents.
 
-**Status:** Step name only. There is no `intake:capture-behavior` command; the step runs as the commands below.
+**Status:** Step name only. There is no capture-behavior procedure; the step runs as the procedures below.
 
 ---
 
 ## Commands
 
-Run them in this order. Each later command needs the harness from `intake:testing-setup` and reads its paired documentation doc.
+Run them in this order. Each later procedure needs the harness from `testing-setup` and reads its paired documentation doc.
 
 | Order | Command | Reads | Writes |
 |-------|---------|-------|--------|

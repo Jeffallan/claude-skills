@@ -13,8 +13,7 @@ Use discovery when there are no tickets yet, or when `spec:triage` sends back a 
 | Order | Command | Summary |
 |-------|---------|---------|
 | 1 | `discovery:create` | Split the input into items, read the existing code, route each item, and write `discovery.md` |
-| 2 | `discovery:synthesize` | Only after research: consolidate the findings into `synthesis.md` |
-| 3 | `discovery:approve` | Resolve blocking decisions and create the approved tickets in the tracker |
+| 2 | `discovery:approve` | After research, consolidate the findings into `synthesis.md` first; then resolve blocking decisions and create the approved tickets in the tracker |
 
 ## Outputs
 

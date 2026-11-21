@@ -66,7 +66,7 @@ Verify skills are working:
 - <!-- SKILL_COUNT:language -->12<!-- /SKILL_COUNT:language --> Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
 - <!-- SKILL_COUNT:backend -->9<!-- /SKILL_COUNT:backend --> Backend Framework Experts (NestJS, Django, Django Storages S3, FastAPI, Spring Boot, Laravel, Rails, .NET Core)
 - <!-- SKILL_COUNT:frontend -->8<!-- /SKILL_COUNT:frontend --> Frontend & Mobile Experts (React, Next.js, Vue, Vue (JavaScript), Angular, React Native, Flutter)
-- <!-- WORKFLOW_COUNT -->11<!-- /WORKFLOW_COUNT --> Project Workflow Commands (intake, discovery, spec and ticket)
+- <!-- WORKFLOW_COUNT -->11<!-- /WORKFLOW_COUNT --> Project Workflow Commands (discovery, spec and ticket), plus `intake` and `common-ground`
 - Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
 ### 2. First Prompt
@@ -97,7 +97,7 @@ The workflow commands need the full plugin install (the skills-only methods abov
 4. Work the tickets with `ticket:execute` and `ticket:complete`, or start the printed goal run.
 5. Finish with `spec:review` and `spec:complete`.
 
-Adopting an existing codebase? Start with intake: `/fullstack-dev-skills:intake:document-codebase`, then the other `intake:` commands, documents the code, pins its behavior in tests and records its bugs. See [Intake](docs/INTAKE.md).
+Adopting an existing codebase? Start with `/fullstack-dev-skills:intake`. It documents the code, pins its behavior in tests and records its bugs, one checklist item at a time. See [Intake](docs/INTAKE.md).
 
 See [Workflow Commands](docs/WORKFLOW_COMMANDS.md) and [Tracker Setup](docs/TRACKER_SETUP.md).
 

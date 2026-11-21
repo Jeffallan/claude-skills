@@ -22,4 +22,4 @@ The command lists each item in the input, runs a light `spec-miner` pass so prop
 
 ## Next Steps
 
-With research items, gather findings in `sources/` and run `discovery:synthesize`. Otherwise run `discovery:approve`.
+Either way, run `discovery:approve` next. With research items, gather findings in `sources/` first: `discovery:approve` synthesizes them before it asks for decisions.

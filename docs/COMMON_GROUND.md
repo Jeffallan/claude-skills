@@ -93,7 +93,8 @@ When you run `/common-ground` without flags, Claude executes a two-phase interac
 |---------|---------|-------------|
 | `/common-ground` | Full surface & adjust flow | Yes |
 | `/common-ground --list` | Read-only view of all assumptions | No |
-| `/common-ground --check` | Quick "still valid?" validation | Yes |
+| `/common-ground --check` | Spec assumptions check, then a quick "still valid?" validation | Yes |
+| `/common-ground <spec> ...` | Any mode above, checking only these specs' assumptions | Depends on the mode |
 | `/common-ground --graph` | Visualize reasoning structure | Yes |
 
 ---
@@ -173,17 +174,18 @@ Every assumption has a **type** that records its origin. Types are immutable—t
 
 ## Grounding File
 
-Assumptions are stored in a **grounding file** at:
+Assumptions are stored in a **grounding file** in your repository, next to the system description, so the whole team sees and versions the same one:
 
 ```
-~/.claude/common-ground/{project-id}/COMMON-GROUND.md
+docs/COMMON-GROUND.md
+docs/ground.index.json
 ```
 
-### Project Identification
+`docs` is the `docsRoot` from `.claude/workflow-config.json`. Every change is committed. Earlier versions kept the file under `~/.claude/common-ground/<project>/`; when one exists for the repository, `common-ground` offers to move its assumptions in.
 
-Projects are identified by:
-1. Git remote URL (e.g., `github.com/user/repo`) — preferred
-2. Absolute path — fallback for non-git projects
+## Checking spec assumptions
+
+Each outstanding spec rests on assumptions about the system as it stands: a component is wired, a route has a shape, a finding is fixed, another spec lands first. `common-ground` lists them (the same list `spec:diff` prints) and checks each against `docs/current-state.json`, the compiled state `spec:current` writes. The `assumption-checker` agent marks each one holds, conflicts or unknown and names the source that settles it. The report is one table, conflicts first; a conflict points to `spec:create <spec>` to rework that spec, or to `spec:current` when the state is what's wrong. Name specs to check only those: `common-ground billing-v2 sso`.
 
 ### File Format
 
@@ -191,7 +193,6 @@ Projects are identified by:
 # Common Ground: {project_name}
 
 > Last updated: {timestamp}
-> Project ID: {project_id}
 
 ---
 
@@ -246,7 +247,6 @@ A companion `ground.index.json` provides structured access:
 
 ```json
 {
-  "project_id": "github.com/user/repo",
   "last_updated": "2026-01-15T10:30:00Z",
   "assumptions": [
     {
@@ -429,7 +429,8 @@ Check git remote configuration. For non-git projects, the absolute path is used.
 
 | File | Purpose |
 |------|---------|
-| `~/.claude/common-ground/{project}/COMMON-GROUND.md` | Human-readable assumptions |
-| `~/.claude/common-ground/{project}/ground.index.json` | Machine-readable index |
+| `docs/COMMON-GROUND.md` | Human-readable assumptions, committed |
+| `docs/ground.index.json` | Machine-readable index, committed |
+| `docs/current-state.json` | The compiled current state the checks read (`spec:current`) |
 | `commands/common-ground.md` | Command implementation |
 | `references/common-ground/` | Deep-dive reference files |

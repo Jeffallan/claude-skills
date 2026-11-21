@@ -130,12 +130,8 @@ phases:
 
     # Ordered list of commands in this phase
     commands:
-      - command: "intake:document-codebase"
-        definition: commands/intake/document-codebase.yaml
-      - command: "intake:capture-behavior"
-        definition: commands/intake/capture-behavior.yaml
-      - command: "intake:create-system-description"
-        definition: commands/intake/create-system-description.yaml
+      - command: "intake"
+        definition: commands/intake.yaml
 
   discovery:
     description: docs/workflow/discovery-phase.md
@@ -149,8 +145,6 @@ phases:
     commands:
       - command: "discovery:create"
         definition: commands/discovery/create.yaml
-      - command: "discovery:synthesize"
-        definition: commands/discovery/synthesize.yaml
       - command: "discovery:approve"
         definition: commands/discovery/approve.yaml
 

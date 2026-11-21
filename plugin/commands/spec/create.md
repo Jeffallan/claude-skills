@@ -22,7 +22,7 @@ Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When
 
 ## Step 1: Codebase analysis
 
-Spawn read-only subagents with this brief shape:
+Start `fullstack-dev-skills:code-reader` agents with this brief shape:
 
 ```
 Use the fullstack-dev-skills:<skill> skill to <task>.
@@ -67,7 +67,7 @@ Show the overview. Offer an optional challenge pass with the `fullstack-dev-skil
 
 ## Step 4: Plan
 
-After approval, spawn read-only subagents per Ready ticket and fold their output into the plan:
+After approval, start `fullstack-dev-skills:code-reader` agents per Ready ticket and fold their output into the plan:
 
 | Subagent | Task | Skill |
 |----------|------|-------|

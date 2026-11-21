@@ -29,7 +29,7 @@ List each feature or requirement as one item: a short title, one sentence on wha
 
 ## Step 2: Read the existing code
 
-Spawn one read-only subagent with this brief:
+Start one `fullstack-dev-skills:code-reader` agent with this brief:
 
 ```
 Use the fullstack-dev-skills:spec-miner skill to check how this codebase already handles the items below.

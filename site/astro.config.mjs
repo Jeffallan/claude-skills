@@ -110,6 +110,9 @@ export default defineConfig({
           label: 'Guides',
           items: [
             { label: 'Workflow Commands', link: '/guides/workflow-commands/' },
+            { label: 'Intake', link: '/guides/intake/' },
+            { label: 'Tracker Setup', link: '/guides/tracker-setup/' },
+            { label: 'Goal Runs', link: '/guides/goal-runs/' },
             { label: 'Tracker Setup', link: '/guides/tracker-setup/' },
             { label: 'Intake', link: '/guides/intake/' },
             { label: 'Goal Runs', link: '/guides/goal-runs/' },
@@ -197,7 +200,6 @@ export default defineConfig({
               items: [
                 { label: 'Overview', link: '/workflows/discovery-phase/' },
                 { label: 'discovery:create', link: '/workflows/discovery-create/' },
-                { label: 'discovery:synthesize', link: '/workflows/discovery-synthesize/' },
                 { label: 'discovery:approve', link: '/workflows/discovery-approve/' },
               ],
             },
@@ -210,6 +212,9 @@ export default defineConfig({
                 { label: 'spec:create', link: '/workflows/spec-create/' },
                 { label: 'spec:review', link: '/workflows/spec-review/' },
                 { label: 'spec:complete', link: '/workflows/spec-complete/' },
+                { label: 'spec:status', link: '/workflows/spec-status/' },
+                { label: 'spec:current', link: '/workflows/spec-current/' },
+                { label: 'spec:diff', link: '/workflows/spec-diff/' },
               ],
             },
             {

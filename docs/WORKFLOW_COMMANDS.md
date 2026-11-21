@@ -13,6 +13,8 @@ The workflow commands take a group of tickets from your tracker to a reviewed, m
 - [Specs](#specs)
 - [Tickets](#tickets)
 - [Review and completion](#review-and-completion)
+- [Current state and assumptions](#current-state-and-assumptions)
+- [Agents](#agents)
 - [Goal runs](#goal-runs)
 - [What each command writes](#what-each-command-writes)
 - [Command reference](#command-reference)
@@ -27,13 +29,16 @@ There are two ways in.
 - **You have an idea, a feature list or a ticket nobody can plan yet.** Start at `discovery:create`, which turns it into tickets you approve before they reach the tracker.
 
 ```
-discovery:create ─► discovery:synthesize (only after research) ─► discovery:approve
+discovery:create ─► discovery:approve (synthesizes research first, when there is some)
                                                                        │ tickets
 existing tickets ──────────────────────────────────────────────────────┤
                                                                        ▼
 spec:triage ─► spec:create ─► ticket:execute + ticket:complete (per ticket, often one goal run)
                                                                        │
                                      spec:complete ◄─ spec:review ◄────┘
+                                           │
+                                           ▼
+                     spec:current ─► spec:diff ─► common-ground ─► (a conflict: back to spec:create)
 ```
 
 A **spec** is a named group of tickets built on one branch, `spec/<spec-name>`, and merged in one PR. Its files sit in `docs/specs/todo/<spec-name>/` and move to `docs/specs/completed/` when the spec finishes:
@@ -57,21 +62,22 @@ A **spec** is a named group of tickets built on one branch, `spec/<spec-name>`, 
 
 Intake runs once, when you adopt an existing codebase, before the first spec. It needs no tracker and no code host. It documents the code for agents, writes tests that pin current behavior and records every bug in `docs/intake-findings.md` instead of fixing it.
 
-- **`intake:existing-docs`** lists the docs the project already has, maps them to the intake topics and checks their claims against the code. Wrong claims become findings; your docs are never edited.
-- **`intake:document-codebase`** adds docstrings across the code. It runs your tests before and after and checks that no executable line changed.
-- **Twelve `intake:document-*` commands** each write one reference doc under `docs/` (data model, file tree, integrations, API, user model, features, glossary, security, authorization, user flow, configuration, analytics), and each ends with an accuracy audit. **`intake:create-onboarding`** links them from `docs/README.md`.
-- **`intake:testing-setup`** builds the test harness and proves each layer with a smoke test. **`intake:testing-features`**, **`-authorization`**, **`-owasp`** and **`-user-flows`** then write characterization tests, each reading its matching doc. Together these five are the capture-behavior step.
-- **`intake:create-system-description`** writes a baseline spec into `docs/specs/completed/baseline/`, so the spec index knows the existing system, and `docs/system-description.md`. Later, `spec:complete` proposes updates to it once per spec. With `--roadmap` it writes only `docs/architecture-roadmap.md`, a plan view of where the outstanding specs take the architecture.
+**`intake [procedure]`** is the one command. It works `docs/intake-checklist.md` from the first unchecked item, creating the checklist when it is missing. Each item is a procedure that runs in one of the plugin's agents: the agent first reports what it found and what it plans to write, you confirm or correct that scope, and then the same agent writes. The command reviews the agent's diff and commits the item. Name a procedure to run or rerun just that one: `intake document-glossary`, or `intake create-system-description --full`.
 
-Every intake command can run in a goal run: none asks a question there, and a checkpoint becomes a draft plus an open question in the findings tracker. [Intake](INTAKE.md) covers the checklist, the goal run and close-out.
+- **`existing-docs`** lists the docs the project already has, maps them to the intake topics and checks their claims against the code. Wrong claims become findings; your docs are never edited.
+- **`document-codebase`** adds docstrings across the code. It runs your tests before and after and checks that no executable line changed.
+- **Twelve `document-*` procedures** each write one reference doc under `docs/` (data model, file tree, integrations, API, user model, features, glossary, security, authorization, user flow, configuration, analytics), and each ends with an accuracy audit. **`create-onboarding`** links them from `docs/README.md`.
+- **`testing-setup`** builds the test harness and proves each layer with a smoke test. **`testing-features`**, **`-authorization`**, **`-owasp`** and **`-user-flows`** then write characterization tests, each reading its matching doc. Together these five are the capture-behavior step.
+- **`create-system-description`** writes a baseline spec into `docs/specs/completed/baseline/`, so the spec index knows the existing system, and `docs/system-description.md`. Later, `spec:complete` proposes updates to it once per spec, and `spec:current` folds in whatever is still missing.
+
+`intake` can run in a goal run: it never asks a question there, and a checkpoint becomes a draft in the checklist note, plus an open question in the findings tracker when you could reasonably choose otherwise. [Intake](INTAKE.md) covers the checklist, the goal run and close-out.
 
 ## Discovery
 
 Discovery is optional. Use it when there are no tickets yet, or when `spec:triage` sends a ticket back because nobody can write its acceptance criteria.
 
 - **`discovery:create <topic-or-ticket>`** splits your input into items, reads the existing code for each one, and routes it. Clear items become proposed tickets straight away. Vague items go through a Feature Forge interview whose output is saved in the topic folder. Items with real unknowns go to research. It writes `docs/specs/todo/discovery/<topic>/discovery.md`.
-- **`discovery:synthesize <topic>`** runs only after research. It reads the topic's `sources/` and writes `synthesis.md`, with findings that cite their sources, blocking decisions and proposed tickets.
-- **`discovery:approve <topic>`** is the gate before anything reaches the tracker. It walks you through the blocking decisions one at a time, lets you edit or drop tickets, then creates the rest, each with a `Discovery: <topic>` line. It never groups them; it points you to `spec:triage`. A topic that ends with no tickets moves to `completed/`.
+- **`discovery:approve <topic>`** is the gate before anything reaches the tracker. When the topic went to research and has no `synthesis.md` yet, it first reads the topic's `sources/` and writes one, with findings that cite their sources, blocking decisions and proposed tickets. Then it walks you through the blocking decisions one at a time, lets you edit or drop tickets, then creates the rest, each with a `Discovery: <topic>` line. It never groups them; it points you to `spec:triage`. A topic that ends with no tickets moves to `completed/`.
 
 ## Specs
 
@@ -80,7 +86,7 @@ Discovery is optional. Use it when there are no tickets yet, or when `spec:triag
 **`spec:create <spec-name>`** plans one spec:
 
 1. It refuses to start while the spec's predecessor (`After:`) hasn't merged, unless you override, and rebases the branch when it has.
-2. It sends read-only subagents to map the code: `spec-miner` always; `architecture-designer`, `security-reviewer` and `api-designer` when the spec touches their area.
+2. It sends `code-reader` agents to map the code: `spec-miner` always; `architecture-designer`, `security-reviewer` and `api-designer` when the spec touches their area.
 3. It writes `overview.md` with the Readiness table first. Each ticket is Ready, Blocked (a question, a decision, or not enough detail) or Already done, and Already done needs commit evidence from `git log --grep`, `git grep` or `git merge-base`. Questions you can answer now go through Feature Forge. You can ask for a challenge pass with `the-fool`.
 4. After you approve the overview, it writes `implementation-plan.md` (only Ready tickets, each with a `Skill:` line and a RED check) and `goal-prompt.md`, and commits all three.
 5. It makes a few planning writes in the tracker, each behind a permission prompt: links, a comment naming the spec files, an appended plan section, story points. Anything bigger waits in the plan's Proposed tracker changes.
@@ -109,8 +115,8 @@ Neither ticket command writes to the tracker or moves a ticket's status. A ticke
 **`spec:review <spec-name>`** reviews the whole branch diff once.
 
 1. `guard metrics` writes duplication, dead code and complexity numbers for the changed files.
-2. A panel of reviewer subagents reads the diff without commit messages: `code-reviewer` and `test-master` always, plus `security-reviewer`, `architecture-designer`, `api-designer`, `secure-code-guardian` and the stack skill when the diff touches their area. Each one writes its own file.
-3. Each blocking or warning finding goes to a fresh, blind verifier. It sees the claim, the code and the ticket's acceptance criteria, but not who raised it, the tier or the reasoning. It returns confirmed, rejected or unresolved, with proof.
+2. A panel of `reviewer` agents reads the diff without commit messages: `code-reviewer` and `test-master` always, plus `security-reviewer`, `architecture-designer`, `api-designer`, `secure-code-guardian` and the stack skill when the diff touches their area. Each one writes its own file.
+3. Each blocking or warning finding goes to a fresh, blind `verifier` agent. It sees the claim, the code and the ticket's acceptance criteria, but not who raised it, the tier or the reasoning. It returns confirmed, rejected or unresolved, with proof.
 4. `guard rollup` builds `review/rollup.md`, including each verifier's token and minute cost.
 5. You decide what to fix. Won't-fix and accepted rejections are recorded with `guard decide`. Fixes become new tickets in the plan, typed behavior (their own failing test) or refactor (suite green before and after, tests untouched), with a fresh goal prompt. A later `spec:review` rechecks them.
 
@@ -121,6 +127,31 @@ Neither ticket command writes to the tracker or moves a ticket's status. A ticke
 3. **Feedback:** comments from people with write access become numbered findings. You mark each as fix, won't fix or question. Fixes go through the ticket commands, and replies are posted only when you approve them.
 4. **Merge:** with CI green, an approval and no open threads, it moves the spec to `completed/` in the last commit before the merge, asks "Merge PR #N now?", and merges on yes.
 5. **Close:** it closes each remaining ticket, then the group.
+
+## Current state and assumptions
+
+**`spec:current`** says what is true now. The `architect` agent checks `docs/system-description.md` against the code and the specs completed since its last update, and proposes changes for you to approve. Then `guard current-state` compiles `docs/current-state.json`: every component with its status (`wired`, `built, not wired`, `planned`), the open findings and the docs that have drifted from the code, each row naming its source. The report lists all three, plus any description changes you skipped.
+
+**`spec:diff [spec ...]`** shows what changes if the given specs land, in that order (every outstanding spec when you name none): the current component diagram beside the target, a table per spec, the overlaps where two specs touch one component or one removes what another needs, and the assumptions each spec makes about the current system. It writes nothing.
+
+**`common-ground [--list] [--check] [--graph] [spec ...]`** checks those assumptions against `docs/current-state.json` through the `assumption-checker` agent and lists each as holds, conflicts or unknown with its source. A conflict points to `spec:create <spec>` to rework the spec, or to `spec:current` when the state is what's wrong. It also surfaces the assumptions Claude is making about the project for you to confirm, and keeps them in `docs/COMMON-GROUND.md`, committed. See [Common Ground](COMMON_GROUND.md).
+
+## Agents
+
+Long or parallel work runs in the plugin's agents. Each one is defined by the kind of work it does; the command that starts it names the procedure and the skills in its brief, and the agent ends its report with the skills it loaded so the command can rerun it when one is missing.
+
+| Agent | Does | Started by |
+|-------|------|------------|
+| `code-reader` | Reads code and returns facts cited as `path::symbol`; never writes | `intake`, `discovery:create`, `spec:triage`, `spec:create`, `spec:diff`, `ticket:execute`, `common-ground` |
+| `doc-writer` | Writes one doc from a procedure and audits it against the code | `intake` |
+| `test-writer` | Writes characterization tests and proves they run | `intake` |
+| `security-prober` | Runs the authorization and OWASP test procedures | `intake` |
+| `architect` | Component, status and data-flow views | `intake`, `spec:current`, `spec:diff` |
+| `reviewer` | One review pass over a spec diff, into its own review file | `spec:review` |
+| `verifier` | Decides whether one finding is real, in a scratch worktree | `spec:review` |
+| `assumption-checker` | Checks spec assumptions against the current state; never writes | `common-ground` |
+
+Agents never commit, and only one writing agent runs at a time; the command reviews each writer's diff and commits it. Agents can't ask you anything, so every question stays in the command. During ticket work no agent writes: `ticket:execute` and `ticket:complete` keep every edit in the main session, where the guard's hooks apply.
 
 ## Goal runs
 
@@ -135,10 +166,9 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 
 | Command | Local files | Tracker | Branch or PR |
 |---------|-------------|---------|--------------|
-| `intake:*` | Docs, docstrings, tests, `docs/intake-findings.md`, the baseline spec | None | None |
+| `intake` | Docs, docstrings, tests, `docs/intake-findings.md`, the checklist, the baseline spec | None | One commit per checklist item |
 | `discovery:create` | Topic folder | None | None |
-| `discovery:synthesize` | `synthesis.md` | None | None |
-| `discovery:approve` | Topic file | Creates tickets | None |
+| `discovery:approve` | `synthesis.md` when research ran, the topic file | Creates tickets | None |
 | `spec:triage` | Text-ticket edits only | Groups, links, `Spec:` lines, blocked-by | Creates `spec/<spec-name>` |
 | `spec:create` | The three spec files, `INDEX.md` | Links, a comment, an appended plan, points | Commits on the spec branch |
 | `ticket:execute` | Code and tests (uncommitted) | None | None |
@@ -146,14 +176,16 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 | `spec:review` | `review/`, fix tickets | None | Commits on the spec branch |
 | `spec:complete` | Completion report, moves | Closes tickets and the group | Pushes, opens and merges the PR |
 | `spec:status` | Nothing | None | None (reads branches and PRs) |
+| `spec:current` | `docs/system-description.md` (the changes you approve), `docs/current-state.json` | None | Commits on the current branch |
+| `spec:diff` | Nothing | None | None |
+| `common-ground` | `docs/COMMON-GROUND.md`, `docs/ground.index.json` | None | Commits on the current branch |
 
 ## Command reference
 
 | Command | Arguments | Attended only |
 |---------|-----------|---------------|
-| `intake:*` | `[directory]`; `create-system-description` takes `[--full] [--roadmap]` | No, runs in goal runs |
+| `intake` | `[procedure]`, then the procedure's options (`[directory]`; `create-system-description` takes `[--full]`) | No, runs in goal runs |
 | `discovery:create` | `<topic-or-ticket>` | No |
-| `discovery:synthesize` | `<topic>` | No |
 | `discovery:approve` | `<topic> [--decision=<id>:<value>...]` | Yes |
 | `spec:triage` | `[ticket-ids \| tracker-query \| discovery:<topic>]` | Yes |
 | `spec:create` | `<spec-name>` | Yes |
@@ -162,5 +194,8 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 | `spec:review` | `<spec-name>` | Its triage step |
 | `spec:complete` | `<spec-name>` | Yes |
 | `spec:status` | `[--all]` | No |
+| `spec:current` | none | No; under a goal it changes no doc |
+| `spec:diff` | `[spec ...]` | No |
+| `common-ground` | `[--list] [--check] [--graph] [spec ...]` | Yes, it asks you to confirm |
 
-`common-ground` sits outside the workflow and can run at any point. See [Common Ground](COMMON_GROUND.md).
+Thirteen commands in all. `common-ground` can also run on its own at any point. See [Common Ground](COMMON_GROUND.md).

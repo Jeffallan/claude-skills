@@ -8,11 +8,11 @@ One-time onboarding of an existing codebase: reference docs agents can rely on, 
 
 Before feature work starts, agents need documented code, docs that describe what the code does today, and tests that catch an unintended change. Intake writes all three and records every bug it finds instead of fixing it.
 
-## Commands
+## Command
 
-The phase runs once (`run_once` in the manifest). Commands within a step can run in any order unless a row says otherwise.
+One command runs the phase: `intake [procedure]`. It works `docs/intake-checklist.md` from the first unchecked item; a procedure name runs or reruns that one. Each procedure runs in one agent, stops at a checkpoint to show its scope, then writes; the command reviews the diff and commits the item. The phase runs once (`run_once` in the manifest). Procedures within a step can run in any order unless a row says otherwise.
 
-| Step | Command | Output |
+| Step | Procedure | Output |
 |------|---------|--------|
 | Existing docs, first | [`intake:existing-docs`](intake-existing-docs.md) | `docs/intake-existing-docs.md` |
 | Docstrings | `intake:document-codebase` | Docstrings and module comments across the code |
@@ -39,7 +39,7 @@ The phase runs once (`run_once` in the manifest). Commands within a step can run
 ## Prerequisites
 
 - Access to the project codebase and a way to run its tests
-- No tracker or code host: intake commands use no adapter operations
+- No tracker or code host: intake uses no adapter operations
 
 ## Next Steps
 

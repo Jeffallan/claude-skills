@@ -2,7 +2,7 @@
 
 Map the current OWASP Top 10 (the 2025 edition when this was written) to the project's real surfaces and write adversarial tests for each category that applies. Current behavior is characterized, and each known weakness is recorded under its finding id.
 
-**Step:** capture-behavior (intake phase) · **Command file:** `commands/intake/testing-owasp.md`
+**Step:** capture-behavior (intake phase) · **Procedure file:** `references/intake/procedures/testing-owasp.md` · **Run:** `intake testing-owasp`
 
 ---
 
@@ -20,10 +20,10 @@ Map the current OWASP Top 10 (the 2025 edition when this was written) to the pro
 
 ## How it runs
 
-The command reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
+The procedure reads the matching documentation doc, stops at a checkpoint to confirm scope, writes tests that characterize current behavior, then runs them and reports fresh output. A known bug gets a passing characterization test and a skipped or expected-fail test for the intended behavior, both naming the finding id.
 
-Broken access control (A01) belongs to the access matrix that `intake:testing-authorization` tests. This command cites that table and adds only the cases a cell can't hold: server-side request forgery, path traversal, and cross-origin requests. The other categories each come with techniques. Business logic gets skipped, replayed, reordered and doubled steps, boundary and negative quantities, limit bypasses, and one test for each project invariant from `INV-7` on. Authentication gets the credential lifecycle (does a session, token or emailed link still work after deactivation, a password change, logout or a role change?) and every property listed under `## Tokens` in `docs/security/security.md`. Supply chain, cryptography and misconfiguration are proven with commands: a dependency audit, a secrets scan over the whole git history, and the framework's deployment check. A checklist covers what never shows up in the route table, such as seed data, container and CI files, client-side code, uploads, logs and outgoing email.
+Broken access control (A01) belongs to the access matrix that `intake:testing-authorization` tests. This procedure cites that table and adds only the cases a cell can't hold: server-side request forgery, path traversal, and cross-origin requests. The other categories each come with techniques. Business logic gets skipped, replayed, reordered and doubled steps, boundary and negative quantities, limit bypasses, and one test for each project invariant from `INV-7` on. Authentication gets the credential lifecycle (does a session, token or emailed link still work after deactivation, a password change, logout or a role change?) and every property listed under `## Tokens` in `docs/security/security.md`. Supply chain, cryptography and misconfiguration are proven with commands: a dependency audit, a secrets scan over the whole git history, and the framework's deployment check. A checklist covers what never shows up in the route table, such as seed data, container and CI files, client-side code, uploads, logs and outgoing email.
 
 The coverage map has one row for each category, surface and technique. Every row says whether it was tested, not tested (and why), or not examined.
 
-Run it after `intake:document-codebase` and `intake:testing-authorization`. Capture-behavior commands other than `intake:testing-setup` also need the harness that command builds. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).
+Run it after `intake:document-codebase` and `intake:testing-authorization`. Capture-behavior procedures other than `intake:testing-setup` also need the harness that procedure builds. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).
