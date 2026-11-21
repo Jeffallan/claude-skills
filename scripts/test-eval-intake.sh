@@ -297,7 +297,7 @@ for case in newtest:test/e2e/package.json:test/*:1 undeclared:test/e2e/package.j
 done
 
 # package-lock.json may gain dev entries; its runtime entries stay identical
-for case in dev:pass runtime:fail; do
+for case in dev:pass devopt:pass runtime:fail; do
     name=${case%%:*}
     want=${case##*:}
     LK="$WORK/lock-$name"
@@ -310,6 +310,9 @@ for case in dev:pass runtime:fail; do
     printf '{"name": "app", "dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "1.3.0"}}\n' >"$LK/package.json"
     if [ "$name" = dev ]; then
         printf '{"lockfileVersion": 3, "packages": {"": {"dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "1.3.0"}}, "node_modules/vue": {"version": "2.6.0"}, "node_modules/@vue/test-utils": {"version": "1.3.0", "dev": true}}}\n' >"$LK/package-lock.json"
+    elif [ "$name" = devopt ]; then
+        # npm marks a package that is both dev and optional devOptional, not dev (eval-results #9)
+        printf '{"lockfileVersion": 3, "packages": {"": {"dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "1.3.0"}}, "node_modules/vue": {"version": "2.6.0"}, "node_modules/@vue/test-utils": {"version": "1.3.0", "dev": true}, "node_modules/fsevents": {"version": "2.3.3", "devOptional": true}}}\n' >"$LK/package-lock.json"
     else
         printf '{"lockfileVersion": 3, "packages": {"": {"dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "2.4.0"}}, "node_modules/vue": {"version": "3.4.0"}, "node_modules/@vue/test-utils": {"version": "2.4.0", "dev": true}}}\n' >"$LK/package-lock.json"
     fi
@@ -318,7 +321,7 @@ for case in dev:pass runtime:fail; do
     out=$(score "$LK")
     set -e
     if [ "$want" = pass ] && has "$out" characterize-dont-fix 1; then
-        pass "a lockfile that only adds dev entries passes"
+        pass "a lockfile that only adds dev entries passes ($name)"
     elif [ "$want" = fail ] && has "$out" characterize-dont-fix 0 && printf '%s' "$out" | grep -qF "package-lock.json"; then
         pass "a lockfile that changes a runtime entry fails characterize-dont-fix"
     else
