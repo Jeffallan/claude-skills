@@ -135,7 +135,7 @@ In a goal run there is no stop, since nobody would answer it. The agent runs the
 
 The procedures run in writing agents (`doc-writer`, `test-writer`, `security-prober`, `architect`); `code-reader` agents only read.
 
-- One writing agent runs at a time.
+- One writing agent runs at a time. `code-reader` agents may run beside the writer and each other, since they never write: the `intake` command starts the next item's fact pass while the current item writes.
 - Agents never commit, stage or branch. After each writing agent, the `intake` command reviews its diff against "What intake may change" and commits it with the item's trailer.
 - An agent can't start agents. A procedure that needs independent readers (the second pass of `document-authorization`) returns their inputs, and the `intake` command starts `code-reader` agents and resumes the writer with their reports.
 - While a ticket marker exists, no agent writes: ticket work happens in the main session, where the guard's hooks apply. The plugin's hooks also fire on an agent's tool calls, so they still catch an agent edit there.

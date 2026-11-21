@@ -188,6 +188,14 @@ hasnt "$IREF/goal-prompt.md" "every checkpoint resumes an agent" "goal prompt no
 hasnt "$INTAKE" "**Read the procedure** in this session" "intake doesn't read the whole procedure in the main session"
 has "$INTAKE" "sed -n '/^## Skills to load/,/^## /p'" "intake takes the procedure's skills list with sed"
 has "$INTAKE" "Procedure: <plugin root>/references/intake/procedures/<procedure>.md" "the brief names the procedure path"
+# Read-only work runs in parallel; writers stay one at a time (decision 5a)
+has "$INTAKE" "### Read-only work in parallel" "intake runs read-only work in parallel"
+has "$INTAKE" "start the next item's \`code-reader\` fact pass" "intake starts the next item's fact pass while the current item writes"
+has "$INTAKE" "in one message" "intake starts independent code-readers in one message"
+has "$INTAKE" "never a procedure path" "an early fact brief opens no eval window"
+has "$INTAKE" "Start the next writer only after the current item is committed" "intake keeps one writer at a time"
+has "$IREF/rules.md" "\`code-reader\` agents may run beside the writer" "rules: readers run beside the writer"
+has "$IREF/procedures/document-authorization.md" "all in one message" "authorization's blind batches start together"
 for p in $PROCS; do
     if [ "$(grep -c '^## Skills to load$' "$IREF/procedures/$p.md")" = 1 ]; then pass "$p has one Skills to load heading"; else fail "$p has one Skills to load heading"; fi
 done
