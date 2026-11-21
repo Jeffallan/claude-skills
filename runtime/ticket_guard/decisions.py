@@ -16,7 +16,9 @@ from ticket_guard.errors import GuardError
 from ticket_guard.gitutil import append_jsonl, guard_dir, read_jsonl
 
 # answered: a PR-feedback question replied to with no code change (answer 83).
-STATUSES = ("wontfix", "rejection-accepted", "accepted", "answered")
+# revoke: withdraws the row's earlier decision; it is appended like any record, so the history stays.
+REVOKE = "revoke"
+STATUSES = ("wontfix", "rejection-accepted", "accepted", "answered", REVOKE)
 # No session id is exported to Bash (R6 proposal), so take it from the caller, then the environment.
 SESSION_ENV = ("CLAUDE_SESSION_ID", "CLAUDE_CODE_SESSION_ID")
 
@@ -69,8 +71,12 @@ def for_spec(records: list[dict[str, Any]], spec: str) -> list[dict[str, Any]]:
 
 
 def latest(cwd: Path, spec: str, records: list[dict[str, Any]] | None = None) -> dict[str, str]:
-    """Row -> its most recent status for this spec, from the local store unless `records` is given."""
-    return {r["row"]: r["status"] for r in for_spec(read_jsonl(path(cwd)) if records is None else records, spec)}
+    """Row -> its most recent status for this spec, from the local store unless `records` is given.
+
+    A row whose most recent record is a revoke has no owner decision, so it is left out.
+    """
+    rows = {r["row"]: r["status"] for r in for_spec(read_jsonl(path(cwd)) if records is None else records, spec)}
+    return {row: status for row, status in rows.items() if status != REVOKE}
 
 
 def export(cwd: Path, spec: str) -> tuple[Path, int]:

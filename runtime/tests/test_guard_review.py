@@ -421,3 +421,45 @@ def test_an_imported_older_decision_does_not_override_a_newer_local_one(git_repo
 
     assert decisions.latest(git_repo.root, "demo")["F7"] == "accepted"
     assert exported.is_file()
+
+
+# revoking a decision ----------------------------------------------------------------
+
+
+def test_revoke_withdraws_an_owner_decision_and_keeps_the_history(git_repo, capsys):
+    done_plan(git_repo)
+    fixed = dict(FINDINGS[0], status="fixed-verified")
+    main(["decide", "F7", "wontfix", "--spec", "demo"])
+    rollup(git_repo, capsys, [fixed, dict(FINDINGS[1], status="fixed-verified")])
+    assert table(git_repo)["F7"]["Status"] == "wontfix"  # the owner status hides the verified fix
+    assert main(["decide", "F7", "revoke", "--spec", "demo"]) == 0
+    assert "recorded F7: revoke" in capsys.readouterr().out
+    rollup(git_repo, capsys, [fixed, dict(FINDINGS[1], status="fixed-verified")])
+    assert table(git_repo)["F7"]["Status"] == "fixed-verified"
+    assert gate(capsys)[0] == 0
+    rollup(git_repo, capsys, [fixed, dict(FINDINGS[1], status="open")])
+    code, out = gate(capsys)
+    assert code == 1 and "F7" in out  # with no fix, the revoked row blocks again
+    store = [json.loads(x) for x in (git_repo.guard / "decisions.jsonl").read_text().splitlines()]
+    assert [r["status"] for r in store] == ["wontfix", "revoke"]
+    main(["decisions", "export", "demo"])
+    exported = [json.loads(x) for x in (git_repo.root / REVIEW / "decisions.jsonl").read_text().splitlines()]
+    assert [r["status"] for r in exported] == ["wontfix", "revoke"]
+
+
+def test_a_later_decision_replaces_a_revoked_one(git_repo, capsys):
+    from ticket_guard import decisions
+
+    for status in ("wontfix", "revoke", "rejection-accepted"):
+        main(["decide", "F7", status, "--spec", "demo"])
+    assert decisions.latest(git_repo.root, "demo")["F7"] == "rejection-accepted"
+
+
+def test_revoke_is_refused_in_goal_mode(git_repo, capsys):
+    from ticket_guard import marker
+
+    main(["decide", "F7", "wontfix", "--spec", "demo"])
+    marker.start(git_repo.root, "demo", "T1", "goal")
+    assert main(["decide", "F7", "revoke", "--spec", "demo"]) == 1
+    assert "attended" in capsys.readouterr().err
+    assert len((git_repo.guard / "decisions.jsonl").read_text().splitlines()) == 1
