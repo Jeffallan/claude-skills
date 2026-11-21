@@ -49,7 +49,7 @@ Only Ready tickets from the overview's Readiness table get rows and sections.
 ### <ID>: <title>
 
 **Skill:** <up to two skills by exact name from the plugin's skill list, or none>
-**Docs:** <docs under the docs root this ticket must update or check, or none>
+**Docs:** <docs under the docs root this ticket must update, add or check, or none>
 **Depends on:** <ID> | none
 **Type:** test | stand-in | refactor
 
@@ -82,7 +82,7 @@ Questions a skill or ticket needed answered that no one could answer during the 
 ## Rules
 
 - Every ticket has a `Skill:` line naming up to two skills that exist (a stack skill and a project skill, for example), so the goal run loads them instead of guessing.
-- Every ticket has a `Docs:` line: the docs `spec:create` found citing what it changes, and their `related:` docs. `ticket:execute` adds any doc `guard docs-affected` finds that the line missed.
+- Every ticket has a `Docs:` line: the docs `spec:create` found citing what it changes, their `related:` docs, and the docs the ticket itself adds or changes. `ticket:execute` adds any doc `guard docs-affected` finds that the line missed, including each doc the diff adds or changes, which it lists as `updated`.
 - Every ticket names its RED check before any implementation step. Refactor fix tickets name the stand-in instead: suite green before and after, test files unchanged by digest, metrics show the clone or dead code gone.
 - Dependencies name ticket IDs only, so `guard block` can mark dependents "depends on <ID>".
 - Never delete a Completion Status row. A ticket moved out of the spec gets a Proposed tracker changes entry and stays listed with its reason.
