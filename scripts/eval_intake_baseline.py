@@ -35,6 +35,8 @@ def score(run: dict, base: Path, work: Path, gold: Path) -> dict:
     if proc.returncode == 2:
         raise SystemExit(f"{run['run']}: {proc.stderr.strip()}")
     proc_out = json.loads(proc.stdout)
+    if not run.get("accuracy"):  # mapped by hand against the gold set, so a new run has none at first
+        return {"run": run["run"], "plugin": run["plugin"], "procedure": proc_out, "accuracy": None}
     acc = subprocess.run(
         [sys.executable, str(HERE / "eval_intake_accuracy.py"), str(gold), str(eval_dir.path(base, run["accuracy"]))],
         capture_output=True,
@@ -50,17 +52,17 @@ def main(argv: list[str]) -> int:
     gold = eval_dir.path(base, manifest["gold"])
     with tempfile.TemporaryDirectory() as tmp:
         results = [score(r, base, Path(tmp), gold) for r in manifest["runs"]]
-    first = results[0]
-    print(f"Checks v{first['procedure']['checks_version']}, gold v{first['accuracy']['gold_version']}\n")
+    mapped = next((r["accuracy"] for r in results if r["accuracy"]), None)
+    gold_v = mapped["gold_version"] if mapped else "unknown (no run mapped)"
+    print(f"Checks v{results[0]['procedure']['checks_version']}, gold v{gold_v}\n")
     print("| Run | Plugin | Procedure | Failed checks | Optional | Accuracy |")
     print("|-----|--------|-----------|---------------|----------|----------|")
     for r in results:
         p, a = r["procedure"], r["accuracy"]
         failed = ", ".join(f"`{c['id']}`" for c in p["checks"] if not c["pass"]) or "none"
         opt = ", ".join(f"`{c['id']}` {'pass' if c['pass'] else 'fail'}" for c in p["optional"]) or "none exercised"
-        print(
-            f"| {r['run']} | `{r['plugin']}` | {p['score']}/{p['total']} | {failed} | {opt} | {a['found']} of {a['total']} |"
-        )
+        acc = f"{a['found']} of {a['total']}" if a else "not mapped"
+        print(f"| {r['run']} | `{r['plugin']}` | {p['score']}/{p['total']} | {failed} | {opt} | {acc} |")
     return 0
 
 

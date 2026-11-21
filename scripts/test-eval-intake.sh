@@ -793,6 +793,23 @@ else
     fail "the baseline re-scores every run in the eval directory (exit $rc): $out"
 fi
 
+# A run with no accuracy mapping yet is listed as "not mapped" instead of failing the whole baseline
+python3 - "$ED" <<'PY'
+import json, sys
+p = f"{sys.argv[1]}/eval.json"; d = json.load(open(p))
+r = dict(d["runs"][0]); r["run"] = "unmapped"; r.pop("accuracy")
+d["runs"].insert(0, r); json.dump(d, open(p, "w"))
+PY
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| unmapped | `abc1234` |.*| not mapped |' && printf '%s' "$out" | grep -q '1 of 4'; then
+    pass "a run without an accuracy mapping is listed as not mapped"
+else
+    fail "a run without an accuracy mapping is listed as not mapped (exit $rc): $out"
+fi
+
 # An owner docs/README.md: the intake index is docs/README-intake.md, and it lists the owner's README
 V=$(fresh v5-owner-readme)
 git -C "$V" mv docs/README.md docs/README-intake.md
