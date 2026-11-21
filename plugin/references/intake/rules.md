@@ -149,7 +149,7 @@ Changed files:
 <every path created, edited or deleted, one per line>
 Checks:
 <the command as run> (exit <code>)
-<its summary: pass, fail and skip counts, or every row docs-check listed>
+<its summary: pass, fail and skip counts (blocked ones with their reason), or every row docs-check listed>
 Checklist note:
   - <YYYY-MM-DD>: <evidence>. Findings: <ids raised, or none>. Skills: <skills loaded, and `<skill> not loaded: <reason>` for any it didn't load>. human-voice: <writing-with-agents:human-voice | by hand>
   - Checkpoint draft: <the scope, in a goal run only>
@@ -190,7 +190,7 @@ Every testing command ends by running what it wrote, because its output is code 
 - Seed related records so their ids differ across tables (user 1 owns profile 7). A fresh database often numbers everything from 1, so code that uses one table's id for another passes by coincidence.
 - A deny or error-path test asserts the specific denial or error, never just "it threw". A test that passes because something unrelated failed is a false pass.
 - Keep the type checker and linter as clean as they were before the run.
-- A layer that can't run here (no emulator, no browser, a missing secret) is reported as blocked with the reason. It never counts as passing.
+- A layer that can't run here (no emulator, no browser, a missing secret) is reported as blocked with the reason. It never counts as passing. Its tests skip with a `BLOCKED: <reason>` message, so the rest of the suite still runs and exits 0; the summary and the item report's `Checks:` give the blocked count and its reason beside the pass and fail counts. An exit 0 with blocked tests is not a green suite: say which layer didn't run.
 - `intake:testing-setup` proves each layer with a smoke test before any other testing command writes a real test.
 
 ## In a goal run

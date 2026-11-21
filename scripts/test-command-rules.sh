@@ -142,6 +142,11 @@ for f in "$PLUGIN"/../docs/workflow/intake-*.md; do
 done
 if [ "$n" -eq 19 ]; then pass "19 procedure pages name the checkpoint"; else fail "19 procedure pages name the checkpoint (found $n)"; fi
 
+# a blocked layer keeps exit 0 but is reported: the count and reason in Checks, never read as green
+assert_contains "$REF/intake/rules.md" "blocked count and its reason" "rules: a blocked layer's count and reason are reported"
+assert_contains "$REF/intake/rules.md" "exit 0 with blocked tests is not a green suite" "rules: exit 0 with blocked tests is not green"
+assert_contains "$CMD/intake.md" "blocked count" "intake: the phase-boundary suite reads the blocked count"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
