@@ -279,9 +279,39 @@ def test_metrics_with_no_tools_still_writes_the_file(git_repo, capsys, monkeypat
     git_repo.write("web/a.ts", "export const x = 1\n")
     git_repo.commit("work")
     monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
-    assert main(["metrics", "demo", "--base", base]) == 0
+    assert main(["metrics", "demo", "--base", base]) == 3  # no tool ran: distinct from pass and refuse
+    out = capsys.readouterr()
+    assert "No metric tool ran (not installed: jscpd, knip, vulture, lizard)" in out.err
     text = (git_repo.root / REVIEW / "metrics.md").read_text()
-    assert text.count("not installed") == 4
+    assert text.count("not installed, so this check did not run") == 4
+    assert "No metric tool ran" in text
+
+
+def test_metrics_json_names_each_tools_outcome(git_repo, capsys, monkeypatch, tmp_path):
+    base = git_repo.head()
+    git_repo.write("src/app.py", "def add(a, b):\n    return a + b + 0\n")
+    git_repo.commit("work")
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    tools = {"lizard": fake_tool(bin_dir, "lizard", "ok")}
+    monkeypatch.setattr(metrics.shutil, "which", lambda name: tools.get(name))
+    assert main(["metrics", "demo", "--base", base, "--json"]) == 0
+    got = json.loads(capsys.readouterr().out)
+    assert got["tools"] == {"jscpd": "missing", "knip": "no-files", "vulture": "missing", "lizard": "ran"}
+    assert got["ran"] == ["lizard"] and got["missing"] == ["jscpd", "vulture"]
+    assert got["path"].endswith("review/metrics.md")
+    monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
+    assert main(["metrics", "demo", "--base", base, "--json"]) == 3
+    got = json.loads(capsys.readouterr().out)
+    assert got["ran"] == [] and got["missing"] == ["jscpd", "vulture", "lizard"]
+
+
+def test_metrics_with_no_code_changed_is_not_a_missing_tool(git_repo, capsys, monkeypatch):
+    base = git_repo.head()
+    git_repo.write("README.md", "# hi\n")
+    git_repo.commit("docs only")
+    monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
+    assert main(["metrics", "demo", "--base", base]) == 0
 
 
 def test_metrics_skips_tools_for_languages_the_diff_lacks(git_repo, capsys, monkeypatch):
@@ -289,7 +319,7 @@ def test_metrics_skips_tools_for_languages_the_diff_lacks(git_repo, capsys, monk
     git_repo.write("web/a.ts", "export const x = 1\n")
     git_repo.commit("ts only")
     monkeypatch.setattr(metrics.shutil, "which", lambda name: None)
-    assert main(["metrics", "demo", "--base", base]) == 0
+    assert main(["metrics", "demo", "--base", base]) == 3  # jscpd and knip read .ts and are missing
     text = (git_repo.root / REVIEW / "metrics.md").read_text()
     assert "vulture: no changed files it reads" in text and "vulture: not installed" not in text
     assert "knip: not installed" in text
