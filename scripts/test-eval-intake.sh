@@ -663,6 +663,15 @@ printf '\nSee `app.py:5`.\n' >>"$V/docs/domain/glossary.md"
 commit_item "$V" intake:document-glossary "docs(intake): glossary"
 v5 "$V" symbol-citations 0 "a path:line citation fails symbol-citations"
 
+# Version 14: an address is not a path:line citation; a token with a path separator or a file extension still is
+V=$(fresh v14-address)
+printf '\nBinds `0.0.0.0:8080`, talks to `localhost:5432` and `127.0.0.1:6379`, serves `http://localhost:8000`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 1 "a bind address, host:port or URL with a port passes symbol-citations"
+printf '\nSee `src/Makefile:12`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 0 "a path with a separator and no extension still fails symbol-citations"
+
 V=$(fresh v5-tests-none)
 sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none|' "$V/docs/intake-findings.md"
 commit_item "$V" intake:testing-features "test(intake): fix"

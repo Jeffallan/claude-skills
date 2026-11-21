@@ -50,7 +50,8 @@ DOCS = {
 }
 # Docs intake writes beyond DOCS; owner-written docs are never checked for style
 INTAKE_DOCS = (*DOCS.values(), "docs/system-description.md")
-LINE_CITE = re.compile(r"`[\w./-]+\.\w+:\d+(-\d+)?`")
+# a file path (a separator, or an extension starting with a letter) then :line; `0.0.0.0:8080` and `localhost:5432` are not
+LINE_CITE = re.compile(r"`(?:[\w./-]*/[\w.-]+|[\w.-]*\.[A-Za-z]\w*):\d+(-\d+)?`")
 REPEAT_WORDS = 12  # a sentence this long, word for word in two docs, is a repeated fact
 # Letters or digits may not touch the id; `_` may, so test_F012_name counts
 FINDING = re.compile(r"(?<![A-Za-z0-9])F-?(\d{3})(?!\d)")
@@ -1000,7 +1001,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows
+CHECKS_VERSION = 14  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`)
 
 
 def main() -> int:
