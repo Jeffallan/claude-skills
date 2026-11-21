@@ -59,6 +59,15 @@ for s in "Not installed, so unmeasured:" "No metric tool ran (not installed:"; d
     if printf '%s\n' "$step4" | grep -qF -- "$s"; then pass "ticket:execute reads the missing line in metrics.md ($s)"; else fail "ticket:execute reads the missing line in metrics.md ($s)"; fi
 done
 
+echo "docs the diff adds or changes"
+for s in "added in the diff" "changed in the diff"; do
+    assert_contains "$CMD/spec/review.md" "$s" "spec:review says docs-affected lists a doc $s"
+    assert_contains "$CMD/spec/complete.md" "$s" "spec:complete says docs-affected lists a doc $s"
+done
+doc_row=$(grep -F '| Docs under the docs root | `code-documenter` |' "$CMD/spec/review.md")
+case "$doc_row" in *'`updated`'*) pass "the code-documenter reviews the docs the diff updated" ;; *) fail "the code-documenter reviews the docs the diff updated" ;; esac
+assert_contains "$CMD/spec/complete.md" "each doc listed \`added in the diff\`" "spec:complete adds each added doc to the docs index"
+
 echo "owner revokes a decision"
 assert_contains "$CMD/spec/review.md" "guard decide <F-id> revoke --spec <spec-name>" "spec:review lists revoke with the owner statuses"
 if printf '%s\n' "$step6" | grep -qF "revoke that row first"; then pass "spec:review revokes a recorded decision before turning it into a fix ticket"; else fail "spec:review revokes a recorded decision before turning it into a fix ticket"; fi

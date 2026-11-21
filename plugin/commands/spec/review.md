@@ -49,7 +49,7 @@ guard docs-check >> <specsRoot>/todo/<spec-name>/review/docs.md 2>&1
 guard docs-waivers <spec-name>
 ```
 
-`docs-waivers` writes `review/docs-waivers.md`: every doc a ticket recorded as "checked, no change" and every doc the spec changed by three words or fewer. A goal run may record a waiver, so it never decides alone: the `code-documenter` reviewer rules on each row, and `guard gate` refuses while a row has no ruling.
+`review/docs.md` lists each affected doc: one that cites changed code or is `related:` to an affected doc, and every doc the diff adds or changes, listed as `updated` with the reason `added in the diff` or `changed in the diff`. `docs-waivers` writes `review/docs-waivers.md`: every doc a ticket recorded as "checked, no change" and every doc the spec changed by three words or fewer. A goal run may record a waiver, so it never decides alone: the `code-documenter` reviewer rules on each row, and `guard gate` refuses while a row has no ruling.
 
 ## Step 2: Panel
 
@@ -58,7 +58,7 @@ Pick reviewers from what the diff touches:
 | When | Reviewer skill | Focus |
 |------|----------------|-------|
 | Always | `code-reviewer` | Broad review, plus duplication, dead code and debt from `metrics.md` |
-| Docs under the docs root | `code-documenter` | Each affected doc in `review/docs.md` against the diff: claims the code no longer bears out, `path::symbol` citations that no longer resolve, a fact repeated in two docs instead of linked, one-sided `related:` links, a doc left `pending`. Rules on every row of `review/docs-waivers.md` in a `## Waivers` table in its file: `| W<n> | holds | - |`, or `| W<n> | wrong | <finding id> |` with that finding raised as blocking |
+| Docs under the docs root | `code-documenter` | Each affected doc in `review/docs.md` against the diff, the `updated` docs the diff added or changed included: claims the code no longer bears out, `path::symbol` citations that no longer resolve, a fact repeated in two docs instead of linked, one-sided `related:` links, a doc left `pending`. Rules on every row of `review/docs-waivers.md` in a `## Waivers` table in its file: `| W<n> | holds | - |`, or `| W<n> | wrong | <finding id> |` with that finding raised as blocking |
 | Always | `test-master` | Acceptance criteria traced to tests, test quality, proof for removed or merged tests, plus the tamper-scan flags from the Completion Status notes |
 | Auth, sensitive data, dependencies | `security-reviewer` | Security defects |
 | System structure, contracts | `architecture-designer` | Structural defects |
