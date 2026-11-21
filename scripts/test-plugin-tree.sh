@@ -171,6 +171,45 @@ assert_not_exists "$OUT/commands/intake" "ships no intake:* commands"
 if grep -q "no blank line between them" "$OUT/commands/intake.md"; then pass "intake keeps its Intake: trailer in the last paragraph"; else fail "intake keeps its Intake: trailer in the last paragraph"; fi
 assert_equal "$(python3 -c "import json,sys; print(sorted(k for k in json.load(open(sys.argv[1]))['commands'] if k.startswith('intake')))" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "['intake']" "plugin.json maps intake and no intake:* command"
 
+# The intake flow: what the text tells the main session and the agents to do
+has() { if grep -qF -- "$2" "$1" 2>/dev/null; then pass "$3"; else fail "$3"; fi; }
+hasnt() { if grep -qF -- "$2" "$1" 2>/dev/null; then fail "$3"; else pass "$3"; fi; }
+INTAKE="$OUT/commands/intake.md"
+IREF="$OUT/references/intake"
+# Goal runs: one agent per item runs discovery and write in one pass; attended runs keep pause and resume
+has "$INTAKE" "Goal run: one pass" "intake runs a goal-run item in one pass"
+has "$INTAKE" "Checkpoint draft:" "the goal-run agent reports its checkpoint draft"
+has "$INTAKE" "Attended: discovery, then resume" "intake keeps pause and resume for attended runs"
+hasnt "$INTAKE" "every checkpoint resumes an agent" "intake no longer resumes at every checkpoint"
+has "$IREF/rules.md" "In a goal run there is no stop" "rules: a goal-run checkpoint doesn't stop the agent"
+hasnt "$IREF/goal-prompt.md" "every checkpoint resumes an agent" "goal prompt no longer resumes at every checkpoint"
+# The main session doesn't read the procedure: it takes the skills list with sed, and every brief names the path,
+# where the intake eval opens the item's window (scripts/eval_intake_run.py, item_opens)
+hasnt "$INTAKE" "**Read the procedure** in this session" "intake doesn't read the whole procedure in the main session"
+has "$INTAKE" "sed -n '/^## Skills to load/,/^## /p'" "intake takes the procedure's skills list with sed"
+has "$INTAKE" "Procedure: <plugin root>/references/intake/procedures/<procedure>.md" "the brief names the procedure path"
+# Read-only work runs in parallel; writers stay one at a time (decision 5a)
+has "$INTAKE" "### Read-only work in parallel" "intake runs read-only work in parallel"
+has "$INTAKE" "start the next item's \`code-reader\` fact pass" "intake starts the next item's fact pass while the current item writes"
+has "$INTAKE" "in one message" "intake starts independent code-readers in one message"
+has "$INTAKE" "never a procedure path" "an early fact brief opens no eval window"
+has "$INTAKE" "Start the next writer only after the current item is committed" "intake keeps one writer at a time"
+has "$IREF/rules.md" "\`code-reader\` agents may run beside the writer" "rules: readers run beside the writer"
+has "$IREF/procedures/document-authorization.md" "all in one message" "authorization's blind batches start together"
+# A repo with no git remote has unknown visibility, so High security detail goes to the restricted file
+has "$IREF/findings.md" "A repo with no git remote counts as unknown" "findings: no remote means visibility unknown"
+# testing-owasp rates a dependency advisory by the reach shown in this app, not by the advisory's score
+has "$IREF/procedures/testing-owasp.md" "With no exposure path shown in this app, the finding is Low" "testing-owasp: an advisory with no exposure path is Low"
+# The findings-tracker item carries a fixed trailer; the eval still sees no `intake:<cmd>` item on its line
+TRACKER_ITEM=$(grep -F -- '- [ ] Start the findings tracker:' "$IREF/checklist.md")
+case "$TRACKER_ITEM" in *'commit trailer `Intake: intake:findings-tracker`') pass "the tracker item names its fixed trailer" ;; *) fail "the tracker item names its fixed trailer" ;; esac
+case "$TRACKER_ITEM" in *'`intake:'*) fail "the tracker item stays a no-procedure item for the eval" ;; *) pass "the tracker item stays a no-procedure item for the eval" ;; esac
+has "$INTAKE" "the trailer its checklist line names" "intake commits a no-procedure item with the trailer its line names"
+has "$IREF/goal-prompt.md" "the trailer its checklist line names" "the goal prompt commits a no-procedure item with the trailer its line names"
+for p in $PROCS; do
+    if [ "$(grep -c '^## Skills to load$' "$IREF/procedures/$p.md")" = 1 ]; then pass "$p has one Skills to load heading"; else fail "$p has one Skills to load heading"; fi
+done
+
 # Repo-only content stays out
 for path in .claude-plugin/marketplace.json CLAUDE.md site docs scripts assets research specs evals .serena .github version.json pyproject.toml; do
     assert_not_exists "$OUT/$path" "excludes $path"

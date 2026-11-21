@@ -135,7 +135,7 @@ carries no finding ids.
 2. Split the inventory into batches of about 60 operations. An agent can't start agents, so return the batches
    to the intake command and stop: for each batch its rows of the inventory (id, method, path, source), plus the
    principal columns, the invariants, the clean copy's path and the installed source of any library that mounts
-   routes. The intake command starts one fresh `code-reader` per batch with only that, never the matrix, the
+   routes. The intake command starts one fresh `code-reader` per batch, all in one message, with only that, never the matrix, the
    findings tracker or the intake branch, and asks it for the outcome of every cell in its batch with the code it
    relied on, and for a separate list of any other defect it noticed. It resumes you with their reports.
 3. Compare the returned cells with the matrix. Wording that differs but means the same outcome is not a disagreement.

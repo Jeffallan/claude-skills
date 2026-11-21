@@ -39,7 +39,7 @@ Each item, in order:
 1. Re-read docs/intake-checklist.md and take the first unchecked item without an unresolved BLOCKED note.
 2. For an item that names a procedure, call the Skill tool with `fullstack-dev-skills:intake` and the procedure name as its argument, and follow it under the goal-run rules in references/intake/rules.md: it runs the item's agents, records the checkpoint as a draft, reviews their diff and commits. Do an item that names no procedure in this session.
 3. Verify with fresh output: the procedure's accuracy audit or run-and-verify phase, then `<test:all command>`.
-4. The box is checked with an indented note (date, evidence, finding ids raised, skills the agents loaded), and the item's files and the checklist are committed together: `<docs|test>(intake): <procedure>` with the trailer `Intake: intake:<procedure>` in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
+4. The box is checked with an indented note (date, evidence, finding ids raised, skills the agents loaded), and the item's files and the checklist are committed together: `<docs|test>(intake): <procedure>` with the trailer `Intake: intake:<procedure>` (or, for an item that names no procedure, the trailer its checklist line names) in the message's last paragraph, beside any other trailer (`Co-Authored-By:`) and with no blank line between them. Git only reads trailers from the last paragraph. Change only this item's checklist note in its commit.
 5. Check the commit you just made: `git log -1 --format='%(trailers:key=Intake,valueonly)'` prints this item's command, and `git show --stat HEAD` lists only this item's files. When either is wrong, never amend: fix it with a follow-up commit carrying the same item's trailer.
 </per_item_loop>
 <context_hygiene>
@@ -65,7 +65,7 @@ Reminder: every commit names its item with one `Intake:` trailer on <intake-bran
 
 ## Launching it
 
-Start a new session with the deny set from `references/specs/launch.md`, so the denies hold for the whole run. Intake runs no ticket commands, so the `ticket-guard` allow rule isn't needed. Never deny `SendMessage`: every checkpoint resumes an agent with it. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key, or `git commit --allow-empty` signs in a scratch clone): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--disallowedTools` takes a list, so the `--` before the prompt is required. The session serves the run only: run Phase 4 and any attended `intake` run in a fresh session without these flags.
+Start a new session with the deny set from `references/specs/launch.md`, so the denies hold for the whole run. Intake runs no ticket commands, so the `ticket-guard` allow rule isn't needed. Never deny `SendMessage`: `document-authorization`'s second pass and a rerun for a missing skill resume an agent with it. When the project signs commits, launch from a shell where signing works (`ssh-add -l` lists the key, or `git commit --allow-empty` signs in a scratch clone): a new tmux window may not inherit `SSH_AUTH_SOCK`, and every commit in the run then fails or goes unsigned. `--disallowedTools` takes a list, so the `--` before the prompt is required. The session serves the run only: run Phase 4 and any attended `intake` run in a fresh session without these flags.
 
 ```bash
 claude \
