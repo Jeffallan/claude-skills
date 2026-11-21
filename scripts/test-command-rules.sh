@@ -50,6 +50,10 @@ if printf '%s\n' "$step6" | grep -qF "did not run"; then pass "spec:review adds 
 step4=$(sed -n '/^## Step 4: RED$/,/^## Step 5: Implement$/p' "$CMD/ticket/execute.md")
 if printf '%s\n' "$step4" | grep -qF "did not run"; then pass "ticket:execute refuses a refactor ticket whose metric did not run"; else fail "ticket:execute refuses a refactor ticket whose metric did not run"; fi
 
+echo "owner revokes a decision"
+assert_contains "$CMD/spec/review.md" "guard decide <F-id> revoke --spec <spec-name>" "spec:review lists revoke with the owner statuses"
+if printf '%s\n' "$step6" | grep -qF "revoke that row first"; then pass "spec:review revokes a recorded decision before turning it into a fix ticket"; else fail "spec:review revokes a recorded decision before turning it into a fix ticket"; fi
+
 echo "config wizard"
 OPS="$REF/adapters/operations.md"
 assert_not_contains "$OPS" "MCP server among the session's tools: recommend" "a connected MCP server alone never makes the recommendation"
