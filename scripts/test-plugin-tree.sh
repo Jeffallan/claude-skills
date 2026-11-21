@@ -171,6 +171,19 @@ assert_not_exists "$OUT/commands/intake" "ships no intake:* commands"
 if grep -q "no blank line between them" "$OUT/commands/intake.md"; then pass "intake keeps its Intake: trailer in the last paragraph"; else fail "intake keeps its Intake: trailer in the last paragraph"; fi
 assert_equal "$(python3 -c "import json,sys; print(sorted(k for k in json.load(open(sys.argv[1]))['commands'] if k.startswith('intake')))" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "['intake']" "plugin.json maps intake and no intake:* command"
 
+# The intake flow: what the text tells the main session and the agents to do
+has() { if grep -qF -- "$2" "$1" 2>/dev/null; then pass "$3"; else fail "$3"; fi; }
+hasnt() { if grep -qF -- "$2" "$1" 2>/dev/null; then fail "$3"; else pass "$3"; fi; }
+INTAKE="$OUT/commands/intake.md"
+IREF="$OUT/references/intake"
+# Goal runs: one agent per item runs discovery and write in one pass; attended runs keep pause and resume
+has "$INTAKE" "Goal run: one pass" "intake runs a goal-run item in one pass"
+has "$INTAKE" "Checkpoint draft:" "the goal-run agent reports its checkpoint draft"
+has "$INTAKE" "Attended: discovery, then resume" "intake keeps pause and resume for attended runs"
+hasnt "$INTAKE" "every checkpoint resumes an agent" "intake no longer resumes at every checkpoint"
+has "$IREF/rules.md" "In a goal run there is no stop" "rules: a goal-run checkpoint doesn't stop the agent"
+hasnt "$IREF/goal-prompt.md" "every checkpoint resumes an agent" "goal prompt no longer resumes at every checkpoint"
+
 # Repo-only content stays out
 for path in .claude-plugin/marketplace.json CLAUDE.md site docs scripts assets research specs evals .serena .github version.json pyproject.toml; do
     assert_not_exists "$OUT/$path" "excludes $path"

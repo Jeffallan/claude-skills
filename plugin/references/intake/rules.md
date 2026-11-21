@@ -121,13 +121,15 @@ Never leave the suite red. The goal run's `<done_when>` and the intake eval's `c
 
 ## Checkpoint
 
-Every command stops once before it writes: the documentation commands after discovery, the testing commands after designing their cases. The checkpoint shows the scope (what was found, what will be written, where) so a wrong scope costs nothing.
+Every command has one checkpoint before it writes: the documentation commands after discovery, the testing commands after designing their cases. The checkpoint shows the scope (what was found, what will be written, where) so a wrong scope costs nothing.
 
-It runs as pause and resume, because an agent can't ask the owner:
+Attended, it runs as pause and resume, because an agent can't ask the owner:
 
 1. The `intake` command starts the procedure's agent for discovery (or case design). The agent returns its scope as its report and writes nothing.
-2. Attended, the `intake` command shows the scope and waits for the owner. In a goal run it records the scope as the draft in the item's checklist note ("In a goal run" below).
+2. The `intake` command shows the scope and waits for the owner.
 3. The `intake` command resumes the same agent with `SendMessage`, giving the confirmed or corrected scope, and the agent writes with its discovery still in context.
+
+In a goal run there is no stop, since nobody would answer it. The agent runs the procedure in one pass: at the checkpoint it puts the scope it would have shown in its report under `Checkpoint draft:` and goes on to write ("In a goal run" below). The `intake` command copies the draft into the item's checklist note.
 
 ## Agents and commits
 
@@ -170,7 +172,7 @@ Every testing command ends by running what it wrote, because its output is code 
 
 Intake commands run unattended inside a `/goal` run, under the rules in `references/specs/unattended.md` that apply to ticket commands. Two rules change for intake:
 
-- **Never call `AskUserQuestion`.** The checkpoint becomes a draft: the command writes the scope it would have shown in its checklist note and continues with it. It never stops the run to wait. A routine scope confirmation is not a question. Add an Open questions row to `docs/intake-findings.md`, with a draft decision, only when the owner could reasonably choose differently and the choice changes what gets written: a layer skipped, a surface left out, a contradiction picked one way.
+- **Never call `AskUserQuestion`.** The checkpoint becomes a draft: the agent reports the scope it would have shown as its checkpoint draft, which goes in the item's checklist note, and continues with it. It never stops to wait. A routine scope confirmation is not a question. Add an Open questions row to `docs/intake-findings.md`, with a draft decision, only when the owner could reasonably choose differently and the choice changes what gets written: a layer skipped, a surface left out, a contradiction picked one way.
 - **Never block on a missing document.** A command whose input doc is absent works from the code alone and adds an Open question saying so.
 
 The rest holds unchanged: no tracker writes, no history rewrites, agents write one at a time and never commit ("Agents and commits"). A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
