@@ -102,6 +102,8 @@ The owner types each fix:
 | `stand-in` (docs or configuration) | `guard run red --type stand-in` with a check that fails before the change | Tamper scan |
 | Refactor (duplication, dead code, structure) | Stand-in: `guard run red --type refactor` with the full suite green before, test files unchanged by digest, and `guard metrics` showing the clone or dead code gone after | Tamper scan; RED replay is skipped |
 
+A refactor ticket's proof needs the tool that measures its target: `jscpd` for duplication, `vulture` or `knip` for dead code, `lizard` for complexity. When `guard metrics <spec-name> --json` lists that tool in `missing`, or exits 3 because no metric tool was installed at all, its check did not run and nothing can show the target gone. The ticket is refused (`spec:review` adds no such ticket) or blocked (`ticket:execute` blocks it with `metric unavailable: <tool> did not run`), never claimed proven.
+
 Never mutate the working tree to get a RED. A mutation left in the source ends up in the ticket's commit, or in its saved patch when the ticket is blocked; the pilot hit this.
 
 ## Recheck after fixes

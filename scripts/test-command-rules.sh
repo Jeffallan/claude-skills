@@ -86,6 +86,12 @@ for s in "Not installed, so unmeasured:" "No metric tool ran (not installed:"; d
     if printf '%s\n' "$step4" | grep -qF -- "$s"; then pass "ticket:execute reads the missing line in metrics.md ($s)"; else fail "ticket:execute reads the missing line in metrics.md ($s)"; fi
 done
 
+echo "verifier: a refactor fix whose proving tool is missing is never proven"
+VER="$REF/review/verifier.md"
+for s in "guard metrics <spec-name> --json" "\`missing\`" "exits 3" "never claimed proven"; do
+    assert_contains "$VER" "$s" "verifier.md refuses a refactor proof without its tool ($s)"
+done
+
 echo "docs the diff adds or changes"
 for s in "added in the diff" "changed in the diff"; do
     assert_contains "$CMD/spec/review.md" "$s" "spec:review says docs-affected lists a doc $s"
