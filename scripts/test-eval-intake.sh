@@ -926,6 +926,36 @@ else
     fail "a run without an accuracy mapping is listed as not mapped (exit $rc): $out"
 fi
 
+# The baseline rebuilds each run with no installed dependencies; eval.json's "setup" installs them first
+setjson() { # setjson <python statement on d>: edit the eval directory's eval.json
+    python3 - "$ED/eval.json" "$1" <<'PY'
+import json, sys
+p, stmt = sys.argv[1:]
+d = json.load(open(p)); exec(stmt); json.dump(d, open(p, "w"))
+PY
+}
+setjson 'd["test_cmd"] = "test -f .deps-installed"'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+set -e
+if printf '%s' "$out" | grep -q '| good |.*`characterization-green`'; then pass "without setup, a rebuilt run has no dependencies"; else fail "without setup, a rebuilt run has no dependencies: $out"; fi
+setjson 'd["setup"] = ["touch .deps-installed"]'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| good |' && ! printf '%s' "$out" | grep -q 'characterization-green'; then
+    pass "the baseline runs eval.json's setup in each rebuilt run before scoring"
+else
+    fail "the baseline runs eval.json's setup in each rebuilt run before scoring (exit $rc): $out"
+fi
+setjson 'd["setup"] = ["exit 3"]'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q 'setup `exit 3` exit 3'; then pass "a failing setup command stops the baseline"; else fail "a failing setup command stops the baseline (exit $rc): $out"; fi
+
 # An owner docs/README.md: the intake index is docs/README-intake.md, and it lists the owner's README
 V=$(fresh v5-owner-readme)
 git -C "$V" mv docs/README.md docs/README-intake.md
