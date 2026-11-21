@@ -58,6 +58,13 @@ for s in "existing config" "tickets/" "ticket CLI" "remote"; do
     assert_contains "$OPS" "$s" "the wizard recommends from the repo signal '$s'"
 done
 
+echo "triage keeps every ticket"
+TRIAGE="$CMD/spec/triage.md"
+assert_contains "$TRIAGE" "Keep every ticket the owner asked about" "spec:triage groups every ticket the owner asked about"
+assert_contains "$TRIAGE" "Contradictions are \`spec:create\`'s job" "spec:triage leaves contradictions to spec:create"
+assert_contains "$TRIAGE" "a suggestion the owner can take" "spec:triage proposes splits only as a suggestion"
+assert_not_contains "$TRIAGE" "| Real unknowns (nobody can write acceptance criteria yet) | Left ungrouped;" "spec:triage never leaves an asked-about unknown out"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

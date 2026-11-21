@@ -40,7 +40,7 @@ With no tickets in scope, say so, suggest `discovery:create`, and stop without w
 |--------|----------|
 | Closed or done | Excluded and listed |
 | In another repo (a Project spanning repos, cross-repo work) | Excluded. A ticket spanning repos: propose splitting it, one ticket per repo, through `discovery:create` or the owner |
-| Real unknowns (nobody can write acceptance criteria yet) | Left ungrouped; suggest `discovery:create <ticket>` |
+| Real unknowns (nobody can write acceptance criteria yet) | Named by the owner (IDs, a query, a topic or a grouping): grouped like the rest and flagged, suggesting `discovery:create <ticket>`; `spec:create` marks it Blocked: needs-spec. Found by the no-argument sweep: left ungrouped, with the same suggestion |
 | Already in a spec that hasn't started | Shown under that spec; moving it needs its own named approval |
 | Already in a started spec (any Completion Status row past Pending, read from the plan on the `spec/<spec-name>` branch) | Refused: changes to a started spec go through `spec:create`. Say why |
 | Released (a Released line after its last `Spec:` line, see `references/adapters/operations.md`) | Eligible like an ungrouped ticket; show the old spec and the reason |
@@ -63,6 +63,8 @@ A grouping the owner passed in the argument outranks every signal. Otherwise gro
 
 Rules:
 
+- **Keep every ticket the owner asked about.** Every ticket in scope that the table in Step 2 doesn't exclude goes into a spec. By default the tickets the owner named form one spec, as the earlier build grouped them. Contradictions are `spec:create`'s job: tickets that contradict each other, the code or a settled decision stay in the group, and the proposal flags each contradiction for `spec:create`, whose Readiness marks the tickets Blocked until the owner settles it. Never leave a ticket out because it looks contradictory, unclear or out of place.
+- **Splits are suggestions.** A split into several specs (by feature area, size or build order) is shown beside the default grouping as a suggestion the owner can take in Step 4, never applied by dropping tickets. A split keeps every ticket in one of its specs.
 - **One repo per spec.** Refuse a group that would mix repos; propose one spec per repo.
 - **Names** are kebab-case (lowercase letters, numbers, hyphens), used unchanged for the folder, the branch suffix and the group title. Refuse a name already used in `todo/`, `completed/` or the tracker for a different set of tickets.
 - **Size:** above `triage.warnAboveTickets` (10) tickets, warn and suggest a split; allow it if the owner keeps it. A spec should fit one goal run.
@@ -74,7 +76,7 @@ Show, before any write:
 
 - How you read the argument.
 - Each spec: name, tickets (ID and title), the signals behind it, and its `After:` predecessor.
-- Flags and exclusions with reasons, and the size warnings.
+- Flags and exclusions with reasons, the contradictions flagged for `spec:create`, the size warnings and any suggested split.
 - The exact writes per spec: `ensure-group`, each `link`, each `update` appending `Spec: <spec-name>`, `link-groups`, and the branch `spec/<spec-name>`.
 
 Ask with `AskUserQuestion`: approve, edit (rename, move, drop, split, merge, reorder) or cancel. Edits return to this step. Moves out of an unstarted spec and `replace_parent` each need their own yes.
