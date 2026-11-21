@@ -416,6 +416,51 @@ else
     fail "bare @expectedFailure and @skip count as markers: $out"
 fi
 
+# Marker words in comments, docstrings and block comments are prose, not markers; a real one still counts
+PR="$WORK/prose"
+make_run "$PR"
+mkdir -p "$PR/e2e"
+printf "// Twins use it.fails until the fix lands; never skip( a test silently.\n/*\n * test.skip is for flaky cases only\n */\ntest('totals round', () => {}) // not it.fails\n" >"$PR/e2e/notes.spec.js"
+printf '"""Characterization tests.\n\nUse @pytest.mark.xfail for intended behavior; skip() nothing.\n"""\n\n\ndef test_total_prose():\n    pass  # pytest.mark.skip would hide this\n' >"$PR/tests/test_prose.py"
+commit_item "$PR" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$PR")
+set -e
+if has "$out" bug-tests-cite-findings 1; then pass "marker words in comments and docstrings are not markers"; else fail "marker words in comments and docstrings are not markers: $out"; fi
+printf "\nit.skip('later', () => {}) /* it.fails */\n" >>"$PR/e2e/notes.spec.js"
+commit_item "$PR" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$PR")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q 'notes.spec.js:7' && ! printf '%s' "$out" | grep -qE 'notes.spec.js:[1-5]\b|test_prose.py'; then
+    pass "a real marker beside prose still needs its finding id"
+else
+    fail "a real marker beside prose still needs its finding id: $out"
+fi
+
+# Table-driven twins: each row of the table that drives a marked test carries its finding id
+TD="$WORK/table"
+make_run "$TD"
+mkdir -p "$TD/tests/unit"
+printf "const cases = [\n  { id: 'F-001', op: 'GET /a' },\n  { id: 'F-001', op: 'GET /b' },\n]\n\n\nit.fails.each(cases)('\$op hidden (intended)', ({ op }) => {})\n" >"$TD/tests/unit/each.spec.js"
+printf "const rows: Row[] = [\n  ['GET /a', 'F-001'],\n  ['GET /b', 'F-001'],\n]\n\n\nfor (const [op] of rows) it.fails(op, () => {})\n" >"$TD/tests/unit/loop.spec.ts"
+printf 'import pytest\n\nCASES = [\n    ("op1", "x"),  # F-001: the owner'"'"'s view, op1\n    ("op2", "F-001"),\n]\n\n\n@pytest.mark.xfail(strict=True)\n@pytest.mark.parametrize("op,fid", CASES)\ndef test_hidden_intended(op, fid):\n    assert False\n' >"$TD/tests/test_table.py"
+commit_item "$TD" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$TD")
+set -e
+if has "$out" bug-tests-cite-findings 1; then pass "a finding id in each row of the table driving a marked test counts"; else fail "a finding id in each row of the table driving a marked test counts: $out"; fi
+printf "const gaps = [\n  { id: 'F-001', op: 'GET /a' },\n  { op: 'GET /b' },\n  { id: 'F-009', op: 'GET /c' },\n]\n\n\ntest.fails.each(gaps)('\$op', () => {})\n" >"$TD/tests/unit/gaps.spec.js"
+commit_item "$TD" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$TD")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q 'gaps.spec.js:8' && printf '%s' "$out" | grep -q 'F-009' && ! printf '%s' "$out" | grep -qE 'each.spec.js|loop.spec.ts|test_table.py'; then
+    pass "a table row without a finding id, or with an unknown one, fails"
+else
+    fail "a table row without a finding id, or with an unknown one, fails: $out"
+fi
+
 # Accuracy tally: found/total against a gold file, given rows left out, mismatched mappings refused
 ACC="$REPO_ROOT/scripts/eval_intake_accuracy.py"
 printf '# Gold\n\n- **Version:** 3 (test)\n\n## Findings (4)\n\n| Gold id | Verdict | Source |\n|---|---|---|\n| F-001 | valid | review |\n| F-002 | valid | review |\n| MISSED-1 | valid | review |\n| ADDED-1 | valid | run 2 |\n\n## Docs (0)\n' >"$WORK/gold.md"
@@ -682,6 +727,62 @@ for case in "OP-001-member-F-001-current:1" "OP-009-member-F-001-current:0"; do
     if has "$out" findings-evidence "$want"; then pass "a generated title the suite printed as $printed scores $want"; else fail "generated title $printed: $out"; fi
 done
 
+# Version 13: with a test command known, the runner's own listing names runtime-built titles,
+# e2e titles outside the default command included. Stub runners print a saved listing.
+STUB="$WORK/stub-bin"
+mkdir -p "$STUB"
+cat >"$STUB/npx" <<'EOF'
+#!/usr/bin/env bash
+# a stand-in npx: prints the listing saved beside it; no listing saved means the runner failed
+case "$*" in
+    *"vitest list"*) f=vitest ;;
+    *"playwright test --list"*) f=playwright ;;
+    *) exit 1 ;;
+esac
+[ -f "$(dirname "$0")/$f.out" ] || exit 1
+cat "$(dirname "$0")/$f.out"
+EOF
+cat >"$STUB/pytest" <<'EOF'
+#!/usr/bin/env bash
+# a stand-in pytest: --collect-only prints node ids, a plain run passes
+case "$*" in *--collect-only*) printf 'tests/test_gen.py::test_F001_gen[op1]\n\n1 test collected\n' ;; esac
+exit 0
+EOF
+chmod +x "$STUB/npx" "$STUB/pytest"
+listed() { # listed <dir> <want> <label> [score args...]: score with the stub runners first on PATH
+    local d=$1 want=$2 label=$3 out
+    shift 3
+    set +e
+    out=$(PATH="$STUB:$PATH" score "$d" "$@")
+    set -e
+    if has "$out" findings-evidence "$want"; then pass "$label"; else fail "$label: $out"; fi
+}
+V=$(fresh v13-vitest)
+mkdir -p "$V/tests/unit"
+printf '{"devDependencies": {"vitest": "^2.0.0"}}\n' >"$V/package.json"
+printf 'for (const op of ops) it.fails(`${op} F-001 hidden`, () => {})\n' >"$V/tests/unit/ops.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/ops.spec.js::OP-001 F-001 hidden`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): ops"
+printf 'tests/unit/ops.spec.js > OP-001 F-001 hidden\n' >"$STUB/vitest.out"
+listed "$V" 1 "a template-literal title vitest list prints passes findings-evidence"
+rm "$STUB/vitest.out"
+listed "$V" 0 "when vitest list fails, a title found nowhere still fails findings-evidence"
+V=$(fresh v13-playwright)
+mkdir -p "$V/web/e2e"
+printf 'export default {}\n' >"$V/web/playwright.config.ts"
+printf "test.describe('checkout', () => {\n  for (const n of [1, 2]) test(\`F-001 step \${n}\`, async () => {})\n})\n" >"$V/web/e2e/flow.spec.ts"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `web/e2e/flow.spec.ts::checkout F-001 step 2`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-user-flows "test(intake): flow"
+printf '  [chromium] \xe2\x80\xba e2e/flow.spec.ts:2:30 \xe2\x80\xba checkout \xe2\x80\xba F-001 step 2\nTotal: 1 test in 1 file\n' >"$STUB/playwright.out"
+listed "$V" 1 "an e2e title playwright test --list prints passes findings-evidence outside the default command"
+rm "$STUB/playwright.out"
+V=$(fresh v13-pytest)
+printf 'import pytest\n\n\n@pytest.mark.parametrize("op", ["op1"])\ndef test_F001_gen(op):\n    pass\n' >"$V/tests/test_gen.py"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/test_gen.py::test_F001_gen[op1]`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): gen"
+listed "$V" 1 "a parametrized id pytest --collect-only prints passes findings-evidence" --test-cmd "$STUB/pytest -q"
+listed "$V" 0 "a test command that is not pytest runs no collection, so the parametrized id fails findings-evidence" --test-cmd "true"
+
 # Version 7: the access matrix covers the whole inventory and leaves no cell unexamined
 V=$(fresh v7-good)
 v5 "$V" access-matrix 1 "the good run passes access-matrix"
@@ -824,6 +925,36 @@ if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| unmapped | `abc1234` |.*| 
 else
     fail "a run without an accuracy mapping is listed as not mapped (exit $rc): $out"
 fi
+
+# The baseline rebuilds each run with no installed dependencies; eval.json's "setup" installs them first
+setjson() { # setjson <python statement on d>: edit the eval directory's eval.json
+    python3 - "$ED/eval.json" "$1" <<'PY'
+import json, sys
+p, stmt = sys.argv[1:]
+d = json.load(open(p)); exec(stmt); json.dump(d, open(p, "w"))
+PY
+}
+setjson 'd["test_cmd"] = "test -f .deps-installed"'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+set -e
+if printf '%s' "$out" | grep -q '| good |.*`characterization-green`'; then pass "without setup, a rebuilt run has no dependencies"; else fail "without setup, a rebuilt run has no dependencies: $out"; fi
+setjson 'd["setup"] = ["touch .deps-installed"]'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| good |' && ! printf '%s' "$out" | grep -q 'characterization-green'; then
+    pass "the baseline runs eval.json's setup in each rebuilt run before scoring"
+else
+    fail "the baseline runs eval.json's setup in each rebuilt run before scoring (exit $rc): $out"
+fi
+setjson 'd["setup"] = ["exit 3"]'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q 'setup `exit 3` exit 3'; then pass "a failing setup command stops the baseline"; else fail "a failing setup command stops the baseline (exit $rc): $out"; fi
 
 # An owner docs/README.md: the intake index is docs/README-intake.md, and it lists the owner's README
 V=$(fresh v5-owner-readme)

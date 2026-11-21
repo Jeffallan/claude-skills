@@ -146,10 +146,91 @@ def marker_helper(lines: list[str], i: int) -> str | None:
     return None
 
 
+# Where prose starts: a docstring or block comment opening, or a line comment after whitespace (never `http://`)
+PROSE_START = re.compile(r"\"\"\"|'''|/\*|(?<!\S)(?:#|//)")
+
+
+def code_text(lines: list[str]) -> list[str]:
+    """Each line with its comments, docstrings and block comments removed, so prose naming a marker is not one."""
+    out, close = [], ""
+    for line in lines:
+        kept, pos = "", 0
+        while True:
+            if close:
+                end = line.find(close, pos)
+                if end < 0:
+                    break
+                pos, close = end + len(close), ""
+            m = PROSE_START.search(line, pos)
+            if not m:
+                kept += line[pos:]
+                break
+            kept += line[pos : m.start()]
+            if m.group() in ("#", "//"):
+                break
+            close, pos = ("*/" if m.group() == "/*" else m.group()), m.end()
+        out.append(kept)
+    return out
+
+
+# A named table a test is generated from: `.each(cases)`, `for (const c of cases)`, `for c in cases`,
+# `parametrize("a,b", cases)`. An inline table's first rows sit within the marker's reach already.
+TABLE_REF = re.compile(
+    r"\.each\(\s*(\w+)|\bfor\b.*?\b(?:of|in)\s+(\w+)"
+    r"|parametrize\(\s*(?:\"[^\"]*\"|'[^']*'|\[[^\]]*\]|\([^)]*\))\s*,\s*(\w+)"
+)
+
+
+def table_rows(text: str, start: int) -> list[str]:
+    """The top-level rows of the bracketed table that opens at text[start]."""
+    rows, depth, quote, begin, k = [], 0, "", start + 1, start
+    while k < len(text):
+        ch = text[k]
+        if quote:
+            quote = "" if ch == quote and text[k - 1] != "\\" else quote
+        elif text.startswith(("#", "//"), k) and text[k - 1].isspace():
+            k = text.find("\n", k)  # a comment runs to the line end
+            if k < 0:
+                break
+            continue
+        elif ch in "'\"`":
+            quote = ch
+        elif ch in "[({":
+            depth += 1
+        elif ch in "])}":
+            depth -= 1
+            if depth == 0:
+                rows.append(text[begin:k])
+                break
+        elif ch == "," and depth == 1:
+            # a row keeps the comment that ends its line: `("op1", "x"),  # F-001`
+            eol = len(text) if (eol := text.find("\n", k)) < 0 else eol
+            rest = text[k + 1 : eol].strip()
+            end = eol if not rest or rest.startswith(("#", "//")) else k
+            rows.append(text[begin:end])
+            begin = end + 1
+        k += 1
+    return [r for r in rows if r.strip()]
+
+
+def driving_rows(lines: list[str], i: int) -> list[str]:
+    """The rows of the table the marked test on line i is generated from, if a table drives it."""
+    text = "\n".join(lines)
+    for j in range(max(0, i - 3), min(len(lines), i + 2)):
+        m = TABLE_REF.search(lines[j])
+        if not m:
+            continue
+        ref = next(g for g in m.groups() if g)
+        if d := re.search(rf"\b{re.escape(ref)}\b\s*(?::[^=\n]+)?=\s*\[", text):
+            return table_rows(text, d.end() - 1)
+    return []
+
+
 def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> dict:
     """Every skipped or expected-fail test written by intake names a finding id the tracker knows.
 
-    A helper that wraps a marker is checked where it is called, not where it is defined.
+    A helper that wraps a marker is checked where it is called, not where it is defined. Markers count only in
+    code: a comment or docstring that names one is prose. A test generated from a table cites through its rows.
     """
     bad, unknown, seen = [], [], 0
     files = {}
@@ -157,15 +238,16 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
         p = repo / rel
         if is_test(rel, globs) and p.exists():
             files[rel] = p.read_text(encoding="utf-8", errors="replace").splitlines()
+    codes = {rel: code_text(lines) for rel, lines in files.items()}
     helpers = {
         n
-        for lines in files.values()
-        for i, line in enumerate(lines)
+        for rel, lines in files.items()
+        for i, line in enumerate(codes[rel])
         if SKIP_MARK.search(line) and (n := marker_helper(lines, i))
     }
     call = re.compile(r"\b(" + "|".join(map(re.escape, sorted(helpers))) + r")\s*\(") if helpers else None
     for rel, lines in files.items():
-        for i, line in enumerate(lines):
+        for i, line in enumerate(codes[rel]):
             if SKIP_MARK.search(line):
                 if marker_helper(lines, i):
                     continue
@@ -174,7 +256,12 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
             seen += 1
             near = " ".join(lines[max(0, i - 2) : i + 4])
             found = {m.group(1) for m in FINDING.finditer(near)}
-            if not found:
+            rows = [] if found else driving_rows(lines, i)
+            if rows:  # a table-driven twin: every row it is generated from names its finding
+                found = {m.group(1) for r in rows for m in FINDING.finditer(r)}
+                if any(not FINDING.search(r) for r in rows):
+                    bad.append(f"{rel}:{i + 1} (a table row)")
+            elif not found:
                 bad.append(f"{rel}:{i + 1}")
             unknown += [f"F-{f} ({rel}:{i + 1})" for f in found - ids]
     ok = not bad and not unknown
@@ -196,6 +283,37 @@ def suite_check(repo: Path, cmd: str | None) -> tuple[dict, str]:
     out = r.stdout + r.stderr
     tail = out.strip().splitlines()[-1:] or [""]
     return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}"), out
+
+
+def test_listing(repo: Path, cmd: str | None) -> str:
+    """Test titles as the runners list them, so names built at runtime and e2e titles outside `cmd` are found.
+
+    pytest collects through the test command's own invocation; vitest and Playwright list from each tracked
+    package.json naming vitest or playwright.config.*, e2e suites the test command skips included. A runner that
+    fails or times out adds nothing, which leaves the file-text match as before.
+    """
+    if not cmd:
+        return ""
+    runs = []
+    if m := re.match(r"(.*?\bpytest)\b", cmd):
+        runs.append((repo, f"{m.group(1)} --collect-only -q"))
+    for rel in git(repo, "ls-files").splitlines():
+        name = Path(rel).name
+        if name == "package.json" and '"vitest"' in (repo / rel).read_text(encoding="utf-8", errors="replace"):
+            runs.append(((repo / rel).parent, "npx --no vitest list"))
+        elif re.fullmatch(r"playwright\.config\.[cm]?[jt]s", name):
+            runs.append(((repo / rel).parent, "npx --no playwright test --list"))
+    out = []
+    for cwd, run in runs:
+        try:
+            r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=600)
+        except subprocess.TimeoutExpired:
+            continue
+        if r.returncode == 0:
+            out.append(r.stdout)
+    text = "\n".join(out)
+    # vitest joins describe and title with " > ", Playwright with " \u203a "; a cited full name joins them with a space
+    return text + "\n" + re.sub(" (?:>|\u203a) ", " ", text)
 
 
 def strip_docstrings(src: str) -> str:
@@ -727,7 +845,8 @@ def test_exists(path: Path, name: str) -> bool:
 def evidence_check(repo: Path, suite_out: str = "") -> dict:
     """Every finding not invalid names a real test (`path::name`), or says why none can and names its evidence command.
 
-    A name absent from its file still counts when the suite run printed it (a title built at runtime).
+    A name absent from its file still counts when the suite run or a runner's test listing printed it (a title
+    built at runtime).
     """
     rows, bad = findings(repo), []
     for f in rows:
@@ -881,7 +1000,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 12  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code
+CHECKS_VERSION = 13  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows
 
 
 def main() -> int:
@@ -948,7 +1067,7 @@ def main() -> int:
                 else "docs/intake-findings.md missing or holds no F-NNN ids",
             ),
             bug_tests_check(a.repo, start, ids or set(), globs),
-            evidence_check(a.repo, suite_out),
+            evidence_check(a.repo, suite_out + test_listing(a.repo, a.test_cmd)),
             citations_check(a.repo),
             index_check(a.repo),
             matrix_check(a.repo),

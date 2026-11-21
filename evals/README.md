@@ -32,6 +32,7 @@ Every scorer reads its inputs from an eval directory you point it at: one folder
   "gold": "gold.md",
   "test_cmd": "<test:all command>",
   "test_paths": ["<glob>"],
+  "setup": ["npm ci"],
   "runs": [
     {
       "run": "run 1",
@@ -54,6 +55,7 @@ Every scorer reads its inputs from an eval directory you point it at: one folder
 |-----|------|---------|
 | `gold` | both | The gold file |
 | `test_cmd`, `test_paths` | intake | The project's characterization suite and its test globs; a run may override either |
+| `setup` | intake | Optional. Shell commands the baseline runs, in order, in each run it rebuilds from its bundle before scoring, since a rebuilt run has no installed dependencies (`["npm ci"]`). A run may override it; a failing command stops the baseline. Without it the suite runs as the bundle left it |
 | `run` | both | The name `RUN=` selects |
 | `repo` | both | The clone to score, only while it still sits at the run's end; drop it once the clone moves on (a Phase 4 branch), and the run scores from `bundle` and `branch`, as the baseline always does |
 | `spec` | workflow | The spec the run executed |
