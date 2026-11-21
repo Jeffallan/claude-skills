@@ -900,6 +900,98 @@ def is_subagent(path: Path) -> bool:
     return False
 
 
+# An item report's Checks: block (references/intake/rules.md, "The item report"): the command, its exit, its summary
+REPORT_CHECKS = re.compile(
+    r"^Checks:[ \t]*\n`?(.+?)`?[ \t]*\(exit (\d+)\)[ \t]*\n(.*?)(?=^[A-Z][\w ]*:[ \t]*$|\Z)", re.M | re.S
+)
+# pytest, Jest, Vitest and mocha print "<n> passed"; node --test prints "pass <n>"
+COUNT = re.compile(r"(\d+)\s+(passed|passing|failed|failing|skipped|pending)\b|\b(pass|fail|skip)\s+(\d+)\b", re.I)
+COUNT_KIND = {
+    "passed": "pass",
+    "passing": "pass",
+    "failed": "fail",
+    "failing": "fail",
+    "skipped": "skip",
+    "pending": "skip",
+}
+
+
+def counts(text: str) -> dict[str, int]:
+    """The last pass, fail and skip counts a test summary prints."""
+    out = {}
+    for m in COUNT.finditer(text):
+        n, word = (m.group(1), m.group(2)) if m.group(1) else (m.group(4), m.group(3))
+        out[COUNT_KIND.get(word.lower(), word.lower())] = int(n)
+    return out
+
+
+def agent_items(paths: list[Path]) -> list[tuple[str | None, list[dict]]]:
+    """Each subagent transcript's records and the item whose procedure its brief names, as timeline links them."""
+    briefs: dict[str, str] = {}
+    for p in paths:
+        if not is_subagent(p):
+            prompts: dict[str, str] = {}
+            for x in p.read_text(encoding="utf-8").splitlines():
+                if x.strip():
+                    briefs.update(agent_briefs(json.loads(x), prompts))
+    out = []
+    for p in (p for p in paths if is_subagent(p)):
+        msgs = [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
+        first = next((m for m in msgs if m.get("type") == "user"), {})
+        brief = briefs.get(agent_id(p, msgs)) or text_of(first.get("message", {}).get("content", ""))
+        out.append((r.group(1) if (r := ITEM_BRIEF.search(brief)) else None, msgs))
+    return out
+
+
+def at_end_state(repo: Path, start: str, item: str) -> bool:
+    """True when the item's last commit leaves every file outside docs/ as the run ends it."""
+    sha = git(repo, "log", "-1", "--format=%H", "-E", f"--grep=^Intake: (intake:)?{item}$", f"{start}..HEAD").strip()
+    return bool(sha) and not [
+        x for x in git(repo, "diff", "--name-only", f"{sha}..HEAD").splitlines() if not x.startswith("docs/")
+    ]
+
+
+def reported_counts_check(
+    repo: Path, start: str, paths: list[Path], cmd: str | None, suite: dict, out: str
+) -> dict | None:
+    """Each testing item's last reported test run agrees with the scorer's own run of the suite.
+
+    Compared only where the item's last commit leaves the suite as the run ends it. Fails when a report says exit 0
+    or 0 failed and the suite fails, or reports more passes than the suite printed for the same command. None when
+    nothing compares: the check counts only when a run exercised it.
+    """
+    if not cmd or not paths:
+        return None
+    last: dict[str, tuple[datetime, str, int, str]] = {}
+    for item, msgs in agent_items(paths):
+        if not item or not item.startswith("testing-"):
+            continue
+        for m in msgs:
+            if m.get("type") != "assistant" or not m.get("timestamp") or not isinstance(m.get("message"), dict):
+                continue
+            t = when(m["timestamp"])
+            for r in REPORT_CHECKS.finditer(text_of(m["message"].get("content", ""))):
+                if item not in last or t >= last[item][0]:
+                    last[item] = (t, r.group(1).strip(), int(r.group(2)), r.group(3).strip())
+    real, compared, bad = counts(out), [], []
+    for item, (_, run, code, summary) in sorted(last.items()):
+        if not at_end_state(repo, start, item):
+            continue
+        compared.append(item)
+        said = counts(summary)
+        if not suite["pass"] and (code == 0 or said.get("fail") == 0):
+            bad.append(f"intake:{item} reported `{run}` exit {code} ({summary[:80]}), but the suite fails")
+        if run.split() == cmd.split() and "pass" in real and said.get("pass", 0) > real["pass"]:
+            bad.append(f"intake:{item} reported {said['pass']} passed, the suite printed {real['pass']}")
+    if not compared:
+        return None
+    return check(
+        "reported-counts",
+        not bad,
+        f"{len(compared)} testing item reports agree with the suite run: {compared}" if not bad else f"{bad}",
+    )
+
+
 # The check set a score is out of. Bump it whenever a scored check is added, removed or changes its
 # rule, then re-score every baseline run (scripts/eval_intake_baseline.py) before comparing runs.
 def intake_path(repo: Path, rel: str) -> str:
@@ -1154,7 +1246,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 17  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens
+CHECKS_VERSION = 17  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run
 
 
 def main() -> int:
@@ -1237,7 +1329,14 @@ def main() -> int:
         if a.transcript:
             checks.append(skills_check(a.repo, tl))
         # Optional checks run only when the run exercised them; they never enter the score
-        optional = [c for c in (compaction_check(sessions),) if c]
+        optional = [
+            c
+            for c in (
+                compaction_check(sessions),
+                reported_counts_check(a.repo, start, a.transcript, a.test_cmd, suite, suite_out),
+            )
+            if c
+        ]
     except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
