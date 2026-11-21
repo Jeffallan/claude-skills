@@ -693,6 +693,15 @@ printf '\nSee `src/Makefile:12`.\n' >>"$V/docs/operations/configuration.md"
 commit_item "$V" intake:document-config "docs(intake): config"
 v5 "$V" symbol-citations 0 "a path with a separator and no extension still fails symbol-citations"
 
+# Version 17: a domain host:port is not a file:line; only a separator or a known source or doc extension makes a file
+V=$(fresh v17-host)
+printf '\nCalls `example.com:443` and `api.example.org:8080`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 1 "a domain host:port passes symbol-citations"
+printf '\nSee `config.yml:3`.\n' >>"$V/docs/operations/configuration.md"
+commit_item "$V" intake:document-config "docs(intake): config"
+v5 "$V" symbol-citations 0 "a file with a known extension and a line still fails symbol-citations"
+
 V=$(fresh v5-tests-none)
 sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** none|' "$V/docs/intake-findings.md"
 commit_item "$V" intake:testing-features "test(intake): fix"

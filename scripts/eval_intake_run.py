@@ -50,8 +50,12 @@ DOCS = {
 }
 # Docs intake writes beyond DOCS; owner-written docs are never checked for style
 INTAKE_DOCS = (*DOCS.values(), "docs/system-description.md")
-# a file path (a separator, or an extension starting with a letter) then :line; `0.0.0.0:8080` and `localhost:5432` are not
-LINE_CITE = re.compile(r"`(?:[\w./-]*/[\w.-]+|[\w.-]*\.[A-Za-z]\w*):\d+(-\d+)?`")
+# a file path (a separator, or a known source or doc extension) then :line; `0.0.0.0:8080`, `localhost:5432` and
+# `example.com:443` are not. shortcut: a repo file with another extension and no folder goes unflagged; add it here.
+SOURCE_EXT = (
+    "py|ts|js|mjs|cjs|md|json|ya?ml|toml|go|rs|java|kt|rb|php|cs|vue|svelte|tsx|jsx|sql|sh|c|h|cpp|swift|html|css|scss"
+)
+LINE_CITE = re.compile(rf"`(?:[\w./-]*/[\w.-]+|[\w.-]*\.(?i:{SOURCE_EXT})):\d+(-\d+)?`")
 REPEAT_WORDS = 12  # a sentence this long, word for word in two docs, is a repeated fact
 # Letters or digits may not touch the id; `_` may, so test_F012_name counts
 FINDING = re.compile(r"(?<![A-Za-z0-9])F-?(\d{3})(?!\d)")
@@ -1137,7 +1141,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 16  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none
+CHECKS_VERSION = 17  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes
 
 
 def main() -> int:
