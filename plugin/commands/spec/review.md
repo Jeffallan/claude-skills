@@ -29,17 +29,17 @@ The panel and verifiers can run in any session, but the owner triage (Step 6) is
 ## Step 1: Metrics
 
 ```bash
-guard metrics <spec-name>
+guard metrics <spec-name> --json
 ```
 
-It writes `review/metrics.md` for the files changed since the merge base (duplication, dead code, complexity, with the tools it found). Reviewers read it.
+It writes `review/metrics.md` for the files changed since the merge base (duplication, dead code, complexity, with the tools it found). Reviewers read it. The JSON it prints gives `path`, `tools` (each tool as `ran`, `missing` or `no-files`), `ran` and `missing`.
 
-Read `metrics.md` for lines that say a check `did not run` (today: `<tool>: not installed, so this check did not run (install: ...)`). A check that did not run proves nothing, clean or not. Before the panel starts, warn the owner about each one:
+A tool in `missing` had changed files to read but is not installed, so its check did not run. It exits 3 when code changed and no such tool was installed at all; stderr and `metrics.md` then say `No metric tool ran (not installed: ...)`, or `Not installed, so unmeasured: ...` when some tools ran. A check that did not run proves nothing, clean or not. When it exits 3 or `missing` is not empty, warn the owner before the panel starts, about each missing tool:
 
-- Attended: show each tool that did not run, what it finds and its install hint, and ask with `AskUserQuestion` whether to continue without it or stop so the owner can install it and rerun `guard metrics <spec-name>`.
-- In goal mode: continue, and list each tool that did not run first in the turn's final report.
+- Attended: show each missing tool, what it finds and its install hint (from its `did not run` line in `metrics.md`), and ask with `AskUserQuestion` whether to continue without it or stop so the owner can install it and rerun `guard metrics <spec-name> --json`.
+- In goal mode: continue, and list each missing tool first in the turn's final report.
 
-Either way, tell the `code-reviewer` in its brief which checks did not run, so it never reads a missing section as no findings.
+Either way, tell the `code-reviewer` in its brief which checks did not run (the `missing` tools), so it never reads a missing section as no findings.
 
 When the docs root holds docs, also save the docs state for the `code-documenter` reviewer:
 
@@ -120,7 +120,7 @@ guard decide <F-id> revoke --spec <spec-name>
 
 After the last decision, run `guard decisions export <spec-name>`. It writes the spec's full decision history, revokes included, to `review/decisions.jsonl` for git history, and another clone imports them from there with `guard decisions import <spec-name>`. The gate never reads that file. Commit it with the fix round below, or alone as `docs(<spec-name>): owner decisions` when there are no fixes.
 
-For each fix, add a Pending fix ticket (`<spec-name>-rv-<n>`) to the plan's Completion Status, Execution Order and Tickets, with acceptance criteria in your own words, the frozen reproduction in `review/repro/` named as evidence, and a type from `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: `test` (a defect: its own RED test adapted to the suite), `test-gap` (correct code, missing test: RED is the new test against the verifier's frozen mutant), `stand-in` (docs or configuration) or `refactor` (suite green before and after, test files unchanged by digest, metrics show the target gone). Add no `refactor` ticket whose proof is a check `metrics.md` says did not run (`jscpd` for duplication, `vulture` or `knip` for dead code, `lizard` for complexity): nothing could show the target gone. Tell the owner, who installs the tool and reruns `guard metrics`, or picks another type or won't fix. A fix that delivers a Blocked ticket's work says `Delivers: <ticket>`. Then write a fresh `goal-prompt.md` for the fix tickets from `${CLAUDE_PLUGIN_ROOT}/references/specs/templates/goal-prompt.md`, marking each check a fix ticket creates `(needs <ticket> Done)`, and commit the plan, the prompt and `review/decisions.jsonl` together; that commit is the fix round's start SHA. Print the launch commands from `${CLAUDE_PLUGIN_ROOT}/references/specs/launch.md`, and tell the owner to run the next `spec:review` triage in a fresh session without the goal flags.
+For each fix, add a Pending fix ticket (`<spec-name>-rv-<n>`) to the plan's Completion Status, Execution Order and Tickets, with acceptance criteria in your own words, the frozen reproduction in `review/repro/` named as evidence, and a type from `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: `test` (a defect: its own RED test adapted to the suite), `test-gap` (correct code, missing test: RED is the new test against the verifier's frozen mutant), `stand-in` (docs or configuration) or `refactor` (suite green before and after, test files unchanged by digest, metrics show the target gone). Add no `refactor` ticket whose proving tool is in Step 1's `missing` list, a check that did not run (`jscpd` for duplication, `vulture` or `knip` for dead code, `lizard` for complexity): nothing could show the target gone. Tell the owner, who installs the tool and reruns `guard metrics`, or picks another type or won't fix. A fix that delivers a Blocked ticket's work says `Delivers: <ticket>`. Then write a fresh `goal-prompt.md` for the fix tickets from `${CLAUDE_PLUGIN_ROOT}/references/specs/templates/goal-prompt.md`, marking each check a fix ticket creates `(needs <ticket> Done)`, and commit the plan, the prompt and `review/decisions.jsonl` together; that commit is the fix round's start SHA. Print the launch commands from `${CLAUDE_PLUGIN_ROOT}/references/specs/launch.md`, and tell the owner to run the next `spec:review` triage in a fresh session without the goal flags.
 
 ## Recheck
 

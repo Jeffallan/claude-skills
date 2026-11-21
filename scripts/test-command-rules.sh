@@ -50,6 +50,15 @@ if printf '%s\n' "$step6" | grep -qF "did not run"; then pass "spec:review adds 
 step4=$(sed -n '/^## Step 4: RED$/,/^## Step 5: Implement$/p' "$CMD/ticket/execute.md")
 if printf '%s\n' "$step4" | grep -qF "did not run"; then pass "ticket:execute refuses a refactor ticket whose metric did not run"; else fail "ticket:execute refuses a refactor ticket whose metric did not run"; fi
 
+echo "missing metrics: exit 3 and the missing list"
+for s in "guard metrics <spec-name> --json" "exits 3" "\`missing\`"; do
+    if printf '%s\n' "$step1" | grep -qF -- "$s"; then pass "spec:review Step 1 keys the warning on the JSON run ($s)"; else fail "spec:review Step 1 keys the warning on the JSON run ($s)"; fi
+done
+if printf '%s\n' "$step6" | grep -qF "\`missing\`"; then pass "spec:review refuses a refactor ticket whose tool is missing"; else fail "spec:review refuses a refactor ticket whose tool is missing"; fi
+for s in "Not installed, so unmeasured:" "No metric tool ran (not installed:"; do
+    if printf '%s\n' "$step4" | grep -qF -- "$s"; then pass "ticket:execute reads the missing line in metrics.md ($s)"; else fail "ticket:execute reads the missing line in metrics.md ($s)"; fi
+done
+
 echo "owner revokes a decision"
 assert_contains "$CMD/spec/review.md" "guard decide <F-id> revoke --spec <spec-name>" "spec:review lists revoke with the owner statuses"
 if printf '%s\n' "$step6" | grep -qF "revoke that row first"; then pass "spec:review revokes a recorded decision before turning it into a fix ticket"; else fail "spec:review revokes a recorded decision before turning it into a fix ticket"; fi
