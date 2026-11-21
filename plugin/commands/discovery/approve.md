@@ -1,19 +1,19 @@
 ---
 name: approve
-description: Resolve a discovery topic's blocking decisions and create its approved tickets in the configured tracker
+description: Synthesize a discovery topic's research when it has some, resolve its blocking decisions and create its approved tickets in the configured tracker
 argument-hint: "<topic> [--decision=<id>:<value>...]"
 ---
 
 # Discovery Approve
 
-The one approval gate between discovery and the tracker, on both discovery paths. It resolves blocking decisions, lets the owner edit the proposed tickets, creates the approved ones through the tracker adapter, and points to `spec:triage`. It never creates a group, spec or branch: `spec:triage` groups the new tickets.
+The one approval gate between discovery and the tracker, on both discovery paths. When the topic has research and no synthesis yet, it synthesizes first. It then resolves blocking decisions, lets the owner edit the proposed tickets, creates the approved ones through the tracker adapter, and points to `spec:triage`. It never creates a group, spec or branch: `spec:triage` groups the new tickets.
 
 
 `guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
 ## Unattended guard
 
-This command is attended only. When a goal is active, write nothing: print the proposed tickets and unresolved decisions as a read-only proposal and end with `BLOCKED: discovery:approve needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`.
+This command is attended only. When a goal is active, write nothing: print the proposed tickets and unresolved decisions (and, when Step 0 would run, what the sources say) as a read-only proposal and end with `BLOCKED: discovery:approve needs the owner`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`.
 
 ## Input
 
@@ -22,7 +22,87 @@ This command is attended only. When a goal is active, write nothing: print the p
 1. Read `.claude/workflow-config.json`; when it is missing, run the config wizard in `${CLAUDE_PLUGIN_ROOT}/references/adapters/operations.md`.
 2. Load the adapter file for the configured tracker, listed in `${CLAUDE_PLUGIN_ROOT}/references/adapters/operations.md`.
 3. Find `<specsRoot>/todo/discovery/<topic>/`. Read `discovery.md`, then `synthesis.md` when it exists. Proposed tickets come from both files, minus those marked "Replaced" or "Dropped".
-4. Refuse when `discovery.md` lists research items and `synthesis.md` is missing; suggest `discovery:synthesize <topic>`.
+4. When `discovery.md` lists research items and `synthesis.md` is missing, run Step 0 first.
+
+## Step 0: Synthesize research
+
+Runs only when `discovery.md` routed items to research (`sources/` holds files) and `synthesis.md` doesn't exist yet. Otherwise go to Step 1.
+
+### Read the sources
+
+Read `discovery.md`, every Feature Forge file in the folder, and everything in `sources/`. List each source with a one-line summary and ask the owner whether any are missing. When `sources/` is empty but `discovery.md` lists research items, stop: the research isn't in yet, so there is nothing to approve. Tell the owner to add it under `sources/` and rerun.
+
+### Analyze across sources
+
+Start one `fullstack-dev-skills:code-reader` agent per source group when there are more than five sources; otherwise work in this session. Brief:
+
+```
+Read <sources>. For each open question in discovery.md (Q1, Q2, ...), return what these sources say, quoting the line and file that supports it, and whether it answers the question, contradicts another source, or leaves it open.
+Do not write files. End your report with the skills you loaded.
+```
+
+From the results, sort each open question into answered, contradicted (sources disagree) or still open. Every finding cites its source file.
+
+### Write `synthesis.md`
+
+Write `<specsRoot>/todo/discovery/<topic>/synthesis.md`:
+
+```markdown
+# <Topic title>: synthesis
+
+**Topic:** <topic>
+**Status:** Ready for approval
+**Sources:** <count>, listed in Source index
+
+## Summary
+
+<Three to five sentences: what research showed and what it means for the build.>
+
+## Findings
+
+| # | Finding | Answers | Sources |
+|---|---------|---------|---------|
+| R1 | <finding> | Q1 | sources/<file>.md |
+
+## Still open
+
+| # | Question | Why it is still open | Effect if built anyway |
+|---|----------|----------------------|------------------------|
+
+## Blocking decisions
+
+| # | Decision | Options | Recommendation | Blocks |
+|---|----------|---------|----------------|--------|
+| D1 | <decision> | A) ..., B) ... | <option, citing findings> | P4 |
+
+## Proposed tickets
+
+| # | Title | Item | Depends on | Blocked by decisions |
+|---|-------|------|------------|----------------------|
+| P4 | <title> | F3 | - | D1 |
+
+### P4: <title>
+
+<What to build, why the findings support it, the reuse from discovery.md's Existing code.>
+
+**Acceptance criteria:**
+- [ ] <observable result>
+
+**From research:** <finding IDs>
+
+## Source index
+
+| File | What it is | Date |
+|------|------------|------|
+```
+
+Number new proposed tickets after the last one in `discovery.md`, so the steps below read both files without clashes. Research may also drop or change tickets `discovery.md` proposed; say so under that ticket in `discovery.md` and mark it "Replaced by P<n>" or "Dropped: <reason>".
+
+When research says not to build anything, write that in the Summary and leave Proposed tickets empty. Step 4 then closes the topic with no tickets.
+
+### Show it
+
+Set `discovery.md`'s status to "Ready for approval", commit `synthesis.md` and the topic file (`docs(<topic>): synthesize discovery research`), show the owner the summary, the decisions and the proposed tickets, and continue with Step 1.
 
 ## Step 1: Resolve blocking decisions
 

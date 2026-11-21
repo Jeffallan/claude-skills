@@ -6,7 +6,7 @@ argument-hint: "<spec-name>"
 
 # Spec Review
 
-Review a finished spec branch once, over its whole diff, before `spec:complete` opens the PR. A panel of reviewer subagents writes findings; one blind verifier per finding decides whether each is real; a script builds the rollup; the owner picks what to fix; fix tickets join the plan and run through `ticket:execute`. Rerun it after the fixes for the recheck.
+Review a finished spec branch once, over its whole diff, before `spec:complete` opens the PR. A panel of `reviewer` agents writes findings; one blind `verifier` agent per finding decides whether each is real; a script builds the rollup; the owner picks what to fix; fix tickets join the plan and run through `ticket:execute`. Rerun it after the fixes for the recheck.
 
 
 `guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
@@ -59,7 +59,16 @@ Pick reviewers from what the diff touches:
 | Auth, crypto, input handling | `secure-code-guardian` | Secure implementation |
 | The stack's own code | The stack skill from the plan's `Skill:` lines | Framework-specific defects |
 
-Give each reviewer the spec's overview, the diff **without commit messages** (`git diff <merge-base>..HEAD`, never `git log -p`), and the repository at `head_sha`. Strip PR text and ticket status blocks. Brief:
+```mermaid
+flowchart TD
+  m[Step 1: metrics] --> p[Step 2: one reviewer agent per panel row]
+  p --> c[Step 3: citations and merge, this session]
+  c --> v[Step 4: one verifier agent per blocking or warning finding, one for the advisories]
+  v --> r[Step 5: rollup]
+  r --> t[Step 6: owner triage, attended]
+```
+
+Start one `fullstack-dev-skills:reviewer` agent per row, naming the row's skill in its brief. Reviewers only read and write their own file, so they may run at once. Give each reviewer the spec's overview, the diff **without commit messages** (`git diff <merge-base>..HEAD`, never `git log -p`), and the repository at `head_sha`. Strip PR text and ticket status blocks. Brief:
 
 ```
 Use the fullstack-dev-skills:<skill> skill to review this diff for defects in your area.
@@ -68,7 +77,7 @@ Write only review/<reviewer>.md: one row per finding with tier (blocking | warni
 End your report with the skills you loaded.
 ```
 
-Each reviewer writes only its own file, `review/<reviewer>.md`; nothing else writes there.
+Each reviewer writes only its own file, `review/<reviewer>.md`, named after its skill (`review/code-documenter.md`, `review/test-master.md`); nothing else writes there. When a reviewer's report doesn't list the skill its brief named, rerun it.
 
 ## Step 3: Check citations and merge duplicates
 
@@ -76,7 +85,7 @@ In this session: check each finding's file, line range and quote against `head_s
 
 ## Step 4: Verify
 
-Follow `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: one fresh `debugging-wizard` verifier per merged blocking or warning finding, limited to Reproduce, Isolate and Hypothesize; the advisories in one read-only batch; one second look for a rejected blocker. Each verifier works in its own scratch worktree at `head_sha` (`git worktree add --detach`), with no gitignored files, and gets a packet holding the claim, location, quoted code, failure scenario and the ticket's acceptance criteria, never the reviewer's name, tier or reasoning, other findings or commit messages. A worktree doesn't separate a shared database or fixed ports, so verifiers whose reproductions use them run one at a time.
+Follow `${CLAUDE_PLUGIN_ROOT}/references/review/verifier.md`: one fresh `fullstack-dev-skills:verifier` agent, briefed with the `debugging-wizard` skill, per merged blocking or warning finding, limited to Reproduce, Isolate and Hypothesize; the advisories in one read-only batch; one second look for a rejected blocker. Each verifier works in its own scratch worktree at `head_sha` (`git worktree add --detach`), with no gitignored files, and gets a packet holding the claim, location, quoted code, failure scenario and the ticket's acceptance criteria, never the reviewer's name, tier or reasoning, other findings or commit messages. A worktree doesn't separate a shared database or fixed ports, so verifiers whose reproductions use them run one at a time.
 
 Before copying, read each reproduction and verdict for environment dumps, tokens, keys, socket paths and session ids, and cut them (a verifier once captured a whole `strace -v` environment). Copy each reproduction into `review/repro/` with its sha256, then remove the worktrees. There is no budget cap; cost is recorded instead.
 

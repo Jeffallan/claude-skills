@@ -2,6 +2,8 @@
 
 How `spec:review` checks each reviewer finding before the owner sees it. Reviewers raise findings; a verifier decides whether each one is a real defect, blind to who raised it and why. Verdicts go to `guard rollup` (see `references/review/rollup.md`), and `guard gate` reads the result.
 
+Each verifier runs as a fresh `fullstack-dev-skills:verifier` agent, started by `spec:review` with this brief and its packet. The agent writes only in its scratch worktree and never commits.
+
 ## When to use this brief
 
 - `spec:review` Step 4, for every merged finding.

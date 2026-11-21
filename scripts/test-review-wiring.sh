@@ -41,6 +41,13 @@ for s in "Tokens" "Minutes" "fixed-verified" "wontfix" "rejection-accepted" "gua
     assert_contains "$ROLLUP_REF" "$s" "rollup reference covers '$s'"
 done
 
+# spec:review dispatches the plugin's reviewer and verifier agents
+REVIEW="$REPO_ROOT/plugin/commands/spec/review.md"
+for s in "fullstack-dev-skills:reviewer" "fullstack-dev-skills:verifier" "review/code-documenter.md"; do
+    assert_contains "$REVIEW" "$s" "spec:review names '$s'"
+done
+assert_contains "$VERIFIER" "fullstack-dev-skills:verifier" "verifier brief runs in the verifier agent"
+
 echo "runtime wiring"
 
 WORK=$(mktemp -d)

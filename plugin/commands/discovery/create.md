@@ -46,7 +46,7 @@ This is a light pass, so proposed tickets don't duplicate or contradict existing
 |------|-------|
 | Clear: you can write acceptance criteria without guessing | Propose tickets now |
 | Vague: the owner can answer what is missing | Run Feature Forge, then propose tickets |
-| Real unknowns: nobody can answer yet without research (user interviews, a spike, vendor terms) | Research route: list the questions, then `discovery:synthesize` |
+| Real unknowns: nobody can answer yet without research (user interviews, a spike, vendor terms) | Research route: list the questions, then `discovery:approve`, which synthesizes the research first |
 
 Show the routing and let the owner move items between routes.
 
@@ -101,7 +101,7 @@ Write `<specsRoot>/todo/discovery/<topic>/discovery.md`:
 - [ ] <observable result>
 ```
 
-Only clear and Feature Forge items get proposed tickets now. Research items get open questions; their tickets come from `discovery:synthesize`.
+Only clear and Feature Forge items get proposed tickets now. Research items get open questions; their tickets come from the synthesis `discovery:approve` runs.
 
 **Research route.** Create `<specsRoot>/todo/discovery/<topic>/sources/`. Agents can take spikes and competitive research when the owner asks; list the rest (interviews, vendor calls) for the owner. Results go in `sources/` as markdown.
 
@@ -109,7 +109,7 @@ Only clear and Feature Forge items get proposed tickets now. Research items get 
 
 Show the owner the file. Then tell them the next step:
 
-- Research items remain: gather findings in `sources/`, then run `discovery:synthesize <topic>`.
+- Research items remain: gather findings in `sources/`, then run `discovery:approve <topic>`, which synthesizes them before approval.
 - No research: run `discovery:approve <topic>` to create the tickets.
 
 Commit `discovery.md`, any Feature Forge files and `sources/` on a small branch of their own when the owner asks; topics reach the default branch through their own PR. Write nothing to the tracker: only `discovery:approve` creates tickets.

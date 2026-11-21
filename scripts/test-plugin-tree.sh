@@ -125,6 +125,15 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
 }
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
+# discovery:approve absorbs discovery:synthesize
+assert_not_exists "$OUT/commands/discovery/synthesize.md" "ships no discovery:synthesize"
+assert_equal "$(python3 -c "import json,sys; print('discovery:synthesize' in json.load(open(sys.argv[1]))['commands'])" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "False" "plugin.json maps no discovery:synthesize"
+if grep -q "synthesis.md" "$OUT/commands/discovery/approve.md" && ! grep -q "suggest \`discovery:synthesize" "$OUT/commands/discovery/approve.md"; then
+    pass "discovery:approve synthesizes instead of refusing"
+else
+    fail "discovery:approve synthesizes instead of refusing"
+fi
+
 # The eight capability agents (decision 1); plugin agents ignore frontmatter hooks, so none carry any (decision 5a)
 AGENTS="architect assumption-checker code-reader doc-writer reviewer security-prober test-writer verifier"
 assert_equal "$(cd "$OUT/agents" 2>/dev/null && ls *.md | sed 's/\.md$//' | LC_ALL=C sort | tr '\n' ' ')" "$AGENTS " "ships exactly the eight agents"

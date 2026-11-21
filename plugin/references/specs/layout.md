@@ -103,9 +103,9 @@ Paths and launch commands inside an old `goal-prompt.md` go stale after a move. 
 
 | File | Written by | Read by |
 |------|------------|---------|
-| `discovery.md` | `discovery:create` | `discovery:synthesize`, `discovery:approve` |
+| `discovery.md` | `discovery:create` | `discovery:approve` |
 | `<feature>.md` | Feature Forge, run by `discovery:create` or `spec:create` | `discovery:create`, `spec:create` |
-| `synthesis.md` | `discovery:synthesize` | `discovery:approve` |
+| `synthesis.md` | `discovery:approve` (Step 0) | `discovery:approve` |
 | `overview.md` | `spec:create`; `spec:complete` appends the completion report | Plan subagents, the goal run, reviewers, `spec:complete` |
 | `implementation-plan.md` | `spec:create`; `ticket:complete` updates rows; the goal run appends Proposed tracker changes and open questions; `spec:review` and `spec:complete` add fix tickets | The goal run, the ticket commands, `spec:complete` |
 | `goal-prompt.md` | `spec:create`; `spec:review` and `spec:complete` write a fresh one for fix tickets | `/goal` |

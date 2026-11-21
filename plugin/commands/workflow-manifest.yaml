@@ -23,8 +23,6 @@ phases:
     commands:
       - command: "discovery:create"
         definition: plugin/commands/discovery/create.yaml
-      - command: "discovery:synthesize"
-        definition: plugin/commands/discovery/synthesize.yaml
       - command: "discovery:approve"
         definition: plugin/commands/discovery/approve.yaml
 

@@ -75,9 +75,6 @@
     "discovery:create": {
       "source": "./commands/discovery/create.md"
     },
-    "discovery:synthesize": {
-      "source": "./commands/discovery/synthesize.md"
-    },
     "discovery:approve": {
       "source": "./commands/discovery/approve.md"
     },

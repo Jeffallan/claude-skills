@@ -25,7 +25,7 @@ In every mode, attended or goal, workflow commands never schedule wakeups, loops
 | Ticket commands | `ticket:execute`, `ticket:complete` | Run under the unattended rules below |
 | Attended-only commands | `discovery:approve`, `spec:triage`, `spec:create`, the owner triage in `spec:review`, `spec:complete`, the config wizard | Write nothing and end with `BLOCKED:` |
 
-`discovery:create` and `discovery:synthesize` write only local files; under a goal they skip interviews and record open questions instead.
+`discovery:create` writes only local files; under a goal it skips interviews and records open questions instead. `discovery:approve`, synthesis included, is attended only.
 
 ## The attended-only guard
 
