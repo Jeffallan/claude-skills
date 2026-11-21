@@ -59,7 +59,7 @@ Every scorer reads its inputs from an eval directory you point it at: one folder
 | `spec` | workflow | The spec the run executed |
 | `start` | intake | The commit that added the goal prompt and checklist |
 | `plugin`, `model` | both | Recorded in the result |
-| `reflog`, `transcripts` | both | Saved when the run ended, since git prunes the reflog and transcripts stay on the machine that ran them |
+| `reflog`, `transcripts` | both | Saved when the run ended, since git prunes the reflog and transcripts stay on the machine that ran them. `transcripts` lists the goal session and every agent transcript under `<session>/subagents/`; the scorer tells them apart by `isSidechain` |
 | `suite_green` | intake | Take the suite result from the run's saved test output (its services are gone) |
 | `accuracy` | intake | The run's mapping onto the gold set |
 

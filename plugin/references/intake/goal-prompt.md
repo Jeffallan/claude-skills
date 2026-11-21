@@ -91,7 +91,7 @@ The kickoff line names the end state, never "read the file", for the reason `ref
 
 The reflog snapshot, the transcript and the test output are what the intake eval (`evals/intake/` in the claude-skills repo) reads. Save them before deleting the branch or the clone: git prunes reflog entries after about 30 days, and transcripts stay only on the machine that ran the session.
 
-The run saves the reflog and the test output itself. Record the transcript path yourself once the run ends: it is the `~/.claude/projects/<project>/<session>.jsonl` file whose first prompt is the /goal. The run can't do it, because a fair run denies it every read of `~/.claude/projects`, and it can't confirm a file it can't open.
+The run saves the reflog and the test output itself. Record the transcript paths yourself once the run ends: the `~/.claude/projects/<project>/<session>.jsonl` file whose first prompt is the /goal, and every `agent-*.jsonl` in `~/.claude/projects/<project>/<session>/subagents/`. The agents load the procedures' skills and make the human-voice calls, so without their transcripts `skills-loaded` and `human-voice-pass` fail on work that was done. Copy them all into the results folder and list each one in the run's `transcripts`. The run can't do it, because a fair run denies it every read of `~/.claude/projects`, and it can't confirm a file it can't open.
 
 ## What never goes in
 
