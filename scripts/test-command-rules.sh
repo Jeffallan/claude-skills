@@ -40,6 +40,16 @@ for tool in ScheduleWakeup CronCreate RemoteTrigger; do
     assert_contains "$CMD/spec/create.md" "$tool" "spec:create's settings step names $tool"
 done
 
+echo "missing metrics"
+step1=$(sed -n '/^## Step 1: Metrics$/,/^## Step 2: Panel$/p' "$CMD/spec/review.md")
+for s in "did not run" "AskUserQuestion" "goal mode"; do
+    if printf '%s\n' "$step1" | grep -qF "$s"; then pass "spec:review Step 1 handles a metric that did not run ($s)"; else fail "spec:review Step 1 handles a metric that did not run ($s)"; fi
+done
+step6=$(sed -n '/^## Step 6: Owner triage$/,/^## Recheck$/p' "$CMD/spec/review.md")
+if printf '%s\n' "$step6" | grep -qF "did not run"; then pass "spec:review adds no refactor ticket its metric can't prove"; else fail "spec:review adds no refactor ticket its metric can't prove"; fi
+step4=$(sed -n '/^## Step 4: RED$/,/^## Step 5: Implement$/p' "$CMD/ticket/execute.md")
+if printf '%s\n' "$step4" | grep -qF "did not run"; then pass "ticket:execute refuses a refactor ticket whose metric did not run"; else fail "ticket:execute refuses a refactor ticket whose metric did not run"; fi
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
