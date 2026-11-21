@@ -120,15 +120,17 @@ Every attended command that needs the config and finds none runs this wizard bef
 **Unattended guard first.** When a goal is active, write nothing. Print the proposed config (detected values, with the questions still open) and end with `BLOCKED: no workflow config`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `references/specs/unattended.md` instead. There is no silent default tracker.
 
 1. **Check the runtime.** Run `uv --version`. When it fails, tell the owner to install uv (`https://docs.astral.sh/uv/`) and stop: the bundled guard runs through `uv run`, which also supplies Python 3.11 or later when the machine lacks it.
-2. **Detect signals.**
-   - `git remote get-url origin` on github.com: recommend `github-issues`, and `codeHost.type: "github"`.
-   - A Jira or Atlassian MCP server among the session's tools: recommend `jira`.
-   - A Linear MCP server: recommend `linear`.
-   - A text-ticket tool in the repo (a `tickets/` folder, a ticket CLI on `PATH`, a skill that manages tickets): recommend `text`.
+2. **Detect signals.** The tracker recommendation comes only from the repo:
+   - An existing config: `.claude/workflow-config.json` on another branch (`git log --all -1 --format=%h -- .claude/workflow-config.json`): recommend its tracker and block.
+   - A text-ticket tool in the repo (a `tickets/` folder, a ticket CLI on `PATH` that the repo's docs name, a skill that manages tickets): recommend `text`.
+   - The `origin` remote (`git remote get-url origin`) on github.com: recommend `github-issues`, and `codeHost.type: "github"`.
+   - Issue keys such as `ABC-123` in recent commit subjects or branch names (`git log -50 --format=%s`, `git branch -a`): a Jira or Linear project. Offer both, naming the key, and recommend neither.
+   - A Jira, Atlassian or Linear MCP server among the session's tools: list that tracker as available, never the recommendation on its own. A connected server belongs to the session's account, not to this repo, and picking it would create real tickets there.
+   - No repo signal: mark no tracker "(Recommended)".
    - Test and lint commands in the project's manifests or Makefile: recommend them for `verify`.
    - A dependency install the checks need in a fresh checkout (`npm ci` beside a `package-lock.json`, `uv sync` beside a `uv.lock`): recommend it for `setup`.
    - Files the guard would treat as tests that aren't (a `spec/` folder of product docs or schemas, a `*.spec.json` or `*.test.json` data file; see the naming gotcha in `docs/TRACKER_SETUP.md`): recommend `guard.testPatterns` listing the real test paths.
-3. **Ask, one question at a time,** with `AskUserQuestion`, putting the detected value first and marked "(Recommended)": the tracker; then that tracker's block; then `verify`; then `setup` and `guard.testPatterns` when step 2 found a reason for them. Test patterns are settled here, attended, because a goal run may not narrow them later: auto mode refuses that as weakening a safeguard.
+3. **Ask, one question at a time,** with `AskUserQuestion`, putting the detected value first and marked "(Recommended)" (for the tracker, only a repo signal from step 2 earns that mark): the tracker; then that tracker's block; then `verify`; then `setup` and `guard.testPatterns` when step 2 found a reason for them. Test patterns are settled here, attended, because a goal run may not narrow them later: auto mode refuses that as weakening a safeguard.
    - Jira: site and project key, then the repo scope. Propose a component when the project has components whose name matches the repo, else a label equal to the repo name.
    - Linear: team, then the repo scope. Propose a label equal to the repo name, or `{}` when the team's issues all belong to this repo.
    - GitHub Projects: the project URL or owner plus number. Then run `gh auth status`; when the `project` scope is missing, tell the owner to run `gh auth refresh -s project`.

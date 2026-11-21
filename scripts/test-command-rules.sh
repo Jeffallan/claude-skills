@@ -50,6 +50,14 @@ if printf '%s\n' "$step6" | grep -qF "did not run"; then pass "spec:review adds 
 step4=$(sed -n '/^## Step 4: RED$/,/^## Step 5: Implement$/p' "$CMD/ticket/execute.md")
 if printf '%s\n' "$step4" | grep -qF "did not run"; then pass "ticket:execute refuses a refactor ticket whose metric did not run"; else fail "ticket:execute refuses a refactor ticket whose metric did not run"; fi
 
+echo "config wizard"
+OPS="$REF/adapters/operations.md"
+assert_not_contains "$OPS" "MCP server among the session's tools: recommend" "a connected MCP server alone never makes the recommendation"
+assert_contains "$OPS" "never the recommendation on its own" "the wizard lists a connected MCP server as available only"
+for s in "existing config" "tickets/" "ticket CLI" "remote"; do
+    assert_contains "$OPS" "$s" "the wizard recommends from the repo signal '$s'"
+done
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
