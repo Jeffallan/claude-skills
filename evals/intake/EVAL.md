@@ -47,6 +47,7 @@ To score accuracy:
    ```
 
    It prints the gold version, found and total (given rows left out) and the missed rows, and exits 2 when the mapping names a row the gold set doesn't have or skips one it does.
+   What counts as covering a row (owner rule, 2026-11-21): a run finding with the same root cause and location (`(e)` for exact, `(p)` for partial), or a passage in the run's intake docs that states the defect itself, at the same location, as what the code does (`(d)`), even when the run never filed it. A doc that only describes the setting, a neighbouring behavior, or the defect with a hedge does not count. Every non-null value counts as found; the markers keep docs-only credit visible, since a defect described in a doc but never filed is one the owner won't see in the tracker.
 3. Record the version beside the score. A gold set grows when a run finds a real bug it lacked, so scores against different versions don't compare directly.
 
 New findings that aren't in the gold set are checked by hand and, when real, added in the next version.
