@@ -558,6 +558,27 @@ for case in loaded:1 missing:0 bare:0 declined:1; do
     if has "$out" skills-loaded "$want"; then pass "skills check case $name"; else fail "skills check case $name: $out"; fi
 done
 
+# Version 14: declines phrased as a joined list or with the verdict after a semicolon claim nothing;
+# a skill the same note says it used is still claimed
+n=0
+for case in \
+    "vue-expert/vue-expert-js target Vue 3; not loaded:1" \
+    "vue-expert and vue-expert-js not loaded (Vue 2 app):1" \
+    "vue-expert, vue-expert-js skipped (Vue 2 app):1" \
+    "vue-expert declined; written by hand:1" \
+    "written with vue-expert; javascript-pro not loaded:0" \
+    "written with vue-expert; skipped tests cite F-001:0"; do
+    note=${case%:*}; want=${case##*:}; n=$((n + 1))
+    repo="$WORK/skills-declined-v14-$n"
+    rm -rf "$repo"; cp -r "$SK" "$repo"
+    printf -- '- [x] `intake:document-analytics`\n  2026-11-12: written; %s\n' "$note" >>"$repo/docs/intake-checklist.md"
+    commit_item "$repo" intake:document-analytics "docs(intake): document-analytics"
+    set +e
+    out=$(python3 "$EVAL" --repo "$repo" --start "$(cat "$SK.start")" --transcript "$WORK/skills-declined.jsonl" 2>&1)
+    set -e
+    if has "$out" skills-loaded "$want"; then pass "declined note '$note' scores $want"; else fail "declined note '$note' scores $want: $out"; fi
+done
+
 # A fixed check set: the output names its version, optional checks sit outside the score, a saved suite result counts
 set +e
 out=$(python3 "$EVAL" --repo "$CP" --start "$(cat "$CP.start")" --transcript "$WORK/compact-good.jsonl" --suite-green 2>&1)

@@ -509,7 +509,15 @@ def rewrite_check(repo: Path, start: str, windows, reflog: Path | None) -> dict:
 
 
 SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
-DECLINED = re.compile(r"[\w:-]+\s+(?:skill\s+)?(?:was\s+)?not loaded")
+# A decline claims nothing: "javascript-pro not loaded", "vue-expert/vue-expert-js not loaded", "vue-expert and
+# vue-expert-js skipped (Vue 2 app)", or a clause whose verdict follows a semicolon ("vue-expert targets Vue 3; not
+# loaded"). "skipped" and "declined" count only where the clause ends, so "skipped tests cite F-001" declines nothing.
+_VERDICT = r"(?:not loaded|(?:skipped|declined)(?=\s*(?:$|[;.,(])))"
+DECLINED = re.compile(
+    rf"[\w:-]+(?:\s*(?:/|,|&|\band\b)\s*[\w:-]+)*\s+(?:skills?\s+)?(?:(?:was|were)\s+)?{_VERDICT}"
+    rf"|(?:^|(?<=;)|(?<=: )|(?<=\())[^;\n]*;\s*{_VERDICT}",
+    re.M,
+)
 ITEM_SKILL = "fullstack-dev-skills:intake:"  # the pre-0.5.0 layout: one command per item
 ITEM_READ = re.compile(r"/references/intake/procedures/([a-z-]+)\.md$")  # 0.5.0: the intake command reads the procedure
 ITEM_BRIEF = re.compile(r"/references/intake/procedures/([a-z-]+)\.md")  # 0.5.0: or names it in the agent's brief
@@ -1001,7 +1009,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 14  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`)
+CHECKS_VERSION = 14  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines
 
 
 def main() -> int:
