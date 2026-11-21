@@ -612,7 +612,8 @@ for case in loaded:1 missing:0 bare:0 declined:1; do
 done
 
 # Version 14: declines phrased as a joined list or with the verdict after a semicolon claim nothing;
-# a skill the same note says it used is still claimed
+# a skill the same note says it used is still claimed. Version 18: a list that targets something else or does not
+# apply is declined too, unless a claim verb opens it
 n=0
 for case in \
     "vue-expert/vue-expert-js target Vue 3; not loaded:1" \
@@ -623,7 +624,10 @@ for case in \
     "written with vue-expert; skipped tests cite F-001:0" \
     "written with vue-expert and javascript-pro not loaded:0" \
     "using vue-expert/javascript-pro not loaded:0" \
-    "loaded vue-expert, javascript-pro skipped:0"; do
+    "loaded vue-expert, javascript-pro skipped:0" \
+    "Skills loaded: fullstack-dev-skills:test-master (no Vue 2 skill exists; vue-expert/vue-expert-js target Vue 3):1" \
+    "vue-expert/vue-expert-js do not apply (Vue 2 app):1" \
+    "loaded javascript-pro/vue-expert target Vue 3:0"; do
     note=${case%:*}; want=${case##*:}; n=$((n + 1))
     repo="$WORK/skills-declined-v14-$n"
     rm -rf "$repo"; cp -r "$SK" "$repo"
