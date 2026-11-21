@@ -6,7 +6,8 @@ Scores one finished spec run of the claude-skills workflow (`spec:triage` to `sp
 
 | Check | Passes when | Reads |
 |-------|-------------|-------|
-| `gold-outcomes` | Each ticket ends in the status the gold set expects (Done, Blocked, Already done) | The plan's Completion Status and the overview's Readiness table |
+| `gold-outcomes` | Each of the spec's own tickets ends in the status the gold set expects (Done, Blocked, Already done). Review fix tickets (`<spec>-rv-<n>`) are skipped in both the gold set and the plan | The plan's Completion Status and the overview's Readiness table |
+| `fix-tickets` | Every fix ticket the run's review added ends Done, or Blocked with a reason (in Notes, or as `Blocked: <reason>`), whatever its id or how many there are. A run with no fix tickets passes | The plan's Completion Status |
 | `one-commit-per-ticket` | Every Done ticket has exactly one commit with a single `Ticket: <id>` trailer | `git log --all` |
 | `red-before-green` | Every Done ticket has a valid failing RED, then a passing GREEN, then a marker clear | `.git/ticket-guard/evidence/` |
 | `no-history-rewrite` | No rebase, reset or amend inside a goal session (a `guard block` reset is allowed). Fails, rather than passing, when the reflog has no entries from the run | `git reflog` or a saved snapshot (`--reflog`), with goal-session time spans from the transcripts |
@@ -20,6 +21,8 @@ Without transcripts, the last four checks are skipped and `no-history-rewrite` c
 ## Gold set
 
 A gold set is a JSON file mapping each spec to the final status every ticket should reach (Done, Blocked, Already done). Gold sets describe real projects, so they live in an eval directory outside this repo (`../README.md`).
+
+Gold sets list only the spec's own tickets. A rerun's review can raise different findings, so its fix tickets carry the same ids as an earlier run's but name different fixes; `fix-tickets` scores them by outcome instead.
 
 ## Running it
 
@@ -42,7 +45,7 @@ git -C <repo> reflog --date=iso-strict --format='%gd%x00%gs' > <eval directory>/
 
 It prints one JSON result: `eval`, `workflow`, `spec`, `version`, `model`, `score`, `total` and each check with its detail. Exit 0 means every check passed, 1 means one failed, 2 means bad input. Goal-session transcripts are the `~/.claude/projects/<project>/<session>.jsonl` files whose first prompt is `/goal`.
 
-`scripts/test-eval-workflow.sh` (part of `make test`) checks the scorer on a synthetic good run, a synthetic bad one and a synthetic eval directory.
+`scripts/test-eval-workflow.sh` (part of `make test`) checks the scorer on a synthetic good run, a synthetic bad one, a run with no fix tickets and a synthetic eval directory.
 
 ## Results
 

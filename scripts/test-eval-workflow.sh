@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 #
-# Test scripts/eval_workflow_run.py on two synthetic spec runs: a good one that
-# keeps every workflow guarantee, and a bad one that breaks four of them
+# Test scripts/eval_workflow_run.py on synthetic spec runs: a good one that
+# keeps every workflow guarantee, a bad one that breaks five of them
 # (a Done ticket without RED, a second commit for one ticket, an amend after the
-# run started, and a goal session that asked a question and ran git reset).
+# run started, a goal session that asked a question and ran git reset, and review
+# fix tickets left Pending or Blocked without a reason), and one with no fix tickets.
 #
 # Usage: bash scripts/test-eval-workflow.sh
 # Exit codes: 0 = all tests pass, 1 = failure
@@ -20,15 +21,16 @@ EVAL="$REPO_ROOT/scripts/eval_workflow_run.py"
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
-# make_run <dir>: a spec run with two Done tickets, T1 and T2, and full evidence
+# make_run <dir> [plan rows]: a spec run with two Done tickets, T1 and T2, and full evidence,
+# plus any extra Completion Status rows (review fix tickets)
 make_run() {
-    local d=$1
+    local d=$1 extra=${2:-}
     git init -q -b main "$d"
     git -C "$d" config user.email t@example.com
     git -C "$d" config user.name t
     mkdir -p "$d/docs/specs/todo/demo"
     printf '# Demo\n\n**Spec:** demo\n\n## Readiness\n\n| Ticket | Readiness | Evidence or question |\n|---|---|---|\n| T1 | Ready | - |\n| T2 | Ready | - |\n| T3 | Already done | abc123 |\n' >"$d/docs/specs/todo/demo/overview.md"
-    printf '# Plan\n\n## Completion Status\n\n| Ticket | Status | Completed Date | Notes |\n|---|---|---|---|\n| T1 | Done | 2026-11-10 | - |\n| T2 | Done | 2026-11-10 | - |\n' >"$d/docs/specs/todo/demo/implementation-plan.md"
+    printf '# Plan\n\n## Completion Status\n\n| Ticket | Status | Completed Date | Notes |\n|---|---|---|---|\n| T1 | Done | 2026-11-10 | - |\n| T2 | Done | 2026-11-10 | - |\n%b' "$extra" >"$d/docs/specs/todo/demo/implementation-plan.md"
     git -C "$d" add -A
     git -C "$d" commit -qm "docs(demo): plan the spec"
     git -C "$d" checkout -qb spec/demo
@@ -49,9 +51,10 @@ make_run() {
 echo "workflow run eval"
 
 GOOD="$WORK/good"
-make_run "$GOOD"
+# the review raised a different fix than the older gold names: fix ticket ids are not gold
+make_run "$GOOD" '| demo-rv-2 | Blocked | - | needs production access |\n'
 GOLD="$WORK/gold.json"
-printf '{"demo": {"T1": "Done", "T2": "Done", "T3": "Already done"}}\n' >"$GOLD"
+printf '{"demo": {"T1": "Done", "T2": "Done", "T3": "Already done", "demo-rv-1": "Done"}}\n' >"$GOLD"
 T0=$(date -u -d '-1 min' +%Y-%m-%dT%H:%M:%SZ)
 T1=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"/goal Every condition in <done_when> holds"}}\n{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"git log --oneline"}}]}}\n{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"text","text":"done_when evidence: git log shows 2 commits"}]}}\n' "$T0" "$T1" "$T1" >"$WORK/good.jsonl"
@@ -64,7 +67,12 @@ out=$(python3 "$EVAL" --repo "$GOOD" --spec demo --gold "$GOLD" --transcript "$W
 rc=$?
 set -e
 if [ "$rc" -eq 0 ]; then pass "the good run passes (exit 0)"; else fail "the good run passes (exit $rc): $out"; fi
-if printf '%s' "$out" | python3 -c 'import json,sys; d=json.load(sys.stdin); sys.exit(0 if d["score"]==d["total"] and d["total"]>=8 else 1)'; then pass "the good run scores every check"; else fail "the good run scores every check: $out"; fi
+if printf '%s' "$out" | python3 -c 'import json,sys; d=json.load(sys.stdin); sys.exit(0 if d["score"]==d["total"] and d["total"]>=9 else 1)'; then pass "the good run scores every check"; else fail "the good run scores every check: $out"; fi
+if printf '%s' "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['id']: x for x in d['checks']}; sys.exit(0 if c['gold-outcomes']['pass'] and c['fix-tickets']['pass'] and 'demo-rv' not in c['gold-outcomes']['detail'] else 1)"; then
+    pass "fix tickets whose ids differ from the gold's still pass gold-outcomes and fix-tickets"
+else
+    fail "fix tickets whose ids differ from the gold's still pass gold-outcomes and fix-tickets: $out"
+fi
 
 # An eval directory: eval.json names the gold file and the run's repo, spec and transcripts
 ED="$WORK/evaldir"
@@ -83,7 +91,7 @@ else
 fi
 
 BAD="$WORK/bad"
-make_run "$BAD"
+make_run "$BAD" '| demo-rv-1 | Pending | - | - |\n| demo-rv-2 | Blocked | - | - |\n'
 # T2 loses its RED, T1 gets a second commit, the last commit is amended after the run started
 grep -v '"phase":"red"' "$BAD/.git/ticket-guard/evidence/T2.jsonl" >"$WORK/t2" && mv "$WORK/t2" "$BAD/.git/ticket-guard/evidence/T2.jsonl"
 echo more >>"$BAD/T1.txt"
@@ -99,7 +107,7 @@ rc=$?
 set -e
 if [ "$rc" -eq 1 ]; then pass "the bad run fails (exit 1)"; else fail "the bad run fails (exit $rc)"; fi
 if printf '%s' "$out" | grep -q 'git reset --soft'; then pass "the denied-git detail shows the matching command"; else fail "the denied-git detail shows the matching command"; fi
-for check in one-commit-per-ticket red-before-green no-history-rewrite no-question-in-goal no-denied-git final-message-evidence; do
+for check in fix-tickets one-commit-per-ticket red-before-green no-history-rewrite no-question-in-goal no-denied-git final-message-evidence; do
     if printf '%s' "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); c=[x for x in d['checks'] if x['id']=='$check']; sys.exit(0 if c and not c[0]['pass'] else 1)"; then
         pass "the bad run fails $check"
     else
@@ -110,6 +118,23 @@ if printf '%s' "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); c=[
     pass "the bad run still passes launch-delivered"
 else
     fail "the bad run still passes launch-delivered"
+fi
+if printf '%s' "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); c=[x for x in d['checks'] if x['id']=='fix-tickets']; sys.exit(0 if c and 'demo-rv-1' in c[0]['detail'] and 'demo-rv-2' in c[0]['detail'] else 1)"; then
+    pass "fix-tickets names the Pending fix ticket and the Blocked one without a reason"
+else
+    fail "fix-tickets names the Pending fix ticket and the Blocked one without a reason"
+fi
+
+# A run whose review created no fix tickets passes fix-tickets
+NONE="$WORK/none"
+make_run "$NONE"
+set +e
+out=$(python3 "$EVAL" --repo "$NONE" --spec demo 2>&1)
+set -e
+if printf '%s' "$out" | python3 -c "import json,sys; d=json.load(sys.stdin); c=[x for x in d['checks'] if x['id']=='fix-tickets']; sys.exit(0 if c and c[0]['pass'] else 1)"; then
+    pass "a run with no fix tickets passes fix-tickets"
+else
+    fail "a run with no fix tickets passes fix-tickets: $out"
 fi
 
 # A pruned reflog must not pass the rewrite check silently
