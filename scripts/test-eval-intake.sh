@@ -752,6 +752,13 @@ printf '\nAlso `app.py::nowhere`.\n' >>"$V/docs/domain/features.md"
 commit_item "$V" intake:document-features "docs(intake): features"
 v5 "$V" docs-pristine 0 "a citation whose symbol is gone fails docs-pristine"
 
+V=$(fresh v5-vendored)
+printf 'node_modules/\n' >>"$V/.gitignore"
+mkdir -p "$V/node_modules/authlib" && printf 'export function verifyEmail() {}\n' >"$V/node_modules/authlib/session.js"
+printf '\nSign-in leans on `node_modules/authlib/session.js::verifyEmail`.\n' >>"$V/docs/domain/features.md"
+commit_item "$V" intake:document-features "docs(intake): features"
+v5 "$V" docs-pristine 0 "a citation into vendored code fails docs-pristine"
+
 V=$(fresh v5-beside)
 git -C "$V" mv docs/domain/glossary.md docs/domain/glossary-intake.md
 printf '# Our glossary\n\nOwner text, no audit.\n' >"$V/docs/domain/glossary.md"

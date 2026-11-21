@@ -861,10 +861,14 @@ def pristine_check(repo: Path) -> dict:
                 problems.append(f"{rel}: related {other} does not exist")
             elif rel not in guard_docs.related(target.read_text(encoding="utf-8")):
                 problems.append(f"{rel} lists {other}, which does not list it back")
-        for path, symbol in guard_docs.citations(text):
+        cited = guard_docs.citations(text)
+        vendored = guard_docs._ignored(repo, sorted({p for p, _ in cited if (repo / p).is_file()}))
+        for path, symbol in cited:
             target = repo / path
             word = symbol.split(".")[-1]
-            if not target.is_file() or not re.search(
+            if path in vendored:
+                problems.append(f"{rel}: {path}::{symbol} cites vendored or git-ignored code")
+            elif not target.is_file() or not re.search(
                 rf"\b{re.escape(word)}\b", target.read_text(encoding="utf-8", errors="replace")
             ):
                 problems.append(f"{rel}: {path}::{symbol} does not resolve")
@@ -877,7 +881,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 11  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing
+CHECKS_VERSION = 12  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code
 
 
 def main() -> int:

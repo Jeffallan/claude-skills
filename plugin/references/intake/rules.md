@@ -74,7 +74,7 @@ related: [security/authorization.md, architecture/data-model.md]
 
 `guard docs-drift` lists each doc whose code changed since its `verified` commit, through a cited symbol or a `sources` glob, in commits that didn't also update the doc, and each doc edited outside the workflow since then (a commit with no `Intake:` or `Ticket:` trailer).
 
-Cite code by symbol: `` `app/billing/services.py::round_minutes` ``, `` `app/models.py::Profile.save` `` for a method, the key name for configuration. Never cite `path:line`: `intake:document-codebase` and every later docstring move lines, so a line number goes stale before the run ends. After a ticket workflow adopts these docs, `ticket:execute` finds the docs a change affects through these citations and `related:` links.
+Cite only the project's own code. Installed dependencies and other vendored code (`node_modules/`, a virtualenv, `vendor/`, anything git ignores) are not the project's responsibility and change on every install: name the package and the version the lockfile pins, and describe the behavior the project relies on, never a `path::symbol` inside it. `sources:` globs never reach into vendored code either. Cite code by symbol: `` `app/billing/services.py::round_minutes` ``, `` `app/models.py::Profile.save` `` for a method, the key name for configuration. Never cite `path:line`: `intake:document-codebase` and every later docstring move lines, so a line number goes stale before the run ends. After a ticket workflow adopts these docs, `ticket:execute` finds the docs a change affects through these citations and `related:` links.
 
 Check both before committing a doc:
 
@@ -82,7 +82,7 @@ Check both before committing a doc:
 uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" docs-check
 ```
 
-It reports a `related:` doc that is missing or doesn't link back, a citation whose file or symbol is gone, and a `verified` that isn't a commit. Fix what it lists in intake docs; an owner doc it lists goes in the inventory instead.
+It reports a `related:` doc that is missing or doesn't link back, a citation whose file or symbol is gone, a citation into vendored or git-ignored code, and a `verified` that isn't a commit. Fix what it lists in intake docs; an owner doc it lists goes in the inventory instead.
 
 ## Reruns
 

@@ -312,3 +312,17 @@ def test_a_ticket_editing_an_existing_source_file_is_flagged_only_through_citati
     base = git_repo.head()
     git_repo.write("src/app.py", "def add(a, b):\n    return a + b\n\n\ndef mul(a, b):\n    return b * a\n")
     assert "architecture/api.md" not in docs.affected(git_repo.root, base)
+
+
+def test_check_flags_a_citation_into_vendored_code(git_repo, capsys):
+    with_docs(git_repo)
+    git_repo.write(".gitignore", "node_modules/\n")
+    git_repo.write("node_modules/authlib/session.js", "export function verifyEmail() {}\n")
+    git_repo.write("docs/other.md", OTHER + "\nSign-in leans on `node_modules/authlib/session.js::verifyEmail`.\n")
+    git_repo.commit("docs cite a dependency")
+    assert main(["docs-check"]) == 1
+    err = capsys.readouterr().err
+    assert (
+        "other.md: cites node_modules/authlib/session.js::verifyEmail, but node_modules/authlib/session.js is vendored or git-ignored"
+        in err
+    )

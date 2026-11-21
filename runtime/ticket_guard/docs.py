@@ -89,13 +89,33 @@ def check(cwd: Path) -> list[str]:
         verified = frontmatter(text).get("verified")
         if verified and not _is_commit(cwd, str(verified)):
             problems.append(f"{doc}: verified {verified} is not a commit")
-        for path, symbol in citations(text):
+        cited = citations(text)
+        ignored = _ignored(cwd, sorted({path for path, _ in cited if (repo / path).is_file()}))
+        for path, symbol in cited:
             target = repo / path
-            if not target.is_file():
+            if path in ignored:
+                problems.append(
+                    f"{doc}: cites {path}::{symbol}, but {path} is vendored or git-ignored; cite the project's own code"
+                )
+            elif not target.is_file():
                 problems.append(f"{doc}: cites {path}::{symbol}, but {path} does not exist")
             elif not _word(symbol).search(target.read_text(encoding="utf-8", errors="replace")):
                 problems.append(f"{doc}: cites {path}::{symbol}, but {symbol.split('.')[-1]} is not in {path}")
     return problems
+
+
+def _ignored(cwd: Path, paths: list[str]) -> set[str]:
+    """The paths git ignores: installed dependencies and other vendored code the project doesn't own."""
+    if not paths:
+        return set()
+    out = subprocess.run(
+        ["git", "check-ignore", "--no-index", "--stdin"],
+        cwd=top(cwd),
+        input="\n".join(paths),
+        capture_output=True,
+        text=True,
+    ).stdout
+    return set(out.split())
 
 
 def _is_commit(cwd: Path, rev: str) -> bool:
