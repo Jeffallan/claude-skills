@@ -423,6 +423,84 @@ else
     fail "a skip with a BLOCKED: reason is listed as blocked; a bare skip and other reasons still need a finding: $out"
 fi
 
+# Version 19: node:test marks a test with options, `{ todo: "F-001" }` or `{ skip: "..." }`, and in its body with
+# t.todo(); each is a marker. `{ skip: false }`, a type `{ todo: string }` and a variable named todo are not.
+NO="$WORK/nodeopts"
+make_run "$NO"
+mkdir -p "$NO/test/e2e"
+cat >"$NO/test/e2e/cited.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("F-001 profiles are hidden (intended)", { todo: "F-001" }, async () => {});
+
+
+
+
+it("marks the fine paid", { timeout: 5, skip: "F-001 fix pending" }, async () => {});
+
+
+
+
+it("renews a loan", { skip: "BLOCKED: no emulator, see notes" }, async () => {});
+
+
+
+
+it("runs", { skip: false, todo: false }, async () => {});
+const todo = rows.filter((r) => r.todo);
+type Opts = { todo: string };
+EOF
+commit_item "$NO" intake:testing-user-flows "test(intake): testing-user-flows"
+set +e
+out=$(score "$NO")
+set -e
+if has "$out" bug-tests-cite-findings 1 && printf '%s' "$out" | grep -q '4 skipped or expected-fail tests' \
+    && printf '%s' "$out" | grep -qF "blocked (BLOCKED: no emulator, see notes): ['test/e2e/cited.test.ts:13']"; then
+    pass "node:test todo and skip options citing a finding count; a BLOCKED: one is listed as blocked"
+else
+    fail "node:test todo and skip options citing a finding count; a BLOCKED: one is listed as blocked: $out"
+fi
+NB="$WORK/nodeopts-bare"
+make_run "$NB"
+mkdir -p "$NB/test/e2e"
+cat >"$NB/test/e2e/bare.test.ts" <<'EOF'
+import { describe, it, test } from "node:test";
+
+it("totals round (intended)", { todo: "later" }, async () => {});
+
+describe("desk", { skip: "not yet" }, () => {});
+
+it("shows the flash", async (t) => {
+  t.todo("pending");
+});
+
+test.todo("lists loans");
+
+it.todo("lists fines");
+
+test.failing("rounds up", () => {});
+
+it("runs", { skip: false, todo: false }, async () => {});
+const todo = rows.filter((r) => r.todo);
+type Opts = { todo: string };
+it("waits", { todo: undefined }, async () => {});
+EOF
+commit_item "$NB" intake:testing-user-flows "test(intake): testing-user-flows"
+set +e
+out=$(score "$NB")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, re, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "bug-tests-cite-findings")
+bad = re.search(r"no finding id: (\[[^]]*\])", c["detail"])
+want = str([f"test/e2e/bare.test.ts:{n}" for n in (3, 5, 8, 11, 13, 15)])
+sys.exit(0 if not c["pass"] and bad and bad.group(1) == want else 1)
+'; then
+    pass "node:test todo and skip options, t.todo() and test.todo without a finding id fail bug-tests-cite-findings"
+else
+    fail "node:test todo and skip options, t.todo() and test.todo without a finding id fail bug-tests-cite-findings: $out"
+fi
+
 # A new test-only lockfile carries a root entry with no dev flag; only runtime packages count
 NL="$WORK/newlock"
 make_run "$NL"
