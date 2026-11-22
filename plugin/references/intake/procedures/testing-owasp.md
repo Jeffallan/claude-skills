@@ -70,7 +70,7 @@ technique that has a surface, and give each one a coverage-map row.
   lockfiles present and committed; CI actions, base images and install scripts pinned (no unpinned third-party
   action, no script piped from the network into a shell). A vulnerable or end-of-life dependency is a finding with a
   `none: ...; evidence:` line. Rate an advisory by the reach this app shows, never by the advisory's own score
-  (`findings.md`, "Severity"): search the code for the function, option or input the advisory names.
+  (`severity.md`, "Over-rating guards"): search the code for the function, option or input the advisory names.
   With no exposure path shown in this app, the finding is Low, however the advisory rates itself. Its `What:` line gives the
   advisory id, the advisory's own severity and what you searched, and its Recommendation names the fixed version
   without installing it. When the code does reach the vulnerable path, cite the call site and rate what it lets

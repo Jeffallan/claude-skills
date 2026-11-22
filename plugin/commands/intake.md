@@ -13,7 +13,7 @@ The one entry point for intake. It works `docs/intake-checklist.md` in order: fo
 - No argument: work the checklist from the first unchecked item without an unresolved `BLOCKED:` note, through Phase 3.
 - A procedure name (`intake document-glossary`): run or rerun that one procedure. Anything after the name goes to the procedure as its options (`intake create-system-description --full`, `intake document-api backend/`).
 
-Before the first item, read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/checklist.md`. Load the `SendMessage` tool with ToolSearch (`select:SendMessage`): it is deferred, and an attended checkpoint, `document-authorization`'s second pass and a rerun for a missing skill all resume an agent with it.
+Before the first item, read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md`, `${CLAUDE_PLUGIN_ROOT}/references/intake/severity.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/checklist.md`. Load the `SendMessage` tool with ToolSearch (`select:SendMessage`): it is deferred, and an attended checkpoint, `document-authorization`'s second pass and a rerun for a missing skill all resume an agent with it.
 
 `guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
 
@@ -84,7 +84,7 @@ After `testing-setup` is committed, `testing-features`, `testing-authorization` 
 2. **Batch lines** for each brief:
    ```
    Parallel batch: testing-features, testing-authorization and testing-owasp write at the same time in this tree. Write only your own test files (and, for testing-authorization, docs/security/authorization.md); leave shared fixtures, helpers and config alone when you can, and list any you change under Changed files.
-   Don't edit docs/intake-findings.md; this overrides the procedure's tracker steps. Give each new finding a provisional id from your range (testing-features F-901 up, testing-authorization F-931 up, testing-owasp F-961 up) and use it wherever the real id would go. Under "Tracker edits:" after Checks in your item report, give each new finding in the tracker's shape, each Summary, Test coverage and Open questions row, and each changed line of an existing finding (its Tests: line, its text) as the line to replace and its replacement.
+   Don't edit docs/intake-findings.md; this overrides the procedure's tracker steps. Give each new finding a provisional id from your range (testing-features F-901 up, testing-authorization F-931 up, testing-owasp F-961 up) and use it wherever the real id would go. Under "Tracker edits:" after Checks in your item report, give each new finding in the tracker's shape, each Summary, Test coverage and Open questions row, and each changed line of an existing finding (its Tests: line, its text, its Severity: line and Summary row when your evidence re-rates it) as the line to replace and its replacement.
    Run only your own test files as your check.
    ```
 3. **Check the batch** once all three report: each report as step 6 does, then `git status --short` against the three `Changed files:` lists together. A path in two lists is a shared file. A changed path in no list: ask the agents which wrote it, and treat it as shared when more than one did.
@@ -98,7 +98,7 @@ Keep the line for the run's mode and drop the other.
 
 ```
 Use the <skill> skill to <what this procedure produces>. Also load: <the other skills, each by exact name>.
-Procedure: <plugin root>/references/intake/procedures/<procedure>.md. Read it and the files it names under <plugin root>/references/intake/ before anything else.
+Procedure: <plugin root>/references/intake/procedures/<procedure>.md. Read it, the files it names under <plugin root>/references/intake/, and <plugin root>/references/intake/severity.md (how to rate and re-rate a finding) before anything else.
 Plugin root: <the value of ${CLAUDE_PLUGIN_ROOT}>. Project root: <path>. Options: <what followed the procedure name, or none>. Mode: <attended|goal run>.
 <goal run> One pass: don't stop at the procedure's checkpoint. Put the scope it shows in your report under "Checkpoint draft:", follow the goal-run rule in rules.md, and go on to write.
 <attended> Discovery only: run the procedure up to its checkpoint and return the scope it shows. Write nothing until I resume you.
@@ -108,7 +108,7 @@ Before you report, run the item's check (guard docs-check, spelled out in rules.
 
 ## After the last item
 
-Phase 4 (the gate) stays attended and outside this command. Report a table (item, commit, evidence, finding ids), any High security finding that affects the deployed system first (id and one line, no reproduction detail), then blocked items and open questions.
+Phase 4 (the gate) stays attended and outside this command. Report any Critical or High security finding that affects the deployed system first (id and one line, no reproduction detail), then a table (item, commit, evidence, finding ids), then blocked items and open questions, then the findings counted by severity (Critical, High, Medium and Low) from `docs/intake-findings.md` as it stands.
 
 ## Rules
 

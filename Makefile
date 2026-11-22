@@ -60,6 +60,7 @@ test: guard-check guard-test
 	bash scripts/test-review-wiring.sh
 	bash scripts/test-launch-command.sh
 	bash scripts/test-command-rules.sh
+	bash scripts/test-severity-rules.sh
 	bash scripts/test-eval-workflow.sh
 	bash scripts/test-eval-intake.sh
 	bash scripts/test-eval-loop.sh

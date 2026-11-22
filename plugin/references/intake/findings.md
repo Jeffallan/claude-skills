@@ -33,7 +33,7 @@ until triaged.
 
 | ID | Finding | Severity | Area | Status | Surfaced by |
 |----|---------|----------|------|--------|-------------|
-| F-001 | <one line> | High / Medium / Low | <area> | open | <command> |
+| F-001 | <one line> | Critical / High / Medium / Low | <area> | open | <command> |
 
 ## Open questions
 
@@ -43,7 +43,7 @@ until triaged.
 ## Findings
 
 ### F-001 <title>
-- **Severity:** <High / Medium / Low> (<area>)
+- **Severity:** <Critical / High / Medium / Low> (<area>). Row: <row>; <adjustment, or no adjustment>
 - **Status:** open
 - **Location:** `<path>::<symbol>`
 - **What:** <what the code does, in plain terms>
@@ -68,7 +68,7 @@ until triaged.
 
 ## Security detail in a committed tracker
 
-The tracker is committed, and a High security finding with its tests is a working recipe against the deployed system until it's fixed. Before writing the first High security finding, check where the repo is visible (`gh repo view --json visibility`, the remote's host, or the owner's note in the checklist):
+The tracker is committed, and a Critical or High security finding with its tests is a working recipe against the deployed system until it's fixed. Before writing the first Critical or High security finding, check where the repo is visible (`gh repo view --json visibility`, the remote's host, or the owner's note in the checklist):
 
 - **Private to the owner's team:** write it in full, as usual.
 - **Public, or shared wider than the people who would fix it, or unknown:** A repo with no git remote counts as unknown, and so does a remote `gh` can't read: nothing in the repo says who will see it once it is pushed. Write the Summary row and a Findings entry with severity, area, status, location and `Tests:` line, and put the reproduction detail (the exact requests, payloads and the steps) in `docs/intake-findings-restricted.md`, which the command adds to `.git/info/exclude` so it never gets committed. Record the choice in the item's checklist note and as an Open question, so the owner can move the detail back.
@@ -83,6 +83,7 @@ The tests still pin the behavior either way; their names say what they check, no
 | Open questions | A command in a goal run that makes a choice the owner could reasonably reverse (see `references/intake/rules.md`); routine scope confirmations stay in the checklist note |
 | Test coverage, and each finding's `Tests:` line | The `intake:testing-*` commands, both in the same commit as the test |
 | A finding's text after a test confirms or disproves it (drop "suspected", correct the claim, set `invalid`) | The testing command whose test settled it |
+| A finding's `Severity:` line after later evidence changes its reach | The procedure that holds the evidence, in the same commit (`references/intake/severity.md`, "Re-rating"); the parallel testing commands report it as a tracker edit |
 | `fixed` on a finding about the test code itself, repaired under "A red baseline" | `intake:testing-setup`, naming the repair commit |
 | Status changes to `ticketed`, `accepted-risk`, `fixed` | The owner, at close-out |
 
@@ -98,22 +99,7 @@ A `fixed` finding keeps its evidence too: the `Tests:` line names the intended-b
 
 ## Severity
 
-Rate a finding by what its evidence shows it lets someone do in this app. The category it falls in, such as access control or hardening, sets no level by itself.
-
-| Severity | Use it for |
-|----------|-----------|
-| High | Someone gains a higher role or another role's powers, lifts or bypasses a blocking state on their own, keeps access after it was removed, reads or changes sensitive data (credentials, payment details, health or legal records) of other accounts, or loses data with no way back |
-| Medium | A principal reads or changes another account's ordinary data or does an action reserved for another role, money or stock counts go wrong, an operation leaves bad state, a missing control with an exploit path shown in this app |
-| Low | A hardening gap with no exploit path shown, wrong behavior that stores nothing, an error answered as a 500 without harm, drift, dead code, type drift, inconsistency |
-
-Then adjust:
-
-- **Rate the reach you showed.** A library advisory, a default setting or a missing header is Low until the entry names how this app reaches it. "Applicability unconfirmed" is Low.
-- **Weigh who can do it and what it takes.** One level lower when only staff or admins can reach it, when it needs a leaked secret, or when an existing control stops it at once (an admin can remove the role).
-- **Depends on deployment:** rate what the repo shows, name the setting that would change the rating, and ask for its deployed value as an Open question.
-- **Depends on an unstated rule:** when the code is wrong under one reading of a rule nobody wrote down, rate it Low or make it an Open question.
-
-The `What:` line states the impact the rating rests on. Severity is the finder's first guess; the owner adjusts it at close-out.
+Every finding has a severity: Critical, High, Medium or Low. Read `references/intake/severity.md` before you write or change a `Severity:` line. It holds the levels, the data classes, the closed list of adjustments, the floors, the over-rating guards, the re-rate rule and the anchors. The `Severity:` line names the table row the rating comes from and any adjustment. A later procedure whose evidence changes a finding's reach re-rates it in the same commit; the owner can still adjust any rating at close-out.
 
 ## Close-out
 
