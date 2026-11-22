@@ -18,7 +18,7 @@ import re
 import sys
 
 import eval_dir
-from eval_workflow_run import check
+from eval_workflow_run import cells, check
 
 
 def table(text: str, heading: str) -> list[dict[str, str]]:
@@ -27,9 +27,9 @@ def table(text: str, heading: str) -> list[dict[str, str]]:
     lines = [ln.strip() for ln in (m.group(1) if m else "").splitlines() if ln.strip().startswith("|")]
     if len(lines) < 2:
         return []
-    cells = [[c.strip() for c in ln.strip("|").split("|")] for ln in lines]
-    head = [h.lower() for h in cells[0]]
-    return [dict(zip(head, row, strict=False)) for row in cells[2:]]
+    split = [cells(ln) for ln in lines]
+    head = [h.lower() for h in split[0]]
+    return [dict(zip(head, row, strict=False)) for row in split[2:]]
 
 
 def topic_dir(repo: Path, topic: str) -> Path:

@@ -14,16 +14,18 @@ from pathlib import Path
 import re
 import sys
 
+from eval_workflow_run import cells
+
 
 def findings_table(text: str) -> dict[str, dict[str, str]]:
     """Each finding row of the gold file's Findings table, by id, as {column header: cell}."""
     lines = [ln for ln in text.split("## Findings", 1)[1].split("\n## ", 1)[0].splitlines() if ln.startswith("|")]
-    header = [c.strip() for c in lines[0].strip("|").split("|")]
+    header = cells(lines[0])
     rows = {}
     for line in lines[2:]:
-        cells = [c.strip() for c in line.strip("|").split("|")]
-        if re.fullmatch(r"(?:F|MISSED|ADDED)-\d+", cells[0]):
-            rows[cells[0]] = dict(zip(header, cells, strict=False))
+        row = cells(line)
+        if re.fullmatch(r"(?:F|MISSED|ADDED)-\d+", row[0]):
+            rows[row[0]] = dict(zip(header, row, strict=False))
     return rows
 
 

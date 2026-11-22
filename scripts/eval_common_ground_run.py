@@ -18,7 +18,7 @@ import re
 import sys
 
 import eval_dir
-from eval_workflow_run import check
+from eval_workflow_run import cells, check
 
 
 def tables(text: str, need: set[str]) -> list[list[dict[str, str]]]:
@@ -29,13 +29,13 @@ def tables(text: str, need: set[str]) -> list[list[dict[str, str]]]:
         if not ln.strip().startswith("|"):
             head = None
             continue
-        cells = [c.strip() for c in ln.strip().strip("|").split("|")]
+        row = cells(ln)
         if head is None:
-            head = [c.lower() for c in cells] if need <= {c.lower() for c in cells} else []
+            head = [c.lower() for c in row] if need <= {c.lower() for c in row} else []
             if head:
                 out.append([])
-        elif head and not all(re.fullmatch(r":?-+:?", c) for c in cells):
-            out[-1].append(dict(zip(head, cells, strict=False)))
+        elif head and not all(re.fullmatch(r":?-+:?", c) for c in row):
+            out[-1].append(dict(zip(head, row, strict=False)))
     return out
 
 

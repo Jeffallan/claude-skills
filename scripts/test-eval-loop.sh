@@ -125,6 +125,21 @@ set -e
 for c in conflict-recall no-false-flags right-spec; do
     if has "$out" "$c" 0; then pass "common-ground $c fails on a wrong report"; else fail "common-ground $c fails on a wrong report: $out"; fi
 done
+# An escaped pipe inside a cell stays in that cell, unescaped, and does not shift the columns after it
+got=$(cd "$REPO_ROOT/scripts" && python3 - <<'PY'
+from eval_common_ground_run import tables
+from eval_workflow_run import cells
+report = """| Doc | Claim | Verdict | Evidence |
+|-----|-------|---------|----------|
+| docs/configuration.md | "Payment or mail credentials \\| None exist in the repo" | stale | `src/config.ts` |
+"""
+row = tables(report, {"doc", "claim"})[0][0]
+ok = row["claim"] == '"Payment or mail credentials | None exist in the repo"' and row["verdict"] == "stale"
+split = cells(r"| a \| b | c |")
+print("ok" if ok and split == ["a | b", "c"] else f"{row} {split}")
+PY
+)
+if [ "$got" = ok ]; then pass "table rows split on unescaped pipes only"; else fail "table rows split on unescaped pipes only: $got"; fi
 
 # discovery:approve records "Created as <ID>" next to the proposed ticket: in its table row or under its ### heading
 R2="$WORK/disc2"

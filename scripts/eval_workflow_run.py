@@ -33,7 +33,8 @@ def git(repo: Path, *args: str) -> str:
 
 
 def cells(line: str) -> list[str]:
-    return [c.strip() for c in line.strip().strip("|").split("|")]
+    """A markdown table row's cells: split on unescaped pipes only, with `\\|` unescaped to `|`."""
+    return [c.strip().replace(r"\|", "|") for c in re.split(r"(?<!\\)\|", line.strip().strip("|"))]
 
 
 def table(path: Path, heading: str | None) -> dict[str, list[str]]:
