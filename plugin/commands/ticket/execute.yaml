@@ -11,11 +11,9 @@ outputs:
   - name: completion-summary
     type: report
     description: Changes made, RED and GREEN evidence, deviations and the proposed commit message
-requires:
-  - ticketing
+requires: []
 status: existing
 argument-hint: "<ticket-id>"
 repeat: true
 unattended: true
-adapter-operations:
-  - read
+adapter-operations: []

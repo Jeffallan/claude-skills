@@ -81,7 +81,7 @@ Discovery is optional. Use it when there are no tickets yet, or when `spec:triag
 
 ## Specs
 
-**`spec:triage [ticket IDs | query | discovery:<topic>]`** proposes how to group open tickets into specs, and explains each grouping by its strongest signal: tracker links, a shared discovery topic, shared labels, shared files or feature areas, then wording. A grouping you type in the argument beats every signal. It flags stale tickets without closing them, refuses to move a ticket out of a spec that has started, warns above 10 tickets per spec, and suggests a build order with `After:` lines. Every ticket you name lands in a spec: a ticket that contradicts another, the code or a settled decision stays in its group, flagged for `spec:create` to settle, and a split is only a suggestion. Once you approve, it creates or finds each spec's group in the tracker, links the tickets, appends `Spec: <spec-name>` to each one and cuts `spec/<spec-name>` from your default branch. Nothing is pushed.
+**`spec:triage [ticket IDs | query | discovery:<topic> | grouping]`** proposes how to group open tickets into specs, and explains each grouping by its strongest signal: tracker links, a shared discovery topic, shared labels, shared files or feature areas, then wording. A grouping you type in the argument beats every signal. It flags stale tickets without closing them, refuses to move a ticket out of a spec that has started, warns above 10 tickets per spec, and suggests a build order with `After:` lines. Every ticket you name lands in a spec: a ticket that contradicts another, the code or a settled decision stays in its group, flagged for `spec:create` to settle, and a split is only a suggestion. Once you approve, it creates or finds each spec's group in the tracker, links the tickets, appends `Spec: <spec-name>` to each one and cuts `spec/<spec-name>` from your default branch. Nothing is pushed.
 
 **`spec:create <spec-name>`** plans one spec:
 
@@ -188,7 +188,7 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 | `intake` | `[procedure]`, then the procedure's options (`[directory]`; `create-system-description` takes `[--full]`) | No, runs in goal runs |
 | `discovery:create` | `<topic-or-ticket>` | No; under a goal it skips the interviews and asks for an attended rerun |
 | `discovery:approve` | `<topic> [--decision=<id>:<value>...]` | Yes |
-| `spec:triage` | `[ticket-ids \| tracker-query \| discovery:<topic>]` | Yes |
+| `spec:triage` | `[ticket-ids \| tracker-query \| discovery:<topic> \| grouping]` | Yes |
 | `spec:create` | `<spec-name>` | Yes |
 | `ticket:execute` | `<ticket-id>` | No, runs in goal runs |
 | `ticket:complete` | `[ticket-id]` | No, runs in goal runs |

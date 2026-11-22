@@ -17,7 +17,7 @@ outputs:
 requires:
   - ticketing
 status: existing
-argument-hint: "[ticket-ids | tracker-query | discovery:<topic>]"
+argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grouping]"
 repeat: true
 unattended: false
 adapter-operations:

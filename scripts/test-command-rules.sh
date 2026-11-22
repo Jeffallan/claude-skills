@@ -234,6 +234,22 @@ done
 if printf '%s\n' "$graph_mode" | grep -qF "Update \`COMMON-GROUND.md\` with embedded"; then fail "--graph never edits COMMON-GROUND.md directly"; else pass "--graph never edits COMMON-GROUND.md directly"; fi
 assert_contains "$REF/common-ground/reasoning-graph.md" "stored in \`ground.index.json\`" "reasoning-graph.md keeps the graph in the index"
 
+echo "spec:triage confirms each tracker write itself when no ask rules exist yet"
+tri5=$(sed -n '/^## Step 5: Write$/,/^## /p' "$CMD/spec/triage.md" | sed '$d')
+for s in ".claude/settings.json" "first triage" "its own \`AskUserQuestion\`" "before making it"; do
+    if printf '%s\n' "$tri5" | grep -qF -- "$s"; then pass "spec:triage Step 5 handles missing ask rules ($s)"; else fail "spec:triage Step 5 handles missing ask rules ($s)"; fi
+done
+assert_contains "$PLUGIN/../docs/workflow/spec-triage.md" "its own question" "the spec:triage page says a first triage asks before each tracker write"
+
+echo "command metadata matches what the commands do"
+EXY="$CMD/ticket/execute.yaml"
+if sed -n '/^requires:/,/^status:/p' "$EXY" | grep -qF "ticketing"; then fail "ticket:execute requires no tracker"; else pass "ticket:execute requires no tracker"; fi
+assert_contains "$EXY" "adapter-operations: []" "ticket:execute uses no adapter operation"
+assert_contains "$PLUGIN/../docs/workflow/workflow-definition-schema.md" "\`repeat\` and \`run_once\` count different things" "the schema explains repeat beside run_once"
+grouping='argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grouping]"'
+assert_contains "$CMD/spec/triage.md" "$grouping" "spec:triage's hint names the grouping form"
+assert_contains "$CMD/spec/triage.yaml" "$grouping" "triage.yaml's hint names the grouping form"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
