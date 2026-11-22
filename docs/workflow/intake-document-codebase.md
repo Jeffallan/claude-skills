@@ -2,7 +2,7 @@
 
 Add accurate, agent-readable docstrings and module comments across an existing codebase without changing a single executable line.
 
-**Step:** docstrings (intake phase, first) · **Procedure file:** `references/intake/procedures/document-codebase.md` · **Run:** `intake document-codebase`
+**Step:** docstrings (intake phase, after the findings tracker and `intake:existing-docs`) · **Procedure file:** `references/intake/procedures/document-codebase.md` · **Run:** `intake document-codebase`
 
 ---
 

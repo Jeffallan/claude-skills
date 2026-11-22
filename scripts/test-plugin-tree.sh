@@ -141,6 +141,8 @@ for c in current diff; do assert_exists "$OUT/commands/spec/$c.md" "ships spec:$
 assert_exists "$OUT/references/specs/assumptions.md" "ships the shared assumptions reference"
 MENU="common-ground discovery:approve discovery:create intake spec:complete spec:create spec:current spec:diff spec:review spec:status spec:triage ticket:complete ticket:execute"
 assert_equal "$(python3 -c "import json,sys; print(' '.join(sorted(json.load(open(sys.argv[1]))['commands'])))" "$OUT/.claude-plugin/plugin.json" 2>/dev/null)" "$MENU" "plugin.json maps exactly the 13 menu commands"
+assert_equal "$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['workflowCount'])" "$REPO_ROOT/version.json" 2>/dev/null)" "13" "version.json counts all 13 commands, intake and common-ground included"
+if grep -qF "plus \`intake\` and \`common-ground\`" "$REPO_ROOT/QUICKSTART.md"; then fail "QUICKSTART's command count already includes intake and common-ground"; else pass "QUICKSTART's command count already includes intake and common-ground"; fi
 CG="$OUT/commands/common-ground.md"
 if grep -q 'argument-hint: "\[--list\] \[--check\] \[--graph\] \[spec ...\]"' "$CG"; then pass "common-ground takes spec names"; else fail "common-ground takes spec names"; fi
 if grep -rqE "~/.claude/common-ground/\{project" "$CG" "$OUT/references/common-ground" "$OUT/commands/common-ground.yaml"; then fail "the ground file lives in the repo"; else pass "the ground file lives in the repo"; fi

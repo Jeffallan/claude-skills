@@ -165,7 +165,7 @@ utilities:
 | `phases.<name>.depends_on` | list | yes | Phase dependencies. Empty list for entry points. |
 | `phases.<name>.depends_on[].phase` | string | yes | Name of the dependency phase. |
 | `phases.<name>.depends_on[].strength` | string | yes | `required` or `recommended`. |
-| `phases.<name>.run_once` | boolean | no | `true` if the phase runs once per project. Default `false`. |
+| `phases.<name>.run_once` | boolean | no | `true` if the phase runs once per project. Default `false`. `repeat` and `run_once` count different things: `repeat` is about how often a command is invoked, `run_once` about how often a phase is gone through. `intake` is `repeat: true` (one invocation per checklist item, or a rerun) inside the `run_once` intake phase. |
 | `phases.<name>.optional` | boolean | no | `true` if the phase can be skipped. Default `false`. |
 | `phases.<name>.external_skills` | list | no | Skills from outside the workflow that feed into this phase. |
 | `phases.<name>.external_skills[].skill` | string | yes | Skill name. |

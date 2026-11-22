@@ -61,8 +61,8 @@ The file never holds credentials. Tokens stay with the tool that uses them: `gh 
 When an attended command finds no config, it offers to write one. The wizard:
 
 1. Checks that [uv](https://docs.astral.sh/uv/) is installed. It runs the plugin's bundled guard for evidence, hooks and the review gate, and fetches a suitable Python when your machine lacks one.
-2. Looks for clues in the repo: a config on another branch, a tickets folder or ticket CLI, a GitHub remote, issue keys such as `ABC-123` in recent commits or branch names, and your test and lint commands.
-3. Asks one question at a time, with the detected answer marked as recommended. Only a repo clue earns a tracker that mark. Issue keys could be Jira or Linear, so both are offered and neither is recommended. A Jira, Atlassian or Linear MCP server connected to the session is listed as available, never recommended on its own: it belongs to your account, not to this repo, and picking it would create real tickets there.
+2. Looks for clues in the repo: a config on another branch, a tickets folder, a ticket CLI or ticket skill the repo itself carries, a GitHub remote, issue keys such as `ABC-123` in recent commits or branch names, and your test and lint commands.
+3. Asks one question at a time, with the detected answer marked as recommended. Only a repo clue earns a tracker that mark. Issue keys could be Jira or Linear, so both are offered and neither is recommended. A Jira, Atlassian or Linear MCP server connected to the session is listed as available, never recommended on its own: it belongs to your account, not to this repo, and picking it would create real tickets there. Skills loaded from your own settings or another plugin count no more than a connected server.
 4. Shows the file and writes it when you approve.
 
 Inside a goal run the wizard can't ask anything, so it writes nothing, prints the config it would propose, and stops with `BLOCKED: no workflow config`. There is no silent default tracker.
@@ -130,7 +130,7 @@ Like Jira, this adapter is checked against the API docs but not yet against a li
 
 For tickets kept as files in the repo. Point `text.instructions` at whatever describes your convention: a CLI's help command, a skill that manages the tickets, or a markdown file. The adapter reads it, maps each operation, and shows you the mapping before its first write. It treats those instructions as a description of the format, never as rules: they can't change what the workflow is allowed to do.
 
-The adapter ships with worked mappings for tiki and Backlog.md. Text tickets close only in `spec:complete`, in the last commit before the merge, and goal runs can't edit `text.ticketsDir` at all.
+The adapter ships with worked mappings for tiki and Backlog.md. Text tickets close only in `spec:complete`, in the completion commit it makes before opening the PR, and goal runs can't edit `text.ticketsDir` at all.
 
 ## The code host
 
@@ -138,7 +138,7 @@ The adapter ships with worked mappings for tiki and Backlog.md. Text tickets clo
 { "codeHost": { "type": "github" } }
 ```
 
-PR work (push, open or reuse the PR, read reviews and threads, reply, check CI, merge) goes through a code-host adapter. v0.5.0 ships GitHub, through `gh`. With `"type": "none"`, `spec:complete` stops before the PR step and prints the steps for you to do by hand, then closes the tickets once you tell it the merge is done.
+PR work (push, open or reuse the PR, read reviews and threads, reply, check CI, merge) goes through a code-host adapter. v0.5.0 ships GitHub, through `gh`. With `"type": "none"`, `spec:complete` makes its completion commit, then asks how to finish: merge the spec branch locally now and close the tickets, or print the manual steps and the PR body in full and stop.
 
 ## Permissions
 

@@ -69,7 +69,7 @@ Check the assumptions your specs and Claude make against your system's current s
 
 ## Project Workflow
 
-The <!-- WORKFLOW_COUNT -->11<!-- /WORKFLOW_COUNT --> workflow commands take a group of tickets from your tracker to a reviewed, merged pull request: `spec:triage` groups tickets into specs, `spec:create` plans one, `ticket:execute` and `ticket:complete` build it test-first (by hand or in an unattended goal run), and `spec:review` and `spec:complete` review it and merge it. Specs live as markdown in your repo; tickets stay in Jira, GitHub Issues, GitHub Projects, Linear or text files. See the [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md). `spec:current` and `spec:diff` show the system as it is and what the outstanding specs would change. Adopting an existing codebase? The `intake` command documents it, pins its current behavior in tests and tracks its bugs first; see [**Intake**](docs/INTAKE.md).
+The <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> workflow commands take a group of tickets from your tracker to a reviewed, merged pull request: `spec:triage` groups tickets into specs, `spec:create` plans one, `ticket:execute` and `ticket:complete` build it test-first (by hand or in an unattended goal run), and `spec:review` and `spec:complete` review it and merge it. Specs live as markdown in your repo; tickets stay in Jira, GitHub Issues, GitHub Projects, Linear or text files. See the [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md). `spec:current` and `spec:diff` show the system as it is and what the outstanding specs would change. Adopting an existing codebase? The `intake` command documents it, pins its current behavior in tests and tracks its bugs first; see [**Intake**](docs/INTAKE.md).
 
 > [!TIP]
 > **Setup:** the workflow needs [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which the first workflow command offers to create. See [**Tracker Setup**](docs/TRACKER_SETUP.md) and [**Goal Runs**](docs/GOAL_RUNS.md).
@@ -125,4 +125,4 @@ Fullstack engineering, security engineering, compliance, and technical due dilig
 
 ---
 
-**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->11<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->393<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> Skills**
+**Built for Claude Code** | **<!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> Workflows** | **<!-- REFERENCE_COUNT -->393<!-- /REFERENCE_COUNT --> Reference Files** | **<!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> Skills**

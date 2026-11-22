@@ -37,12 +37,12 @@ Start one `fullstack-dev-skills:architect` agent in discovery mode, briefed with
 ```
 Use the fullstack-dev-skills:architecture-designer skill to check docs/system-description.md against the code and the completed specs. Also load: fullstack-dev-skills:spec-miner.
 Procedure: <plugin root>/references/intake/procedures/create-system-description.md, rerun path. Plugin root: <${CLAUDE_PLUGIN_ROOT}>.
-Check every row of the section 2 component table: its status (wired, built, not wired, planned) against the code, citing the call path that makes it wired. Drift to fold in: <guard docs-drift rows>.
+Check every row of the section 2 component table: its status (`wired`, `built, not wired`, `planned`) against the code, citing the call path that makes it wired. Drift to fold in: <guard docs-drift rows>.
 Discovery only: return the section changes you would make, each with its source, and write nothing until I resume you.
 End your report with "Skills loaded: ...".
 ```
 
-Attended, show the proposed changes and ask the owner which to apply. Resume the agent with `SendMessage` (load it with ToolSearch, `select:SendMessage`) and the approved list; it applies them and runs the procedure's accuracy audit. Review its diff, then commit: `docs(system): fold <specs> into the system description` with the trailer `Intake: intake:create-system-description`, so `guard docs-drift` counts it as the doc's update. Under a goal, or when the owner approves nothing, change no doc and list the proposed changes in the report as pending.
+Attended, show the proposed changes and ask the owner which to apply. Resume the agent with `SendMessage` (load it with ToolSearch, `select:SendMessage`) and the approved list; it applies them and runs the procedure's accuracy audit. A fold is a full audit, so the description's `verified:` frontmatter must move to the commit it was checked against: set it to `git rev-parse --short HEAD`, taken before this commit, and run `guard docs-check`, which stays strict and fails on a `verified` that isn't a commit. Review the diff, then commit: `docs(system): fold <specs> into the system description` with the trailer `Intake: intake:create-system-description`, so `guard docs-drift` counts it as the doc's update. Under a goal, or when the owner approves nothing, change no doc and list the proposed changes in the report as pending.
 
 ## Step 3: Compile the current state
 

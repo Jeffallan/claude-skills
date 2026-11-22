@@ -15,20 +15,25 @@ Claude often operates on assumptions about project context, technology choices, 
 | `list` | flag | no | Read-only view of all tracked assumptions |
 | `check` | flag | no | Quick validation of current assumptions |
 | `graph` | flag | no | Generate mermaid diagram of reasoning structure |
-| `specs` | list[string] | no | Outstanding specs whose assumptions to check, in order; every outstanding spec when omitted, an `Unbranched` one included |
+| `specs` | list[string] | no | Outstanding specs whose assumptions to check, in order, with the default mode or `--check`; every outstanding spec when omitted, an `Unbranched` one included |
 
 ## Outputs
 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
 | `ground-file` | file | `{docsRoot}/COMMON-GROUND.md` | Human-readable assumptions organized by confidence tier |
-| `ground-index` | file | `{docsRoot}/ground.index.json` | Machine-readable assumption index |
+| `ground-index` | file | `{docsRoot}/ground.index.json` | Machine-readable assumption index, including the reasoning graph from `--graph` under `graph` |
+| `reasoning-graph` | file | `REASONING.mermaid` | Optional with `--graph`: a standalone copy of the reasoning graph in the project root |
 
 ## Prerequisites
 
 - Access to the project codebase (for configuration scanning)
 - `docs/current-state.json` from `spec:current`, for the spec assumptions check
 - No external tooling required
+
+## Goal runs
+
+`common-ground` is attended. Inside a goal run only `--list` runs as usual. Every other mode writes nothing and asks nothing: it prints the spec assumptions check as a read-only report and stops with `BLOCKED: common-ground needs the owner`.
 
 ## Usage
 

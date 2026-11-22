@@ -1,7 +1,7 @@
 ---
 name: triage
 description: Group open tickets into specs, create each spec's tracker group and branch after approval
-argument-hint: "[ticket-ids | tracker-query | discovery:<topic>]"
+argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grouping]"
 ---
 
 # Spec Triage
@@ -83,7 +83,7 @@ Ask with `AskUserQuestion`: approve, edit (rename, move, drop, split, merge, reo
 
 ## Step 5: Write
 
-On approval, per spec in build order. Each tracker write raises the shared "ask" permission prompt.
+On approval, per spec in build order. When the project's `.claude/settings.json` holds the shared "ask" rules from `${CLAUDE_PLUGIN_ROOT}/references/specs/launch.md`, each tracker write raises their permission prompt. When it doesn't, which is usual on a first triage since `spec:create` proposes those rules later, confirm each tracker write with its own `AskUserQuestion` before making it: name the operation, the ticket or group, and the text it writes. A no skips that write and is reported.
 
 1. `ensure-group <spec-name>`: exact name match; when two groups share it, stop and name both.
 2. `link` each ticket to the group, skipping tickets already linked to it, so a rerun is idempotent.

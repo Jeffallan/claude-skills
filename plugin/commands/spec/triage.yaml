@@ -6,7 +6,7 @@ inputs:
   - name: scope
     type: string
     required: false
-    description: Ticket IDs, a tracker query, or discovery:<topic>; with none, the open ungrouped tickets
+    description: Ticket IDs, a tracker query, discovery:<topic>, or a grouping such as "A, B and C together; D alone"; with none, the open ungrouped tickets
 outputs:
   - name: spec-groups
     type: tickets
@@ -17,7 +17,7 @@ outputs:
 requires:
   - ticketing
 status: existing
-argument-hint: "[ticket-ids | tracker-query | discovery:<topic>]"
+argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grouping]"
 repeat: true
 unattended: false
 adapter-operations:

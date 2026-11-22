@@ -101,6 +101,29 @@ doc_row=$(grep -F '| Docs under the docs root | `code-documenter` |' "$CMD/spec/
 case "$doc_row" in *'`updated`'*) pass "the code-documenter reviews the docs the diff updated" ;; *) fail "the code-documenter reviews the docs the diff updated" ;; esac
 assert_contains "$CMD/spec/complete.md" "each doc listed \`added in the diff\`" "spec:complete adds each added doc to the docs index"
 
+echo "spec:complete docs:verify: the diff's stale doc claims, fixed one at a time on the owner's yes"
+COMPLETE="$CMD/spec/complete.md"
+step2=$(sed -n '/^## Step 2: Completion commit$/,/^## Step 3: PR$/p' "$COMPLETE")
+verify=$(printf '%s\n' "$step2" | grep -F '**Docs verify (`docs:verify`)**' || true)
+if [ -n "$verify" ]; then pass "spec:complete Step 2 has the docs:verify item"; else fail "spec:complete Step 2 has the docs:verify item"; fi
+for s in "README" "docs/" "git diff" "fullstack-dev-skills:code-reader" "fullstack-dev-skills:spec-miner" "in one message" \
+         "| Doc | Claim | Verdict | Evidence |" "\`holds\`" "\`stale\`" "\`unknown\`" "review/docs-verify.md" \
+         "one at a time" "AskUserQuestion" "never edits a doc without" "<specsRoot>"; do
+    case "$verify" in *"$s"*) pass "docs:verify names $s" ;; *) fail "docs:verify names $s" ;; esac
+done
+# it runs after the docs-affected item, so it checks the docs that item already updated
+dv=$(printf '%s\n' "$step2" | grep -n 'docs:verify' | head -1 | cut -d: -f1 || true)
+da=$(printf '%s\n' "$step2" | grep -n 'guard docs-affected' | head -1 | cut -d: -f1 || true)
+if [ -n "$dv" ] && [ -n "$da" ] && [ "$dv" -gt "$da" ]; then pass "docs:verify runs after docs-affected"; else fail "docs:verify runs after docs-affected"; fi
+assert_contains "$COMPLETE" "| Docs verify |" "the completion report has a Docs verify row"
+assert_contains "$CMD/spec/complete.yaml" "review/docs-verify.md" "complete.yaml lists the docs:verify report"
+assert_contains "$REF/specs/layout.md" "| \`review/docs-verify.md\` | \`spec:complete\`" "the spec layout lists who writes review/docs-verify.md"
+assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "docs:verify" "the spec:complete page explains docs:verify"
+assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "| Doc | Claim | Verdict | Evidence |" "the spec:complete page shows the docs:verify table"
+assert_contains "$PLUGIN/../docs/WORKFLOW_COMMANDS.md" "docs:verify" "WORKFLOW_COMMANDS mentions docs:verify"
+step7=$(sed -n '/^## Step 7: Close tickets and the group$/,/^## Report$/p' "$COMPLETE")
+if printf '%s\n' "$step7" | grep -qF "filed them in Step 2"; then pass "Step 7 points at Step 2 for the text tracker's follow-ups"; else fail "Step 7 points at Step 2 for the text tracker's follow-ups"; fi
+
 echo "specs that live only on the current branch"
 assert_contains "$CMD/spec/status.md" "| Unbranched (on <branch>) |" "spec:status explains the Unbranched state"
 for f in spec/diff common-ground; do
@@ -118,6 +141,8 @@ assert_contains "$OPS" "never the recommendation on its own" "the wizard lists a
 for s in "existing config" "tickets/" "ticket CLI" "remote"; do
     assert_contains "$OPS" "$s" "the wizard recommends from the repo signal '$s'"
 done
+assert_contains "$OPS" "a ticket skill committed in the repo (\`.claude/skills/\`)" "a ticket skill counts only when the repo commits it"
+assert_contains "$OPS" "Skills and MCP servers the session loaded from elsewhere" "the wizard ignores session-only skills and servers for the recommendation"
 
 echo "triage keeps every ticket"
 TRIAGE="$CMD/spec/triage.md"
@@ -146,6 +171,12 @@ if [ "$n" -eq 19 ]; then pass "19 procedure pages name the checkpoint"; else fai
 assert_contains "$REF/intake/rules.md" "blocked count and its reason" "rules: a blocked layer's count and reason are reported"
 assert_contains "$REF/intake/rules.md" "exit 0 with blocked tests is not a green suite" "rules: exit 0 with blocked tests is not green"
 assert_contains "$CMD/intake.md" "blocked count" "intake: the phase-boundary suite reads the blocked count"
+after_last=$(sed -n '/^## After the last item$/,/^## Rules$/p' "$CMD/intake.md")
+final_report=$(sed -n '/^<final_report>$/,/^<\/final_report>$/p' "$REF/intake/goal-prompt.md")
+for s in "blocked count" "each blocked layer"; do
+    if printf '%s\n' "$after_last" | grep -qF "$s"; then pass "intake's final report states the suite's $s"; else fail "intake's final report states the suite's $s"; fi
+    if printf '%s\n' "$final_report" | grep -qF "$s"; then pass "the goal prompt's final report states the suite's $s"; else fail "the goal prompt's final report states the suite's $s"; fi
+done
 
 assert_contains "$REF/intake/rules.md" "names its finding id in the row itself" "rules: a table-driven row names its finding id, never through a default"
 # shared caches outside the repo are never pruned; a browser install skips Playwright's cleanup
@@ -153,6 +184,89 @@ assert_contains "$REF/intake/rules.md" "never deletes or prunes a shared cache o
 assert_contains "$REF/intake/procedures/testing-setup.md" "PLAYWRIGHT_SKIP_BROWSER_GC=1" "testing-setup: browser installs skip Playwright's cleanup"
 # a matrix cell that can't apply skips with an n/a: reason, not as a bug test
 assert_contains "$REF/intake/procedures/testing-authorization.md" "skips with an \`n/a: <reason>\` message" "testing-authorization: n/a cells skip with an n/a: reason"
+echo "command text agrees with itself"
+assert_not_contains "$CMD/spec/create.md" "No tracker write outside Step 6" "spec:create's rules name Step 5, where its tracker writes are"
+assert_contains "$CMD/spec/create.md" "No tracker write outside Step 5" "spec:create keeps tracker writes in Step 5"
+if grep -qE '[^ ] 1\. Read `\.claude/workflow-config\.json`' "$CMD/spec/create.md"; then fail "spec:create's Setup list starts on its own line"; else pass "spec:create's Setup list starts on its own line"; fi
+step6=$(sed -n '/^## Step 6: Owner triage$/,/^## Recheck$/p' "$CMD/spec/review.md")
+for s in "confirmed, unresolved or rejected" "fix (one of the four types below)" "for a rejected row, accept the rejection"; do
+    if printf '%s\n' "$step6" | grep -qF "$s"; then pass "spec:review triage asks about every row the gate can block on ($s)"; else fail "spec:review triage asks about every row the gate can block on ($s)"; fi
+done
+assert_not_contains "$CMD/discovery/approve.md" "routed items to research (\`sources/\` holds files)" "discovery:approve's empty-sources stop is reachable"
+assert_contains "$CMD/discovery/create.md" "**Status:** Proposed | Research | Ready for approval | Tickets created" "discovery:create's status list holds the status discovery:approve sets"
+flow=$(sed -n '/^```mermaid$/,/^```$/p' "$CMD/intake.md")
+case "$flow" in *"testing-features, testing-user-flows"*) fail "intake's flow runs testing-user-flows after the parallel batch" ;; *) pass "intake's flow runs testing-user-flows after the parallel batch" ;; esac
+case "$flow" in *"--> uf[testing-user-flows"*) pass "intake's flow has a serial testing-user-flows node" ;; *) fail "intake's flow has a serial testing-user-flows node" ;; esac
+assert_not_contains "$REF/intake/procedures/document-codebase.md" "This is the first item of the intake checklist" "document-codebase doesn't claim the first checklist item"
+owasp_when=$(sed -n '/^## When to use$/,/^## Skills to load$/p' "$REF/intake/procedures/testing-owasp.md")
+case "$owasp_when" in *"after \`intake:testing-setup\`, \`intake:testing-authorization\`"*) fail "testing-owasp runs beside testing-authorization, not after it" ;; *) pass "testing-owasp runs beside testing-authorization, not after it" ;; esac
+assert_contains "$REF/intake/checklist.md" "One item per command, in order, except the parallel testing batch" "the checklist's in-order rule names the parallel testing batch"
+assert_contains "$CMD/spec/current.md" "(\`wired\`, \`built, not wired\`, \`planned\`)" "spec:current quotes its three component statuses"
+assert_contains "$CMD/ticket/execute.md" "added in the diff" "ticket:execute says docs-affected lists the docs the diff adds"
+
+assert_not_contains "$CMD/spec/diff.md" "Run \`spec:current\` first, or" "spec:diff sends a repo with no description to intake, since spec:current stops too"
+assert_not_contains "$REF/specs/templates/goal-prompt.md" "<pin>" "the goal-prompt template asks for no pin it doesn't hold"
+assert_contains "$CMD/spec/triage.yaml" "a grouping" "triage.yaml's scope names the grouping form"
+assert_not_contains "$CMD/ticket/complete.yaml" "ran in this session" "ticket:complete's id is optional while a marker exists, from any session"
+assert_contains "$REF/intake/procedures/testing-setup.md" "plus the aggregate \`test:all\`" "testing-setup names the test:all script the checklist requires"
+
+echo "common-ground is attended only"
+CGC="$CMD/common-ground.md"
+cg_guard=$(sed -n '/^## Unattended guard$/,/^---$/p' "$CGC")
+for s in "BLOCKED: common-ground needs the owner" "wrong-session stop" "\`--list\`" "write nothing"; do
+    if printf '%s\n' "$cg_guard" | grep -qF -- "$s"; then pass "common-ground's guard says $s"; else fail "common-ground's guard says $s"; fi
+done
+assert_contains "$CMD/common-ground.yaml" "unattended: false" "common-ground.yaml marks it attended only"
+attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
+case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
+assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
+
+echo "common-ground --graph lives in the index, so a regenerated ground file keeps it"
+FM="$REF/common-ground/file-management.md"
+schema=$(sed -n '/^### Schema$/,/^### Field Definitions$/p' "$FM")
+case "$schema" in *'"graph": {'*'"mermaid":'*) pass "the index schema has a graph field" ;; *) fail "the index schema has a graph field" ;; esac
+assert_contains "$FM" "| \`graph\` | object or null |" "the field table defines graph"
+assert_contains "$FM" "renders \`graph\` as its \`## Reasoning Graph\` section" "regenerating COMMON-GROUND.md renders the stored graph"
+graph_mode=$(sed -n '/^## --graph Mode$/,/^### Output Format$/p' "$CMD/common-ground.md")
+for s in "ground.index.json" "\`graph\`" "regenerate"; do
+    if printf '%s\n' "$graph_mode" | grep -qF -- "$s"; then pass "--graph stores the graph through the index ($s)"; else fail "--graph stores the graph through the index ($s)"; fi
+done
+if printf '%s\n' "$graph_mode" | grep -qF "Update \`COMMON-GROUND.md\` with embedded"; then fail "--graph never edits COMMON-GROUND.md directly"; else pass "--graph never edits COMMON-GROUND.md directly"; fi
+assert_contains "$REF/common-ground/reasoning-graph.md" "stored in \`ground.index.json\`" "reasoning-graph.md keeps the graph in the index"
+
+echo "spec:triage confirms each tracker write itself when no ask rules exist yet"
+tri5=$(sed -n '/^## Step 5: Write$/,/^## /p' "$CMD/spec/triage.md" | sed '$d')
+for s in ".claude/settings.json" "first triage" "its own \`AskUserQuestion\`" "before making it"; do
+    if printf '%s\n' "$tri5" | grep -qF -- "$s"; then pass "spec:triage Step 5 handles missing ask rules ($s)"; else fail "spec:triage Step 5 handles missing ask rules ($s)"; fi
+done
+assert_contains "$PLUGIN/../docs/workflow/spec-triage.md" "its own question" "the spec:triage page says a first triage asks before each tracker write"
+
+echo "command metadata matches what the commands do"
+EXY="$CMD/ticket/execute.yaml"
+if sed -n '/^requires:/,/^status:/p' "$EXY" | grep -qF "ticketing"; then fail "ticket:execute requires no tracker"; else pass "ticket:execute requires no tracker"; fi
+assert_contains "$EXY" "adapter-operations: []" "ticket:execute uses no adapter operation"
+assert_contains "$PLUGIN/../docs/workflow/workflow-definition-schema.md" "\`repeat\` and \`run_once\` count different things" "the schema explains repeat beside run_once"
+grouping='argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grouping]"'
+assert_contains "$CMD/spec/triage.md" "$grouping" "spec:triage's hint names the grouping form"
+assert_contains "$CMD/spec/triage.yaml" "$grouping" "triage.yaml's hint names the grouping form"
+
+echo "document-authorization's batch hand-back is an expected stop"
+assert_contains "$REF/intake/procedures/document-authorization.md" "This stop is expected, in a goal run too" "document-authorization says its batch hand-back stop is expected and resumed"
+
+echo "spec:current moves the description's verified: to the commit it was checked against"
+cur2=$(sed -n '/^## Step 2: Update the system description$/,/^## Step 3: Compile the current state$/p' "$CMD/spec/current.md")
+for s in "\`verified:\`" "git rev-parse --short HEAD" "guard docs-check"; do
+    if printf '%s\n' "$cur2" | grep -qF -- "$s"; then pass "spec:current Step 2 bumps verified: ($s)"; else fail "spec:current Step 2 bumps verified: ($s)"; fi
+done
+assert_contains "$PLUGIN/../docs/workflow/spec-current.md" "\`verified:\`" "the spec:current page says the fold moves verified:"
+
+echo "docs:verify also checks a doc's absolute statements against the diff"
+verify=$(sed -n '/^## Step 2: Completion commit$/,/^## Step 3: PR$/p' "$CMD/spec/complete.md" | grep -F '**Docs verify (`docs:verify`)**' || true)
+for s in "broad claims" "describe the components the diff touches" "none, no, only, never, always, exists" "calls no remote third-party service" "same table and verdicts"; do
+    case "$verify" in *"$s"*) pass "docs:verify's broad-claims pass names $s" ;; *) fail "docs:verify's broad-claims pass names $s" ;; esac
+done
+assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "absolute statements" "the spec:complete page explains the broad-claims pass"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

@@ -12,9 +12,12 @@ Plan one spec as three local files and print the commands that launch its goal r
 
 ## Outputs
 
+In the spec folder, `<specsRoot>/todo/<spec-name>/`:
+
 - `overview.md`, with the Readiness table first
 - `implementation-plan.md`, with the Completion Status table and Proposed tracker changes
 - `goal-prompt.md`, plus two launch commands: whole spec and next batch
+- `INDEX.md` updated to list the spec
 
 ## How it runs
 
@@ -22,8 +25,12 @@ Plan one spec as three local files and print the commands that launch its goal r
 2. **Maps the code.** Read-only subagents report on affected code, reuse and debt (`spec-miner`), on structure, security and APIs when the spec touches them, and on the docs each ticket will affect (`code-documenter`).
 3. **Writes the overview.** Header lines first, then the Readiness table: every ticket is Ready, Blocked (question, decision or needs more detail) or Already done with commit evidence. Questions you can answer now go through a Feature Forge interview.
 4. **Waits for your approval.** You can ask for a challenge pass with `the-fool` first.
-5. **Writes the plan and the goal prompt.** Only Ready tickets get plan sections, each with a `Skill:` line, a `Docs:` line, a type and a RED check. The three files are committed together on the spec branch.
-6. **Prints the launch commands.** Whole spec and next batch, each carrying the writes-only deny set, plus the "ask" rules to add to your shared settings. See [Goal Runs](../GOAL_RUNS.md).
+5. **Writes the plan.** Only Ready tickets get plan sections, each with a `Skill:` line, a `Docs:` line, a type and a RED check.
+6. **Writes to the tracker.** It links related tickets, comments on each Ready ticket naming the spec files, appends an "Implementation plan" section to each Ready ticket and sets story points where the field exists. Each write raises the shared "ask" prompt. With the text tracker these ticket-file edits go in the plan commit.
+7. **Writes the goal prompt and commits.** When `.claude/settings.json` lacks the shared "ask" rules, it proposes them; on your yes they go in the plan commit. The three files, `INDEX.md` and any approved settings change are committed together on the spec branch.
+8. **Prints the launch commands.** Whole spec and next batch, each carrying the writes-only deny set. See [Goal Runs](../GOAL_RUNS.md).
+
+Rerunning it when an approved `overview.md` already exists picks up at the plan, so you can regenerate the plan without redoing the overview.
 
 ## Next Steps
 

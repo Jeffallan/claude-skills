@@ -2,13 +2,13 @@
 
 **Options:** what follows the procedure name in `intake <procedure> ...`, passed on in the brief: an optional root directory to document (defaults to the project root).
 
-Add docstrings and module comments to the code so an agent can learn what a function, class or module does, what it takes, what it returns and how it fails without tracing its implementation. This is the first item of the intake checklist and every other intake procedure reads its result. **Write for an agent that will implement against the code: accuracy over polish. Change comments and docstrings only; never change an executable line.**
+Add docstrings and module comments to the code so an agent can learn what a function, class or module does, what it takes, what it returns and how it fails without tracing its implementation. It runs right after the findings tracker and `intake:existing-docs`, and every later intake procedure reads its result. **Write for an agent that will implement against the code: accuracy over polish. Change comments and docstrings only; never change an executable line.**
 
 Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md` and `${CLAUDE_PLUGIN_ROOT}/references/intake/findings.md` before the first phase. They set what intake may change, the findings tracker, the checkpoint and the goal-run behavior.
 
 ## When to use
 
-Run once at the start of intake, before any `intake:document-*` or `intake:testing-*` command. Rerun on code that changed since: it is idempotent and leaves accurate docstrings alone.
+Run once early in intake, after `intake:existing-docs` and before any `intake:document-*` or `intake:testing-*` command. Rerun on code that changed since: it is idempotent and leaves accurate docstrings alone.
 
 ## Skills to load
 

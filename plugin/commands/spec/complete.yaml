@@ -11,6 +11,10 @@ outputs:
   - name: completion-report
     type: report
     description: What happened, deviations, debt and follow-ups, added to overview.md
+  - name: docs-verify
+    type: report
+    path: review/docs-verify.md
+    description: "docs:verify: each doc claim the spec's diff touches, as holds, stale or unknown with its evidence; stale ones fixed on the owner's yes"
   - name: pull-request
     type: url
     description: The spec PR, opened or reused, merged on the owner's yes

@@ -26,7 +26,7 @@ This command is attended only. When a goal is active, write nothing: print the p
 
 ## Step 0: Synthesize research
 
-Runs only when `discovery.md` routed items to research (`sources/` holds files) and `synthesis.md` doesn't exist yet. Otherwise go to Step 1.
+Runs only when `discovery.md` routed items to research and `synthesis.md` doesn't exist yet. Otherwise go to Step 1.
 
 ### Read the sources
 

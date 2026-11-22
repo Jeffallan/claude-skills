@@ -1,6 +1,6 @@
 # intake:create-system-description
 
-Write the baseline spec and a living system description from the intake docs, or from discovery and the code when the project skipped intake, plus the spec index and every completed spec. Use after intake or once a discovery-started project has completed specs; optionally writes a planned architecture view from outstanding specs.
+Write the baseline spec and a living system description from the intake docs, or from discovery and the code when the project skipped intake, plus the spec index and every completed spec. Use after intake or once a discovery-started project has completed specs.
 
 **Step:** system description (intake phase, last) · **Procedure file:** `references/intake/procedures/create-system-description.md` · **Run:** `intake create-system-description`
 

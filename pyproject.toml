@@ -5,7 +5,7 @@
 skills_dir = "plugin/skills"
 commands_dir = "plugin/commands"
 manifest = "plugin/commands/workflow-manifest.yaml"
-workflow_glob = "*/*.md"
+workflow_glob = "**/*.md"
 docs_url = "https://jeffallan.github.io/claude-skills/skills/{domain}/{name}/"
 index_files = ["SKILLS_GUIDE.md"]
 sidebar_file = "site/astro.config.mjs"

@@ -25,7 +25,8 @@ docs/specs/                             # specsRoot
 │           ├── <reviewer>.md           # one file per reviewer subagent
 │           ├── repro/                  # frozen reproductions from the verifiers, with digests
 │           ├── rollup.md               # `guard rollup`, from the verifier verdicts
-│           └── pr-feedback-<round>.md  # only when the spec PR got review feedback
+│           ├── pr-feedback-<round>.md  # only when the spec PR got review feedback
+│           └── docs-verify.md          # spec:complete's docs:verify: doc claims the diff made stale
 └── completed/                          # same shape as todo/
 ```
 
@@ -114,6 +115,7 @@ Paths and launch commands inside an old `goal-prompt.md` go stale after a move. 
 | `review/repro/` | The main session, from verifier reports | Recheck |
 | `review/rollup.md` | `guard rollup` | The owner, `guard gate`, `spec:complete` |
 | `review/pr-feedback-<round>.md` | `spec:complete` | The owner, recheck, `guard gate` |
+| `review/docs-verify.md` | `spec:complete` (`docs:verify`) | The owner, the next `spec:complete` run |
 | `INDEX.md` | `guard spec-index` | `spec:create` |
 
 ## When not to use this layout

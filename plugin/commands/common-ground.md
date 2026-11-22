@@ -10,6 +10,12 @@ argument-hint: "[--list] [--check] [--graph] [spec ...]"
 
 ---
 
+## Unattended guard
+
+Attended only, except `--list`, which writes nothing and asks nothing, so it runs the same anywhere. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, every other mode must write nothing and ask nothing: run the Spec Assumptions Check when it can run and print its table as a read-only report, then end with `BLOCKED: common-ground needs the owner`, followed by `git status --short`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
+
+---
+
 ## Purpose
 
 Claude often operates on assumptions about project context, technology choices, coding standards, and user preferences. This command surfaces those assumptions for explicit user validation, preventing misaligned work based on incorrect premises.
@@ -269,12 +275,12 @@ Make the shape of Claude's reasoning visible:
 3. **Generate mermaid diagram** following conventions in `${CLAUDE_PLUGIN_ROOT}/references/common-ground/reasoning-graph.md`
 
 4. **Output files:**
-   - Update `COMMON-GROUND.md` with embedded `## Reasoning Graph` section
+   - Store the diagram in `ground.index.json` as `graph` (`generated` and `mermaid`, as `references/common-ground/file-management.md` defines it), then regenerate `COMMON-GROUND.md` from the index, which renders it as the `## Reasoning Graph` section. Never edit `COMMON-GROUND.md` by hand: the next regeneration would drop the edit.
    - Optionally create standalone `REASONING.mermaid` in project root
 
 ### Output Format
 
-The reasoning graph is embedded in `COMMON-GROUND.md`:
+The reasoning graph is rendered into `COMMON-GROUND.md` from the index's `graph`:
 
 ```markdown
 ## Reasoning Graph

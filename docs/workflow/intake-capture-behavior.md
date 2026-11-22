@@ -8,7 +8,7 @@ The intake step that writes a runnable test suite pinning the codebase's current
 
 ## Commands
 
-Run them in this order. Each later procedure needs the harness from `testing-setup` and reads its paired documentation doc.
+`testing-setup` runs first, and the others need its harness and read their paired documentation doc. After it is committed, `testing-features`, `testing-authorization` and `testing-owasp` write at once as one batch; the `intake` command commits them one at a time in this order. `testing-user-flows` runs after them.
 
 | Order | Command | Reads | Writes |
 |-------|---------|-------|--------|

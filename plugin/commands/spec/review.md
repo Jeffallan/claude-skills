@@ -108,7 +108,7 @@ Add one `--transcripts` folder per session that ran verifiers (a recheck spans s
 
 ## Step 6: Owner triage
 
-Attended only. Show the rollup, blocking rows first. For each confirmed or unresolved blocking and warning row, ask the owner with `AskUserQuestion`: fix (typed behavior or refactor), won't fix, or accept a rejection. Record owner statuses only through the runtime, never by editing markdown:
+Attended only. Show the rollup, blocking rows first. For each blocking and warning row that is confirmed, unresolved or rejected, ask the owner with `AskUserQuestion`: fix (one of the four types below), won't fix, or, for a rejected row, accept the rejection. Record owner statuses only through the runtime, never by editing markdown:
 
 ```bash
 guard decide <F-id> wontfix --spec <spec-name>

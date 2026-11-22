@@ -18,8 +18,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/intake/rules.md`, `${CLAUDE_PLUGIN_ROOT}/
 
 ## When to use
 
-Run during the capture-behavior step, after `intake:testing-setup`, `intake:testing-authorization` and (ideally)
-`intake:document-security`. Re-run when input surfaces, authentication, or configuration change. Idempotent for
+Run during the capture-behavior step, after `intake:testing-setup` and (ideally) `intake:document-security`. The
+`intake` command runs it beside `intake:testing-features` and `intake:testing-authorization` in its parallel testing batch. Re-run when input surfaces, authentication, or configuration change. Idempotent for
 the tests it owns.
 
 ## Skills to load

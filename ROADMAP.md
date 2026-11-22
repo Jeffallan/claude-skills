@@ -7,7 +7,7 @@
 - **<!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> Skills** across 12 domains
 - **<!-- REFERENCE_COUNT -->393<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
 - **30+ Frameworks** and technologies covered
-- **<!-- WORKFLOW_COUNT -->11<!-- /WORKFLOW_COUNT --> Project Workflow Commands** for discovery, specs and test-first tickets
+- **<!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> Project Workflow Commands** for intake, discovery, specs, test-first tickets and assumption checks
 - **50% Token Reduction** through selective disclosure architecture
 - Skills organized by domain: Backend, Frontend, DevOps, Mobile, Data, Security, Product, and Business
 

@@ -8,16 +8,22 @@ One-time onboarding of an existing codebase: reference docs agents can rely on, 
 
 Before feature work starts, agents need documented code, docs that describe what the code does today, and tests that catch an unintended change. Intake writes all three and records every bug it finds instead of fixing it.
 
+## Inputs
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `procedure` | string | no | One procedure to run or rerun, followed by its options (`intake document-api backend/`, `intake create-system-description --full`). Without it, the checklist is worked from the first unchecked item |
+
 ## Command
 
-One command runs the phase: `intake [procedure]`. It works `docs/intake-checklist.md` from the first unchecked item; a procedure name runs or reruns that one. Each procedure runs in one agent. Attended, it stops at a checkpoint to show its scope, then writes; in a goal run it does the item in one pass and its scope goes in the checklist note as a draft. Only one agent writes at a time, but read-only `code-reader` agents gather facts for the next item while the current one writes. The command reviews the diff and commits the item. The phase runs once (`run_once` in the manifest). Procedures within a step can run in any order unless a row says otherwise.
+One command runs the phase: `intake [procedure]`. It works `docs/intake-checklist.md` from the first unchecked item; a procedure name runs or reruns that one. Each procedure runs in one agent. Attended, it stops at a checkpoint to show its scope, then writes; in a goal run it does the item in one pass and its scope goes in the checklist note as a draft. Only one agent writes at a time, but read-only `code-reader` agents gather facts for the next item while the current one writes. The one exception: after `intake:testing-setup` is committed, `intake:testing-features`, `intake:testing-authorization` and `intake:testing-owasp` write at once, and the command commits them one at a time. The command reviews the diff and commits the item. The phase runs once (`run_once` in the manifest). Procedures run in the order of the table, which is the checklist order. The command runs through the system description; wiring the PR gate and closing out the findings tracker stay attended and outside it.
 
 | Step | Procedure | Output |
 |------|---------|--------|
 | Existing docs, first | [`intake:existing-docs`](intake-existing-docs.md) | `docs/intake-existing-docs.md` |
-| Docstrings | `intake:document-codebase` | Docstrings and module comments across the code |
-| Documentation | [`intake:document-data-model`](intake-document-data-model.md) | `docs/architecture/data-model.md` |
+| Docstrings | [`intake:document-codebase`](intake-document-codebase.md) | Docstrings and module comments across the code |
 | Documentation | [`intake:document-file-tree`](intake-document-file-tree.md) | `docs/architecture/file-tree.md` |
+| Documentation | [`intake:document-data-model`](intake-document-data-model.md) | `docs/architecture/data-model.md` |
 | Documentation | [`intake:document-integrations`](intake-document-integrations.md) | `docs/architecture/external-integrations.md` |
 | Documentation | [`intake:document-api`](intake-document-api.md) | `docs/architecture/api-reference.md` |
 | Documentation | [`intake:document-user-model`](intake-document-user-model.md) | `docs/domain/user-model.md` |
@@ -34,7 +40,7 @@ One command runs the phase: `intake [procedure]`. It works `docs/intake-checklis
 | Capture behavior | [`intake:testing-authorization`](intake-testing-authorization.md) | Authorization matrix tests |
 | Capture behavior | [`intake:testing-owasp`](intake-testing-owasp.md) | OWASP Top 10 tests |
 | Capture behavior | [`intake:testing-user-flows`](intake-testing-user-flows.md) | Backend and UI flow tests |
-| System description | `intake:create-system-description` | `docs/system-description.md` |
+| System description | [`intake:create-system-description`](intake-create-system-description.md) | `docs/system-description.md` |
 
 ## Prerequisites
 

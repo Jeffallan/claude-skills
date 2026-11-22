@@ -120,9 +120,9 @@ Every attended command that needs the config and finds none runs this wizard bef
 **Unattended guard first.** When a goal is active, write nothing. Print the proposed config (detected values, with the questions still open) and end with `BLOCKED: no workflow config`. When `AskUserQuestion` is unavailable and no goal is active, take the wrong-session stop in `references/specs/unattended.md` instead. There is no silent default tracker.
 
 1. **Check the runtime.** Run `uv --version`. When it fails, tell the owner to install uv (`https://docs.astral.sh/uv/`) and stop: the bundled guard runs through `uv run`, which also supplies Python 3.11 or later when the machine lacks it.
-2. **Detect signals.** The tracker recommendation comes only from the repo:
+2. **Detect signals.** The tracker recommendation comes only from the repo. Skills and MCP servers the session loaded from elsewhere (the user's settings, a plugin, a connector) say nothing about this repo's tracker:
    - An existing config: `.claude/workflow-config.json` on another branch (`git log --all -1 --format=%h -- .claude/workflow-config.json`): recommend its tracker and block.
-   - A text-ticket tool in the repo (a `tickets/` folder, a ticket CLI on `PATH` that the repo's docs name, a skill that manages tickets): recommend `text`.
+   - A text-ticket tool in the repo (a `tickets/` folder, a ticket CLI on `PATH` that the repo's docs name, a ticket skill committed in the repo (`.claude/skills/`)): recommend `text`.
    - The `origin` remote (`git remote get-url origin`) on github.com: recommend `github-issues`, and `codeHost.type: "github"`.
    - Issue keys such as `ABC-123` in recent commit subjects or branch names (`git log -50 --format=%s`, `git branch -a`): a Jira or Linear project. Offer both, naming the key, and recommend neither.
    - A Jira, Atlassian or Linear MCP server among the session's tools: list that tracker as available, never the recommendation on its own. A connected server belongs to the session's account, not to this repo, and picking it would create real tickets there.
