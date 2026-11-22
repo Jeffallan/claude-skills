@@ -29,6 +29,9 @@ jobs:
       - name: Test the plugin tree
         run: bash scripts/test-plugin-tree.sh
 
+      - name: Test that the docs match the commands
+        run: bash scripts/test-command-docs.sh
+
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest
