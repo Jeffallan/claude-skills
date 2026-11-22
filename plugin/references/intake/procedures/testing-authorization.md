@@ -90,7 +90,7 @@ a goal run, follow the checkpoint rule in `references/intake/rules.md`.
 
 **Findings.** Record each matrix finding in the shape of "Findings from the matrix" in `access-control.md`: the
 operation ids, the principal column and the invariant broken, one finding per root cause citing every row it
-opens. Append it to `docs/intake-findings.md` before writing a row that cites it. Broken access control is High.
+opens. Append it to `docs/intake-findings.md` before writing a row that cites it. Rate it by `references/intake/severity.md`.
 
 **Known bugs.** A row whose current outcome breaks an invariant gets two rows in the same table: the
 characterization row asserting today's outcome, and the intended-behavior twin asserting the invariant's outcome,

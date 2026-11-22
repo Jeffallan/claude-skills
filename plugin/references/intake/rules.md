@@ -153,7 +153,7 @@ Checks:
 <the command as run> (exit <code>)
 <its summary: pass, fail and skip counts (blocked ones with their reason), or every row docs-check listed>
 Checklist note:
-  - <YYYY-MM-DD>: <evidence>. Findings: <ids raised, or none>. Skills: <skills loaded, and `<skill> not loaded: <reason>` for any it didn't load>. human-voice: <writing-with-agents:human-voice | by hand>
+  - <YYYY-MM-DD>: <evidence>. Findings: <ids raised, or none>. Re-rated: <F-0xx <old> -> <new> (<reason>), or none>. Skills: <skills loaded, and `<skill> not loaded: <reason>` for any it didn't load>. human-voice: <writing-with-agents:human-voice | by hand>
   - Checkpoint draft: <the scope, in a goal run only>
 Commit message:
 <docs|test>(intake): <procedure>
