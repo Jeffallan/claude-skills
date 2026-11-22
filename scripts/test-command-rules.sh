@@ -148,6 +148,12 @@ if [ "$n" -eq 19 ]; then pass "19 procedure pages name the checkpoint"; else fai
 assert_contains "$REF/intake/rules.md" "blocked count and its reason" "rules: a blocked layer's count and reason are reported"
 assert_contains "$REF/intake/rules.md" "exit 0 with blocked tests is not a green suite" "rules: exit 0 with blocked tests is not green"
 assert_contains "$CMD/intake.md" "blocked count" "intake: the phase-boundary suite reads the blocked count"
+after_last=$(sed -n '/^## After the last item$/,/^## Rules$/p' "$CMD/intake.md")
+final_report=$(sed -n '/^<final_report>$/,/^<\/final_report>$/p' "$REF/intake/goal-prompt.md")
+for s in "blocked count" "each blocked layer"; do
+    if printf '%s\n' "$after_last" | grep -qF "$s"; then pass "intake's final report states the suite's $s"; else fail "intake's final report states the suite's $s"; fi
+    if printf '%s\n' "$final_report" | grep -qF "$s"; then pass "the goal prompt's final report states the suite's $s"; else fail "the goal prompt's final report states the suite's $s"; fi
+done
 
 assert_contains "$REF/intake/rules.md" "names its finding id in the row itself" "rules: a table-driven row names its finding id, never through a default"
 # shared caches outside the repo are never pruned; a browser install skips Playwright's cleanup

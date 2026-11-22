@@ -108,7 +108,7 @@ Before you report, run the item's check (guard docs-check, spelled out in rules.
 
 ## After the last item
 
-Phase 4 (the gate) stays attended and outside this command. Report a table (item, commit, evidence, finding ids), any High security finding that affects the deployed system first (id and one line, no reproduction detail), then blocked items and open questions.
+Phase 4 (the gate) stays attended and outside this command. Report a table (item, commit, evidence, finding ids), any High security finding that affects the deployed system first (id and one line, no reproduction detail), then blocked items and open questions, then the end-of-run full suite: its pass, fail and skip counts and the blocked count, with each blocked layer and its reason ("0 blocked" when none). An exit 0 with blocked tests is not a green suite.
 
 ## Rules
 

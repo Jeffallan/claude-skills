@@ -50,7 +50,7 @@ Intake suits an unattended goal run: the work is long, every item has a check, a
 
 In a goal run nothing asks you anything, so no agent stops at its checkpoint. Each one does its item in one pass and reports the scope it would have shown as a draft, which goes in the item's checklist note; and a choice you could reasonably make differently goes into the Open questions table of `docs/intake-findings.md` with the run's own best answer. The run carries on, and while one item writes, read-only agents already gather facts for the next. Read that table first when the run ends.
 
-Judge the run by its final message. It shows each `<done_when>` check, or starts with `BLOCKED:` and names the stop.
+Judge the run by its final message. It shows each `<done_when>` check, or starts with `BLOCKED:` and names the stop. It also gives the full suite's counts, the blocked count among them, with each test layer that couldn't run here and why. A suite that exits 0 with blocked tests is not green.
 
 ## After intake
 
