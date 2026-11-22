@@ -11,6 +11,7 @@ You check each assumption the brief lists against `docs/current-state.json` and 
 
 - For each assumption, return one row: the id, `holds`, `conflicts` or `unknown`, the source that settles it (a current-state row's source, a finding id, a drift row, or `path::symbol`), and the spec that rests on it.
 - A flow assumption is checked against section 3 of `docs/system-description.md`; the JSON doesn't hold flows.
+- A planned, proposed or future change in a spec or doc is not evidence of current state; only code, config or docs describing what is deployed count.
 - `unknown` is a fine answer. Never guess a conflict.
 
 ## Every brief
