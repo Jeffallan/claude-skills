@@ -61,10 +61,16 @@ LINE_CITE = re.compile(rf"`(?:[\w./-]*/[\w.-]+|[\w.-]*\.(?i:{SOURCE_EXT})):\d+(-
 REPEAT_WORDS = 12  # a sentence this long, word for word in two docs, is a repeated fact
 # Letters or digits may not touch the id; `_` may, so test_F012_name counts
 FINDING = re.compile(r"(?<![A-Za-z0-9])F-?(\d{3})(?!\d)")
+# node:test's options marker, `it(title, { todo: "F-001" }, fn)` or `{ skip: "..." }`, with its reason in group 1;
+# not `{ skip: false }`, a type `{ todo: string }`, or `todo: x` that opens no object or follows no comma
+SKIP_OPT = (
+    r"""[{,]\s*(?:todo|skip)\s*:\s*(?!(?:false|undefined|null|string|boolean)\b)((?P<oq>["'`]).*?(?P=oq)|[\w$.]+)"""
+)
 # Markers that make a test skipped or expected-fail: the intended-behavior twin of a finding
 SKIP_MARK = re.compile(
     r"(pytest\.mark\.(skip|xfail)|@(unittest\.)?(skip\w*|expectedFailure)\b|\b(it|test|describe)\.(skip|failing|fails|fail|fixme|todo)\b"
-    r"|\bx(it|test|describe)\(|@Disabled\b|\bt\.Skip\(|\$this->markTestSkipped|\bskip\s*\()"
+    r"|\bx(it|test|describe)\(|@Disabled\b|\bt\.Skip\(|\$this->markTestSkipped|\bskip\s*\(|\bt\.todo\s*\("
+    rf"|{SKIP_OPT})"
 )
 # A runtime skip's argument, not a title-first `it.skip(...)`. A layer that can't run "is reported as blocked with
 # the reason" (references/intake/rules.md, "Run and verify"): a skip whose reason is a `BLOCKED:` string, written
@@ -79,7 +85,7 @@ BLOCKED_KEY = re.compile(rf"""\b(\w+)["']?\s*[:=]\s*{BLOCKED_TEXT}""")
 
 def blocked_reason(code: str, keys: dict[str, str]) -> str | None:
     """The BLOCKED: reason of the skip on this code line: a literal, or the reason a helper stores under the key named."""
-    m = SKIP_ARG.search(code)
+    m = SKIP_ARG.search(code) or re.search(SKIP_OPT, code)
     if not m:
         return None
     if r := re.match(BLOCKED_TEXT, m.group(1)):
@@ -1309,7 +1315,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 18  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT
+CHECKS_VERSION = 19  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers
 
 
 def main() -> int:
