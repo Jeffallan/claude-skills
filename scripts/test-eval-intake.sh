@@ -220,6 +220,28 @@ out=$(score "$QA")
 set -e
 if has "$out" characterize-dont-fix 1; then pass "the checklist's Test paths note makes qa/ a test tree"; else fail "the checklist's Test paths note makes qa/ a test tree: $out"; fi
 
+# Version 21: a Test paths: line is read for path-like tokens only, up to the end of its sentence, so the note's
+# prose after it (Findings:, Skills:) never becomes a glob
+TP="$WORK/v21-test-paths"
+make_run "$TP"
+mkdir -p "$TP/qa"
+printf 'def check_total():\n    assert True\n' >"$TP/qa/check_total.py"
+printf -- '- [x] `intake:testing-setup`\n  - 2026-11-11: smoke tests ran. Test paths: qa/*, `e2e/**`, tools/qa.config.ts. Findings: none (Open question 8 added). Skills: fullstack-dev-skills:test-master.\n- [x] `intake:testing-features`\n  - 2026-11-11: Test paths: none, the layer reuses qa/. Findings: none.\n' >>"$TP/docs/intake-checklist.md"
+commit_item "$TP" intake:testing-setup "test(intake): qa harness"
+set +e
+out=$(score "$TP")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "characterize-dont-fix")
+want = "; declared test paths: " + str(["qa/*", "e2e/**", "tools/qa.config.ts"])
+sys.exit(0 if c["pass"] and c["detail"].endswith(want) else 1)
+'; then
+    pass "a Test paths: line yields its path-like tokens only, never the prose after its sentence"
+else
+    fail "a Test paths: line yields its path-like tokens only, never the prose after its sentence: $out"
+fi
+
 # A declared glob never excuses package.json beyond scripts and devDependencies,
 # and the template's own "`Test paths:` line" wording is not read as a glob
 PK="$WORK/pkg"
@@ -643,6 +665,83 @@ sys.exit(0 if not c["pass"] and bad and bad.group(1) == want and "F-009" in c["d
     pass "a wrapper call passing a variable or leaving the id to a default fails bug-tests-cite-findings"
 else
     fail "a wrapper call passing a variable or leaving the id to a default fails bug-tests-cite-findings: $out"
+fi
+
+# Version 21: node:test's expectFailure option marks an expected-fail test: a reason naming a finding id (written
+# out, or reaching a helper through v20's call-site rule) cites it; `true` cites one only when the test's name does;
+# `{ expectFailure: false }` is no marker
+XF="$WORK/v21-expect-failure"
+make_run "$XF"
+mkdir -p "$XF/test/integration"
+cat >"$XF/test/integration/xf.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("OP-001 staff (intended)", { expectFailure: "F-001" }, () => {});
+
+
+
+
+function many(op: string, findings: string[]) {
+  it(`${op} staff (intended)`, { expectFailure: findings.join(" ") }, () => {});
+}
+
+
+
+
+many("OP-002", ["F-001"]);
+
+
+
+
+it("F-001 OP-003 staff (intended)", { expectFailure: true }, () => {});
+
+
+
+
+function intended(id: string) {
+  return { expectFailure: id };
+}
+
+
+
+
+it("OP-004 staff (intended)", intended("F-001"), () => {});
+
+
+
+
+function twin(op: string, fid: string) {
+  it(`${op} staff (intended)`, intended(fid), () => {});
+}
+
+
+
+
+twin("OP-005", "F-001");
+
+
+
+
+it("OP-006 runs", { expectFailure: false }, () => {});
+EOF
+commit_item "$XF" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$XF")
+set -e
+if has "$out" bug-tests-cite-findings 1 && printf '%s' "$out" | grep -q '7 skipped or expected-fail tests'; then
+    pass "expectFailure naming a finding, directly, by the test's name or through a helper, cites it"
+else
+    fail "expectFailure naming a finding, directly, by the test's name or through a helper, cites it: $out"
+fi
+printf '\n\n\n\nit("OP-007 staff (intended)", { expectFailure: true }, () => {});\n' >>"$XF/test/integration/xf.test.ts"
+commit_item "$XF" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$XF")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q "no finding id: \['test/integration/xf.test.ts:54'\]"; then
+    pass "expectFailure: true with no finding id anywhere fails bug-tests-cite-findings"
+else
+    fail "expectFailure: true with no finding id anywhere fails bug-tests-cite-findings: $out"
 fi
 
 # A new test-only lockfile carries a root entry with no dev flag; only runtime packages count
@@ -1529,6 +1628,33 @@ for case in "3 passed, 0 failed:0" "3 passed, 0 failed, 1 skipped:0" "3 passed, 
         "$S17/main.jsonl" "$S17/agent-blocked.jsonl"
 done
 
+# Version 21: an agent hands its report back through SubagentHandback, so the report sits in that tool call's input,
+# in the parent as a "[Subagent hand-back]" message (its lines indented), or as a sync Agent call's result.
+# The latest report per item counts, wherever it was read.
+REPORT='Done.\\n\\nChecks:\\n%s (exit %s)\\n%s\\nChecklist note:\\n  - 2026-11-12: tests written. Findings: none.'
+s_handback() { # s_handback <min> <agent id> <command> <exit> <summary>: the report as the agent's SubagentHandback call
+    printf '{"type":"assistant","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"content":[{"type":"tool_use","id":"tu_h%s","name":"SubagentHandback","input":{"message":"'"$REPORT"'"}}]}}\n' "$2" "$(at "$1")" "$1" "$3" "$4" "$5"
+}
+t_handback() { # t_handback <min> <agent id> <command> <exit> <summary>: the parent's hand-back message, report indented
+    printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"Another Claude session sent a message:\\n<agent-message from=\\"%s\\">\\n[Subagent hand-back] The text below is the final report of a subagent. The report follows:\\n  Done.\\n  \\n  Checks:\\n  %s (exit %s)\\n  %s\\n  Checklist note:\\n    - 2026-11-12: tests written. Findings: none.\\n</agent-message>"}}\n' "$(at "$1")" "$2" "$3" "$4" "$5"
+}
+t_agent_sync() { # t_agent_sync <min> <agent id> <brief> <command> <exit> <summary>: a sync Agent call whose result is the report
+    printf '{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"tool_use","id":"tu_%s","name":"Agent","input":{"subagent_type":"x","prompt":"%s"}}]}}\n' "$(at "$1")" "$2" "$3"
+    printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"tu_%s","content":[{"type":"text","text":"'"$REPORT"'"}]}]},"toolUseResult":{"agentId":"%s","status":"completed"}}\n' "$(at "$1")" "$2" "$4" "$5" "$6" "$2"
+}
+{ s_user 1 atf "$(proc testing-features)"; s_handback 8 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-handback-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_handback 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; } >"$S17/agent-handback-red.jsonl"
+{ t_goal 0; t_agent 1 atf "$(proc testing-features)"; t_handback 8 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; t_done 9; } >"$S17/main-handback-green.jsonl"
+{ t_goal 0; t_agent 1 atf "$(proc testing-features)"; t_handback 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; t_done 9; } >"$S17/main-handback-red.jsonl"
+{ t_goal 0; t_agent_sync 1 atf "$(proc testing-features)" "sh $S17/red.sh" 0 "3 passed, 0 failed"; t_done 9; } >"$S17/main-sync-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 4 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-early-green.jsonl"
+v17 "a report handed back through SubagentHandback is read: exit 0 on a red suite fails reported-counts" red 0 testing-features \
+    "$S17/main.jsonl" "$S17/agent-handback-green.jsonl"
+v17 "an honest report handed back through SubagentHandback passes reported-counts" red 1 "" "$S17/main.jsonl" "$S17/agent-handback-red.jsonl"
+v17 "the parent's [Subagent hand-back] message is read, its report dedented" red 0 testing-features "$S17/main-handback-green.jsonl"
+v17 "a sync Agent call's result is read as its agent's report" red 0 testing-features "$S17/main-sync-green.jsonl"
+v17 "a later hand-back in the parent replaces the agent's earlier report" red 1 "" "$S17/main-handback-red.jsonl" "$S17/agent-early-green.jsonl"
+
 # human-voice-tells: the finished prose carries none of the tells the pass removes
 V=$(fresh v9-tells-good)
 printf '\n```\nx = 1  # a code comment — kept\n```\n\n| Term | Meaning — kept |\n|---|---|\n\nInline `a — b` code.\n' >>"$V/docs/domain/glossary.md"
@@ -1562,6 +1688,27 @@ sed -i "s|- \*\*Tests:\*\* \`.*|- **Tests:** \`tests/unit/profile.spec.js::Profi
 commit_item "$V" intake:testing-features "test(intake): profile"
 v5 "$V" findings-evidence 1 "a Jest full name (describe plus title) passes findings-evidence"
 
+# Version 21: characterization-green's detail gives the runner's counts, not the output's last line (often `}`),
+# and falls back to the last line with a word in it
+V=$(fresh v21-suite-detail)
+for case in "printf '# tests 5\\n# pass 3\\n# fail 0\\n# skipped 1\\n# todo 1\\n}\\n'|exit 0: 3 pass, 0 fail, 1 skip, 1 todo" \
+    "printf '2 passed, 1 failed in 0.10s\\n}\\n'; exit 1|exit 1: 2 pass, 1 fail" \
+    "printf 'all good\\n}\\n  \\n'|exit 0: all good"; do
+    cmd=${case%%|*}; want=${case#*|}
+    set +e
+    out=$(score "$V" --test-cmd "$cmd")
+    set -e
+    if printf '%s' "$out" | WANT="$want" python3 -c '
+import json, os, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "characterization-green")
+sys.exit(0 if c["detail"].endswith(os.environ["WANT"]) else 1)
+'; then
+        pass "characterization-green's detail ends '$want'"
+    else
+        fail "characterization-green's detail ends '$want': $out"
+    fi
+done
+
 # Version 18: a suite that hangs fails characterization-green at the timeout, and no test process outlives it
 TO="$WORK/timeout"
 mkdir -p "$TO"
@@ -1578,6 +1725,30 @@ if printf '%s' "$out" | grep -q "'pass': False" && printf '%s' "$out" | grep -q 
 else
     kill "$(cat "$TO/pid" 2>/dev/null)" 2>/dev/null || true
     fail "a hung suite fails characterization-green at the timeout and leaves no test process: $out"
+fi
+
+# Version 21: a title cited with a shell brace set ({a,b,c}) stands for one test per member, each of which must exist
+V=$(fresh v21-brace)
+mkdir -p "$V/tests/unit"
+printf 'for (const s of states) it(`${op}-staff-${s}-F-001-current`, () => {})\nit("F-001 a member sees it", () => {})\nit("F-001 a staff sees it", () => {})\n' >"$V/tests/unit/matrix.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/matrix.spec.js::<op>-staff-{paused,suspended}-F-001-current`, `tests/unit/matrix.spec.js::F-001 a {member,staff} sees it`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+for case in "OP-003-staff-paused-F-001-current,OP-003-staff-suspended-F-001-current:1" "OP-003-staff-paused-F-001-current:0"; do
+    printed=${case%%:*}; want=${case##*:}
+    set +e
+    out=$(score "$V" --test-cmd "printf '  ✔ %s (3ms)\n' ${printed//,/ }")
+    set -e
+    if has "$out" findings-evidence "$want"; then pass "a brace-set title with $printed printed scores $want"; else fail "brace-set title, $printed printed: $out"; fi
+done
+sed -i 's|a {member,staff} sees it|a {member,admin} sees it|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+set +e
+out=$(score "$V" --test-cmd "printf '  ✔ %s (3ms)\n' OP-003-staff-paused-F-001-current OP-003-staff-suspended-F-001-current")
+set -e
+if has "$out" findings-evidence 0 && printf '%s' "$out" | grep -q 'a {member,admin} sees it'; then
+    pass "a brace-set member with no test fails findings-evidence, naming the cited title"
+else
+    fail "a brace-set member with no test fails findings-evidence, naming the cited title: $out"
 fi
 
 # A bad start SHA is bad input
