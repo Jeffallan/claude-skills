@@ -1529,6 +1529,33 @@ for case in "3 passed, 0 failed:0" "3 passed, 0 failed, 1 skipped:0" "3 passed, 
         "$S17/main.jsonl" "$S17/agent-blocked.jsonl"
 done
 
+# Version 21: an agent hands its report back through SubagentHandback, so the report sits in that tool call's input,
+# in the parent as a "[Subagent hand-back]" message (its lines indented), or as a sync Agent call's result.
+# The latest report per item counts, wherever it was read.
+REPORT='Done.\\n\\nChecks:\\n%s (exit %s)\\n%s\\nChecklist note:\\n  - 2026-11-12: tests written. Findings: none.'
+s_handback() { # s_handback <min> <agent id> <command> <exit> <summary>: the report as the agent's SubagentHandback call
+    printf '{"type":"assistant","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"content":[{"type":"tool_use","id":"tu_h%s","name":"SubagentHandback","input":{"message":"'"$REPORT"'"}}]}}\n' "$2" "$(at "$1")" "$1" "$3" "$4" "$5"
+}
+t_handback() { # t_handback <min> <agent id> <command> <exit> <summary>: the parent's hand-back message, report indented
+    printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"Another Claude session sent a message:\\n<agent-message from=\\"%s\\">\\n[Subagent hand-back] The text below is the final report of a subagent. The report follows:\\n  Done.\\n  \\n  Checks:\\n  %s (exit %s)\\n  %s\\n  Checklist note:\\n    - 2026-11-12: tests written. Findings: none.\\n</agent-message>"}}\n' "$(at "$1")" "$2" "$3" "$4" "$5"
+}
+t_agent_sync() { # t_agent_sync <min> <agent id> <brief> <command> <exit> <summary>: a sync Agent call whose result is the report
+    printf '{"type":"assistant","timestamp":"%s","message":{"content":[{"type":"tool_use","id":"tu_%s","name":"Agent","input":{"subagent_type":"x","prompt":"%s"}}]}}\n' "$(at "$1")" "$2" "$3"
+    printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"tu_%s","content":[{"type":"text","text":"'"$REPORT"'"}]}]},"toolUseResult":{"agentId":"%s","status":"completed"}}\n' "$(at "$1")" "$2" "$4" "$5" "$6" "$2"
+}
+{ s_user 1 atf "$(proc testing-features)"; s_handback 8 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-handback-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_handback 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; } >"$S17/agent-handback-red.jsonl"
+{ t_goal 0; t_agent 1 atf "$(proc testing-features)"; t_handback 8 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; t_done 9; } >"$S17/main-handback-green.jsonl"
+{ t_goal 0; t_agent 1 atf "$(proc testing-features)"; t_handback 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; t_done 9; } >"$S17/main-handback-red.jsonl"
+{ t_goal 0; t_agent_sync 1 atf "$(proc testing-features)" "sh $S17/red.sh" 0 "3 passed, 0 failed"; t_done 9; } >"$S17/main-sync-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_report 4 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-early-green.jsonl"
+v17 "a report handed back through SubagentHandback is read: exit 0 on a red suite fails reported-counts" red 0 testing-features \
+    "$S17/main.jsonl" "$S17/agent-handback-green.jsonl"
+v17 "an honest report handed back through SubagentHandback passes reported-counts" red 1 "" "$S17/main.jsonl" "$S17/agent-handback-red.jsonl"
+v17 "the parent's [Subagent hand-back] message is read, its report dedented" red 0 testing-features "$S17/main-handback-green.jsonl"
+v17 "a sync Agent call's result is read as its agent's report" red 0 testing-features "$S17/main-sync-green.jsonl"
+v17 "a later hand-back in the parent replaces the agent's earlier report" red 1 "" "$S17/main-handback-red.jsonl" "$S17/agent-early-green.jsonl"
+
 # human-voice-tells: the finished prose carries none of the tells the pass removes
 V=$(fresh v9-tells-good)
 printf '\n```\nx = 1  # a code comment — kept\n```\n\n| Term | Meaning — kept |\n|---|---|\n\nInline `a — b` code.\n' >>"$V/docs/domain/glossary.md"

@@ -26,6 +26,7 @@ import re
 import signal
 import subprocess
 import sys
+import textwrap
 
 import eval_dir
 from eval_workflow_run import REWRITE, check, git, text_of, transcript_checks, when
@@ -1035,21 +1036,57 @@ def counts(text: str) -> dict[str, int]:
     return out
 
 
-def agent_items(paths: list[Path]) -> list[tuple[str | None, list[dict]]]:
-    """Each subagent transcript's records and the item whose procedure its brief names, as timeline links them."""
+# The parent's copy of a hand-back: the agent's id, then its report with every line indented by the harness
+HANDBACK = re.compile(
+    r'<agent-message from="([^"]+)">\n\[Subagent hand-back\][^\n]*\n(.*?)(?:\n</agent-message>|\Z)', re.S
+)
+
+
+def item_reports(paths: list[Path]) -> list[tuple[str | None, datetime, str]]:
+    """Each text that may hold an item report, its time, and the item whose procedure its agent's brief names.
+
+    In an agent's own transcript: its text and its SubagentHandback call's message. In the main session: a
+    `[Subagent hand-back]` message from the agent, dedented, and a sync Agent call's result. Agents link to items
+    as timeline links them.
+    """
     briefs: dict[str, str] = {}
+    mains, subs = [], []
     for p in paths:
-        if not is_subagent(p):
-            prompts: dict[str, str] = {}
-            for x in p.read_text(encoding="utf-8").splitlines():
-                if x.strip():
-                    briefs.update(agent_briefs(json.loads(x), prompts))
-    out = []
-    for p in (p for p in paths if is_subagent(p)):
         msgs = [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
+        if is_subagent(p):
+            subs.append((p, msgs))
+            continue
+        prompts: dict[str, str] = {}
+        for m in msgs:
+            briefs.update(agent_briefs(m, prompts))
+        mains += msgs
+
+    def item(brief: str) -> str | None:
+        return r.group(1) if (r := ITEM_BRIEF.search(brief)) else None
+
+    out = []
+    for m in mains:
+        if m.get("type") != "user" or not m.get("timestamp") or not isinstance(m.get("message"), dict):
+            continue
+        t, content, result = when(m["timestamp"]), m["message"].get("content", ""), m.get("toolUseResult")
+        for h in HANDBACK.finditer(text_of(content)):
+            out.append((item(briefs.get(h.group(1), "")), t, textwrap.dedent(h.group(2))))
+        if isinstance(result, dict) and result.get("agentId") and isinstance(content, list):
+            brief = briefs.get(str(result["agentId"]), "")
+            out += [(item(brief), t, text_of(c.get("content", ""))) for c in content if c.get("type") == "tool_result"]
+    for p, msgs in subs:
         first = next((m for m in msgs if m.get("type") == "user"), {})
-        brief = briefs.get(agent_id(p, msgs)) or text_of(first.get("message", {}).get("content", ""))
-        out.append((r.group(1) if (r := ITEM_BRIEF.search(brief)) else None, msgs))
+        it = item(briefs.get(agent_id(p, msgs)) or text_of(first.get("message", {}).get("content", "")))
+        for m in msgs:
+            if m.get("type") != "assistant" or not m.get("timestamp") or not isinstance(m.get("message"), dict):
+                continue
+            content = m["message"].get("content", "")
+            texts = [text_of(content)] + [
+                str(c.get("input", {}).get("message", ""))
+                for c in (content if isinstance(content, list) else [])
+                if c.get("type") == "tool_use" and c.get("name") == "SubagentHandback"
+            ]
+            out += [(it, when(m["timestamp"]), x) for x in texts]
     return out
 
 
@@ -1066,6 +1103,8 @@ def reported_counts_check(
 ) -> dict | None:
     """Each testing item's last reported test run agrees with the scorer's own run of the suite.
 
+    The last report is the latest of item_reports: the agent's text or hand-back, or the parent's copy of it.
+
     Compared only where the item's last commit leaves the suite as the run ends it. Fails when a report says exit 0
     or 0 failed and the suite fails, or reports more passes than the suite printed for the same command. A suite that
     skips tests with a BLOCKED: reason stays green, but a report giving no blocked or skipped count and reason fails.
@@ -1074,16 +1113,12 @@ def reported_counts_check(
     if not cmd or not paths:
         return None
     last: dict[str, tuple[datetime, str, int, str]] = {}
-    for item, msgs in agent_items(paths):
+    for item, t, text in item_reports(paths):
         if not item or not item.startswith("testing-"):
             continue
-        for m in msgs:
-            if m.get("type") != "assistant" or not m.get("timestamp") or not isinstance(m.get("message"), dict):
-                continue
-            t = when(m["timestamp"])
-            for r in REPORT_CHECKS.finditer(text_of(m["message"].get("content", ""))):
-                if item not in last or t >= last[item][0]:
-                    last[item] = (t, r.group(1).strip(), int(r.group(2)), r.group(3).strip())
+        for r in REPORT_CHECKS.finditer(text):
+            if item not in last or t >= last[item][0]:
+                last[item] = (t, r.group(1).strip(), int(r.group(2)), r.group(3).strip())
     real, compared, bad = counts(out), [], []
     blocked = sorted(set(SUITE_BLOCKED.findall(out)))
     for item, (_, run, code, summary) in sorted(last.items()):
@@ -1374,7 +1409,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 21  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member
+CHECKS_VERSION = 21  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member, reported-counts reads reports handed back through SubagentHandback (the agent's call, the parent's hand-back message or a sync Agent result)
 
 
 def main() -> int:
