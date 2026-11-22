@@ -15,7 +15,7 @@ Claude often operates on assumptions about project context, technology choices, 
 | `list` | flag | no | Read-only view of all tracked assumptions |
 | `check` | flag | no | Quick validation of current assumptions |
 | `graph` | flag | no | Generate mermaid diagram of reasoning structure |
-| `specs` | list[string] | no | Outstanding specs whose assumptions to check, in order; every outstanding spec when omitted, an `Unbranched` one included |
+| `specs` | list[string] | no | Outstanding specs whose assumptions to check, in order, with the default mode or `--check`; every outstanding spec when omitted, an `Unbranched` one included |
 
 ## Outputs
 
@@ -23,6 +23,7 @@ Claude often operates on assumptions about project context, technology choices, 
 |------|------|------|-------------|
 | `ground-file` | file | `{docsRoot}/COMMON-GROUND.md` | Human-readable assumptions organized by confidence tier |
 | `ground-index` | file | `{docsRoot}/ground.index.json` | Machine-readable assumption index |
+| `reasoning-graph` | file | `REASONING.mermaid` | Optional with `--graph`: a standalone copy of the reasoning graph in the project root |
 
 ## Prerequisites
 

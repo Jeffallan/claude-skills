@@ -26,4 +26,4 @@ Broken access control (A01) belongs to the access matrix that `intake:testing-au
 
 The coverage map has one row for each category, surface and technique. Every row says whether it was tested, not tested (and why), or not examined.
 
-Run it after `intake:document-codebase` and `intake:testing-authorization`. Capture-behavior procedures other than `intake:testing-setup` also need the harness that procedure builds. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).
+Run it after `intake:testing-setup` and, ideally, `intake:document-security`. It cites the access matrix tests from `intake:testing-authorization`; in a full intake run the two write at the same time in the parallel testing batch, beside `intake:testing-features`. A rerun edits what it owns in place and keeps your hand edits. In a goal run it never asks a question; see the [intake phase](intake-phase.md).

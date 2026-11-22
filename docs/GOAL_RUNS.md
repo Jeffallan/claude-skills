@@ -25,6 +25,8 @@ Every launch command passes `--disallowedTools` for each write the run must not 
 - `gh api` with a method flag, fields or `--input`, attached or not, which covers every way it sends a write, including GraphQL mutations. GraphQL reads are denied too; a goal run reads through `gh issue` and `gh pr`
 - every `gh project` write (reads such as `item-list` and `view` stay allowed) and `gh release`
 - `guard decide` and `guard decisions import`, because only you record owner decisions
+- `git rebase`, `git reset` and `git commit --amend`, since a run never rewrites history
+- `ScheduleWakeup`, `CronCreate` and `RemoteTrigger`, so nothing starts work after the run ends
 - the tracker MCP write tools you list in `goal.deny`
 
 Reads stay allowed. The launch also passes `--allowedTools 'Skill(fullstack-dev-skills:ticket-guard)'`, so a headless session can load the skill that carries the ticket rules. The guard hooks don't depend on it: they ship in the plugin's `hooks/hooks.json` and run in every session while a ticket's marker exists. `ticket:execute` checks that the hooks claimed the marker and stops the run if they didn't.
@@ -33,7 +35,7 @@ Reads stay allowed. The launch also passes `--allowedTools 'Skill(fullstack-dev-
 
 The `/goal` line is the condition the goal evaluator checks after every turn: every condition in `<done_when>` holds and the latest message shows the evidence, or the latest message starts with `BLOCKED:` and names a stop from `<stops>`. A condition such as "Read the goal prompt" would be met as soon as the file was read, ending the run after one turn, which is why the line names an end state.
 
-The goal prompt records its start commit, and `<done_when>` counts commits from there: one per Done ticket and nothing else. That's why earlier commits on the branch never upset a later run.
+The goal prompt records its start commit, and `<done_when>` counts commits from there: one per Done ticket, plus any commits that record Blocked rows in the plan and one human-voice pass commit when that pass changed wording. That's why earlier commits on the branch never upset a later run.
 
 ## When something goes wrong
 

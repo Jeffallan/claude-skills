@@ -4,7 +4,17 @@ See what changes if a set of specs lands, in the order you give.
 
 ---
 
-`spec:diff [spec ...]` prints a plan beside the current system: the component diagram from `docs/system-description.md` unchanged, a target diagram with every changed node labeled by the spec that changes it, a table per spec of what it adds, changes or removes, and the overlaps where two specs touch the same component or one removes what a later one relies on. With no spec names it takes every outstanding spec in the order `guard spec-status` lists them, a spec that is still `Unbranched` included.
+## Inputs
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `specs` | list[string] | no | Outstanding specs to apply, in order; every outstanding spec when omitted |
+
+## How it runs
+
+`spec:diff [spec ...]` prints a plan beside the current system: the component diagram from `docs/system-description.md` unchanged, a target diagram with every changed node labeled by the spec that changes it, a table per spec of what it adds, changes or removes, and the overlaps where two specs touch the same component or one removes what a later one relies on. With no spec names it takes every outstanding spec in the order `guard spec-status` lists them, a spec that is still `Unbranched` included. A name that isn't an outstanding spec is refused, and the outstanding ones are listed.
+
+When `docs/system-description.md` is missing, it stops: "No system description yet. Run `intake create-system-description` first." `spec:current` can't help there, since it stops the same way without one.
 
 It also lists the assumptions each spec makes about the current system, with `references/specs/assumptions.md`: which components, interfaces, flows, findings and docs it takes for granted, and where each can be checked. `common-ground` checks that list against `docs/current-state.json`.
 

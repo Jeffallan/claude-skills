@@ -70,10 +70,11 @@ When you run `/common-ground` without flags, Claude executes a two-phase interac
 ┌─────────────────────────────────────────────────────────────┐
 │                    PHASE 1: Surface & Select                │
 ├─────────────────────────────────────────────────────────────┤
-│  1. Analyze context (config files, code patterns, history)  │
-│  2. Identify assumptions Claude is making                   │
-│  3. Classify by type and proposed confidence tier           │
-│  4. Present for user selection                              │
+│  1. Check outstanding specs' assumptions (spec check)       │
+│  2. Analyze context (config files, code patterns, history)  │
+│  3. Identify assumptions Claude is making                   │
+│  4. Classify by type and proposed confidence tier           │
+│  5. Present for user selection                              │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -94,7 +95,7 @@ When you run `/common-ground` without flags, Claude executes a two-phase interac
 | `/common-ground` | Full surface & adjust flow | Yes |
 | `/common-ground --list` | Read-only view of all assumptions | No |
 | `/common-ground --check` | Spec assumptions check, then a quick "still valid?" validation | Yes |
-| `/common-ground <spec> ...` | Any mode above, checking only these specs' assumptions | Depends on the mode |
+| `/common-ground <spec> ...` | The default flow or `--check`, checking only these specs' assumptions | Yes |
 | `/common-ground --graph` | Visualize reasoning structure | Yes |
 
 ---
@@ -185,7 +186,7 @@ docs/ground.index.json
 
 ## Checking spec assumptions
 
-Each outstanding spec rests on assumptions about the system as it stands: a component is wired, a route has a shape, a finding is fixed, another spec lands first. `common-ground` lists them (the same list `spec:diff` prints) and checks each against `docs/current-state.json`, the compiled state `spec:current` writes. The `assumption-checker` agent marks each one holds, conflicts or unknown and names the source that settles it. The report is one table, conflicts first; a conflict points to `spec:create <spec>` to rework that spec, or to `spec:current` when the state is what's wrong. Name specs to check only those: `common-ground billing-v2 sso`.
+Each outstanding spec rests on assumptions about the system as it stands: a component is wired, a route has a shape, a finding is fixed, another spec lands first. `common-ground` lists them (the same list `spec:diff` prints) and checks each against `docs/current-state.json`, the compiled state `spec:current` writes. The `assumption-checker` agent marks each one holds, conflicts or unknown and names the source that settles it. The report is one table, conflicts first; a conflict points to `spec:create <spec>` to rework that spec, or to `spec:current` when the state is what's wrong. Name specs to check only those: `common-ground billing-v2 sso`. The check runs first in the default flow, when any outstanding spec exists. When `docs/current-state.json` is missing, or was compiled from an older `docs/system-description.md` than the one committed, it stops and suggests `spec:current`, since a stale state flags the wrong specs.
 
 ### File Format
 
@@ -409,10 +410,6 @@ Run `/common-ground --check` for quick validation, or full `/common-ground` to r
 ### Graph is too complex
 
 Focus on specific subtrees: "Expand only the authentication branch"
-
-### Wrong project detected
-
-Check git remote configuration. For non-git projects, the absolute path is used.
 
 ---
 

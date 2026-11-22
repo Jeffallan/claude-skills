@@ -93,8 +93,8 @@ The workflow commands need the full plugin install (the skills-only methods abov
 
 1. Run `/fullstack-dev-skills:spec:triage`. With no `.claude/workflow-config.json` yet, it offers a setup wizard that detects your tracker and asks one question at a time.
 2. Approve the proposed grouping. Triage creates the spec's group in your tracker and a `spec/<spec-name>` branch.
-3. Run `/fullstack-dev-skills:spec:create <spec-name>` and approve the overview. It writes the plan and prints a launch command.
-4. Work the tickets with `ticket:execute` and `ticket:complete`, or start the printed goal run.
+3. Run `/fullstack-dev-skills:spec:create <spec-name>` and approve the overview. It writes the plan and prints two launch commands: one for the whole spec and one for the next batch.
+4. Work the tickets with `ticket:execute` and `ticket:complete`, or start one of the printed goal runs.
 5. Finish with `spec:review` and `spec:complete`.
 
 Adopting an existing codebase? Start with `/fullstack-dev-skills:intake`. It documents the code, pins its behavior in tests and records its bugs, one checklist item at a time. See [Intake](docs/INTAKE.md).

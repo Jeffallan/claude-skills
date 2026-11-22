@@ -16,6 +16,9 @@ A spec is a group of tickets built on one branch and merged in one PR. Its files
 | 2 | `spec:create` | Write `overview.md`, `implementation-plan.md` and `goal-prompt.md`, and print the goal launch commands |
 | 3 | `spec:review` | Run adversarial reviewers and blind verifiers over the branch diff |
 | 4 | `spec:complete` | Run the gate, open the PR, turn review feedback into fix tickets, merge on approval and close the tickets |
+| Any | `spec:status` | Show where every spec stands and the next command for each, read-only |
+| Any | `spec:current` | Update the system description and compile `docs/current-state.json` |
+| Any | `spec:diff` | Show what changes if the given specs land in order, read-only |
 
 ## Prerequisites
 

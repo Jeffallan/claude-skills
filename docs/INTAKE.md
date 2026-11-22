@@ -13,7 +13,7 @@ Intake is how you adopt an existing codebase. It documents the code for the agen
 | An index of those docs | `docs/README.md`, or `docs/README-intake.md` beside your own | `create-onboarding` |
 | A test harness with a smoke test per layer | Your test tree and package scripts | `testing-setup` |
 | Characterization tests | Your test tree | `testing-features`, `-authorization`, `-owasp`, `-user-flows` |
-| The findings tracker | `docs/intake-findings.md` | every command, appending |
+| The findings tracker | `docs/intake-findings.md` | every procedure, appending; the intake session applies the parallel testing batch's entries |
 | A baseline spec | `docs/specs/completed/baseline/overview.md` | `create-system-description` |
 | A system description | `docs/system-description.md` | `create-system-description` |
 
@@ -31,12 +31,13 @@ You decide what happens to each finding at close-out: ticket it, accept the risk
 
 Run `/fullstack-dev-skills:intake` on a branch of its own. It creates `docs/intake-checklist.md` when it is missing and works it in order, one procedure per item. Each procedure runs in one of the plugin's agents (`doc-writer`, `test-writer`, `security-prober`, `architect`). The agent stops at a checkpoint to show you its scope, you confirm or correct it, and the same agent then writes. The command reviews what the agent changed and commits the item. Stop whenever you like; the next run starts from the first unchecked item. `intake <procedure>` runs or reruns one procedure.
 
-1. **Docstrings.** `document-codebase`. It runs your tests before and after and checks that no executable line changed.
-2. **Reference docs.** The `document-*` procedures, then `create-onboarding` last so it can link them.
-3. **Harness.** `testing-setup` proves each layer (unit, integration, end-to-end) with a smoke test before any real test is written.
-4. **Tests.** `testing-features`, then `-authorization`, `-owasp` and `-user-flows`. Each reads its matching doc.
-5. **System description.** `create-system-description` writes the baseline spec and `docs/system-description.md`.
-6. **Gate and close-out.** Wire the cheap test layers into your PR checks and settle every finding.
+1. **Findings tracker and existing docs.** The command starts `docs/intake-findings.md`, then `existing-docs` maps the docs you already have and checks them against the code.
+2. **Docstrings.** `document-codebase`. It runs your tests before and after and checks that no executable line changed.
+3. **Reference docs.** The `document-*` procedures, then `create-onboarding` last so it can link them.
+4. **Harness.** `testing-setup` proves each layer (unit, integration, end-to-end) with a smoke test before any real test is written.
+5. **Tests.** `testing-features`, `-authorization` and `-owasp` write at the same time, and the command commits them one at a time. `-user-flows` runs after them. Each reads its matching doc.
+6. **System description.** `create-system-description` writes the baseline spec and `docs/system-description.md`.
+7. **Gate and close-out.** You do this by hand after the command ends: wire the cheap test layers into your PR checks and settle every finding.
 
 The full checklist, with a copy-ready template, is `references/intake/checklist.md` in the plugin.
 
