@@ -937,7 +937,9 @@ REPORT_CHECKS = re.compile(
     r"^Checks:[ \t]*\n`?(.+?)`?[ \t]*\(exit (\d+)\)[ \t]*\n(.*?)(?=^[A-Z][\w ]*:[ \t]*$|\Z)", re.M | re.S
 )
 # pytest, Jest, Vitest and mocha print "<n> passed"; node --test prints "pass <n>"
-COUNT = re.compile(r"(\d+)\s+(passed|passing|failed|failing|skipped|pending)\b|\b(pass|fail|skip)\s+(\d+)\b", re.I)
+COUNT = re.compile(
+    r"(\d+)\s+(passed|passing|failed|failing|skipped|pending|blocked)\b|\b(pass|fail|skip)\s+(\d+)\b", re.I
+)
 COUNT_KIND = {
     "passed": "pass",
     "passing": "pass",
@@ -945,7 +947,12 @@ COUNT_KIND = {
     "failing": "fail",
     "skipped": "skip",
     "pending": "skip",
+    "blocked": "skip",
 }
+# A skip the suite prints with a BLOCKED: reason: node and TAP `# SKIP BLOCKED: ...`, pytest -rs `SKIPPED [1] ...: BLOCKED: ...`
+SUITE_BLOCKED = re.compile(r"(?:#\s*(?:SKIP\s+)?|\bSKIPPED\b.*?)(BLOCKED:[^\n]*)")
+# A report gives the reason beside its count: "1 skipped (BLOCKED: no Chromium)", "1 blocked: no Chromium"
+REPORTED_REASON = re.compile(r"blocked\s*[:(,-]\s*\w|\(\s*blocked\b[^)]*\w", re.I)
 
 
 def counts(text: str) -> dict[str, int]:
@@ -989,8 +996,9 @@ def reported_counts_check(
     """Each testing item's last reported test run agrees with the scorer's own run of the suite.
 
     Compared only where the item's last commit leaves the suite as the run ends it. Fails when a report says exit 0
-    or 0 failed and the suite fails, or reports more passes than the suite printed for the same command. None when
-    nothing compares: the check counts only when a run exercised it.
+    or 0 failed and the suite fails, or reports more passes than the suite printed for the same command. A suite that
+    skips tests with a BLOCKED: reason stays green, but a report giving no blocked or skipped count and reason fails.
+    None when nothing compares: the check counts only when a run exercised it.
     """
     if not cmd or not paths:
         return None
@@ -1006,6 +1014,7 @@ def reported_counts_check(
                 if item not in last or t >= last[item][0]:
                     last[item] = (t, r.group(1).strip(), int(r.group(2)), r.group(3).strip())
     real, compared, bad = counts(out), [], []
+    blocked = sorted(set(SUITE_BLOCKED.findall(out)))
     for item, (_, run, code, summary) in sorted(last.items()):
         if not at_end_state(repo, start, item):
             continue
@@ -1015,6 +1024,10 @@ def reported_counts_check(
             bad.append(f"intake:{item} reported `{run}` exit {code} ({summary[:80]}), but the suite fails")
         if run.split() == cmd.split() and "pass" in real and said.get("pass", 0) > real["pass"]:
             bad.append(f"intake:{item} reported {said['pass']} passed, the suite printed {real['pass']}")
+        if blocked and not ("skip" in said and REPORTED_REASON.search(summary)):
+            bad.append(
+                f"intake:{item} reported ({summary[:80]}) with no blocked count and reason; suite: {blocked[:3]}"
+            )
     if not compared:
         return None
     return check(
@@ -1278,7 +1291,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 18  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev
+CHECKS_VERSION = 18  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests
 
 
 def main() -> int:

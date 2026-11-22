@@ -1290,6 +1290,22 @@ v17 "a red suite reported as red passes reported-counts" red 1 "" "$S17/main.jso
 v17 "only an item's last report counts" red 1 "" "$S17/main.jsonl" "$S17/agent-resumed.jsonl"
 v17 "an item whose state later commits changed is not compared" red none "" "$S17/main-auth.jsonl" "$S17/agent-auth.jsonl"
 v17 "without transcripts there is no reported-counts check" red none ""
+# Version 18: a suite that skips tests with a BLOCKED: reason stays green, but the report must give the blocked
+# (or skipped) count and the reason; passes and "0 failed" alone fail
+cat >"$S17/blocked.sh" <<'EOF'
+echo "ok 1 - lists loans"
+echo "ok 2 - loads the catalogue # SKIP BLOCKED: no Chromium"
+echo "# pass 3"
+echo "# fail 0"
+echo "# skipped 1"
+EOF
+for case in "3 passed, 0 failed:0" "3 passed, 0 failed, 1 skipped:0" "3 passed, 0 failed, 1 skipped (BLOCKED: no Chromium):1" \
+    "3 passed, 1 blocked: no Chromium:1"; do
+    summary=${case%:*}; want=${case##*:}
+    { s_user 1 atf "$(proc testing-features)"; s_report 8 atf "sh $S17/blocked.sh" 0 "$summary"; } >"$S17/agent-blocked.jsonl"
+    v17 "a BLOCKED: skip in the suite, reported as '$summary', scores $want on reported-counts" blocked "$want" "" \
+        "$S17/main.jsonl" "$S17/agent-blocked.jsonl"
+done
 
 # human-voice-tells: the finished prose carries none of the tells the pass removes
 V=$(fresh v9-tells-good)
