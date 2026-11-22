@@ -1942,6 +1942,55 @@ else
     fail "ids that come only from a helper's default argument still fail bug-tests-cite-findings: $out"
 fi
 
+# Version 22: a table filled by `rows.push({ ..., finding })` cites through its pushes: each push that sets the field
+# the twin reads names a literal id, or sits in a helper every call of which passes one
+TP="$WORK/v22-pushed-table"
+make_run "$TP"
+mkdir -p "$TP/test/integration"
+cat >"$TP/test/integration/tp.test.ts" <<'EOF'
+import { it } from "node:test";
+
+const rows: Row[] = [];
+function intended(finding: string, id: string) {
+  rows.push({ id, finding });
+}
+function row(id: string) {
+  rows.push({ id });
+}
+
+
+
+
+intended("F-001", "OP-001-intended");
+row("OP-002");
+
+
+
+
+for (const r of rows) {
+  if (r.finding) it(r.id, { expectFailure: { label: r.finding, match: Error } }, () => {});
+}
+EOF
+commit_item "$TP" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$TP")
+set -e
+if has "$out" bug-tests-cite-findings 1; then
+    pass "a twin over a pushed table cites through the pushes' literal ids"
+else
+    fail "a twin over a pushed table cites through the pushes' literal ids: $out"
+fi
+printf '\n\n\n\nintended(fid, "OP-003-intended");\n' >>"$TP/test/integration/tp.test.ts"
+commit_item "$TP" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$TP")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q "tp.test.ts:21"; then
+    pass "a pushed table whose helper gets a variable id fails bug-tests-cite-findings"
+else
+    fail "a pushed table whose helper gets a variable id fails bug-tests-cite-findings: $out"
+fi
+
 # Version 22: agents write the Checks: section as bullets, `- \`<command>\` (exit <code>): <summary>`
 s_bullets() { # s_bullets <min> <agent id> <command> <exit> <summary>: the report's Checks: as bullets
     printf '{"type":"assistant","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"content":[{"type":"text","text":"Done.\\n\\nChecks:\\n- `%s` (exit %s): %s\\n- `npm run typecheck` (exit 0)\\n\\nChecklist note:\\n  - 2026-11-12: tests written. Findings: none."}]}}\n' "$2" "$(at "$1")" "$3" "$4" "$5"

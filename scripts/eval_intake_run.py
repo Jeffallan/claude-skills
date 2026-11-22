@@ -270,17 +270,44 @@ def table_rows(text: str, start: int) -> list[str]:
     return [r for r in rows if r.strip()]
 
 
+def table_refs(lines: list[str], i: int) -> list[str]:
+    """The names of the tables the marked test on line i may be generated from."""
+    found = (TABLE_REF.search(lines[j]) for j in range(max(0, i - 3), min(len(lines), i + 2)))
+    return [next(g for g in m.groups() if g) for m in found if m]
+
+
 def driving_rows(lines: list[str], i: int) -> list[str]:
     """The rows of the table the marked test on line i is generated from, if a table drives it."""
     text = "\n".join(lines)
-    for j in range(max(0, i - 3), min(len(lines), i + 2)):
-        m = TABLE_REF.search(lines[j])
-        if not m:
-            continue
-        ref = next(g for g in m.groups() if g)
+    for ref in table_refs(lines, i):
         if d := re.search(rf"\b{re.escape(ref)}\b\s*(?::[^=\n]+)?=\s*[\[{{]", text):  # an array or object table
             return table_rows(text, d.end() - 1)
     return []
+
+
+def pushed_ids(code: list[str], i: int) -> set[str] | None:
+    """The ids of a twin generated from a table filled by `<table>.push({ ..., finding })`, whose marker reads that
+    field (`{ expectFailure: { label: r.finding } }`): every push that sets the field names a literal id, or passes a
+    parameter every call of its function fills with one (wrapper_ids). None when one doesn't or nothing is pushed."""
+    opt = re.search(SKIP_OPT, code[i])
+    field = re.search(r"\b[\w$]+\.(\w+)\b(?!\s*\()", opt.group(1) if opt and opt.group(1) else "")
+    if not field:
+        return None
+    for ref in table_refs(code, i):
+        pushes = [
+            j
+            for j, line in enumerate(code)
+            if re.search(rf"\b{re.escape(ref)}\.push\(", line) and re.search(rf"\b{field.group(1)}\b", line)
+        ]
+        ids: set[str] = set()
+        for j in pushes:
+            got = {f.group(1) for f in FINDING.finditer(code[j])} or wrapper_ids(code, j, [field.group(1)])
+            if not got:
+                return None
+            ids |= got
+        if ids:
+            return ids
+    return None
 
 
 def call_args(text: str, start: int) -> list[str]:
@@ -363,6 +390,8 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
             near = " ".join(lines[max(0, i - 2) : i + 4])
             found = {m.group(1) for m in FINDING.finditer(near)}
             rows = [] if found else driving_rows(lines, i)
+            if not found and not rows:
+                found = pushed_ids(codes[rel], i) or set()
             if not found and not rows and call and (c := call.search(line)):
                 found = wrapper_ids(codes[rel], i, call_args("\n".join(codes[rel][i:]), c.end() - 1)) or set()
             if rows:  # a table-driven twin: every row it is generated from names its finding
@@ -1440,7 +1469,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 22  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member, reported-counts reads reports handed back through SubagentHandback (the agent's call, the parent's hand-back message or a sync Agent result), declared test paths are the path-like first words of a Test paths: line's items up to its sentence end, never its prose, characterization-green's detail gives the suite's pass, fail, skip and todo counts, bug-tests-cite-findings reads node:test's `{ expectFailure: ... }` option as a marker; 22: bug-tests-cite-findings reads a skip call's second argument as its reason (Playwright's `test.skip(cond, "BLOCKED: ...")`) and a title-first skip's title, an `n/a:` reason after a cell id and a separator, an object `expectFailure` reason, and a twin generated by `forEach` or `Object.entries` over an array or object table through its rows; reported-counts reads a Checks: section written as bullets; the baseline writes baseline.md
+CHECKS_VERSION = 22  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member, reported-counts reads reports handed back through SubagentHandback (the agent's call, the parent's hand-back message or a sync Agent result), declared test paths are the path-like first words of a Test paths: line's items up to its sentence end, never its prose, characterization-green's detail gives the suite's pass, fail, skip and todo counts, bug-tests-cite-findings reads node:test's `{ expectFailure: ... }` option as a marker; 22: bug-tests-cite-findings reads a skip call's second argument as its reason (Playwright's `test.skip(cond, "BLOCKED: ...")`) and a title-first skip's title, an `n/a:` reason after a cell id and a separator, an object `expectFailure` reason, and a twin generated by `forEach` or `Object.entries` over an array or object table, or over a table filled by push calls, through its rows; reported-counts reads a Checks: section written as bullets; the baseline writes baseline.md
 
 
 def main() -> int:
