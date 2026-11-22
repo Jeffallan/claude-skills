@@ -112,13 +112,22 @@ TEST_CONFIG = re.compile(
 COMMENT_LINE = re.compile(r"^\s*(#|//|/\*|\*|\*/|<!--|-->|--|;|\"\"\"|'''|$)")
 
 
+# A glob or path as LINE_CITE reads a file: a separator, a wildcard, or a known source or doc extension
+PATH_LIKE = re.compile(rf"[\w.*?\[\]{{}}/-]*(?:/|\*)[\w.*?\[\]{{}}/-]*|[\w.-]+\.(?i:{SOURCE_EXT})")
+
+
 def declared_test_paths(repo: Path) -> list[str]:
-    """Globs from `Test paths:` notes in the checklist, written by intake:testing-setup."""
+    """Globs from `Test paths:` notes in the checklist, written by intake:testing-setup.
+
+    Read to the end of the line's sentence (`. `, `; `), one item per comma or "and"; an item counts when its first
+    word is path-like, so the note's prose (`Findings: none`, `the layer reuses qa/`) never becomes a glob.
+    """
     path = repo / "docs/intake-checklist.md"
     if not path.exists():
         return []
     found = re.findall(r"(?<!`)Test paths:\s*([^\n]+)", path.read_text(encoding="utf-8"))
-    return [g.strip().strip("`") for line in found for g in line.split(",") if g.strip()]
+    items = (x.split() for line in found for x in re.split(r",|\band\b", re.split(r"[.;!?](?:\s|$)", line)[0]))
+    return [g for words in items if words and PATH_LIKE.fullmatch(g := words[0].strip("`"))]
 
 
 def is_test(rel: str, globs: list[str]) -> bool:
@@ -1409,7 +1418,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 21  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member, reported-counts reads reports handed back through SubagentHandback (the agent's call, the parent's hand-back message or a sync Agent result)
+CHECKS_VERSION = 21  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member, reported-counts reads reports handed back through SubagentHandback (the agent's call, the parent's hand-back message or a sync Agent result), declared test paths are the path-like first words of a Test paths: line's items up to its sentence end, never its prose
 
 
 def main() -> int:

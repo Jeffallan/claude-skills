@@ -220,6 +220,28 @@ out=$(score "$QA")
 set -e
 if has "$out" characterize-dont-fix 1; then pass "the checklist's Test paths note makes qa/ a test tree"; else fail "the checklist's Test paths note makes qa/ a test tree: $out"; fi
 
+# Version 21: a Test paths: line is read for path-like tokens only, up to the end of its sentence, so the note's
+# prose after it (Findings:, Skills:) never becomes a glob
+TP="$WORK/v21-test-paths"
+make_run "$TP"
+mkdir -p "$TP/qa"
+printf 'def check_total():\n    assert True\n' >"$TP/qa/check_total.py"
+printf -- '- [x] `intake:testing-setup`\n  - 2026-11-11: smoke tests ran. Test paths: qa/*, `e2e/**`, tools/qa.config.ts. Findings: none (Open question 8 added). Skills: fullstack-dev-skills:test-master.\n- [x] `intake:testing-features`\n  - 2026-11-11: Test paths: none, the layer reuses qa/. Findings: none.\n' >>"$TP/docs/intake-checklist.md"
+commit_item "$TP" intake:testing-setup "test(intake): qa harness"
+set +e
+out=$(score "$TP")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "characterize-dont-fix")
+want = "; declared test paths: " + str(["qa/*", "e2e/**", "tools/qa.config.ts"])
+sys.exit(0 if c["pass"] and c["detail"].endswith(want) else 1)
+'; then
+    pass "a Test paths: line yields its path-like tokens only, never the prose after its sentence"
+else
+    fail "a Test paths: line yields its path-like tokens only, never the prose after its sentence: $out"
+fi
+
 # A declared glob never excuses package.json beyond scripts and devDependencies,
 # and the template's own "`Test paths:` line" wording is not read as a glob
 PK="$WORK/pkg"
