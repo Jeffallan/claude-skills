@@ -260,10 +260,48 @@ def driving_rows(lines: list[str], i: int) -> list[str]:
     return []
 
 
+def call_args(text: str, start: int) -> list[str]:
+    """The top-level arguments of the call or parameter list whose parenthesis opens at text[start]."""
+    return [a.strip() for a in table_rows(text, start)]
+
+
+def wrapper_ids(code: list[str], i: int, args: list[str], seen: frozenset[str] = frozenset()) -> set[str] | None:
+    """The finding ids a helper call on line i gets from its wrapper's callers: every call of the function whose
+    parameter an argument names passes a literal id there, through any number of in-file levels. None if one doesn't.
+    """
+    text = "\n".join(code)
+    for arg in (a for a in args if re.fullmatch(r"[\w$]+", a)):
+        # shortcut: the wrapper is the nearest function above with that parameter, not a parsed scope; parse if it misfires
+        for j in range(i, -1, -1):
+            d = HELPER_DEF.search(code[j])
+            name = next((g for g in d.groups() if g), "") if d else ""
+            params = [re.sub(r"^\.\.\.|\W.*", "", p) for p in call_args("\n".join(code[j:]), d.end() - 1)] if d else []
+            if name and name not in seen and arg in params:
+                break
+        else:
+            continue
+        k, ids = params.index(arg), set()
+        for m in re.finditer(rf"(?<![\w$.]){re.escape(name)}\s*\(", text):
+            line = text.count("\n", 0, m.start())
+            if line == j:
+                continue  # the definition itself
+            passed = call_args(text, m.end() - 1)
+            a = passed[k] if k < len(passed) else ""  # a parameter left to its default names no id
+            got = {f.group(1) for f in FINDING.finditer(a)} or wrapper_ids(code, line, [a], seen | {name})
+            if not got:
+                ids = set()
+                break
+            ids |= got
+        if ids:
+            return ids
+    return None
+
+
 def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> dict:
     """Every skipped or expected-fail test written by intake names a finding id the tracker knows.
 
-    A helper that wraps a marker is checked where it is called, not where it is defined. Markers count only in
+    A helper that wraps a marker is checked where it is called, not where it is defined; a call that passes a
+    wrapper's parameter cites through every call of that wrapper in the file. Markers count only in
     code: a comment or docstring that names one is prose. A test generated from a table cites through its rows.
     A skip with a BLOCKED: reason is a layer that can't run: listed as blocked, never as passing or as a bug test.
     """
@@ -299,6 +337,8 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
             near = " ".join(lines[max(0, i - 2) : i + 4])
             found = {m.group(1) for m in FINDING.finditer(near)}
             rows = [] if found else driving_rows(lines, i)
+            if not found and not rows and call and (c := call.search(line)):
+                found = wrapper_ids(codes[rel], i, call_args("\n".join(codes[rel][i:]), c.end() - 1)) or set()
             if rows:  # a table-driven twin: every row it is generated from names its finding
                 found = {m.group(1) for r in rows for m in FINDING.finditer(r)}
                 if any(not FINDING.search(r) for r in rows):
@@ -1315,7 +1355,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 19  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers
+CHECKS_VERSION = 20  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes
 
 
 def main() -> int:

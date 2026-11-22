@@ -501,6 +501,97 @@ else
     fail "node:test todo and skip options, t.todo() and test.todo without a finding id fail bug-tests-cite-findings: $out"
 fi
 
+# Version 20: a helper's marker whose id comes from a parameter is cited when every call of the wrapper around it,
+# through any number of in-file levels, passes a literal finding id there. A variable, or a default, is not one.
+WR="$WORK/wrappers"
+make_run "$WR"
+mkdir -p "$WR/test/support" "$WR/test/integration"
+cat >"$WR/test/support/known-bug.ts" <<'EOF'
+export function intended(findingId: string) {
+  return { todo: findingId };
+}
+EOF
+cat >"$WR/test/integration/matrix.test.ts" <<'EOF'
+import { it } from "node:test";
+import { intended } from "../support/known-bug.ts";
+
+function twin(op: string, fid: string, want: number) {
+  it(`${op}-${fid}-intended`, intended(fid), async () => {});
+}
+
+function group(op: string, id: string) {
+  twin(op, id, 403);
+}
+
+
+
+
+twin("OP-001", "F-001", 403);
+twin("OP-002", "F-001", 404);
+group("OP-003", "F-001");
+EOF
+commit_item "$WR" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$WR")
+set -e
+if has "$out" bug-tests-cite-findings 1 && printf '%s' "$out" | grep -q '3 skipped or expected-fail tests'; then
+    pass "a literal finding id at every call of a marker helper's wrappers cites it"
+else
+    fail "a literal finding id at every call of a marker helper's wrappers cites it: $out"
+fi
+cat >"$WR/test/integration/gaps.test.ts" <<'EOF'
+import { it } from "node:test";
+import { intended } from "../support/known-bug.ts";
+
+function twin(op: string, fid = "F-001") {
+  const name = `${op}-intended`;
+  const run = async () => {};
+  const unused = 1;
+  it(name, intended(fid), run);
+}
+
+
+
+
+twin("OP-001", "F-001");
+twin("OP-002");
+
+function loose(op: string, fid: string) {
+  it(op, intended(fid), async () => {});
+}
+
+
+
+
+const id = pick();
+loose("OP-003", id);
+loose("OP-004", "F-001");
+
+function odd(fid: string) {
+  it("odd", intended(fid), async () => {});
+}
+
+
+
+
+odd("F-009");
+EOF
+commit_item "$WR" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$WR")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, re, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "bug-tests-cite-findings")
+bad = re.search(r"no finding id: (\[[^]]*\])", c["detail"])
+want = str([f"test/integration/gaps.test.ts:{n}" for n in (8, 18)])
+sys.exit(0 if not c["pass"] and bad and bad.group(1) == want and "F-009" in c["detail"] else 1)
+'; then
+    pass "a wrapper call passing a variable or leaving the id to a default fails bug-tests-cite-findings"
+else
+    fail "a wrapper call passing a variable or leaving the id to a default fails bug-tests-cite-findings: $out"
+fi
+
 # A new test-only lockfile carries a root entry with no dev flag; only runtime packages count
 NL="$WORK/newlock"
 make_run "$NL"
