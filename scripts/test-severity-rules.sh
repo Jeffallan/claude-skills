@@ -112,6 +112,13 @@ assert_contains "$IREF/rules.md" "Re-rated: <F-0xx <old> -> <new> (<reason>), or
 assert_contains "$SEV" "\`Re-rated: F-0xx <old> -> <new> (<reason>)\`" "severity.md names the Re-rated field"
 assert_contains "$FIND" "\`Re-rated:\`" "Who writes what names the Re-rated field"
 
+echo "owner decisions on calibration residuals"
+assert_contains "$SEV" "A defect that deletes data of every account with no way back, with no actor, rates as if the least-privileged actor did it" "R1 an actorless wipe of every account is Critical"
+assert_contains "$SEV" "Medium when the app can correct it with a refund or credit, High when it cannot" "R2 a wrong amount on a real order depends on correction"
+assert_contains "$SEV" "any role above the lowest counts as staff" "R3 roles above the lowest are staff in an all-staff app"
+assert_contains "$SEV" "Plans someone writes for others are Ordinary" "R4 plans written for others are Ordinary"
+assert_contains "$SEV" "Deleting one kind of data from every account (all trashed items, all attachments) counts as data of every account" "R5 a subset of every account is still every account"
+
 echo "prose"
 for f in "$SEV" "$FIND"; do
     if grep -qF "—" "$f"; then fail "$(basename "$f") has no em dash"; else pass "$(basename "$f") has no em dash"; fi

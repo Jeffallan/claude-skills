@@ -30,8 +30,8 @@ These rules decide which row a finding matches:
 - **Granting is gaining.** Giving another account a higher role rates as gaining it, with the actor who gives it.
 - **Acting as another account.** Changing another account's login email or phone is acting as that account when the app's own reset flow sends to it. Cite the reset flow.
 - **Known identifiers.** An email address or username counts as a known identifier. Taking over any account by one is High, and Critical when the least-privileged actor can do it and an admin's identifier is shown in the app or the repo, or is guessable.
-- **Real money.** Moves real money means funds actually leave or are taken (a charge, refund or payout) without a matching order: High. A wrong stored amount that is fixed before any money moves is Medium, as a count that can be corrected.
-- **No way back.** A backup does not undo a loss: data changed after the last backup counts as lost. The finding names the backup config it relied on, or says the repo shows none.
+- **Real money.** Moves real money means funds actually leave or are taken (a charge, refund or payout) without a matching order: High. A wrong stored amount that is fixed before any money moves is Medium, as a count that can be corrected. The wrong amount charged, paid or left uncollected on a real order or pay run is Medium when the app can correct it with a refund or credit, High when it cannot.
+- **No way back.** A backup does not undo a loss: data changed after the last backup counts as lost. The finding names the backup config it relied on, or says the repo shows none. Deleting one kind of data from every account (all trashed items, all attachments) counts as data of every account. A defect that deletes data of every account with no way back, with no actor, rates as if the least-privileged actor did it: Critical.
 
 Critical is narrow. Reading another account's Sensitive data is High, not Critical, however many accounts it reaches. A Critical rating cites the code for the actor, the action, the target and the data class (or the role gained), each as `path::symbol` ("Finding ids" in `findings.md`). When any of the four is inferred rather than cited, rate it High and name the missing fact in the `What:` line.
 
@@ -43,14 +43,14 @@ Classify a field by what it holds, not by its name. A column called `reason`, `n
 |-------|----------|
 | Secret | Passwords and their hashes, session, reset and API tokens, API keys, signing keys, connection strings. Rate a Secret by the access it grants |
 | Sensitive | Health information of any kind (visit or appointment reasons, symptoms, diagnoses, prescriptions, test results, therapy notes, and fitness, diet and sleep logs a person records about themselves), payment card data, salary and employment contracts, bank account numbers, government id numbers, legal case records, date of birth, home address, precise location, private messages, and data on religion, ethnicity, sexual life, union membership or biometrics |
-| Ordinary | Account data not meant for others that does little harm if shown: preferences, lists, non-personal business records, a work email |
+| Ordinary | Account data not meant for others that does little harm if shown: preferences, lists, non-personal business records, a work email. Plans someone writes for others are Ordinary (a coach's workout or meal plan), unlike logs a person records about themselves |
 | Public | Data the app shows to other users or the world by design |
 
 ## Adjustments
 
 Only these lower a rating. Each lowers it by one level, and several together still lower it by one level in total.
 
-- **Staff only.** Only staff or admins can trigger it, and the role check in the code excludes the app's ordinary users. In an app where every account is staff (an internal tool), its lowest role is the ordinary actor and gets no staff downgrade. A person who keeps access after removal is rated as they are after removal: no staff downgrade for powers that were taken away. The downgrade is for abusing a check. A defect staff hit in normal use is rated by its harm, with no staff downgrade.
+- **Staff only.** Only staff or admins can trigger it, and the role check in the code excludes the app's ordinary users. In an app where every account is staff (an internal tool), its lowest role is the ordinary actor and gets no staff downgrade, and any role above the lowest counts as staff. A person who keeps access after removal is rated as they are after removal: no staff downgrade for powers that were taken away. The downgrade is for abusing a check. A defect staff hit in normal use is rated by its harm, with no staff downgrade.
 - **A secret the app does not hand out.** It needs a server key, or another user's token or link. A link the app sent to the person holding it is not a leaked secret: that person using it is the ordinary case.
 - **Unguessable target.** The target ids are unguessable and no endpoint returns them. An email address or username is never unguessable.
 - **A control stops it first.** A control in the code stops the harm before it lands. A control that only cleans up afterwards does not count.
