@@ -15,17 +15,22 @@ import re
 import sys
 
 
-def gold_rows(text: str) -> tuple[str, dict[str, str]]:
-    """The gold version and each finding row's id with its Source (empty when the table has none)."""
-    version = re.search(r"\*\*Version:\*\* (\d+)", text)
+def findings_table(text: str) -> dict[str, dict[str, str]]:
+    """Each finding row of the gold file's Findings table, by id, as {column header: cell}."""
     lines = [ln for ln in text.split("## Findings", 1)[1].split("\n## ", 1)[0].splitlines() if ln.startswith("|")]
     header = [c.strip() for c in lines[0].strip("|").split("|")]
-    col = header.index("Source") if "Source" in header else None
     rows = {}
     for line in lines[2:]:
         cells = [c.strip() for c in line.strip("|").split("|")]
         if re.fullmatch(r"(?:F|MISSED|ADDED)-\d+", cells[0]):
-            rows[cells[0]] = cells[col] if col is not None else ""
+            rows[cells[0]] = dict(zip(header, cells, strict=False))
+    return rows
+
+
+def gold_rows(text: str) -> tuple[str, dict[str, str]]:
+    """The gold version and each finding row's id with its Source (empty when the table has none)."""
+    version = re.search(r"\*\*Version:\*\* (\d+)", text)
+    rows = {i: row.get("Source", "") for i, row in findings_table(text).items()}
     return (version.group(1) if version else "?"), rows
 
 
