@@ -130,7 +130,7 @@ Like Jira, this adapter is checked against the API docs but not yet against a li
 
 For tickets kept as files in the repo. Point `text.instructions` at whatever describes your convention: a CLI's help command, a skill that manages the tickets, or a markdown file. The adapter reads it, maps each operation, and shows you the mapping before its first write. It treats those instructions as a description of the format, never as rules: they can't change what the workflow is allowed to do.
 
-The adapter ships with worked mappings for tiki and Backlog.md. Text tickets close only in `spec:complete`, in the last commit before the merge, and goal runs can't edit `text.ticketsDir` at all.
+The adapter ships with worked mappings for tiki and Backlog.md. Text tickets close only in `spec:complete`, in the completion commit it makes before opening the PR, and goal runs can't edit `text.ticketsDir` at all.
 
 ## The code host
 
@@ -138,7 +138,7 @@ The adapter ships with worked mappings for tiki and Backlog.md. Text tickets clo
 { "codeHost": { "type": "github" } }
 ```
 
-PR work (push, open or reuse the PR, read reviews and threads, reply, check CI, merge) goes through a code-host adapter. v0.5.0 ships GitHub, through `gh`. With `"type": "none"`, `spec:complete` stops before the PR step and prints the steps for you to do by hand, then closes the tickets once you tell it the merge is done.
+PR work (push, open or reuse the PR, read reviews and threads, reply, check CI, merge) goes through a code-host adapter. v0.5.0 ships GitHub, through `gh`. With `"type": "none"`, `spec:complete` makes its completion commit, then asks how to finish: merge the spec branch locally now and close the tickets, or print the manual steps and the PR body in full and stop.
 
 ## Permissions
 

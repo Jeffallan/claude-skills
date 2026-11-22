@@ -101,6 +101,29 @@ doc_row=$(grep -F '| Docs under the docs root | `code-documenter` |' "$CMD/spec/
 case "$doc_row" in *'`updated`'*) pass "the code-documenter reviews the docs the diff updated" ;; *) fail "the code-documenter reviews the docs the diff updated" ;; esac
 assert_contains "$CMD/spec/complete.md" "each doc listed \`added in the diff\`" "spec:complete adds each added doc to the docs index"
 
+echo "spec:complete docs:verify: the diff's stale doc claims, fixed one at a time on the owner's yes"
+COMPLETE="$CMD/spec/complete.md"
+step2=$(sed -n '/^## Step 2: Completion commit$/,/^## Step 3: PR$/p' "$COMPLETE")
+verify=$(printf '%s\n' "$step2" | grep -F '**Docs verify (`docs:verify`)**' || true)
+if [ -n "$verify" ]; then pass "spec:complete Step 2 has the docs:verify item"; else fail "spec:complete Step 2 has the docs:verify item"; fi
+for s in "README" "docs/" "git diff" "fullstack-dev-skills:code-reader" "fullstack-dev-skills:spec-miner" "in one message" \
+         "| Doc | Claim | Verdict | Evidence |" "\`holds\`" "\`stale\`" "\`unknown\`" "review/docs-verify.md" \
+         "one at a time" "AskUserQuestion" "never edits a doc without" "<specsRoot>"; do
+    case "$verify" in *"$s"*) pass "docs:verify names $s" ;; *) fail "docs:verify names $s" ;; esac
+done
+# it runs after the docs-affected item, so it checks the docs that item already updated
+dv=$(printf '%s\n' "$step2" | grep -n 'docs:verify' | head -1 | cut -d: -f1 || true)
+da=$(printf '%s\n' "$step2" | grep -n 'guard docs-affected' | head -1 | cut -d: -f1 || true)
+if [ -n "$dv" ] && [ -n "$da" ] && [ "$dv" -gt "$da" ]; then pass "docs:verify runs after docs-affected"; else fail "docs:verify runs after docs-affected"; fi
+assert_contains "$COMPLETE" "| Docs verify |" "the completion report has a Docs verify row"
+assert_contains "$CMD/spec/complete.yaml" "review/docs-verify.md" "complete.yaml lists the docs:verify report"
+assert_contains "$REF/specs/layout.md" "| \`review/docs-verify.md\` | \`spec:complete\`" "the spec layout lists who writes review/docs-verify.md"
+assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "docs:verify" "the spec:complete page explains docs:verify"
+assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "| Doc | Claim | Verdict | Evidence |" "the spec:complete page shows the docs:verify table"
+assert_contains "$PLUGIN/../docs/WORKFLOW_COMMANDS.md" "docs:verify" "WORKFLOW_COMMANDS mentions docs:verify"
+step7=$(sed -n '/^## Step 7: Close tickets and the group$/,/^## Report$/p' "$COMPLETE")
+if printf '%s\n' "$step7" | grep -qF "filed them in Step 2"; then pass "Step 7 points at Step 2 for the text tracker's follow-ups"; else fail "Step 7 points at Step 2 for the text tracker's follow-ups"; fi
+
 echo "specs that live only on the current branch"
 assert_contains "$CMD/spec/status.md" "| Unbranched (on <branch>) |" "spec:status explains the Unbranched state"
 for f in spec/diff common-ground; do

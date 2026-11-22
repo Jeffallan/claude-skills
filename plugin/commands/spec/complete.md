@@ -43,8 +43,9 @@ Everything the merge should carry goes in one commit before the PR opens, so CI 
 5. Text tracker only: file the follow-ups the owner approves (Proposed tracker changes, open questions, debt) as new ticket files now, before the merge. After the merge they would land on the default branch as a direct write.
 6. System description, once per spec: when `docs/system-description.md` exists and its `## Change history` doesn't list this spec, read the spec's completion report and diff, and propose the section changes for the owner to approve one at a time. Apply the approved ones and add a Change history row (spec, date, sections changed, or `none` when nothing was approved). Skip this item when the file is missing; `intake create-system-description` writes it.
 7. Docs, over the whole spec: `guard docs-affected --base <merge-base>` and `guard docs-check`. A doc the diff added or changed is listed `updated`, with the reason `added in the diff` or `changed in the diff`, even when nothing cites it or links it through `related:`. Each doc still `pending` is a gap the tickets left: update it here, or, when it needs no change, say why in the completion report. Fix what `docs-check` reports. When the project has a docs index (`docs/README.md`, or `docs/README-intake.md` when intake wrote one beside an owner README), add each doc listed `added in the diff` and drop any doc the spec removed. Wording goes through the human-voice pass the goal run made; edits here get the same pass.
-8. `guard spec-index` and stage `INDEX.md`.
-9. `guard decisions export <spec-name>` and stage `review/decisions.jsonl`, so every owner decision the gate relied on goes in this commit.
+8. **Docs verify (`docs:verify`)**, over the whole spec, after item 7: check the project's own docs for claims the spec's diff made stale. The docs are the root `README` and every Markdown file under `docs/`, minus `<specsRoot>`, the changelog and generated or vendored output. Read what the diff changed with `git diff --stat <merge-base>..HEAD` and `git diff <merge-base>..HEAD`, list the names it removed, renamed or changed (paths, commands, flags, config keys, environment variables, routes, defaults, step order), and `git grep` the docs for each; a doc no name hits is out of scope. Start `fullstack-dev-skills:code-reader` agents for the docs that hit, a few docs each and all of them in one message so they run together, each briefed "Use the fullstack-dev-skills:spec-miner skill to check these docs' claims about what this diff changed" with the diff's change list and the docs' paths. Each returns rows `| Doc | Claim | Verdict | Evidence |`: Doc is `path` and section, Claim quotes the doc, Verdict is `holds` (the code bears it out), `stale` (the diff contradicts it) or `unknown` (no code settles it, which is not a finding), and Evidence cites `path::symbol` or the diff's file for a `stale` row. Print the table and write it to the spec's `review/docs-verify.md`, `holds` rows included. Then, as in item 6, propose a fix for each `stale` row and ask the owner about each one at a time with `AskUserQuestion`; apply the approved ones and mark each row `fixed` or `declined` in the file, so a rerun asks only about new rows. This item never edits a doc without the owner's yes, and its edits get the same human-voice pass as item 7's. With no doc hit, write the file with an empty table and the line "No doc names what this diff changed."
+9. `guard spec-index` and stage `INDEX.md`.
+10. `guard decisions export <spec-name>` and stage `review/decisions.jsonl`, so every owner decision the gate relied on goes in this commit.
 
 Commit `docs(<spec-name>): complete the spec`. When review feedback later sends the spec back (Step 5), the next run makes this commit again.
 
@@ -104,7 +105,7 @@ Release each ticket still open (Blocked at Readiness or during the run) back to 
 
 Then close the group: `ensure-group <spec-name>` to get its ID, and `close` it. Closing the group closes nothing else, which is why each ticket closes or leaves first.
 
-For a remote tracker, offer, with the owner's approval per item, to file the plan's Proposed tracker changes, its Open questions and the debt follow-ups through `create`. The text tracker filed them in Step 6, before the merge.
+For a remote tracker, offer, with the owner's approval per item, to file the plan's Proposed tracker changes, its Open questions and the debt follow-ups through `create`. The text tracker filed them in Step 2, before the merge.
 
 ## Report
 
@@ -120,6 +121,7 @@ For a remote tracker, offer, with the owner's approval per item, to file the pla
 | Group | closed |
 | Filed follow-ups | <IDs or none> |
 | System description | <sections updated, none approved, or no description> |
+| Docs verify | <n stale: n fixed, n declined; n unknown>, or no doc names the diff; details in `review/docs-verify.md` |
 
 Next spec in the build order: <spec-name or none>
 ```

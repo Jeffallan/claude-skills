@@ -123,10 +123,11 @@ Neither ticket command writes to the tracker or moves a ticket's status. A ticke
 **`spec:complete <spec-name>`** finishes the spec, and you can rerun it at any point. It is the only command that closes tickets. See the [spec:complete page](workflow/spec-complete.md) for the full PR loop. In short:
 
 1. **Gate:** `guard gate` passes only when every blocking finding is fixed and verified or decided, every PR-feedback row is closed, and every ticket is Done, Already done, or Blocked and accepted by you.
-2. **PR:** it pushes the branch and opens or reuses the PR. The body says `Closes #N` only for Done and Already done GitHub tickets.
-3. **Feedback:** comments from people with write access become numbered findings. You mark each as fix, won't fix or question. Fixes go through the ticket commands, and replies are posted only when you approve them.
-4. **Merge:** with CI green, an approval and no open threads, it moves the spec to `completed/` in the last commit before the merge, asks "Merge PR #N now?", and merges on yes.
-5. **Close:** it closes each remaining ticket, then the group.
+2. **Completion commit:** before the PR, one commit writes the completion report, moves the spec to `completed/`, and carries the system description and docs updates you approve. Its `docs:verify` step checks the root `README` and `docs/` for claims the spec's diff made stale, saves a `| Doc | Claim | Verdict | Evidence |` table (holds, stale or unknown) in `review/docs-verify.md`, and fixes each stale claim only on your yes.
+3. **PR:** it pushes the branch and opens or reuses the PR. The body says `Closes #N` only for Done and Already done GitHub tickets.
+4. **Feedback:** comments from people with write access become numbered findings. You mark each as fix, won't fix or question. Fixes go through the ticket commands, and replies are posted only when you approve them.
+5. **Merge:** with CI green, an approval (or green CI alone when you are the repo's only writer) and no open threads, it asks "Merge PR #N now?", and merges on yes.
+6. **Close:** it closes each remaining ticket, releases each Blocked one back to the backlog, then closes the group.
 
 ## Current state and assumptions
 
@@ -142,7 +143,7 @@ Long or parallel work runs in the plugin's agents. Each one is defined by the ki
 
 | Agent | Does | Started by |
 |-------|------|------------|
-| `code-reader` | Reads code and returns facts cited as `path::symbol`; never writes | `intake`, `discovery:create`, `spec:triage`, `spec:create`, `spec:diff`, `ticket:execute`, `common-ground` |
+| `code-reader` | Reads code and returns facts cited as `path::symbol`; never writes | `intake`, `discovery:create`, `discovery:approve`, `spec:triage`, `spec:create`, `spec:diff`, `spec:complete`, `ticket:execute`, `common-ground` |
 | `doc-writer` | Writes one doc from a procedure and audits it against the code | `intake` |
 | `test-writer` | Writes characterization tests and proves they run | `intake` |
 | `security-prober` | Runs the authorization and OWASP test procedures | `intake` |
@@ -174,7 +175,7 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 | `ticket:execute` | Code and tests (uncommitted) | None | None |
 | `ticket:complete` | Plan row | None | One commit per ticket |
 | `spec:review` | `review/`, fix tickets | None | Commits on the spec branch |
-| `spec:complete` | Completion report, moves | Closes tickets and the group | Pushes, opens and merges the PR |
+| `spec:complete` | Completion report, `review/docs-verify.md`, the doc fixes you approve, moves | Closes tickets, releases Blocked ones, closes the group | Pushes, opens and merges the PR |
 | `spec:status` | Nothing | None | None (reads branches and PRs) |
 | `spec:current` | `docs/system-description.md` (the changes you approve), `docs/current-state.json` | None | Commits on the current branch |
 | `spec:diff` | Nothing | None | None |

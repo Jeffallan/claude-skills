@@ -34,7 +34,7 @@ phases:
       - phase: discovery
         strength: recommended
     external_skills:
-      - skill: spec-miner              # spec:create codebase analysis
+      - skill: spec-miner              # spec:create codebase analysis; spec:complete docs:verify
         role: companion
       - skill: architecture-designer   # spec:create when structure changes; spec:review panel
         role: companion
