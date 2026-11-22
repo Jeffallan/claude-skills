@@ -14,7 +14,9 @@ Attended only. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When
 
 ## Setup
 
-`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words. 1. Read `.claude/workflow-config.json` (the config wizard in `${CLAUDE_PLUGIN_ROOT}/references/adapters/operations.md` runs when it is missing) and load the tracker's adapter file.
+`guard <command>` below means `uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" <command>`, the ticket guard bundled with this plugin. Type it out each time, or define a shell function (`guard() { uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" "$@"; }`); a variable holding the command fails in zsh, which doesn't split it into words.
+
+1. Read `.claude/workflow-config.json` (the config wizard in `${CLAUDE_PLUGIN_ROOT}/references/adapters/operations.md` runs when it is missing) and load the tracker's adapter file.
 2. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/layout.md` and `<specsRoot>/INDEX.md`. Earlier specs and topics with the same feature areas are context for this one.
 3. Read the group's `After:` line. When the predecessor has not merged into the default branch, refuse and name it, unless the owner overrides.
 4. Check out `spec/<spec-name>` (made by `spec:triage`; when missing, send the owner back to triage). The working tree must be clean. When the predecessor has merged, rebase onto the current default branch first: `git fetch origin && git rebase origin/<default-branch>`.
@@ -114,5 +116,5 @@ After the plan commit, the spec branch takes no commit before the run: the start
 ## Rules
 
 - Subagents read and return text; only this session writes files and changes the tracker.
-- No tracker write outside Step 6 and no status change.
+- No tracker write outside Step 5 and no status change.
 - Links by name, never by path.

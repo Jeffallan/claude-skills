@@ -6,7 +6,7 @@ inputs:
   - name: ticket-id
     type: string
     required: false
-    description: Ticket ID to complete; optional when ticket:execute ran in this session
+    description: Ticket ID to complete; optional while a ticket marker exists, since the marker names the ticket in progress
 outputs:
   - name: ticket-commit
     type: file

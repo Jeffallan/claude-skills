@@ -62,7 +62,7 @@ Write `<specsRoot>/todo/discovery/<topic>/discovery.md`:
 # <Topic title>
 
 **Topic:** <topic>
-**Status:** Proposed | Research | Ready for approval
+**Status:** Proposed | Research | Ready for approval | Tickets created
 **Input:** <what the owner gave, with paths or ticket IDs>
 
 ## Features

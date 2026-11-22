@@ -56,7 +56,7 @@ Pick the minimum toolchain that covers three layers. A repo with more than one c
 - **Layout:** one directory per layer (unit, integration/rules, e2e) plus a shared helpers/fixtures location.
 - **Config:** if layers need different execution environments, use a multi-project or multi-config runner setup
   rather than forcing one environment.
-- **Scripts:** a script per layer plus an aggregate, and a wrapper that boots the integration backend around the
+- **Scripts:** a script per layer (`test:unit`, `test:integration`, `test:e2e`) plus the aggregate `test:all`, and a wrapper that boots the integration backend around the
   integration and e2e runs.
 - **Fixtures/helpers:** authenticated-context builders, seed-data factories, deterministic clock and ID helpers,
   and backend setup/teardown.
@@ -95,7 +95,7 @@ The deliverable is config and scaffolding, not a document. Produce:
 
 ```
 <runner config>                 # e.g. jest config (multi-project), vitest.config, pytest.ini
-<scripts in package manifest>   # test, test:unit, test:integration, test:e2e, aggregate
+<scripts in package manifest>   # test, test:unit, test:integration, test:e2e, test:all
 <integration backend config>    # emulator/container config + env wiring
 <e2e driver config>             # playwright/cypress/maestro config
 tests/ (or framework convention)

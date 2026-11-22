@@ -184,6 +184,32 @@ assert_contains "$REF/intake/rules.md" "never deletes or prunes a shared cache o
 assert_contains "$REF/intake/procedures/testing-setup.md" "PLAYWRIGHT_SKIP_BROWSER_GC=1" "testing-setup: browser installs skip Playwright's cleanup"
 # a matrix cell that can't apply skips with an n/a: reason, not as a bug test
 assert_contains "$REF/intake/procedures/testing-authorization.md" "skips with an \`n/a: <reason>\` message" "testing-authorization: n/a cells skip with an n/a: reason"
+echo "command text agrees with itself"
+assert_not_contains "$CMD/spec/create.md" "No tracker write outside Step 6" "spec:create's rules name Step 5, where its tracker writes are"
+assert_contains "$CMD/spec/create.md" "No tracker write outside Step 5" "spec:create keeps tracker writes in Step 5"
+if grep -qE '[^ ] 1\. Read `\.claude/workflow-config\.json`' "$CMD/spec/create.md"; then fail "spec:create's Setup list starts on its own line"; else pass "spec:create's Setup list starts on its own line"; fi
+step6=$(sed -n '/^## Step 6: Owner triage$/,/^## Recheck$/p' "$CMD/spec/review.md")
+for s in "confirmed, unresolved or rejected" "fix (one of the four types below)" "for a rejected row, accept the rejection"; do
+    if printf '%s\n' "$step6" | grep -qF "$s"; then pass "spec:review triage asks about every row the gate can block on ($s)"; else fail "spec:review triage asks about every row the gate can block on ($s)"; fi
+done
+assert_not_contains "$CMD/discovery/approve.md" "routed items to research (\`sources/\` holds files)" "discovery:approve's empty-sources stop is reachable"
+assert_contains "$CMD/discovery/create.md" "**Status:** Proposed | Research | Ready for approval | Tickets created" "discovery:create's status list holds the status discovery:approve sets"
+flow=$(sed -n '/^```mermaid$/,/^```$/p' "$CMD/intake.md")
+case "$flow" in *"testing-features, testing-user-flows"*) fail "intake's flow runs testing-user-flows after the parallel batch" ;; *) pass "intake's flow runs testing-user-flows after the parallel batch" ;; esac
+case "$flow" in *"--> uf[testing-user-flows"*) pass "intake's flow has a serial testing-user-flows node" ;; *) fail "intake's flow has a serial testing-user-flows node" ;; esac
+assert_not_contains "$REF/intake/procedures/document-codebase.md" "This is the first item of the intake checklist" "document-codebase doesn't claim the first checklist item"
+owasp_when=$(sed -n '/^## When to use$/,/^## Skills to load$/p' "$REF/intake/procedures/testing-owasp.md")
+case "$owasp_when" in *"after \`intake:testing-setup\`, \`intake:testing-authorization\`"*) fail "testing-owasp runs beside testing-authorization, not after it" ;; *) pass "testing-owasp runs beside testing-authorization, not after it" ;; esac
+assert_contains "$REF/intake/checklist.md" "One item per command, in order, except the parallel testing batch" "the checklist's in-order rule names the parallel testing batch"
+assert_contains "$CMD/spec/current.md" "(\`wired\`, \`built, not wired\`, \`planned\`)" "spec:current quotes its three component statuses"
+assert_contains "$CMD/ticket/execute.md" "added in the diff" "ticket:execute says docs-affected lists the docs the diff adds"
+
+assert_not_contains "$CMD/spec/diff.md" "Run \`spec:current\` first, or" "spec:diff sends a repo with no description to intake, since spec:current stops too"
+assert_not_contains "$REF/specs/templates/goal-prompt.md" "<pin>" "the goal-prompt template asks for no pin it doesn't hold"
+assert_contains "$CMD/spec/triage.yaml" "a grouping" "triage.yaml's scope names the grouping form"
+assert_not_contains "$CMD/ticket/complete.yaml" "ran in this session" "ticket:complete's id is optional while a marker exists, from any session"
+assert_contains "$REF/intake/procedures/testing-setup.md" "plus the aggregate \`test:all\`" "testing-setup names the test:all script the checklist requires"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

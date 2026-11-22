@@ -2,7 +2,7 @@
 
 `spec:create` writes `goal-prompt.md` from this template; `spec:review` and `spec:complete` write a fresh one for each fix round. The file holds only what differs per run: tickets, order, end point, checks, limits, settled decisions and spec-wide stops. How a ticket gets done (RED first, the commit, the status row, unattended rules) lives in `ticket:execute` and `ticket:complete`, so never copy those steps here. Aim for 40 to 60 lines.
 
-The start SHA is the last commit that changed this file: `spec:create`'s plan commit, or the fix-round commit from `spec:review` or `spec:complete`. A file can't hold the SHA of the commit that adds it, so the prompt names the command that prints it, `git log -1 --format=%h -- <path to this file>`, and the run resolves it once at the start and prints it. `<done_when>` counts commits from it, so earlier commits on the branch never count against the run. Fill `<pin>` with the runtime pin from `references/specs/launch.md`.
+The start SHA is the last commit that changed this file: `spec:create`'s plan commit, or the fix-round commit from `spec:review` or `spec:complete`. A file can't hold the SHA of the commit that adds it, so the prompt names the command that prints it, `git log -1 --format=%h -- <path to this file>`, and the run resolves it once at the start and prints it. `<done_when>` counts commits from it, so earlier commits on the branch never count against the run.
 
 ## Template
 

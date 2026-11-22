@@ -26,10 +26,11 @@ flowchart TD
   dc --> docs[document-* procedures in order: doc-writer, code-reader for facts]
   docs --> onb[create-onboarding: doc-writer]
   onb --> ts[testing-setup: test-writer]
-  ts --> tf[testing-features, testing-user-flows: test-writer]
+  ts --> tf[testing-features: test-writer]
   ts --> tsec[testing-authorization, testing-owasp: security-prober]
-  tf --> sd[create-system-description: architect]
-  tsec --> sd
+  tf --> uf[testing-user-flows: test-writer]
+  tsec --> uf
+  uf --> sd[create-system-description: architect]
   sd --> done([report and checklist])
 ```
 

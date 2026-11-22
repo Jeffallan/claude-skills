@@ -37,7 +37,7 @@ Start one `fullstack-dev-skills:architect` agent in discovery mode, briefed with
 ```
 Use the fullstack-dev-skills:architecture-designer skill to check docs/system-description.md against the code and the completed specs. Also load: fullstack-dev-skills:spec-miner.
 Procedure: <plugin root>/references/intake/procedures/create-system-description.md, rerun path. Plugin root: <${CLAUDE_PLUGIN_ROOT}>.
-Check every row of the section 2 component table: its status (wired, built, not wired, planned) against the code, citing the call path that makes it wired. Drift to fold in: <guard docs-drift rows>.
+Check every row of the section 2 component table: its status (`wired`, `built, not wired`, `planned`) against the code, citing the call path that makes it wired. Drift to fold in: <guard docs-drift rows>.
 Discovery only: return the section changes you would make, each with its source, and write nothing until I resume you.
 End your report with "Skills loaded: ...".
 ```

@@ -57,7 +57,7 @@ the evidence on the lines right below the item.
 | Rule | Why |
 |------|-----|
 | `<start-sha>` in the header is the commit the intake branch was cut from, and the tracker header names the same one | The eval compares the two; a header copied from an older run names the wrong base |
-| One item per command, in order | Later items read earlier output: the testing commands read the docs, the system description reads everything |
+| One item per command, in order, except the parallel testing batch (`testing-features`, `testing-authorization`, `testing-owasp`), which the `intake` command runs at once and commits in checklist order | Later items read earlier output: the testing commands read the docs, the system description reads everything |
 | Prove the harness with a smoke test before any real test | A test suite that never ran is worse than none: it reads as coverage |
 | Verify before checking a box, with fresh output: the agent's check, or this session's rerun when the diff gives a reason | A checked box is the only memory the next session has; a false one is unrecoverable |
 | Never reorder, reword or delete items | The eval and the next session match items by their text |
