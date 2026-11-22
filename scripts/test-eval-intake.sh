@@ -667,6 +667,83 @@ else
     fail "a wrapper call passing a variable or leaving the id to a default fails bug-tests-cite-findings: $out"
 fi
 
+# Version 21: node:test's expectFailure option marks an expected-fail test: a reason naming a finding id (written
+# out, or reaching a helper through v20's call-site rule) cites it; `true` cites one only when the test's name does;
+# `{ expectFailure: false }` is no marker
+XF="$WORK/v21-expect-failure"
+make_run "$XF"
+mkdir -p "$XF/test/integration"
+cat >"$XF/test/integration/xf.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("OP-001 staff (intended)", { expectFailure: "F-001" }, () => {});
+
+
+
+
+function many(op: string, findings: string[]) {
+  it(`${op} staff (intended)`, { expectFailure: findings.join(" ") }, () => {});
+}
+
+
+
+
+many("OP-002", ["F-001"]);
+
+
+
+
+it("F-001 OP-003 staff (intended)", { expectFailure: true }, () => {});
+
+
+
+
+function intended(id: string) {
+  return { expectFailure: id };
+}
+
+
+
+
+it("OP-004 staff (intended)", intended("F-001"), () => {});
+
+
+
+
+function twin(op: string, fid: string) {
+  it(`${op} staff (intended)`, intended(fid), () => {});
+}
+
+
+
+
+twin("OP-005", "F-001");
+
+
+
+
+it("OP-006 runs", { expectFailure: false }, () => {});
+EOF
+commit_item "$XF" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$XF")
+set -e
+if has "$out" bug-tests-cite-findings 1 && printf '%s' "$out" | grep -q '7 skipped or expected-fail tests'; then
+    pass "expectFailure naming a finding, directly, by the test's name or through a helper, cites it"
+else
+    fail "expectFailure naming a finding, directly, by the test's name or through a helper, cites it: $out"
+fi
+printf '\n\n\n\nit("OP-007 staff (intended)", { expectFailure: true }, () => {});\n' >>"$XF/test/integration/xf.test.ts"
+commit_item "$XF" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$XF")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q "no finding id: \['test/integration/xf.test.ts:54'\]"; then
+    pass "expectFailure: true with no finding id anywhere fails bug-tests-cite-findings"
+else
+    fail "expectFailure: true with no finding id anywhere fails bug-tests-cite-findings: $out"
+fi
+
 # A new test-only lockfile carries a root entry with no dev flag; only runtime packages count
 NL="$WORK/newlock"
 make_run "$NL"
