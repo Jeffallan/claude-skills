@@ -60,7 +60,8 @@ def score(folder: Path, gold: dict) -> list[dict]:
     wrong = []
     for pattern, route in gold.get("routes", {}).items():
         hit = [r for r in items if re.search(pattern, r.get("item", ""), re.I)]
-        if not hit or hit[0].get("route", "").lower() != route.lower():
+        # The gold route is a regex so it can list alternatives ("Clear|Feature Forge"); the whole route must match.
+        if not hit or not re.fullmatch(route, hit[0].get("route", "").strip(), re.I):
             wrong.append(f"{pattern}: {hit[0].get('route') if hit else 'missing'}, want {route}")
     decisions = [r.get("decision", "") for t in texts for r in table(t, "Blocking decisions")]
     missed = [p for p in gold.get("decisions", []) if not any(re.search(p, d, re.I) for d in decisions)]

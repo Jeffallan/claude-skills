@@ -93,6 +93,18 @@ for c in routing blocking-decisions approved-tickets; do
     if has "$out" "$c" 0; then pass "discovery $c fails on a wrong run"; else fail "discovery $c fails on a wrong run: $out"; fi
 done
 
+# A gold route may list alternatives ("Clear|Feature Forge"); the whole route must match one of them.
+printf '{"topic": "billing", "routes": {"plan upgrade": "Clear|Feature Forge"}, "decisions": [], "tickets": []}\n' >"$WORK/disc4-gold.json"
+set +e
+out=$(python3 "$DISC" --repo "$R" --topic billing --gold "$WORK/disc4-gold.json" 2>&1)
+set -e
+if has "$out" routing 1; then pass "discovery accepts a route listed as an alternative"; else fail "discovery accepts a route listed as an alternative: $out"; fi
+printf '{"topic": "billing", "routes": {"plan upgrade": "Clear|Feature"}, "decisions": [], "tickets": []}\n' >"$WORK/disc5-gold.json"
+set +e
+out=$(python3 "$DISC" --repo "$R" --topic billing --gold "$WORK/disc5-gold.json" 2>&1)
+set -e
+if has "$out" routing 0; then pass "discovery needs the whole route to match an alternative"; else fail "discovery needs the whole route to match an alternative: $out"; fi
+
 echo "common-ground scorer"
 
 cat >"$WORK/cg-report.md" <<'MD'
