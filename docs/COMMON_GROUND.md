@@ -98,6 +98,8 @@ When you run `/common-ground` without flags, Claude executes a two-phase interac
 | `/common-ground <spec> ...` | The default flow or `--check`, checking only these specs' assumptions | Yes |
 | `/common-ground --graph` | Visualize reasoning structure | Yes |
 
+Every mode but `--list` needs you there. Inside a goal run they write nothing and ask nothing: the command prints the spec assumptions check as a read-only report and stops with `BLOCKED: common-ground needs the owner`.
+
 ---
 
 ## Confidence Tiers

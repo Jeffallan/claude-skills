@@ -31,6 +31,10 @@ Claude often operates on assumptions about project context, technology choices, 
 - `docs/current-state.json` from `spec:current`, for the spec assumptions check
 - No external tooling required
 
+## Goal runs
+
+`common-ground` is attended. Inside a goal run only `--list` runs as usual. Every other mode writes nothing and asks nothing: it prints the spec assumptions check as a read-only report and stops with `BLOCKED: common-ground needs the owner`.
+
 ## Usage
 
 Can be invoked at any point during the workflow — during intake, before planning, mid-execution, or whenever assumptions are building up. There is no prescribed moment; use judgment.

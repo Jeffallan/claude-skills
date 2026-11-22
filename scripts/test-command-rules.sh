@@ -210,6 +210,17 @@ assert_contains "$CMD/spec/triage.yaml" "a grouping" "triage.yaml's scope names 
 assert_not_contains "$CMD/ticket/complete.yaml" "ran in this session" "ticket:complete's id is optional while a marker exists, from any session"
 assert_contains "$REF/intake/procedures/testing-setup.md" "plus the aggregate \`test:all\`" "testing-setup names the test:all script the checklist requires"
 
+echo "common-ground is attended only"
+CGC="$CMD/common-ground.md"
+cg_guard=$(sed -n '/^## Unattended guard$/,/^---$/p' "$CGC")
+for s in "BLOCKED: common-ground needs the owner" "wrong-session stop" "\`--list\`" "write nothing"; do
+    if printf '%s\n' "$cg_guard" | grep -qF -- "$s"; then pass "common-ground's guard says $s"; else fail "common-ground's guard says $s"; fi
+done
+assert_contains "$CMD/common-ground.yaml" "unattended: false" "common-ground.yaml marks it attended only"
+attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
+case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
+assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

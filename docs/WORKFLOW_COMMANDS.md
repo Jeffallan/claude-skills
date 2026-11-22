@@ -56,7 +56,7 @@ A **spec** is a named group of tickets built on one branch, `spec/<spec-name>`, 
 
 - **Install the plugin** and **[uv](https://docs.astral.sh/uv/)**, which runs the guard with a suitable Python, fetching one if needed. The commands call a small runtime that ships inside the plugin, the ticket guard (`guard ...`), for evidence, hooks, the review gate and the spec index.
 - **Configure the tracker.** The first attended command that needs `.claude/workflow-config.json` offers a setup wizard. It recommends a tracker only from what the repo shows (an existing config, a tickets folder, a GitHub remote), lists a connected Jira or Linear MCP server as available without recommending it, and asks one question at a time. See [Tracker Setup](TRACKER_SETUP.md) for every adapter.
-- **Know which commands need you.** `discovery:approve`, `spec:triage`, `spec:create`, the triage step of `spec:review`, `spec:complete` and the wizard are attended. Run inside a goal, they write nothing, print what they would have done and stop with `BLOCKED:`.
+- **Know which commands need you.** `discovery:approve`, `spec:triage`, `spec:create`, the triage step of `spec:review`, `spec:complete`, `common-ground` (but `--list`) and the wizard are attended. Run inside a goal, they write nothing, print what they would have done and stop with `BLOCKED:`.
 
 ## Intake
 
@@ -197,6 +197,6 @@ Each launch command starts a new session with `--disallowedTools` for every writ
 | `spec:status` | `[--all]` | No |
 | `spec:current` | none | No; under a goal it changes no doc |
 | `spec:diff` | `[spec ...]` | No |
-| `common-ground` | `[--list] [--check] [--graph] [spec ...]` | Yes, it asks you to confirm |
+| `common-ground` | `[--list] [--check] [--graph] [spec ...]` | Yes, but `--list`; under a goal the rest stop with `BLOCKED:` |
 
 Thirteen commands in all. `common-ground` can also run on its own at any point. See [Common Ground](COMMON_GROUND.md).

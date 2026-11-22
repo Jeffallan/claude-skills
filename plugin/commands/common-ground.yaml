@@ -31,3 +31,4 @@ requires: []
 status: existing
 argument-hint: "[--list] [--check] [--graph] [spec ...]"
 repeat: false
+unattended: false

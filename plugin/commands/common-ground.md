@@ -10,6 +10,12 @@ argument-hint: "[--list] [--check] [--graph] [spec ...]"
 
 ---
 
+## Unattended guard
+
+Attended only, except `--list`, which writes nothing and asks nothing, so it runs the same anywhere. Read `${CLAUDE_PLUGIN_ROOT}/references/specs/unattended.md`. When a goal is active, every other mode must write nothing and ask nothing: run the Spec Assumptions Check when it can run and print its table as a read-only report, then end with `BLOCKED: common-ground needs the owner`, followed by `git status --short`. When `AskUserQuestion` is unavailable and no goal is active, take that file's wrong-session stop.
+
+---
+
 ## Purpose
 
 Claude often operates on assumptions about project context, technology choices, coding standards, and user preferences. This command surfaces those assumptions for explicit user validation, preventing misaligned work based on incorrect premises.
