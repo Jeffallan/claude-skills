@@ -1383,7 +1383,7 @@ rc=$?
 set -e
 if [ "$rc" -eq 2 ] && printf '%s' "$out" | grep -q 'no run "nope"'; then pass "an unknown run name exits 2"; else fail "an unknown run name exits 2 (got $rc): $out"; fi
 set +e
-out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" --print "$ED" 2>&1)
 rc=$?
 set -e
 if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| good | `abc1234` |' && printf '%s' "$out" | grep -q '1 of 4'; then
@@ -1400,7 +1400,7 @@ r = dict(d["runs"][0]); r["run"] = "unmapped"; r.pop("accuracy")
 d["runs"].insert(0, r); json.dump(d, open(p, "w"))
 PY
 set +e
-out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" --print "$ED" 2>&1)
 rc=$?
 set -e
 if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| unmapped | `abc1234` |.*| not mapped |' && printf '%s' "$out" | grep -q '1 of 4'; then
@@ -1419,12 +1419,12 @@ PY
 }
 setjson 'd["test_cmd"] = "test -f .deps-installed"'
 set +e
-out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" --print "$ED" 2>&1)
 set -e
 if printf '%s' "$out" | grep -q '| good |.*`characterization-green`'; then pass "without setup, a rebuilt run has no dependencies"; else fail "without setup, a rebuilt run has no dependencies: $out"; fi
 setjson 'd["setup"] = ["touch .deps-installed"]'
 set +e
-out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" --print "$ED" 2>&1)
 rc=$?
 set -e
 if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '| good |' && ! printf '%s' "$out" | grep -q 'characterization-green'; then
@@ -1434,10 +1434,36 @@ else
 fi
 setjson 'd["setup"] = ["exit 3"]'
 set +e
-out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" --print "$ED" 2>&1)
 rc=$?
 set -e
 if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q 'setup `exit 3` exit 3'; then pass "a failing setup command stops the baseline"; else fail "a failing setup command stops the baseline (exit $rc): $out"; fi
+
+# Version 22: without --print the baseline writes its table into the eval directory's baseline.md, replacing the
+# last table it wrote and keeping the prose around it; with no baseline.md it creates one
+setjson 'd["setup"] = []; d["project"] = "demo"'
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -qF "$ED/baseline.md" && head -1 "$ED/baseline.md" | grep -qx '# Intake eval baseline: demo' \
+    && grep -q '^Checks v[0-9]*, gold v' "$ED/baseline.md" && grep -q '^| good | `abc1234` |' "$ED/baseline.md"; then
+    pass "the baseline creates baseline.md with its table"
+else
+    fail "the baseline creates baseline.md with its table (exit $rc): $out; $(cat "$ED/baseline.md" 2>&1)"
+fi
+printf '# Intake eval baseline: demo\n\nHow to re-score.\n\nChecks v1, gold v0\n\n| Run | Plugin |\n|-----|--------|\n| stale | `0000000` |\n\nChanges from checks v1:\n\n- a note kept by hand\n' >"$ED/baseline.md"
+set +e
+out=$(python3 "$REPO_ROOT/scripts/eval_intake_baseline.py" "$ED" 2>&1)
+rc=$?
+set -e
+if [ "$rc" -eq 0 ] && grep -q '^How to re-score.$' "$ED/baseline.md" && grep -q '^- a note kept by hand$' "$ED/baseline.md" \
+    && ! grep -q 'stale\|Checks v1, gold v0' "$ED/baseline.md" && grep -q '^| good | `abc1234` |' "$ED/baseline.md" \
+    && [ "$(grep -c '^Checks v' "$ED/baseline.md")" -eq 1 ]; then
+    pass "the baseline replaces the table in baseline.md and keeps the prose around it"
+else
+    fail "the baseline replaces the table in baseline.md and keeps the prose around it (exit $rc): $out; $(cat "$ED/baseline.md")"
+fi
 
 # An owner docs/README.md: the intake index is docs/README-intake.md, and it lists the owner's README
 V=$(fresh v5-owner-readme)
@@ -1750,6 +1776,181 @@ if has "$out" findings-evidence 0 && printf '%s' "$out" | grep -q 'a {member,adm
 else
     fail "a brace-set member with no test fails findings-evidence, naming the cited title: $out"
 fi
+
+# Version 22: a skip call's reason may be its second argument (Playwright's `test.skip(cond, "BLOCKED: ...")`,
+# `testInfo.skip(true, ...)`) or a title-first skip's title, and an n/a: reason may follow a cell id and a separator
+# (`${op}-${col}: n/a: ...`). Another reason still needs its finding id.
+PW="$WORK/v22-playwright"
+make_run "$PW"
+mkdir -p "$PW/test/e2e"
+cat >"$PW/test/e2e/pages.spec.ts" <<'EOF'
+import { test } from "@playwright/test";
+
+test("loads the catalogue", async () => {
+  test.skip(!chromium, "BLOCKED: no Chromium");
+});
+
+test("opens the desk", async ({}, testInfo) => {
+  testInfo.skip(true, `BLOCKED: no emulator (${err.message.split("\n")[0]})`);
+});
+
+test.skip(`${op}-${col}: n/a: ${reason}`, () => {});
+
+test("renews a loan", async () => {
+  test.skip(!ready, "not fixed yet");
+});
+
+test.skip("see n/a: notes", () => {});
+EOF
+commit_item "$PW" intake:testing-user-flows "test(intake): testing-user-flows"
+set +e
+out=$(score "$PW")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, re, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "bug-tests-cite-findings")
+bad = re.search(r"no finding id: (\[[^]]*\])", c["detail"])
+want = str([f"test/e2e/pages.spec.ts:{n}" for n in (14, 17)])
+got = ("; blocked (BLOCKED: no Chromium): [\x27test/e2e/pages.spec.ts:4\x27]",
+       "; blocked (BLOCKED: no emulator (${err.message.split(\"\\n\")[0]})): [\x27test/e2e/pages.spec.ts:8\x27]",
+       "; n/a (${reason}): [\x27test/e2e/pages.spec.ts:11\x27]")
+sys.exit(0 if not c["pass"] and bad and bad.group(1) == want and all(g in c["detail"] for g in got) else 1)
+'; then
+    pass "a BLOCKED: second argument and an n/a: reason after a cell id are exempt; other reasons need a finding"
+else
+    fail "a BLOCKED: second argument and an n/a: reason after a cell id are exempt; other reasons need a finding: $out"
+fi
+
+# Version 22: node:test's expectFailure given an object reason (`{ label: ... }`) is a marker: the id comes from the
+# object, written out or through the table the test is generated from
+XO="$WORK/v22-expect-object"
+make_run "$XO"
+mkdir -p "$XO/test/integration"
+cat >"$XO/test/integration/xo.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("OP-001 staff (intended)", { expectFailure: { label: "F-001" } }, () => {});
+
+
+
+
+const rows = [
+  { op: "OP-002", finding: "F-001" },
+];
+for (const r of rows) {
+  it(`${r.op} staff (intended)`, { expectFailure: { label: r.finding } }, () => {});
+}
+
+
+
+
+it("OP-003 staff (intended)", { expectFailure: { label: "later" } }, () => {});
+EOF
+commit_item "$XO" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$XO")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q "no finding id: \['test/integration/xo.test.ts:18'\]"; then
+    pass "expectFailure with an object reason is a marker that cites the id it holds"
+else
+    fail "expectFailure with an object reason is a marker that cites the id it holds: $out"
+fi
+sed -i 's/label: "later"/label: "F-001"/' "$XO/test/integration/xo.test.ts"
+commit_item "$XO" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$XO")
+set -e
+if has "$out" bug-tests-cite-findings 1 && printf '%s' "$out" | grep -q '5 skipped or expected-fail tests'; then
+    pass "expectFailure object reasons that each name a finding pass bug-tests-cite-findings"
+else
+    fail "expectFailure object reasons that each name a finding pass bug-tests-cite-findings: $out"
+fi
+
+# Version 22: a table-driven twin whose title or reason joins the row's own finding ids at run time cites them through
+# the row literals, however the table is walked (for...of, forEach, Object.entries over an object table). Ids that come
+# only from a helper's default argument still name none (references/intake/rules.md).
+TD="$WORK/v22-table-ids"
+make_run "$TD"
+mkdir -p "$TD/test/integration"
+cat >"$TD/test/integration/td.test.ts" <<'EOF'
+import { it } from "node:test";
+
+const ROWS = [
+  { op: "OP-001", findings: ["F-001"] },
+  { op: "OP-002", findings: ["F-001", "F-001"] },
+];
+
+
+
+
+for (const { op, findings } of ROWS) {
+  it(`${op} staff ${findings.join("-")} (intended)`, { expectFailure: findings.join(" ") }, () => {});
+}
+
+
+
+
+ROWS.forEach(({ op, findings }) => {
+  it(`${op} member (intended)`, { expectFailure: findings.join(" ") }, () => {});
+});
+
+
+
+
+const CELLS = {
+  "OP-003": { findings: ["F-001"] },
+  "OP-004": { findings: ["F-001"] },
+};
+
+
+
+
+for (const [op, cell] of Object.entries(CELLS)) {
+  it(`${op} owner (intended)`, { expectFailure: cell.findings.join(" ") }, () => {});
+}
+EOF
+commit_item "$TD" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$TD")
+set -e
+if has "$out" bug-tests-cite-findings 1 && printf '%s' "$out" | grep -q '5 skipped or expected-fail tests'; then
+    pass "a table-driven twin joining its row's finding ids cites them through the rows"
+else
+    fail "a table-driven twin joining its row's finding ids cites them through the rows: $out"
+fi
+cat >>"$TD/test/integration/td.test.ts" <<'EOF'
+
+
+
+
+function twin(op: string, findings: string[] = ["F-001"]) {
+  it(`${op} admin (intended)`, { expectFailure: findings.join(" ") }, () => {});
+}
+
+
+
+
+twin("OP-005");
+EOF
+commit_item "$TD" intake:testing-authorization "test(intake): testing-authorization"
+set +e
+out=$(score "$TD")
+set -e
+if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q "no finding id: \['test/integration/td.test.ts:47'\]"; then
+    pass "ids that come only from a helper's default argument still fail bug-tests-cite-findings"
+else
+    fail "ids that come only from a helper's default argument still fail bug-tests-cite-findings: $out"
+fi
+
+# Version 22: agents write the Checks: section as bullets, `- \`<command>\` (exit <code>): <summary>`
+s_bullets() { # s_bullets <min> <agent id> <command> <exit> <summary>: the report's Checks: as bullets
+    printf '{"type":"assistant","isSidechain":true,"agentId":"%s","timestamp":"%s","message":{"content":[{"type":"text","text":"Done.\\n\\nChecks:\\n- `%s` (exit %s): %s\\n- `npm run typecheck` (exit 0)\\n\\nChecklist note:\\n  - 2026-11-12: tests written. Findings: none."}]}}\n' "$2" "$(at "$1")" "$3" "$4" "$5"
+}
+{ s_user 1 atf "$(proc testing-features)"; s_bullets 8 atf "sh $S17/red.sh" 0 "3 passed, 0 failed"; } >"$S17/agent-bullets-green.jsonl"
+{ s_user 1 atf "$(proc testing-features)"; s_bullets 8 atf "sh $S17/red.sh" 1 "2 passed, 1 failed"; } >"$S17/agent-bullets-red.jsonl"
+v17 "a bulleted Checks: report claiming exit 0 on a red suite fails reported-counts" red 0 testing-features \
+    "$S17/main.jsonl" "$S17/agent-bullets-green.jsonl"
+v17 "an honest bulleted Checks: report passes reported-counts" red 1 "" "$S17/main.jsonl" "$S17/agent-bullets-red.jsonl"
 
 # A bad start SHA is bad input
 set +e
