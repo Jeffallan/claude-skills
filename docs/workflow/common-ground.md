@@ -22,7 +22,7 @@ Claude often operates on assumptions about project context, technology choices, 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
 | `ground-file` | file | `{docsRoot}/COMMON-GROUND.md` | Human-readable assumptions organized by confidence tier |
-| `ground-index` | file | `{docsRoot}/ground.index.json` | Machine-readable assumption index |
+| `ground-index` | file | `{docsRoot}/ground.index.json` | Machine-readable assumption index, including the reasoning graph from `--graph` under `graph` |
 | `reasoning-graph` | file | `REASONING.mermaid` | Optional with `--graph`: a standalone copy of the reasoning graph in the project root |
 
 ## Prerequisites

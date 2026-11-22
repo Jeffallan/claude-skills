@@ -272,6 +272,8 @@ A companion `ground.index.json` provides structured access:
 
 The `--graph` flag generates a mermaid diagram showing not just *what* Claude assumes, but *how* it arrived at those assumptions.
 
+The diagram is stored in `ground.index.json` under `graph`, and `COMMON-GROUND.md` shows it as a `## Reasoning Graph` section each time it is regenerated from the index. A later change to your assumptions keeps the graph.
+
 ### Purpose
 
 Make the shape of reasoning visible:

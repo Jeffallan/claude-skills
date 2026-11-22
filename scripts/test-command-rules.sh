@@ -221,6 +221,19 @@ attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
 case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
 assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
 
+echo "common-ground --graph lives in the index, so a regenerated ground file keeps it"
+FM="$REF/common-ground/file-management.md"
+schema=$(sed -n '/^### Schema$/,/^### Field Definitions$/p' "$FM")
+case "$schema" in *'"graph": {'*'"mermaid":'*) pass "the index schema has a graph field" ;; *) fail "the index schema has a graph field" ;; esac
+assert_contains "$FM" "| \`graph\` | object or null |" "the field table defines graph"
+assert_contains "$FM" "renders \`graph\` as its \`## Reasoning Graph\` section" "regenerating COMMON-GROUND.md renders the stored graph"
+graph_mode=$(sed -n '/^## --graph Mode$/,/^### Output Format$/p' "$CMD/common-ground.md")
+for s in "ground.index.json" "\`graph\`" "regenerate"; do
+    if printf '%s\n' "$graph_mode" | grep -qF -- "$s"; then pass "--graph stores the graph through the index ($s)"; else fail "--graph stores the graph through the index ($s)"; fi
+done
+if printf '%s\n' "$graph_mode" | grep -qF "Update \`COMMON-GROUND.md\` with embedded"; then fail "--graph never edits COMMON-GROUND.md directly"; else pass "--graph never edits COMMON-GROUND.md directly"; fi
+assert_contains "$REF/common-ground/reasoning-graph.md" "stored in \`ground.index.json\`" "reasoning-graph.md keeps the graph in the index"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

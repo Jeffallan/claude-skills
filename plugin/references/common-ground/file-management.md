@@ -134,7 +134,11 @@ Located at: `<docsRoot>/ground.index.json`
       ]
     }
   ],
-  "archived": []
+  "archived": [],
+  "graph": {
+    "generated": "{ISO_timestamp}",
+    "mermaid": "flowchart TD\n    ROOT[Task: ...] --> D1{Decision Point?}\n    ..."
+  }
 }
 ```
 
@@ -147,6 +151,7 @@ Located at: `<docsRoot>/ground.index.json`
 | `next_id` | number | Next assumption ID to assign |
 | `assumptions` | array | Active assumptions |
 | `archived` | array | Archived assumptions (future) |
+| `graph` | object or null | The reasoning graph from `--graph`: `generated` (ISO timestamp) and `mermaid` (the diagram source, without the fence). `null` or absent until `--graph` first runs |
 
 ---
 
@@ -163,7 +168,7 @@ Located at: `<docsRoot>/ground.index.json`
 1. Read `ground.index.json`
 2. Apply changes (add/promote/demote)
 3. Update `last_updated` timestamp
-4. Regenerate `COMMON-GROUND.md` from index.json
+4. Regenerate `COMMON-GROUND.md` from index.json. The regenerated file renders `graph` as its `## Reasoning Graph` section (`references/common-ground/reasoning-graph.md`, "Embedding in COMMON-GROUND.md"), placed before `## History`; with no `graph`, it has no such section
 5. Commit both: `docs(common-ground): <what changed>`
 
 ### Read Ground File

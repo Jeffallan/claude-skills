@@ -235,7 +235,7 @@ flowchart TD
 
 ## Embedding in COMMON-GROUND.md
 
-Add the graph as a section in the ground file:
+The graph is stored in `ground.index.json` as `graph` (`generated` and the `mermaid` source), the file `COMMON-GROUND.md` is regenerated from. Each regeneration renders it as this section, before `## History`:
 
 ```markdown
 ---
@@ -268,7 +268,7 @@ flowchart TD
 
 ### Option 1: Embedded (Default)
 
-Add `## Reasoning Graph` section to `COMMON-GROUND.md`
+Store the graph in the index's `graph`; the regenerated `COMMON-GROUND.md` shows it as its `## Reasoning Graph` section
 
 **Pros:** Single file, travels with assumptions
 **Cons:** Larger file
@@ -282,7 +282,7 @@ Create `REASONING.mermaid` in project root
 
 ### Option 3: Both
 
-Embed in `COMMON-GROUND.md` AND create standalone file
+Store it in the index (so `COMMON-GROUND.md` shows it) AND create the standalone file
 
 **When:** User explicitly requests standalone file
 

@@ -275,12 +275,12 @@ Make the shape of Claude's reasoning visible:
 3. **Generate mermaid diagram** following conventions in `${CLAUDE_PLUGIN_ROOT}/references/common-ground/reasoning-graph.md`
 
 4. **Output files:**
-   - Update `COMMON-GROUND.md` with embedded `## Reasoning Graph` section
+   - Store the diagram in `ground.index.json` as `graph` (`generated` and `mermaid`, as `references/common-ground/file-management.md` defines it), then regenerate `COMMON-GROUND.md` from the index, which renders it as the `## Reasoning Graph` section. Never edit `COMMON-GROUND.md` by hand: the next regeneration would drop the edit.
    - Optionally create standalone `REASONING.mermaid` in project root
 
 ### Output Format
 
-The reasoning graph is embedded in `COMMON-GROUND.md`:
+The reasoning graph is rendered into `COMMON-GROUND.md` from the index's `graph`:
 
 ```markdown
 ## Reasoning Graph
