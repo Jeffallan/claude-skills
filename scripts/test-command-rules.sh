@@ -250,6 +250,16 @@ grouping='argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grou
 assert_contains "$CMD/spec/triage.md" "$grouping" "spec:triage's hint names the grouping form"
 assert_contains "$CMD/spec/triage.yaml" "$grouping" "triage.yaml's hint names the grouping form"
 
+echo "document-authorization's batch hand-back is an expected stop"
+assert_contains "$REF/intake/procedures/document-authorization.md" "This stop is expected, in a goal run too" "document-authorization says its batch hand-back stop is expected and resumed"
+
+echo "spec:current moves the description's verified: to the commit it was checked against"
+cur2=$(sed -n '/^## Step 2: Update the system description$/,/^## Step 3: Compile the current state$/p' "$CMD/spec/current.md")
+for s in "\`verified:\`" "git rev-parse --short HEAD" "guard docs-check"; do
+    if printf '%s\n' "$cur2" | grep -qF -- "$s"; then pass "spec:current Step 2 bumps verified: ($s)"; else fail "spec:current Step 2 bumps verified: ($s)"; fi
+done
+assert_contains "$PLUGIN/../docs/workflow/spec-current.md" "\`verified:\`" "the spec:current page says the fold moves verified:"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

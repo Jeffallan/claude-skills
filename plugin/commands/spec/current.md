@@ -42,7 +42,7 @@ Discovery only: return the section changes you would make, each with its source,
 End your report with "Skills loaded: ...".
 ```
 
-Attended, show the proposed changes and ask the owner which to apply. Resume the agent with `SendMessage` (load it with ToolSearch, `select:SendMessage`) and the approved list; it applies them and runs the procedure's accuracy audit. Review its diff, then commit: `docs(system): fold <specs> into the system description` with the trailer `Intake: intake:create-system-description`, so `guard docs-drift` counts it as the doc's update. Under a goal, or when the owner approves nothing, change no doc and list the proposed changes in the report as pending.
+Attended, show the proposed changes and ask the owner which to apply. Resume the agent with `SendMessage` (load it with ToolSearch, `select:SendMessage`) and the approved list; it applies them and runs the procedure's accuracy audit. A fold is a full audit, so the description's `verified:` frontmatter must move to the commit it was checked against: set it to `git rev-parse --short HEAD`, taken before this commit, and run `guard docs-check`, which stays strict and fails on a `verified` that isn't a commit. Review the diff, then commit: `docs(system): fold <specs> into the system description` with the trailer `Intake: intake:create-system-description`, so `guard docs-drift` counts it as the doc's update. Under a goal, or when the owner approves nothing, change no doc and list the proposed changes in the report as pending.
 
 ## Step 3: Compile the current state
 

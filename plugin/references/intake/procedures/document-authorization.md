@@ -138,6 +138,8 @@ carries no finding ids.
    routes. The intake command starts one fresh `code-reader` per batch, all in one message, with only that, never the matrix, the
    findings tracker or the intake branch, and asks it for the outcome of every cell in its batch with the code it
    relied on, and for a separate list of any other defect it noticed. It resumes you with their reports.
+   This stop is expected, in a goal run too: it is a hand-back, not a checkpoint, and the intake command resumes
+   you with the readers' reports, so don't finish the procedure or write a checkpoint draft here.
 3. Compare the returned cells with the matrix. Wording that differs but means the same outcome is not a disagreement.
    For each real disagreement, check the code and probe the running app; correct the cell the matrix got wrong,
    and file a deviation not yet filed as a finding (or add its rows to the finding with the same root cause).
