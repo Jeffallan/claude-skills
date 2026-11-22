@@ -147,6 +147,7 @@ assert_contains "$REF/intake/rules.md" "blocked count and its reason" "rules: a 
 assert_contains "$REF/intake/rules.md" "exit 0 with blocked tests is not a green suite" "rules: exit 0 with blocked tests is not green"
 assert_contains "$CMD/intake.md" "blocked count" "intake: the phase-boundary suite reads the blocked count"
 
+assert_contains "$REF/intake/rules.md" "names its finding id in the row itself" "rules: a table-driven row names its finding id, never through a default"
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

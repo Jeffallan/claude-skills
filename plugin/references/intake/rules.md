@@ -185,7 +185,7 @@ Every documentation command ends with an audit, because agents read its document
 Every testing command ends by running what it wrote, because its output is code that must execute.
 
 - Run the suite with the project's own script and capture fresh output in the summary: the command, the pass, fail and skip counts, and the exit code.
-- Every characterization test passes. Every intended-behavior test is skipped or expected-fail and names its finding id.
+- Every characterization test passes. Every intended-behavior test is skipped or expected-fail and names its finding id. A table-driven test names its finding id in the row itself, never through a helper's default argument, so a reader at the row sees which finding it pins.
 - Update the tracker in the same commit as the tests: a Test coverage row per finding, the finding's `Tests:` line, and its text when the test confirmed or disproved it (`references/intake/findings.md`, "Every finding has evidence").
 - Seed related records so their ids differ across tables (user 1 owns profile 7). A fresh database often numbers everything from 1, so code that uses one table's id for another passes by coincidence.
 - A deny or error-path test asserts the specific denial or error, never just "it threw". A test that passes because something unrelated failed is a false pass.
