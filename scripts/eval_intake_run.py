@@ -20,8 +20,10 @@ import ast
 from datetime import datetime
 import fnmatch
 import json
+import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 
@@ -64,6 +66,27 @@ SKIP_MARK = re.compile(
     r"(pytest\.mark\.(skip|xfail)|@(unittest\.)?(skip\w*|expectedFailure)\b|\b(it|test|describe)\.(skip|failing|fails|fail|fixme|todo)\b"
     r"|\bx(it|test|describe)\(|@Disabled\b|\bt\.Skip\(|\$this->markTestSkipped|\bskip\s*\()"
 )
+# A runtime skip's argument, not a title-first `it.skip(...)`. A layer that can't run "is reported as blocked with
+# the reason" (references/intake/rules.md, "Run and verify"): a skip whose reason is a `BLOCKED:` string, written
+# out or held by a key a test helper sets (`{ blocked: "BLOCKED: no Chromium" }`), is listed as blocked, not a bug test.
+# shortcut: Playwright's `test.skip(cond, "BLOCKED: ...")` still counts as a bug marker; admit it if a run uses it
+SKIP_ARG = re.compile(
+    r"(?<![\w$.])(?!(?:it|test|describe)\.)(?:[\w$]+(?:\.|->))*(?:skip|Skip|markTestSkipped)\(\s*(?:reason\s*=\s*)?([^)]*?)\s*\)"
+)
+BLOCKED_TEXT = r"""(?P<q>["'`])(?P<reason>BLOCKED:.*?)(?P=q)"""
+BLOCKED_KEY = re.compile(rf"""\b(\w+)["']?\s*[:=]\s*{BLOCKED_TEXT}""")
+
+
+def blocked_reason(code: str, keys: dict[str, str]) -> str | None:
+    """The BLOCKED: reason of the skip on this code line: a literal, or the reason a helper stores under the key named."""
+    m = SKIP_ARG.search(code)
+    if not m:
+        return None
+    if r := re.match(BLOCKED_TEXT, m.group(1)):
+        return r.group("reason")
+    return keys.get(m.group(1).split(".")[-1]) if re.fullmatch(r"[\w$]+(?:\.[\w$]+)*", m.group(1)) else None
+
+
 # Test files by name, the fallback when the run declares no test paths. Folder names that also
 # hold shipped code (spec/, fixtures/, testing/) count only inside one of these trees.
 TEST_PATH = re.compile(
@@ -236,24 +259,32 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
 
     A helper that wraps a marker is checked where it is called, not where it is defined. Markers count only in
     code: a comment or docstring that names one is prose. A test generated from a table cites through its rows.
+    A skip with a BLOCKED: reason is a layer that can't run: listed as blocked, never as passing or as a bug test.
     """
     bad, unknown, seen = [], [], 0
+    blocked: dict[str, list[str]] = {}
     files = {}
     for rel in changed(repo, start):
         p = repo / rel
         if is_test(rel, globs) and p.exists():
             files[rel] = p.read_text(encoding="utf-8", errors="replace").splitlines()
     codes = {rel: code_text(lines) for rel, lines in files.items()}
+    keys = {
+        m.group(1): m.group("reason") for code in codes.values() for line in code for m in BLOCKED_KEY.finditer(line)
+    }
     helpers = {
         n
         for rel, lines in files.items()
         for i, line in enumerate(codes[rel])
-        if SKIP_MARK.search(line) and (n := marker_helper(lines, i))
+        if SKIP_MARK.search(line) and not blocked_reason(line, keys) and (n := marker_helper(lines, i))
     }
     call = re.compile(r"\b(" + "|".join(map(re.escape, sorted(helpers))) + r")\s*\(") if helpers else None
     for rel, lines in files.items():
         for i, line in enumerate(codes[rel]):
             if SKIP_MARK.search(line):
+                if reason := blocked_reason(line, keys):
+                    blocked.setdefault(reason, []).append(f"{rel}:{i + 1}")
+                    continue
                 if marker_helper(lines, i):
                     continue
             elif not (call and call.search(line) and not HELPER_DEF.search(line)):
@@ -275,17 +306,35 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
         if ok
         else f"no finding id: {bad}; not in the tracker: {unknown}"
     )
+    if blocked:
+        detail += "".join(f"; blocked ({reason}): {where}" for reason, where in blocked.items())
     return check("bug-tests-cite-findings", ok, detail)
 
 
+SUITE_TIMEOUT = 600  # seconds for the suite run and each runner listing
+
+
 def suite_check(repo: Path, cmd: str | None) -> tuple[dict, str]:
-    """The suite's verdict plus its output, which lists the titles table-driven tests build at runtime."""
+    """The suite's verdict plus its output, which lists the titles table-driven tests build at runtime.
+
+    A suite still running after SUITE_TIMEOUT fails, and its whole process group is killed.
+    """
     if not cmd:
         return check(
             "characterization-green", False, "not run: pass --test-cmd with the project's test:all command"
         ), ""
-    r = subprocess.run(cmd, shell=True, cwd=repo, capture_output=True, text=True)
-    out = r.stdout + r.stderr
+    r = subprocess.Popen(
+        cmd, shell=True, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True
+    )
+    try:
+        stdout, stderr = r.communicate(timeout=SUITE_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        os.killpg(r.pid, signal.SIGKILL)
+        stdout, stderr = r.communicate()
+        return check(
+            "characterization-green", False, f"`{cmd}` suite timed out after {SUITE_TIMEOUT} s"
+        ), stdout + stderr
+    out = stdout + stderr
     tail = out.strip().splitlines()[-1:] or [""]
     return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}"), out
 
@@ -368,7 +417,7 @@ def test_listing(repo: Path, cmd: str | None) -> str:
     out = []
     for cwd, run, how in dict.fromkeys(runs):
         try:
-            r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=600)
+            r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=SUITE_TIMEOUT)
         except subprocess.TimeoutExpired:
             continue
         if how == "jest":  # a red test still prints its JSON; no JSON means jest never ran
@@ -457,7 +506,7 @@ def lockfile_ok(repo: Path, start: str, rel: str) -> bool:
                 }
                 if deps:
                     out[name] = deps
-            elif not entry.get("dev"):
+            elif not (entry.get("dev") or entry.get("devOptional")):  # npm: dev and optional both
                 out[name] = entry
         return out
 
@@ -574,8 +623,9 @@ def rewrite_check(repo: Path, start: str, windows, reflog: Path | None) -> dict:
 SKILL_NAME = re.compile(r"\bfullstack-dev-skills:[a-z][a-z0-9-]*\b")
 # A decline claims nothing: "javascript-pro not loaded", "vue-expert/vue-expert-js not loaded", "vue-expert and
 # vue-expert-js skipped (Vue 2 app)", or a clause whose verdict follows a semicolon ("vue-expert targets Vue 3; not
-# loaded"). "skipped" and "declined" count only where the clause ends, so "skipped tests cite F-001" declines nothing.
-_VERDICT = r"(?:not loaded|(?:skipped|declined)(?=\s*(?:$|[;.,(])))"
+# loaded"), or a list that doesn't apply ("vue-expert/vue-expert-js target Vue 3", "... do not apply").
+# "skipped" and "declined" count only where the clause ends, so "skipped tests cite F-001" declines nothing.
+_VERDICT = r"(?:not loaded|(?:skipped|declined)(?=\s*(?:$|[;.,(]))|targets?\b|do(?:es)?(?:\s+not|n't)\s+apply)"
 _JOIN = r"\s*(?:/|,|&|\band\b)\s*"
 DECLINED = re.compile(
     rf"(?P<names>[\w:-]+(?:{_JOIN}[\w:-]+)*)\s+(?:skills?\s+)?(?:(?:was|were)\s+)?{_VERDICT}"
@@ -905,7 +955,9 @@ REPORT_CHECKS = re.compile(
     r"^Checks:[ \t]*\n`?(.+?)`?[ \t]*\(exit (\d+)\)[ \t]*\n(.*?)(?=^[A-Z][\w ]*:[ \t]*$|\Z)", re.M | re.S
 )
 # pytest, Jest, Vitest and mocha print "<n> passed"; node --test prints "pass <n>"
-COUNT = re.compile(r"(\d+)\s+(passed|passing|failed|failing|skipped|pending)\b|\b(pass|fail|skip)\s+(\d+)\b", re.I)
+COUNT = re.compile(
+    r"(\d+)\s+(passed|passing|failed|failing|skipped|pending|blocked)\b|\b(pass|fail|skip)\s+(\d+)\b", re.I
+)
 COUNT_KIND = {
     "passed": "pass",
     "passing": "pass",
@@ -913,7 +965,12 @@ COUNT_KIND = {
     "failing": "fail",
     "skipped": "skip",
     "pending": "skip",
+    "blocked": "skip",
 }
+# A skip the suite prints with a BLOCKED: reason: node and TAP `# SKIP BLOCKED: ...`, pytest -rs `SKIPPED [1] ...: BLOCKED: ...`
+SUITE_BLOCKED = re.compile(r"(?:#\s*(?:SKIP\s+)?|\bSKIPPED\b.*?)(BLOCKED:[^\n]*)")
+# A report gives the reason beside its count: "1 skipped (BLOCKED: no Chromium)", "1 blocked: no Chromium"
+REPORTED_REASON = re.compile(r"blocked\s*[:(,-]\s*\w|\(\s*blocked\b[^)]*\w", re.I)
 
 
 def counts(text: str) -> dict[str, int]:
@@ -957,8 +1014,9 @@ def reported_counts_check(
     """Each testing item's last reported test run agrees with the scorer's own run of the suite.
 
     Compared only where the item's last commit leaves the suite as the run ends it. Fails when a report says exit 0
-    or 0 failed and the suite fails, or reports more passes than the suite printed for the same command. None when
-    nothing compares: the check counts only when a run exercised it.
+    or 0 failed and the suite fails, or reports more passes than the suite printed for the same command. A suite that
+    skips tests with a BLOCKED: reason stays green, but a report giving no blocked or skipped count and reason fails.
+    None when nothing compares: the check counts only when a run exercised it.
     """
     if not cmd or not paths:
         return None
@@ -974,6 +1032,7 @@ def reported_counts_check(
                 if item not in last or t >= last[item][0]:
                     last[item] = (t, r.group(1).strip(), int(r.group(2)), r.group(3).strip())
     real, compared, bad = counts(out), [], []
+    blocked = sorted(set(SUITE_BLOCKED.findall(out)))
     for item, (_, run, code, summary) in sorted(last.items()):
         if not at_end_state(repo, start, item):
             continue
@@ -983,6 +1042,10 @@ def reported_counts_check(
             bad.append(f"intake:{item} reported `{run}` exit {code} ({summary[:80]}), but the suite fails")
         if run.split() == cmd.split() and "pass" in real and said.get("pass", 0) > real["pass"]:
             bad.append(f"intake:{item} reported {said['pass']} passed, the suite printed {real['pass']}")
+        if blocked and not ("skip" in said and REPORTED_REASON.search(summary)):
+            bad.append(
+                f"intake:{item} reported ({summary[:80]}) with no blocked count and reason; suite: {blocked[:3]}"
+            )
     if not compared:
         return None
     return check(
@@ -1246,7 +1309,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 17  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run
+CHECKS_VERSION = 18  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT
 
 
 def main() -> int:

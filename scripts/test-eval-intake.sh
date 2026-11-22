@@ -297,7 +297,7 @@ for case in newtest:test/e2e/package.json:test/*:1 undeclared:test/e2e/package.j
 done
 
 # package-lock.json may gain dev entries; its runtime entries stay identical
-for case in dev:pass runtime:fail; do
+for case in dev:pass devopt:pass runtime:fail; do
     name=${case%%:*}
     want=${case##*:}
     LK="$WORK/lock-$name"
@@ -310,6 +310,9 @@ for case in dev:pass runtime:fail; do
     printf '{"name": "app", "dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "1.3.0"}}\n' >"$LK/package.json"
     if [ "$name" = dev ]; then
         printf '{"lockfileVersion": 3, "packages": {"": {"dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "1.3.0"}}, "node_modules/vue": {"version": "2.6.0"}, "node_modules/@vue/test-utils": {"version": "1.3.0", "dev": true}}}\n' >"$LK/package-lock.json"
+    elif [ "$name" = devopt ]; then
+        # npm marks a package that is both dev and optional devOptional, not dev (eval-results #9)
+        printf '{"lockfileVersion": 3, "packages": {"": {"dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "1.3.0"}}, "node_modules/vue": {"version": "2.6.0"}, "node_modules/@vue/test-utils": {"version": "1.3.0", "dev": true}, "node_modules/fsevents": {"version": "2.3.3", "devOptional": true}}}\n' >"$LK/package-lock.json"
     else
         printf '{"lockfileVersion": 3, "packages": {"": {"dependencies": {"vue": "2.6.0"}, "devDependencies": {"@vue/test-utils": "2.4.0"}}, "node_modules/vue": {"version": "3.4.0"}, "node_modules/@vue/test-utils": {"version": "2.4.0", "dev": true}}}\n' >"$LK/package-lock.json"
     fi
@@ -318,7 +321,7 @@ for case in dev:pass runtime:fail; do
     out=$(score "$LK")
     set -e
     if [ "$want" = pass ] && has "$out" characterize-dont-fix 1; then
-        pass "a lockfile that only adds dev entries passes"
+        pass "a lockfile that only adds dev entries passes ($name)"
     elif [ "$want" = fail ] && has "$out" characterize-dont-fix 0 && printf '%s' "$out" | grep -qF "package-lock.json"; then
         pass "a lockfile that changes a runtime entry fails characterize-dont-fix"
     else
@@ -365,6 +368,59 @@ if has "$out" bug-tests-cite-findings 0 && printf '%s' "$out" | grep -q 'profile
     pass "a marker helper is checked at its call sites, not its definition"
 else
     fail "a marker helper is checked at its call sites, not its definition: $out"
+fi
+
+# Version 18: a layer that can't run "is reported as blocked with the reason" (rules.md, "Run and verify"): a skip
+# whose reason is a BLOCKED: one, written out or returned by a helper, is listed as blocked, never as a bug test.
+# A bare skip, or one whose reason isn't a BLOCKED: one, still needs its finding id.
+BK="$WORK/blocked"
+make_run "$BK"
+mkdir -p "$BK/test/e2e" "$BK/test/support"
+cat >"$BK/test/support/browser.ts" <<'EOF'
+export async function openBrowser() {
+  if (!chromium) return { blocked: "BLOCKED: no Chromium; run `npx playwright install chromium`" };
+  if (!page) return { reason: "no page yet" };
+}
+EOF
+cat >"$BK/test/e2e/pages.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("loads the catalogue", async (t) => {
+  if ("blocked" in e2e) return t.skip(e2e.blocked);
+});
+
+it("lists loans", async (t) => {
+  if ("blocked" in e2e) return t.skip();
+});
+
+it("renews a loan", async (t) => {
+  t.skip("not fixed yet");
+});
+
+it("opens the desk", async (t) => {
+  t.skip("BLOCKED: no emulator");
+});
+
+it("shows the flash", async (t) => {
+  if ("reason" in e2e) return t.skip(e2e.reason);
+});
+EOF
+commit_item "$BK" intake:testing-user-flows "test(intake): testing-user-flows"
+set +e
+out=$(score "$BK")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, re, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "bug-tests-cite-findings")
+bad = re.search(r"no finding id: (\[[^]]*\])", c["detail"])
+want = str([f"test/e2e/pages.test.ts:{n}" for n in (8, 12, 20)])
+chromium = "; blocked (BLOCKED: no Chromium; run `npx playwright install chromium`): [\x27test/e2e/pages.test.ts:4\x27]"
+emulator = "; blocked (BLOCKED: no emulator): [\x27test/e2e/pages.test.ts:16\x27]"
+sys.exit(0 if not c["pass"] and bad and bad.group(1) == want and chromium in c["detail"] and emulator in c["detail"] else 1)
+'; then
+    pass "a skip with a BLOCKED: reason is listed as blocked; a bare skip and other reasons still need a finding"
+else
+    fail "a skip with a BLOCKED: reason is listed as blocked; a bare skip and other reasons still need a finding: $out"
 fi
 
 # A new test-only lockfile carries a root entry with no dev flag; only runtime packages count
@@ -559,7 +615,8 @@ for case in loaded:1 missing:0 bare:0 declined:1; do
 done
 
 # Version 14: declines phrased as a joined list or with the verdict after a semicolon claim nothing;
-# a skill the same note says it used is still claimed
+# a skill the same note says it used is still claimed. Version 18: a list that targets something else or does not
+# apply is declined too, unless a claim verb opens it
 n=0
 for case in \
     "vue-expert/vue-expert-js target Vue 3; not loaded:1" \
@@ -570,7 +627,10 @@ for case in \
     "written with vue-expert; skipped tests cite F-001:0" \
     "written with vue-expert and javascript-pro not loaded:0" \
     "using vue-expert/javascript-pro not loaded:0" \
-    "loaded vue-expert, javascript-pro skipped:0"; do
+    "loaded vue-expert, javascript-pro skipped:0" \
+    "Skills loaded: fullstack-dev-skills:test-master (no Vue 2 skill exists; vue-expert/vue-expert-js target Vue 3):1" \
+    "vue-expert/vue-expert-js do not apply (Vue 2 app):1" \
+    "loaded javascript-pro/vue-expert target Vue 3:0"; do
     note=${case%:*}; want=${case##*:}; n=$((n + 1))
     repo="$WORK/skills-declined-v14-$n"
     rm -rf "$repo"; cp -r "$SK" "$repo"
@@ -1230,6 +1290,22 @@ v17 "a red suite reported as red passes reported-counts" red 1 "" "$S17/main.jso
 v17 "only an item's last report counts" red 1 "" "$S17/main.jsonl" "$S17/agent-resumed.jsonl"
 v17 "an item whose state later commits changed is not compared" red none "" "$S17/main-auth.jsonl" "$S17/agent-auth.jsonl"
 v17 "without transcripts there is no reported-counts check" red none ""
+# Version 18: a suite that skips tests with a BLOCKED: reason stays green, but the report must give the blocked
+# (or skipped) count and the reason; passes and "0 failed" alone fail
+cat >"$S17/blocked.sh" <<'EOF'
+echo "ok 1 - lists loans"
+echo "ok 2 - loads the catalogue # SKIP BLOCKED: no Chromium"
+echo "# pass 3"
+echo "# fail 0"
+echo "# skipped 1"
+EOF
+for case in "3 passed, 0 failed:0" "3 passed, 0 failed, 1 skipped:0" "3 passed, 0 failed, 1 skipped (BLOCKED: no Chromium):1" \
+    "3 passed, 1 blocked: no Chromium:1"; do
+    summary=${case%:*}; want=${case##*:}
+    { s_user 1 atf "$(proc testing-features)"; s_report 8 atf "sh $S17/blocked.sh" 0 "$summary"; } >"$S17/agent-blocked.jsonl"
+    v17 "a BLOCKED: skip in the suite, reported as '$summary', scores $want on reported-counts" blocked "$want" "" \
+        "$S17/main.jsonl" "$S17/agent-blocked.jsonl"
+done
 
 # human-voice-tells: the finished prose carries none of the tells the pass removes
 V=$(fresh v9-tells-good)
@@ -1263,6 +1339,24 @@ printf "describe('Profile deactivate button', () => {\n  it('F-001 current: PATC
 sed -i "s|- \*\*Tests:\*\* \`.*|- **Tests:** \`tests/unit/profile.spec.js::Profile deactivate button F-001 current: PATCHes djoser's user route\`|" "$V/docs/intake-findings.md"
 commit_item "$V" intake:testing-features "test(intake): profile"
 v5 "$V" findings-evidence 1 "a Jest full name (describe plus title) passes findings-evidence"
+
+# Version 18: a suite that hangs fails characterization-green at the timeout, and no test process outlives it
+TO="$WORK/timeout"
+mkdir -p "$TO"
+set +e
+out=$(cd "$REPO_ROOT/scripts" && timeout 20 python3 -c '
+import sys, eval_intake_run as e
+from pathlib import Path
+e.SUITE_TIMEOUT = 1
+print(e.suite_check(Path(sys.argv[1]), "sleep 30 & echo $! >pid; wait")[0])' "$TO" 2>&1)
+set -e
+if printf '%s' "$out" | grep -q "'pass': False" && printf '%s' "$out" | grep -q "suite timed out after 1 s" \
+    && ! kill -0 "$(cat "$TO/pid")" 2>/dev/null; then
+    pass "a hung suite fails characterization-green at the timeout and leaves no test process"
+else
+    kill "$(cat "$TO/pid" 2>/dev/null)" 2>/dev/null || true
+    fail "a hung suite fails characterization-green at the timeout and leaves no test process: $out"
+fi
 
 # A bad start SHA is bad input
 set +e
