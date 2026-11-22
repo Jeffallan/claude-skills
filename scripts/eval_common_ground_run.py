@@ -3,7 +3,9 @@
 
 Reads the report table the command prints (`| ID | Verdict | Spec | Assumption | Source | Fix |`), saved
 from the run, and checks recall of the gold conflicts, flags that match no gold conflict, and whether each
-flag names the right spec. The gold set lives in a private eval directory (evals/README.md).
+flag names the right spec. Gold unknowns and the files saved next to the report (git-files.txt, ground.index.json,
+COMMON-GROUND.md) add checks that are skipped when absent. The gold set lives in a private eval directory
+(evals/README.md).
 
 Usage: eval_common_ground_run.py (--eval <dir> --run <name> | --report <report.md> --gold <gold.json>)
 Exit codes: 0 = every check passed, 1 = a check failed, 2 = bad input
@@ -18,7 +20,7 @@ import re
 import sys
 
 import eval_dir
-from eval_workflow_run import cells, check
+from eval_workflow_run import cells, check, report, skip
 
 
 def tables(text: str, need: set[str]) -> list[list[dict[str, str]]]:
@@ -48,6 +50,54 @@ def rows(text: str) -> list[dict[str, str]]:
 
 def verdict(row: dict[str, str]) -> str:
     return row.get("verdict", "").strip("`* ").lower()
+
+
+def run_checks(report: str, gold: dict, run: Path) -> list[dict]:
+    """Checks on gold unknowns and on the files the operator saves in the run folder; each is skipped when its gold
+    key or file is absent."""
+    out = []
+    if "unknowns" in gold:
+        bad = []
+        for g in gold["unknowns"]:
+            hit = [
+                r
+                for r in rows(report)
+                if r.get("spec") == g["spec"]
+                and re.search(g["match"], f"{r.get('assumption', '')} {r.get('source', '')}", re.I)
+            ]
+            if not hit or any(verdict(r) == "conflicts" for r in hit):
+                bad.append(f"{g['match']}: {'conflicts' if hit else 'missing'}")
+        n = len(gold["unknowns"])
+        out.append(check("unknown-not-guessed", not bad, f"{n} gold unknowns not flagged" if not bad else str(bad)))
+    else:
+        out.append(skip("unknown-not-guessed", "no unknowns in gold"))
+    files = run / "git-files.txt"
+    if files.exists():
+        touched = [
+            p
+            for p in (ln.strip() for ln in files.read_text(encoding="utf-8").splitlines())
+            if p.startswith("docs/specs/") or p == "docs/current-state.json"
+        ]
+        out.append(
+            check(
+                "no-spec-edits", not touched, "no spec or current-state edits" if not touched else f"touched: {touched}"
+            )
+        )
+    else:
+        out.append(skip("no-spec-edits", "no git-files.txt in the run folder"))
+    index = run / "ground.index.json"
+    if index.exists():
+        try:
+            n = len(json.loads(index.read_text(encoding="utf-8"))["assumptions"])
+            md = run / "COMMON-GROUND.md"
+            ids = set(re.findall(r"^###\s+(A\d+)\b", md.read_text(encoding="utf-8"), re.M)) if md.exists() else set()
+            ok, detail = n == len(ids), f"index has {n} assumptions, COMMON-GROUND.md has {len(ids)} ids"
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            ok, detail = False, f"ground.index.json is not a valid index: {e}"
+        out.append(check("ground-file-valid", ok, detail))
+    else:
+        out.append(skip("ground-file-valid", "no ground.index.json in the run folder"))
+    return out
 
 
 def score(report: str, gold: dict) -> list[dict]:
@@ -102,13 +152,12 @@ def main() -> int:
             a.gold = a.gold or (eval_dir.path(a.eval, data["gold"]) if data.get("gold") else None)
         if not (a.report and a.gold):
             ap.error("give --report and --gold, or --eval and --run with both in eval.json")
-        checks = score(a.report.read_text(encoding="utf-8"), json.loads(a.gold.read_text()))
+        text, gold = a.report.read_text(encoding="utf-8"), json.loads(a.gold.read_text())
+        checks = score(text, gold) + run_checks(text, gold, a.report.parent)
     except (OSError, LookupError, KeyError, json.JSONDecodeError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
-    s = sum(c["pass"] for c in checks)
-    print(json.dumps({"eval": "common-ground", "score": s, "total": len(checks), "checks": checks}, indent=2))
-    return 0 if s == len(checks) else 1
+    return report("common-ground", checks)
 
 
 if __name__ == "__main__":

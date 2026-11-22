@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground eval-spec-current-diff eval-spec-complete-docs site-dev site-build lint format lint-fix
+.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground eval-goal-guard eval-spec-current-diff eval-spec-complete-docs site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -114,6 +114,10 @@ eval-discovery:
 eval-common-ground:
 	@python3 scripts/eval_common_ground_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
 		$(if $(REPORT),--report "$(REPORT)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-goal-guard:
+	@python3 scripts/eval_goal_guard.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(DIR),--dir "$(DIR)") $(if $(COMMAND),--command "$(COMMAND)") $(foreach t,$(TRANSCRIPTS),--transcript "$(t)")
 
 eval-spec-current-diff:
 	@python3 scripts/eval_spec_current_diff_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \

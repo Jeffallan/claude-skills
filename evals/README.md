@@ -19,7 +19,7 @@ Every command the plugin ships (`plugin/commands/workflow-manifest.yaml`) and wh
 |---------|------|--------|------------|-----------|
 | `intake` | [Intake](intake/EVAL.md) | `eval_intake_run.py`, `eval_intake_accuracy.py`, `eval_intake_baseline.py` | `test-command-rules.sh`, `test-eval-intake.sh` | [intake-phase](../docs/workflow/intake-phase.md) |
 | `discovery:create` | [Discovery](discovery/EVAL.md) (routing, decisions) | `eval_discovery_run.py` | `test-command-rules.sh` | [discovery-create](../docs/workflow/discovery-create.md) |
-| `discovery:approve` | [Discovery](discovery/EVAL.md) (created tickets) | `eval_discovery_run.py` | `test-command-rules.sh` | [discovery-approve](../docs/workflow/discovery-approve.md) |
+| `discovery:approve` | [Discovery](discovery/EVAL.md) (created and dropped tickets, topic status, synthesis, recorded decisions, goal guard) | `eval_discovery_run.py`, `eval_goal_guard.py` | `test-command-rules.sh` | [discovery-approve](../docs/workflow/discovery-approve.md) |
 | `spec:triage` | **gap**: only through the [Workflow](workflow/EVAL.md) run it starts | **gap** | `test-command-rules.sh` | [spec-triage](../docs/workflow/spec-triage.md) |
 | `spec:create` | **gap**: only through the [Workflow](workflow/EVAL.md) run its plan drives | **gap** | `test-command-rules.sh`, `test-launch-command.sh` | [spec-create](../docs/workflow/spec-create.md) |
 | `spec:review` | [Workflow](workflow/EVAL.md) (`fix-tickets`) | `eval_workflow_run.py` | `test-command-rules.sh`, `test-review-wiring.sh` | [spec-review](../docs/workflow/spec-review.md) |
@@ -29,7 +29,7 @@ Every command the plugin ships (`plugin/commands/workflow-manifest.yaml`) and wh
 | `spec:diff` | [spec:current and spec:diff](spec-current-diff/EVAL.md) | `eval_spec_current_diff_run.py` | `test-command-rules.sh` | [spec-diff](../docs/workflow/spec-diff.md) |
 | `ticket:execute` | [Workflow](workflow/EVAL.md) (`one-commit-per-ticket`, `red-before-green`) | `eval_workflow_run.py` | `test-command-rules.sh` | [ticket-execute](../docs/workflow/ticket-execute.md) |
 | `ticket:complete` | [Workflow](workflow/EVAL.md) (`gold-outcomes`) | `eval_workflow_run.py` | `test-command-rules.sh` | [ticket-complete](../docs/workflow/ticket-complete.md) |
-| `common-ground` | [Common-ground](common-ground/EVAL.md) (the Spec Assumptions Check only) | `eval_common_ground_run.py` | `test-command-rules.sh` | [common-ground](../docs/workflow/common-ground.md) |
+| `common-ground` | [Common-ground](common-ground/EVAL.md) (the Spec Assumptions Check, unknowns, no spec edits, ground file, goal guard) | `eval_common_ground_run.py`, `eval_goal_guard.py` | `test-command-rules.sh` | [common-ground](../docs/workflow/common-ground.md) |
 
 Gaps: `spec:status` has no eval; `spec:triage` and `spec:create` are scored only by the outcome of the run they set up, so a bad grouping or plan shows as a failed ticket, not as its own check. `common-ground`'s Surface and Adjust modes have no eval. Scorers live in `scripts/`; smoke tests are in `scripts/` unless a path says otherwise.
 
@@ -97,6 +97,7 @@ make eval-baseline EVAL=<eval directory>
 make eval-workflow EVAL=<eval directory> RUN=<run name>
 make eval-discovery EVAL=<eval directory> RUN=<run name>
 make eval-common-ground EVAL=<eval directory> RUN=<run name>
+make eval-goal-guard EVAL=<eval directory> RUN=<run name>
 make eval-spec-current-diff EVAL=<eval directory> RUN=<run name>
 make eval-spec-complete-docs EVAL=<eval directory> RUN=<run name>
 ```

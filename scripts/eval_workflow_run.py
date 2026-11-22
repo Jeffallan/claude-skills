@@ -89,6 +89,19 @@ def check(cid: str, ok: bool, detail: str) -> dict:
     return {"id": cid, "pass": ok, "detail": detail}
 
 
+def skip(cid: str, detail: str) -> dict:
+    """A check whose gold key or run file is absent: neither pass nor fail, and left out of the score and total."""
+    return {"id": cid, "pass": None, "skipped": True, "detail": detail}
+
+
+def report(name: str, checks: list[dict]) -> int:
+    """Print the scorer's JSON result; the exit code is 0 when every check that ran passed, else 1."""
+    ran = [c for c in checks if c["pass"] is not None]
+    s = sum(c["pass"] for c in ran)
+    print(json.dumps({"eval": name, "score": s, "total": len(ran), "checks": checks}, indent=2))
+    return 0 if s == len(ran) else 1
+
+
 def repo_checks(
     repo: Path,
     spec: str,

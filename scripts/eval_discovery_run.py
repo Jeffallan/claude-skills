@@ -18,7 +18,7 @@ import re
 import sys
 
 import eval_dir
-from eval_workflow_run import cells, check
+from eval_workflow_run import cells, check, report, skip
 
 
 def table(text: str, heading: str) -> list[dict[str, str]]:
@@ -52,6 +52,80 @@ def created_ids(text: str) -> set[str]:
     return out
 
 
+def chosen(row: dict[str, str]) -> bool:
+    """`discovery:approve` records the answer in the decision's row: "Chosen: B, ..." in a cell, or a Chosen column."""
+    return bool(row.get("chosen", "").strip("-*` ")) or any(
+        re.search(r"\bchosen\b\W*\w", v, re.I) for v in row.values()
+    )
+
+
+def approve_checks(folder: Path, gold: dict, texts: list[str], created_titles: list[str]) -> list[dict]:
+    """Checks on what `discovery:approve` leaves behind; each is skipped when its gold key is absent."""
+    out = []
+    if "not_tickets" in gold:
+        made = [p for p in gold["not_tickets"] if any(re.search(p, t, re.I) for t in created_titles)]
+        out.append(
+            check("dropped-not-created", not made, "no dropped ticket created" if not made else f"created: {made}")
+        )
+    else:
+        out.append(skip("dropped-not-created", "no not_tickets in gold"))
+    if "status" in gold:
+        # approve's no-tickets path moves the topic to <specsRoot>/completed/discovery/; topic_dir prefers todo/
+        done = folder.parent.parent.name == "completed"
+        if gold["status"] == "completed":
+            ok, got = done, "under completed/" if done else "still under todo/"
+        else:
+            topic = folder / "discovery.md"
+            status = re.search(
+                r"^\*\*Status:\*\*\s*Tickets created",
+                topic.read_text(encoding="utf-8") if topic.exists() else "",
+                re.M | re.I,
+            )
+            ok = not done and bool(status)
+            got = "status Tickets created in todo/" if ok else "no Tickets created status in todo/"
+        out.append(check("topic-status", ok, f"{got}, want {gold['status']}"))
+    else:
+        out.append(skip("topic-status", "no status in gold"))
+    if "synthesis" in gold:
+        syn = folder / "synthesis.md"
+        if not gold["synthesis"]:
+            out.append(
+                check("synthesis", not syn.exists(), "no synthesis.md" if not syn.exists() else "synthesis.md written")
+            )
+        elif not syn.exists():
+            out.append(check("synthesis", False, "no synthesis.md"))
+        else:
+            found = table(syn.read_text(encoding="utf-8"), "Findings")
+            bare = [r.get("#", "?") for r in found if not re.search(r"\bsources/\S", r.get("sources", ""))]
+            ok = bool(found) and not bare
+            out.append(
+                check(
+                    "synthesis",
+                    ok,
+                    f"{len(found)} findings, each citing sources/" if ok else f"uncited: {bare or 'no findings'}",
+                )
+            )
+    else:
+        out.append(skip("synthesis", "no synthesis in gold"))
+    if gold.get("decisions"):
+        rows = [r for t in texts for r in table(t, "Blocking decisions")]
+        open_ = [
+            p
+            for p in gold["decisions"]
+            if not any(re.search(p, r.get("decision", ""), re.I) and chosen(r) for r in rows)
+        ]
+        out.append(
+            check(
+                "decisions-recorded",
+                not open_,
+                "every gold decision records its choice" if not open_ else f"no choice: {open_}",
+            )
+        )
+    else:
+        out.append(skip("decisions-recorded", "no decisions in gold"))
+    return out
+
+
 def score(folder: Path, gold: dict) -> list[dict]:
     texts = [
         (folder / f).read_text(encoding="utf-8") for f in ("discovery.md", "synthesis.md") if (folder / f).exists()
@@ -77,6 +151,7 @@ def score(folder: Path, gold: dict) -> list[dict]:
             not not_created,
             "every gold ticket created" if not not_created else f"not created: {not_created}",
         ),
+        *approve_checks(folder, gold, texts, created_titles),
     ]
 
 
@@ -101,9 +176,7 @@ def main() -> int:
     except (OSError, LookupError, KeyError, json.JSONDecodeError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
-    score_ = sum(c["pass"] for c in checks)
-    print(json.dumps({"eval": "discovery", "score": score_, "total": len(checks), "checks": checks}, indent=2))
-    return 0 if score_ == len(checks) else 1
+    return report("discovery", checks)
 
 
 if __name__ == "__main__":
