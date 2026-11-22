@@ -83,7 +83,7 @@ The tests still pin the behavior either way; their names say what they check, no
 | Open questions | A command in a goal run that makes a choice the owner could reasonably reverse (see `references/intake/rules.md`); routine scope confirmations stay in the checklist note |
 | Test coverage, and each finding's `Tests:` line | The `intake:testing-*` commands, both in the same commit as the test |
 | A finding's text after a test confirms or disproves it (drop "suspected", correct the claim, set `invalid`) | The testing command whose test settled it |
-| A finding's `Severity:` line after later evidence changes its reach | The procedure that holds the evidence, in the same commit (`references/intake/severity.md`, "Re-rating"); the parallel testing commands report it as a tracker edit |
+| A finding's `Severity:` line after later evidence changes its reach | The procedure that holds the evidence, in the same commit (`references/intake/severity.md`, "Re-rating"), with a `Re-rated:` entry in its checklist note; the parallel testing commands report it as a tracker edit |
 | `fixed` on a finding about the test code itself, repaired under "A red baseline" | `intake:testing-setup`, naming the repair commit |
 | Status changes to `ticketed`, `accepted-risk`, `fixed` | The owner, at close-out |
 

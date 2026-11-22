@@ -85,6 +85,33 @@ else
     pass "anchors use no clinic, patient or appointment example"
 fi
 
+echo "owner decisions on calibration gaps"
+critical_row=$(grep -F '| Critical |' "$SEV" | head -1 || true)
+case "$critical_row" in *"deletes data of every account with no way back"*) pass "G1 Critical covers wiping every account" ;; *) fail "G1 Critical covers wiping every account" ;; esac
+assert_contains "$SEV" "changed after the last backup counts as lost" "G2 data after the last backup counts as lost"
+assert_contains "$SEV" "names the backup config" "G2 the finding names the backup config"
+assert_contains "$SEV" "funds actually leave or are taken (a charge, refund or payout)" "G3 moving real money means funds leave"
+assert_contains "$SEV" "fixed before any money moves is Medium" "G3 a wrong stored amount fixed first is Medium"
+assert_contains "$SEV" "fitness, diet and sleep logs" "G4 fitness, diet and sleep logs are Sensitive"
+assert_contains "$SEV" "every account is staff" "G5 no staff downgrade when every account is staff"
+assert_contains "$SEV" "powers that were taken away" "G6 no staff downgrade for removed powers"
+high_row=$(grep -F '| High |' "$SEV" | head -1 || true)
+case "$high_row" in *"one account's Secret"*"a secret the app holds"*) pass "G7 High covers one account's Secret or an app-held secret" ;; *) fail "G7 High covers one account's Secret or an app-held secret" ;; esac
+assert_contains "$SEV" "An email address or username counts as a known identifier" "G8 an email is a known identifier"
+assert_contains "$SEV" "when an admin's identifier is shown or guessable" "G8 naming an admin makes takeover Critical"
+assert_contains "$SEV" "Changing another account's login email" "G9 changing a login email is acting as the account"
+assert_contains "$SEV" "A floor applies only when its outcome lands" "G10 a floor needs its outcome to land"
+assert_contains "$SEV" "The no-way-back floor holds after the secret and unguessable-target adjustments" "G11 data-loss floor beats those downgrades"
+assert_contains "$SEV" "Giving another account a higher role rates as gaining it" "G12 granting a role rates as gaining it"
+assert_contains "$SEV" "A defect staff hit in normal use is rated by its harm" "G13 no staff downgrade for a defect in normal use"
+assert_contains "$SEV" "salary and employment contracts" "G14 salary and contracts are Sensitive"
+assert_contains "$SEV" "Changing another account's Public data rates as changing Ordinary data" "G15 changing Public data is Medium"
+
+echo "the re-rate note field"
+assert_contains "$IREF/rules.md" "Re-rated: <F-0xx <old> -> <new> (<reason>), or none>" "rules: the checklist note carries a Re-rated field"
+assert_contains "$SEV" "\`Re-rated: F-0xx <old> -> <new> (<reason>)\`" "severity.md names the Re-rated field"
+assert_contains "$FIND" "\`Re-rated:\`" "Who writes what names the Re-rated field"
+
 echo "prose"
 for f in "$SEV" "$FIND"; do
     if grep -qF "—" "$f"; then fail "$(basename "$f") has no em dash"; else pass "$(basename "$f") has no em dash"; fi
