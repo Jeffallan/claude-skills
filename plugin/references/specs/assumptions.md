@@ -28,7 +28,7 @@ A statement the spec relies on about the current system that the spec itself doe
 | `doc` | A doc's claim is current: "as `docs/security/authorization.md` describes" |
 | `order` | Another spec lands first, or doesn't: "once billing-v2 adds the plan table" |
 
-Skip what the spec builds itself, and restatements of the acceptance criteria.
+Skip what the spec builds itself, and restatements of the acceptance criteria. A design sentence describes the system after the change: when it mixes what the spec builds with what it relies on ("the invoice route posts each new invoice to the existing ledger client"), list only the part that exists today ("a ledger client exists with `post(entry)`").
 
 ## The list
 
