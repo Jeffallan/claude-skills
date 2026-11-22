@@ -501,6 +501,59 @@ else
     fail "node:test todo and skip options, t.todo() and test.todo without a finding id fail bug-tests-cite-findings: $out"
 fi
 
+# Version 20: a skip whose reason starts with n/a: (a matrix cell no principal can reach) is listed, not a bug test:
+# a literal, a template literal, or the fallback of `??`. A bare skip or another reason still needs its finding id.
+NA="$WORK/na"
+make_run "$NA"
+mkdir -p "$NA/test/integration"
+cat >"$NA/test/integration/cells.test.ts" <<'EOF'
+import { it } from "node:test";
+
+it("OP-001 anonymous", { skip: "n/a: no route" }, () => {});
+
+
+
+
+it(`${op}-${col}`, { skip: `n/a: ${outcome}` }, () => {});
+
+
+
+
+it(name, { skip: exp.reason ?? "n/a: no caller (timer job)" }, () => {});
+
+
+
+
+it("OP-002 staff", { skip: "later" }, () => {});
+
+
+
+
+it("OP-003 staff", { skip: exp.reason }, () => {});
+
+
+
+
+it("OP-004 staff", { skip: "see n/a: notes" }, () => {});
+EOF
+commit_item "$NA" intake:testing-features "test(intake): testing-features"
+set +e
+out=$(score "$NA")
+set -e
+if printf '%s' "$out" | python3 -c '
+import json, re, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "bug-tests-cite-findings")
+bad = re.search(r"no finding id: (\[[^]]*\])", c["detail"])
+want = str([f"test/integration/cells.test.ts:{n}" for n in (18, 23, 28)])
+na = ("; n/a (no route): [\x27test/integration/cells.test.ts:3\x27]", "; n/a (${outcome}): [\x27test/integration/cells.test.ts:8\x27]",
+      "; n/a (no caller (timer job)): [\x27test/integration/cells.test.ts:13\x27]")
+sys.exit(0 if not c["pass"] and bad and bad.group(1) == want and all(n in c["detail"] for n in na) else 1)
+'; then
+    pass "an n/a: skip is listed as n/a; a bare skip and other reasons still need a finding"
+else
+    fail "an n/a: skip is listed as n/a; a bare skip and other reasons still need a finding: $out"
+fi
+
 # Version 20: a helper's marker whose id comes from a parameter is cited when every call of the wrapper around it,
 # through any number of in-file levels, passes a literal finding id there. A variable, or a default, is not one.
 WR="$WORK/wrappers"

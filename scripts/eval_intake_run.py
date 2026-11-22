@@ -81,14 +81,18 @@ SKIP_ARG = re.compile(
 )
 BLOCKED_TEXT = r"""(?P<q>["'`])(?P<reason>BLOCKED:.*?)(?P=q)"""
 BLOCKED_KEY = re.compile(rf"""\b(\w+)["']?\s*[:=]\s*{BLOCKED_TEXT}""")
+# A cell no principal can reach is skipped with an `n/a:` reason: not a bug, so not a bug test. Either reason may be
+# the fallback of `??`: `{ skip: exp.reason ?? "n/a: no caller (timer job)" }`
+EXEMPT_TEXT = re.compile(r"""(?:[\w$.]+\s*\?\?\s*)?(?P<q>["'`])(?P<reason>(?:BLOCKED|n/a):.*?)(?P=q)""")
 
 
-def blocked_reason(code: str, keys: dict[str, str]) -> str | None:
-    """The BLOCKED: reason of the skip on this code line: a literal, or the reason a helper stores under the key named."""
+def exempt_reason(code: str, keys: dict[str, str]) -> str | None:
+    """The BLOCKED: or n/a: reason of the skip on this code line: a literal, or the reason a helper stores under the
+    key named."""
     m = SKIP_ARG.search(code) or re.search(SKIP_OPT, code)
     if not m:
         return None
-    if r := re.match(BLOCKED_TEXT, m.group(1)):
+    if r := EXEMPT_TEXT.match(code, m.start(1)):
         return r.group("reason")
     return keys.get(m.group(1).split(".")[-1]) if re.fullmatch(r"[\w$]+(?:\.[\w$]+)*", m.group(1)) else None
 
@@ -304,9 +308,11 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
     wrapper's parameter cites through every call of that wrapper in the file. Markers count only in
     code: a comment or docstring that names one is prose. A test generated from a table cites through its rows.
     A skip with a BLOCKED: reason is a layer that can't run: listed as blocked, never as passing or as a bug test.
+    A skip with an n/a: reason is a cell no principal can reach: listed as n/a, not as a bug test.
     """
     bad, unknown, seen = [], [], 0
     blocked: dict[str, list[str]] = {}
+    na: dict[str, list[str]] = {}
     files = {}
     for rel in changed(repo, start):
         p = repo / rel
@@ -320,14 +326,15 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
         n
         for rel, lines in files.items()
         for i, line in enumerate(codes[rel])
-        if SKIP_MARK.search(line) and not blocked_reason(line, keys) and (n := marker_helper(lines, i))
+        if SKIP_MARK.search(line) and not exempt_reason(line, keys) and (n := marker_helper(lines, i))
     }
     call = re.compile(r"\b(" + "|".join(map(re.escape, sorted(helpers))) + r")\s*\(") if helpers else None
     for rel, lines in files.items():
         for i, line in enumerate(codes[rel]):
             if SKIP_MARK.search(line):
-                if reason := blocked_reason(line, keys):
-                    blocked.setdefault(reason, []).append(f"{rel}:{i + 1}")
+                if reason := exempt_reason(line, keys):
+                    where = blocked if reason.startswith("BLOCKED:") else na
+                    where.setdefault(reason.removeprefix("n/a:").strip(), []).append(f"{rel}:{i + 1}")
                     continue
                 if marker_helper(lines, i):
                     continue
@@ -352,8 +359,8 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
         if ok
         else f"no finding id: {bad}; not in the tracker: {unknown}"
     )
-    if blocked:
-        detail += "".join(f"; blocked ({reason}): {where}" for reason, where in blocked.items())
+    detail += "".join(f"; blocked ({reason}): {where}" for reason, where in blocked.items())
+    detail += "".join(f"; n/a ({reason}): {where}" for reason, where in na.items())
     return check("bug-tests-cite-findings", ok, detail)
 
 
@@ -1355,7 +1362,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 20  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes
+CHECKS_VERSION = 20  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test
 
 
 def main() -> int:
