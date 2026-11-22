@@ -52,7 +52,7 @@ finding for the disagreement.
 One table-driven test is the coverage map. It replaces any per-resource or "per meaningful cell" sampling:
 
 - **Matrix rows:** one row per matrix cell, keyed by operation id and principal (`OP-014-anonymous`). The
-  expected outcome comes from the cell: `allow`, `own`, `deny <status>`, or `n/a` with its reason.
+  expected outcome comes from the cell: `allow`, `own`, `deny <status>`, or `n/a` with its reason. An `n/a` row skips with an `n/a: <reason>` message; it is not a bug test and cites no finding.
 - **Object-level rows** for every operation that takes an id: the caller acting on another owner's object and on
   another tenant's object. Lists assert the scope the matrix gives.
 - **Field-level rows:** each protected field (role, state, owner, price, the `Flags` column) written through each

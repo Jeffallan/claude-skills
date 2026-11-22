@@ -107,6 +107,8 @@ Intake changes docs, tests, test configuration and docstrings. Nothing else.
 | Test runner config, test scripts in the package manifest, dev-only test dependencies | Build, deploy or runtime config |
 | Comments and docstrings | Database schemas or migrations |
 
+Intake never deletes or prunes a shared cache outside the repo (browser builds, package caches, toolchains): other projects on the machine use them. Install what a layer needs beside what is there.
+
 A command that finds it can't test something without changing application code records a finding and leaves the code alone. `intake:testing-setup` may add a test-only hook (an environment flag the test config sets) only when the code has no seam at all, and records it as a finding so the owner sees it.
 
 ### A red baseline

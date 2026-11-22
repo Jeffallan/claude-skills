@@ -148,6 +148,11 @@ assert_contains "$REF/intake/rules.md" "exit 0 with blocked tests is not a green
 assert_contains "$CMD/intake.md" "blocked count" "intake: the phase-boundary suite reads the blocked count"
 
 assert_contains "$REF/intake/rules.md" "names its finding id in the row itself" "rules: a table-driven row names its finding id, never through a default"
+# shared caches outside the repo are never pruned; a browser install skips Playwright's cleanup
+assert_contains "$REF/intake/rules.md" "never deletes or prunes a shared cache outside the repo" "rules: intake never prunes a shared cache"
+assert_contains "$REF/intake/procedures/testing-setup.md" "PLAYWRIGHT_SKIP_BROWSER_GC=1" "testing-setup: browser installs skip Playwright's cleanup"
+# a matrix cell that can't apply skips with an n/a: reason, not as a bug test
+assert_contains "$REF/intake/procedures/testing-authorization.md" "skips with an \`n/a: <reason>\` message" "testing-authorization: n/a cells skip with an n/a: reason"
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]

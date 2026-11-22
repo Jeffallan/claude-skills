@@ -49,7 +49,8 @@ Pick the minimum toolchain that covers three layers. A repo with more than one c
   emulator or container exists.
 - **End-to-end driver** for the UI, chosen by platform: a browser driver (Playwright, Cypress) for a web or
   web-capable build; a device driver (Maestro, Detox) for native-only. Record which build target makes one viable
-  and another not.
+  and another not. Install Playwright browsers with `PLAYWRIGHT_SKIP_BROWSER_GC=1` set, so the install doesn't
+  delete browser builds other projects on the machine still use.
 
 ### Phase 3: Plan layout, config, scripts, and fixtures
 - **Layout:** one directory per layer (unit, integration/rules, e2e) plus a shared helpers/fixtures location.
