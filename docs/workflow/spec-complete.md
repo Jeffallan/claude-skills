@@ -50,7 +50,7 @@ The commit is `docs(<spec-name>): complete the spec`.
 
 #### docs:verify
 
-Step 6 covers the docs the guard tracks through citations. `docs:verify` reads the rest of what the project says about itself: the root `README` and every Markdown file under `docs/`, outside the specs folder. It lists the names the spec's diff removed, renamed or changed (paths, commands, flags, config keys, environment variables, routes, defaults) and searches the docs for each. Read-only `code-reader` agents, using the `spec-miner` skill, check each claim in the docs that hit, all at once. The result is printed and saved as `review/docs-verify.md`:
+Step 6 covers the docs the guard tracks through citations. `docs:verify` reads the rest of what the project says about itself: the root `README` and every Markdown file under `docs/`, outside the specs folder. It lists the names the spec's diff removed, renamed or changed (paths, commands, flags, config keys, environment variables, routes, defaults) and searches the docs for each. A second pass covers what a name search misses: in the docs that hit, and in the docs that describe a component the diff touches, it checks the absolute statements ("calls no remote third-party service", "no credentials exist", "only admins can delete") against the diff, since a change can make one false without renaming anything. Read-only `code-reader` agents, using the `spec-miner` skill, check each claim in the docs that hit, all at once. The result is printed and saved as `review/docs-verify.md`:
 
 | Doc | Claim | Verdict | Evidence |
 |-----|-------|---------|----------|

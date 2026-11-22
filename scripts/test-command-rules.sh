@@ -260,6 +260,13 @@ for s in "\`verified:\`" "git rev-parse --short HEAD" "guard docs-check"; do
 done
 assert_contains "$PLUGIN/../docs/workflow/spec-current.md" "\`verified:\`" "the spec:current page says the fold moves verified:"
 
+echo "docs:verify also checks a doc's absolute statements against the diff"
+verify=$(sed -n '/^## Step 2: Completion commit$/,/^## Step 3: PR$/p' "$CMD/spec/complete.md" | grep -F '**Docs verify (`docs:verify`)**' || true)
+for s in "broad claims" "describe the components the diff touches" "none, no, only, never, always, exists" "calls no remote third-party service" "same table and verdicts"; do
+    case "$verify" in *"$s"*) pass "docs:verify's broad-claims pass names $s" ;; *) fail "docs:verify's broad-claims pass names $s" ;; esac
+done
+assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "absolute statements" "the spec:complete page explains the broad-claims pass"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
