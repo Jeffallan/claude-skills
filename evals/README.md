@@ -7,7 +7,31 @@ Each eval scores finished runs of a claude-skills workflow against the guarantee
 | [Workflow](workflow/EVAL.md) | One spec run, `spec:triage` to `spec:complete` | `scripts/eval_workflow_run.py` |
 | [Intake](intake/EVAL.md) | One intake run of the checklist, and its accuracy against a gold set | `scripts/eval_intake_run.py`, `eval_intake_accuracy.py`, `eval_intake_baseline.py` |
 | [Discovery](discovery/EVAL.md) | One discovery topic, `discovery:create` to `discovery:approve`: routing, blocking decisions and created tickets | `scripts/eval_discovery_run.py` |
-| [Common-ground](common-ground/EVAL.md) | One `common-ground` assumptions check: seeded false assumptions caught, no false flags, the right spec named | `scripts/eval_common_ground_run.py` |
+| [Common-ground](common-ground/EVAL.md) | One `common-ground` assumptions check: seeded false assumptions caught, no false flags, the right spec named, true ones held | `scripts/eval_common_ground_run.py` |
+| [spec:current and spec:diff](spec-current-diff/EVAL.md) | One `spec:current` run (its commits, the folded description, `docs/current-state.json`) and the `spec:diff` after it (assumptions, overlaps, changes, read-only) | `scripts/eval_spec_current_diff_run.py` |
+| [spec:complete docs](spec-complete-docs/EVAL.md) | One `spec:complete` run's docs duties: the system description sections and Change history row, and docs:verify's stale-claim flags | `scripts/eval_spec_complete_docs_run.py` |
+
+## Coverage
+
+Every command the plugin ships (`plugin/commands/workflow-manifest.yaml`) and what checks it. `scripts/test-eval-loop.sh` fails when a manifest command has no row here. A smoke test checks the command's text or the runtime it calls without running an agent; an eval scores a real run.
+
+| Command | Eval | Scorer | Smoke test | Docs page |
+|---------|------|--------|------------|-----------|
+| `intake` | [Intake](intake/EVAL.md) | `eval_intake_run.py`, `eval_intake_accuracy.py`, `eval_intake_baseline.py` | `test-command-rules.sh`, `test-eval-intake.sh` | [intake-phase](../docs/workflow/intake-phase.md) |
+| `discovery:create` | [Discovery](discovery/EVAL.md) (routing, decisions) | `eval_discovery_run.py` | `test-command-rules.sh` | [discovery-create](../docs/workflow/discovery-create.md) |
+| `discovery:approve` | [Discovery](discovery/EVAL.md) (created tickets) | `eval_discovery_run.py` | `test-command-rules.sh` | [discovery-approve](../docs/workflow/discovery-approve.md) |
+| `spec:triage` | **gap**: only through the [Workflow](workflow/EVAL.md) run it starts | **gap** | `test-command-rules.sh` | [spec-triage](../docs/workflow/spec-triage.md) |
+| `spec:create` | **gap**: only through the [Workflow](workflow/EVAL.md) run its plan drives | **gap** | `test-command-rules.sh`, `test-launch-command.sh` | [spec-create](../docs/workflow/spec-create.md) |
+| `spec:review` | [Workflow](workflow/EVAL.md) (`fix-tickets`) | `eval_workflow_run.py` | `test-command-rules.sh`, `test-review-wiring.sh` | [spec-review](../docs/workflow/spec-review.md) |
+| `spec:complete` | [spec:complete docs](spec-complete-docs/EVAL.md); [Workflow](workflow/EVAL.md) (ticket outcomes) | `eval_spec_complete_docs_run.py`, `eval_workflow_run.py` | `test-command-rules.sh` | [spec-complete](../docs/workflow/spec-complete.md) |
+| `spec:status` | **gap** | **gap** | `test-command-rules.sh`, `runtime/tests/test_guard_spec_status.py` | [spec-status](../docs/workflow/spec-status.md) |
+| `spec:current` | [spec:current and spec:diff](spec-current-diff/EVAL.md) | `eval_spec_current_diff_run.py` | `runtime/tests/test_guard_current_state.py` | [spec-current](../docs/workflow/spec-current.md) |
+| `spec:diff` | [spec:current and spec:diff](spec-current-diff/EVAL.md) | `eval_spec_current_diff_run.py` | `test-command-rules.sh` | [spec-diff](../docs/workflow/spec-diff.md) |
+| `ticket:execute` | [Workflow](workflow/EVAL.md) (`one-commit-per-ticket`, `red-before-green`) | `eval_workflow_run.py` | `test-command-rules.sh` | [ticket-execute](../docs/workflow/ticket-execute.md) |
+| `ticket:complete` | [Workflow](workflow/EVAL.md) (`gold-outcomes`) | `eval_workflow_run.py` | `test-command-rules.sh` | [ticket-complete](../docs/workflow/ticket-complete.md) |
+| `common-ground` | [Common-ground](common-ground/EVAL.md) (the Spec Assumptions Check only) | `eval_common_ground_run.py` | `test-command-rules.sh` | [common-ground](../docs/workflow/common-ground.md) |
+
+Gaps: `spec:status` has no eval; `spec:triage` and `spec:create` are scored only by the outcome of the run they set up, so a bad grouping or plan shows as a failed ticket, not as its own check. `common-ground`'s Surface and Adjust modes have no eval. Scorers live in `scripts/`; smoke tests are in `scripts/` unless a path says otherwise.
 
 This repo holds the scorers, their tests and the check definitions. It never holds eval data: gold sets, run bundles, transcripts and scores describe real projects and stay in a private results repo.
 
@@ -71,7 +95,13 @@ Every scorer reads its inputs from an eval directory you point it at: one folder
 make eval-intake EVAL=<eval directory> RUN=<run name>
 make eval-baseline EVAL=<eval directory>
 make eval-workflow EVAL=<eval directory> RUN=<run name>
+make eval-discovery EVAL=<eval directory> RUN=<run name>
+make eval-common-ground EVAL=<eval directory> RUN=<run name>
+make eval-spec-current-diff EVAL=<eval directory> RUN=<run name>
+make eval-spec-complete-docs EVAL=<eval directory> RUN=<run name>
 ```
+
+`eval-baseline` writes its table into the eval directory's `baseline.md`; `PRINT=1` prints it instead.
 
 A flag given on the command line (`REPO=`, `START=`, `TRANSCRIPTS=` and the rest) overrides the value in `eval.json`.
 
