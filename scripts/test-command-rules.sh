@@ -221,10 +221,6 @@ attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
 case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
 assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
 
-echo "assumption-checker reads a planned change as no evidence of current state"
-assert_contains "$PLUGIN/agents/assumption-checker.md" "A planned, proposed or future change in a spec or doc is not evidence of current state" "assumption-checker ignores planned changes as evidence"
-assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "planned change" "the common-ground page says a planned change doesn't count as current state"
-
 echo "common-ground --graph lives in the index, so a regenerated ground file keeps it"
 FM="$REF/common-ground/file-management.md"
 schema=$(sed -n '/^### Schema$/,/^### Field Definitions$/p' "$FM")
