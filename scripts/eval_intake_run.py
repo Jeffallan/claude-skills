@@ -1172,6 +1172,18 @@ def placeholder_title(name: str) -> re.Pattern[str] | None:
     return re.compile(r"(?:\$\{[^}]*\}|[^\n`'\"]+?)".join(map(re.escape, parts))) if len(parts) > 1 else None
 
 
+# A shell brace set, `{paused,suspended}`, never the `${...}` of a template literal
+BRACE_SET = re.compile(r"(?<!\$)\{([^{}]*,[^{}]*)\}")
+
+
+def brace_expand(name: str) -> list[str]:
+    """A title cited with brace sets (`<op>-{paused,suspended}-current`) as each title it stands for."""
+    m = BRACE_SET.search(name)
+    if not m:
+        return [name]
+    return [t for alt in m.group(1).split(",") for t in brace_expand(name[: m.start()] + alt + name[m.end() :])]
+
+
 def test_exists(path: Path, name: str) -> bool:
     if not path.is_file():
         return False
@@ -1202,25 +1214,25 @@ def evidence_check(repo: Path, suite_out: str = "") -> dict:
     """Every finding not invalid names a real test (`path::name`), or says why none can and names its evidence command.
 
     A name absent from its file still counts when the suite run or a runner's test listing printed it (a title
-    built at runtime).
+    built at runtime). A title with a brace set (`{a,b}`) names one test per member.
     """
     rows, bad = findings(repo), []
+
+    def found(path: str, name: str) -> bool:
+        last = name.split("::")[-1]
+        return bool(
+            test_exists(repo / path, name)
+            or (suite_out and last in suite_out)
+            or (suite_out and (pattern := placeholder_title(last)) and pattern.search(suite_out))
+        )
+
     for f in rows:
         if f["status"].startswith("invalid"):
             continue
         cited = TEST_ID.findall(f["tests"])
         if cited:
-            gone = [
-                f"{path}::{name}"
-                for path, name in cited
-                if not (
-                    test_exists(repo / path, name)
-                    or (suite_out and name.split("::")[-1] in suite_out)
-                    or (
-                        suite_out and (pattern := placeholder_title(name.split("::")[-1])) and pattern.search(suite_out)
-                    )
-                )
-            ]
+            # a brace set cites one test per member, and each must exist
+            gone = [f"{path}::{name}" for path, name in cited if not all(found(path, n) for n in brace_expand(name))]
             if gone:
                 bad.append(f"{f['id']} names missing tests {gone}")
         elif not re.match(r"none:.*evidence:\s*`[^`]+`", f["tests"]):
@@ -1362,7 +1374,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 20  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test
+CHECKS_VERSION = 21  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT; 19: bug-tests-cite-findings reads node:test's `{ todo: ... }` and `{ skip: ... }` options and `t.todo()` as markers; 20: bug-tests-cite-findings follows a helper call's id from a wrapper's parameter to the literal ids every in-file call of the wrapper passes, and lists a skip with an `n/a:` reason as n/a, not as a bug test; 21: findings-evidence expands a cited title's brace set (`{a,b}`) and needs a test for each member
 
 
 def main() -> int:

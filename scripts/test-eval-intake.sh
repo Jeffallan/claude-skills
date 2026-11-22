@@ -1580,6 +1580,30 @@ else
     fail "a hung suite fails characterization-green at the timeout and leaves no test process: $out"
 fi
 
+# Version 21: a title cited with a shell brace set ({a,b,c}) stands for one test per member, each of which must exist
+V=$(fresh v21-brace)
+mkdir -p "$V/tests/unit"
+printf 'for (const s of states) it(`${op}-staff-${s}-F-001-current`, () => {})\nit("F-001 a member sees it", () => {})\nit("F-001 a staff sees it", () => {})\n' >"$V/tests/unit/matrix.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/matrix.spec.js::<op>-staff-{paused,suspended}-F-001-current`, `tests/unit/matrix.spec.js::F-001 a {member,staff} sees it`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+for case in "OP-003-staff-paused-F-001-current,OP-003-staff-suspended-F-001-current:1" "OP-003-staff-paused-F-001-current:0"; do
+    printed=${case%%:*}; want=${case##*:}
+    set +e
+    out=$(score "$V" --test-cmd "printf '  ✔ %s (3ms)\n' ${printed//,/ }")
+    set -e
+    if has "$out" findings-evidence "$want"; then pass "a brace-set title with $printed printed scores $want"; else fail "brace-set title, $printed printed: $out"; fi
+done
+sed -i 's|a {member,staff} sees it|a {member,admin} sees it|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+set +e
+out=$(score "$V" --test-cmd "printf '  ✔ %s (3ms)\n' OP-003-staff-paused-F-001-current OP-003-staff-suspended-F-001-current")
+set -e
+if has "$out" findings-evidence 0 && printf '%s' "$out" | grep -q 'a {member,admin} sees it'; then
+    pass "a brace-set member with no test fails findings-evidence, naming the cited title"
+else
+    fail "a brace-set member with no test fails findings-evidence, naming the cited title: $out"
+fi
+
 # A bad start SHA is bad input
 set +e
 python3 "$EVAL" --repo "$GOOD" --start deadbeef >/dev/null 2>&1
