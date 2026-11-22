@@ -64,6 +64,7 @@ test: guard-check guard-test
 	bash scripts/test-eval-workflow.sh
 	bash scripts/test-eval-intake.sh
 	bash scripts/test-eval-loop.sh
+	bash scripts/test-eval-severity.sh
 
 EXPECT_UPSTREAM ?= 0
 RETIRED ?= spec:reopen\|create-epic\|complete-sprint\|execute-ticket\|discovery:synthesize\|--roadmap\|commands/intake/

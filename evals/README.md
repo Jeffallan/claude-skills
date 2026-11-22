@@ -5,7 +5,7 @@ Each eval scores finished runs of a claude-skills workflow against the guarantee
 | Eval | What it scores | Scorer |
 |------|----------------|--------|
 | [Workflow](workflow/EVAL.md) | One spec run, `spec:triage` to `spec:complete` | `scripts/eval_workflow_run.py` |
-| [Intake](intake/EVAL.md) | One intake run of the checklist, and its accuracy against a gold set | `scripts/eval_intake_run.py`, `eval_intake_accuracy.py`, `eval_intake_baseline.py` |
+| [Intake](intake/EVAL.md) | One intake run of the checklist, its accuracy against a gold set, and its [severity agreement](intake/SEVERITY.md) | `scripts/eval_intake_run.py`, `eval_intake_accuracy.py`, `eval_intake_baseline.py`, `eval_intake_severity.py` |
 | [Discovery](discovery/EVAL.md) | One discovery topic, `discovery:create` to `discovery:approve`: routing, blocking decisions and created tickets | `scripts/eval_discovery_run.py` |
 | [Common-ground](common-ground/EVAL.md) | One `common-ground` assumptions check: seeded false assumptions caught, no false flags, the right spec named, true ones held | `scripts/eval_common_ground_run.py` |
 | [spec:current and spec:diff](spec-current-diff/EVAL.md) | One `spec:current` run (its commits, the folded description, `docs/current-state.json`) and the `spec:diff` after it (assumptions, overlaps, changes, read-only) | `scripts/eval_spec_current_diff_run.py` |

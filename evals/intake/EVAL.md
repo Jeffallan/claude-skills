@@ -52,6 +52,8 @@ To score accuracy:
 
 New findings that aren't in the gold set are checked by hand and, when real, added in the next version.
 
+Severity agreement on the matched rows (exact and within-one, signed error, weighted kappa, AC2, miss classes and gates) is scored by `scripts/eval_intake_severity.py`; see [SEVERITY.md](SEVERITY.md).
+
 ## Running it
 
 ```bash
