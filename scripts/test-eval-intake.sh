@@ -1340,6 +1340,24 @@ sed -i "s|- \*\*Tests:\*\* \`.*|- **Tests:** \`tests/unit/profile.spec.js::Profi
 commit_item "$V" intake:testing-features "test(intake): profile"
 v5 "$V" findings-evidence 1 "a Jest full name (describe plus title) passes findings-evidence"
 
+# Version 18: a suite that hangs fails characterization-green at the timeout, and no test process outlives it
+TO="$WORK/timeout"
+mkdir -p "$TO"
+set +e
+out=$(cd "$REPO_ROOT/scripts" && timeout 20 python3 -c '
+import sys, eval_intake_run as e
+from pathlib import Path
+e.SUITE_TIMEOUT = 1
+print(e.suite_check(Path(sys.argv[1]), "sleep 30 & echo $! >pid; wait")[0])' "$TO" 2>&1)
+set -e
+if printf '%s' "$out" | grep -q "'pass': False" && printf '%s' "$out" | grep -q "suite timed out after 1 s" \
+    && ! kill -0 "$(cat "$TO/pid")" 2>/dev/null; then
+    pass "a hung suite fails characterization-green at the timeout and leaves no test process"
+else
+    kill "$(cat "$TO/pid" 2>/dev/null)" 2>/dev/null || true
+    fail "a hung suite fails characterization-green at the timeout and leaves no test process: $out"
+fi
+
 # A bad start SHA is bad input
 set +e
 python3 "$EVAL" --repo "$GOOD" --start deadbeef >/dev/null 2>&1

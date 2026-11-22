@@ -20,8 +20,10 @@ import ast
 from datetime import datetime
 import fnmatch
 import json
+import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 
@@ -309,14 +311,30 @@ def bug_tests_check(repo: Path, start: str, ids: set[str], globs: list[str]) -> 
     return check("bug-tests-cite-findings", ok, detail)
 
 
+SUITE_TIMEOUT = 600  # seconds for the suite run and each runner listing
+
+
 def suite_check(repo: Path, cmd: str | None) -> tuple[dict, str]:
-    """The suite's verdict plus its output, which lists the titles table-driven tests build at runtime."""
+    """The suite's verdict plus its output, which lists the titles table-driven tests build at runtime.
+
+    A suite still running after SUITE_TIMEOUT fails, and its whole process group is killed.
+    """
     if not cmd:
         return check(
             "characterization-green", False, "not run: pass --test-cmd with the project's test:all command"
         ), ""
-    r = subprocess.run(cmd, shell=True, cwd=repo, capture_output=True, text=True)
-    out = r.stdout + r.stderr
+    r = subprocess.Popen(
+        cmd, shell=True, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True
+    )
+    try:
+        stdout, stderr = r.communicate(timeout=SUITE_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        os.killpg(r.pid, signal.SIGKILL)
+        stdout, stderr = r.communicate()
+        return check(
+            "characterization-green", False, f"`{cmd}` suite timed out after {SUITE_TIMEOUT} s"
+        ), stdout + stderr
+    out = stdout + stderr
     tail = out.strip().splitlines()[-1:] or [""]
     return check("characterization-green", r.returncode == 0, f"`{cmd}` exit {r.returncode}: {tail[0][:160]}"), out
 
@@ -399,7 +417,7 @@ def test_listing(repo: Path, cmd: str | None) -> str:
     out = []
     for cwd, run, how in dict.fromkeys(runs):
         try:
-            r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=600)
+            r = subprocess.run(run, shell=True, cwd=cwd, capture_output=True, text=True, timeout=SUITE_TIMEOUT)
         except subprocess.TimeoutExpired:
             continue
         if how == "jest":  # a red test still prints its JSON; no JSON means jest never ran
@@ -1291,7 +1309,7 @@ def pristine_check(repo: Path) -> dict:
     return check("docs-pristine", not problems, "intake docs consistent" if not problems else f"{problems[:5]}")
 
 
-CHECKS_VERSION = 18  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests
+CHECKS_VERSION = 18  # 2: empty-module docstring; 3: subagents feed skills-loaded only; 4: human-voice-pass; 5: docs and evidence; 6: test ids and declined skills; 7: access matrix; 8: runtime test titles from suite output; 9: skill and human-voice claims per item window, human-voice-tells, setattr and Jest full test names; 10: evidence before trailing turns, type in new test manifests; 11: access matrix allows more inventory rows than the route listing; 12: docs-pristine fails a citation into vendored or git-ignored code; 13: findings-evidence reads the runners' test listings, bug-tests-cite-findings ignores markers named in comments and docstrings and follows table-driven twins to their rows; 14: symbol-citations skips addresses (`0.0.0.0:8080`, `localhost:5432`), skills-loaded reads joined and semicolon declines, findings-evidence lists Jest, Django and node --test titles; 15: a test title cited with a <placeholder> or ${...} matches the parameterized test; 16: a subagent whose brief names a procedure counts for that item whatever its loads' times, and a fact pass beside it (v0.5.0 on) for none; 17: symbol-citations counts a left side as a file only with a separator or a known source or doc extension, so `example.com:443` passes, and skills-loaded declines only the last name of a joined list a claim verb (with, using, loaded) opens; optional reported-counts compares testing agents' reported counts with the suite run; 18: bug-tests-cite-findings lists a skip with a BLOCKED: reason as blocked, not as a bug test, skills-loaded declines a list that targets something else or does not apply, characterize-dont-fix treats a devOptional lockfile entry as dev, reported-counts needs a blocked count and reason when the suite skips BLOCKED: tests, characterization-green fails a suite still running after SUITE_TIMEOUT
 
 
 def main() -> int:
