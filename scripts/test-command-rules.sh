@@ -118,6 +118,8 @@ assert_contains "$OPS" "never the recommendation on its own" "the wizard lists a
 for s in "existing config" "tickets/" "ticket CLI" "remote"; do
     assert_contains "$OPS" "$s" "the wizard recommends from the repo signal '$s'"
 done
+assert_contains "$OPS" "a ticket skill committed in the repo (\`.claude/skills/\`)" "a ticket skill counts only when the repo commits it"
+assert_contains "$OPS" "Skills and MCP servers the session loaded from elsewhere" "the wizard ignores session-only skills and servers for the recommendation"
 
 echo "triage keeps every ticket"
 TRIAGE="$CMD/spec/triage.md"

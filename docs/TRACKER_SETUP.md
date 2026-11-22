@@ -61,8 +61,8 @@ The file never holds credentials. Tokens stay with the tool that uses them: `gh 
 When an attended command finds no config, it offers to write one. The wizard:
 
 1. Checks that [uv](https://docs.astral.sh/uv/) is installed. It runs the plugin's bundled guard for evidence, hooks and the review gate, and fetches a suitable Python when your machine lacks one.
-2. Looks for clues in the repo: a config on another branch, a tickets folder or ticket CLI, a GitHub remote, issue keys such as `ABC-123` in recent commits or branch names, and your test and lint commands.
-3. Asks one question at a time, with the detected answer marked as recommended. Only a repo clue earns a tracker that mark. Issue keys could be Jira or Linear, so both are offered and neither is recommended. A Jira, Atlassian or Linear MCP server connected to the session is listed as available, never recommended on its own: it belongs to your account, not to this repo, and picking it would create real tickets there.
+2. Looks for clues in the repo: a config on another branch, a tickets folder, a ticket CLI or ticket skill the repo itself carries, a GitHub remote, issue keys such as `ABC-123` in recent commits or branch names, and your test and lint commands.
+3. Asks one question at a time, with the detected answer marked as recommended. Only a repo clue earns a tracker that mark. Issue keys could be Jira or Linear, so both are offered and neither is recommended. A Jira, Atlassian or Linear MCP server connected to the session is listed as available, never recommended on its own: it belongs to your account, not to this repo, and picking it would create real tickets there. Skills loaded from your own settings or another plugin count no more than a connected server.
 4. Shows the file and writes it when you approve.
 
 Inside a goal run the wizard can't ask anything, so it writes nothing, prints the config it would propose, and stops with `BLOCKED: no workflow config`. There is no silent default tracker.
