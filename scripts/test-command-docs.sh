@@ -92,8 +92,9 @@ for y in yamls:
 
 print("relative links in the user docs resolve")
 docs = [root / p for p in ("README.md", "QUICKSTART.md", "SKILLS_GUIDE.md", "plugin/README.md")]
-# planning notes record the layout of their day (docs/v0.5.0-*.md, ideas, prompts, skill ideas, specs): history, not user docs
-planning = re.compile(r"^docs/(v\d+\.\d+\.\d+-[^/]*\.md|ideas/|prompts/|skill-ideas/|specs/)")
+# notes nothing published links to record the layout of their day: history, not user docs. The v0.5.0 plan stays
+# checked, since the site links it (site/scripts/sync-content.mjs linkMap), and so does the narrative it links.
+planning = re.compile(r"^docs/(v\d+\.\d+\.\d+-restructure-plan\.md|ideas/|prompts/|skill-ideas/|specs/)")
 docs += sorted(p for p in (root / "docs").rglob("*.md") if not planning.match(str(p.relative_to(root))))
 link = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)|!\[[^\]]*\]\(([^)\s]+)\)")
 fence = re.compile(r"^(```|~~~)")
