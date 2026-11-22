@@ -42,6 +42,16 @@ def topic_dir(repo: Path, topic: str) -> Path:
     raise OSError(f"no discovery topic {topic} under {root}/todo or {root}/completed")
 
 
+def created_ids(text: str) -> set[str]:
+    """Proposed tickets the topic records as created: `discovery:approve` writes "Created as <ID>" next to the ticket,
+    on a line that names it (its table row, or `Created as ENG-1: P1`) or under its `### P<n>:` heading."""
+    out = {p for line in text.splitlines() if "Created as" in line for p in re.findall(r"\bP\d+\b", line)}
+    for m in re.finditer(r"^###\s+(P\d+)\b(.*?)(?=^##|\Z)", text, re.M | re.S):
+        if "Created as" in m.group(2):
+            out.add(m.group(1))
+    return out
+
+
 def score(folder: Path, gold: dict) -> list[dict]:
     texts = [
         (folder / f).read_text(encoding="utf-8") for f in ("discovery.md", "synthesis.md") if (folder / f).exists()
@@ -55,7 +65,7 @@ def score(folder: Path, gold: dict) -> list[dict]:
     decisions = [r.get("decision", "") for t in texts for r in table(t, "Blocking decisions")]
     missed = [p for p in gold.get("decisions", []) if not any(re.search(p, d, re.I) for d in decisions)]
     tickets = {r.get("#", ""): r.get("title", "") for t in texts for r in table(t, "Proposed tickets")}
-    created = {m for t in texts for m in re.findall(r"Created as \S+?:? (P\d+)", t)}
+    created = {p for t in texts for p in created_ids(t)}
     created_titles = [tickets.get(p, "") for p in created]
     not_created = [p for p in gold.get("tickets", []) if not any(re.search(p, t, re.I) for t in created_titles)]
     return [

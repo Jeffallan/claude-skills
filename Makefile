@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground site-dev site-build lint format lint-fix
+.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground eval-spec-current-diff eval-spec-complete-docs site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -102,7 +102,7 @@ eval-intake:
 		$(if $(PLUGIN),--version "$(PLUGIN)") $(if $(MODEL),--model "$(MODEL)")
 
 eval-baseline:
-	@python3 scripts/eval_intake_baseline.py "$(EVAL)"
+	@python3 scripts/eval_intake_baseline.py $(if $(PRINT),--print) "$(EVAL)"
 
 eval-discovery:
 	@python3 scripts/eval_discovery_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
@@ -111,3 +111,12 @@ eval-discovery:
 eval-common-ground:
 	@python3 scripts/eval_common_ground_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
 		$(if $(REPORT),--report "$(REPORT)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-spec-current-diff:
+	@python3 scripts/eval_spec_current_diff_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPO),--repo "$(REPO)") $(if $(START),--start "$(START)") $(if $(DIFF_REPORT),--diff-report "$(DIFF_REPORT)") \
+		$(if $(DIFF_BEFORE),--diff-before "$(DIFF_BEFORE)") $(if $(DIFF_AFTER),--diff-after "$(DIFF_AFTER)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-spec-complete-docs:
+	@python3 scripts/eval_spec_complete_docs_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(BEFORE),--before "$(BEFORE)") $(if $(AFTER),--after "$(AFTER)") $(if $(VERIFY),--verify "$(VERIFY)") $(if $(GOLD),--gold "$(GOLD)")

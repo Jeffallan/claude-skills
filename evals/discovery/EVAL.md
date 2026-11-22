@@ -8,7 +8,7 @@ Scores one discovery topic, from `discovery:create` through `discovery:approve`,
 |-------|-------------|-------|
 | `routing` | Every gold item (a regex on the Item cell of the `## Features` table) has the gold route: `Clear`, `Feature Forge` or `Research` | `discovery.md` |
 | `blocking-decisions` | Every gold decision (a regex) matches a row of a `## Blocking decisions` table | `discovery.md`, `synthesis.md` |
-| `approved-tickets` | Every gold ticket (a regex) matches the title of a proposed ticket the topic records as `Created as <id>` | `discovery.md`, `synthesis.md` |
+| `approved-tickets` | Every gold ticket (a regex) matches the title of a proposed ticket the topic records as created: `discovery:approve` writes "Created as <ID>" next to the ticket, in its table row, on a line that names it, or under its `### P<n>:` heading | `discovery.md`, `synthesis.md` |
 
 ## Gold set
 

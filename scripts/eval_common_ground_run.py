@@ -21,23 +21,38 @@ import eval_dir
 from eval_workflow_run import check
 
 
-def rows(text: str) -> list[dict[str, str]]:
-    """Rows of every table whose header has Verdict and Spec, keyed by lowercased header."""
-    out, head = [], None
+def tables(text: str, need: set[str]) -> list[list[dict[str, str]]]:
+    """Each table whose header has every column in `need` (lowercase), as rows keyed by lowercased header."""
+    out: list[list[dict[str, str]]] = []
+    head = None
     for ln in text.splitlines():
         if not ln.strip().startswith("|"):
             head = None
             continue
         cells = [c.strip() for c in ln.strip().strip("|").split("|")]
         if head is None:
-            head = [c.lower() for c in cells] if {"verdict", "spec"} <= {c.lower() for c in cells} else []
+            head = [c.lower() for c in cells] if need <= {c.lower() for c in cells} else []
+            if head:
+                out.append([])
         elif head and not all(re.fullmatch(r":?-+:?", c) for c in cells):
-            out.append(dict(zip(head, cells, strict=False)))
+            out[-1].append(dict(zip(head, cells, strict=False)))
     return out
 
 
+def rows(text: str) -> list[dict[str, str]]:
+    """Rows of the last table whose header has Verdict and Spec: a run that prints the table again after an owner's
+    answer reports its last one."""
+    found = tables(text, {"verdict", "spec"})
+    return found[-1] if found else []
+
+
+def verdict(row: dict[str, str]) -> str:
+    return row.get("verdict", "").strip("`* ").lower()
+
+
 def score(report: str, gold: dict) -> list[dict]:
-    flags = [r for r in rows(report) if r.get("verdict", "").strip("`").lower() == "conflicts"]
+    flags = [r for r in rows(report) if verdict(r) == "conflicts"]
+    holds = [r for r in rows(report) if verdict(r) == "holds"]
     text = lambda r: f"{r.get('assumption', '')} {r.get('source', '')}"  # noqa: E731
     missed, wrong_spec, matched = [], [], set()
     for g in gold.get("conflicts", []):
@@ -52,6 +67,11 @@ def score(report: str, gold: dict) -> list[dict]:
         ]
     false = [flags[i].get("id", "?") for i in range(len(flags)) if i not in matched]
     n = len(gold.get("conflicts", []))
+    not_held = [
+        g["match"]
+        for g in gold.get("holds", [])
+        if not any(re.search(g["match"], text(r), re.I) and r.get("spec") == g["spec"] for r in holds)
+    ]
     return [
         check(
             "conflict-recall",
@@ -60,6 +80,11 @@ def score(report: str, gold: dict) -> list[dict]:
         ),
         check("no-false-flags", not false, "every flag is a gold conflict" if not false else f"false flags: {false}"),
         check("right-spec", not wrong_spec, "every flag names its spec" if not wrong_spec else str(wrong_spec)),
+        check(
+            "holds-recognized",
+            not not_held,
+            f"{len(gold.get('holds', []))} gold holds reported as holding" if not not_held else f"not held: {not_held}",
+        ),
     ]
 
 
