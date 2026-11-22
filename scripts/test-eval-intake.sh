@@ -1611,6 +1611,27 @@ sed -i "s|- \*\*Tests:\*\* \`.*|- **Tests:** \`tests/unit/profile.spec.js::Profi
 commit_item "$V" intake:testing-features "test(intake): profile"
 v5 "$V" findings-evidence 1 "a Jest full name (describe plus title) passes findings-evidence"
 
+# Version 21: characterization-green's detail gives the runner's counts, not the output's last line (often `}`),
+# and falls back to the last line with a word in it
+V=$(fresh v21-suite-detail)
+for case in "printf '# tests 5\\n# pass 3\\n# fail 0\\n# skipped 1\\n# todo 1\\n}\\n'|exit 0: 3 pass, 0 fail, 1 skip, 1 todo" \
+    "printf '2 passed, 1 failed in 0.10s\\n}\\n'; exit 1|exit 1: 2 pass, 1 fail" \
+    "printf 'all good\\n}\\n  \\n'|exit 0: all good"; do
+    cmd=${case%%|*}; want=${case#*|}
+    set +e
+    out=$(score "$V" --test-cmd "$cmd")
+    set -e
+    if printf '%s' "$out" | WANT="$want" python3 -c '
+import json, os, sys
+c = next(c for c in json.load(sys.stdin)["checks"] if c["id"] == "characterization-green")
+sys.exit(0 if c["detail"].endswith(os.environ["WANT"]) else 1)
+'; then
+        pass "characterization-green's detail ends '$want'"
+    else
+        fail "characterization-green's detail ends '$want': $out"
+    fi
+done
+
 # Version 18: a suite that hangs fails characterization-green at the timeout, and no test process outlives it
 TO="$WORK/timeout"
 mkdir -p "$TO"
