@@ -241,6 +241,7 @@ hasnt "$INTAKE" "and the project's test command for a testing item, and read the
 has "$INTAKE" "Paste the drafted note" "intake pastes the agent's drafted note"
 has "$INTAKE" "Agents never commit" "agents still never commit"
 hasnt "$IREF/goal-prompt.md" "run-and-verify phase, then \`<test:all command>\`" "the goal prompt doesn't rerun test:all after every item"
+has "$IREF/goal-prompt.md" "counted from docs/intake-findings.md" "the final report counts findings by severity from the tracker, not from memory"
 # Parallel testing writers: the three Phase 3 items after testing-setup write at once; the command assigns ids
 has "$INTAKE" "### Parallel testing writers" "intake runs the three testing writers in parallel"
 has "$INTAKE" "\`F-901\`" "parallel writers use provisional finding ids"

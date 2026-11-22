@@ -49,7 +49,7 @@ After a compaction or resume, re-read this file and the checklist, and rebuild s
 Save the scoring files to <results-dir> (outside the repo):
 - `git reflog --date=iso-strict --format='%gd%x00%gs' > <results-dir>/intake.reflog`
 - `<test:all command>` output as <results-dir>/test-all.txt
-Then rerun <done_when>, quoting each condition before its output. Phase 4 items stay unchecked: they are attended and out of this run's scope. Lead with any High security finding that affects the deployed system (id and one line, no reproduction detail), then blocked items and open questions, then a table: item, commit, evidence, finding ids. Then the findings by severity, and "Ready for Phase 4 (attended)."
+Then rerun <done_when>, quoting each condition before its output. Phase 4 items stay unchecked: they are attended and out of this run's scope. Lead with any High security finding that affects the deployed system (id and one line, no reproduction detail), then blocked items and open questions, then a table: item, commit, evidence, finding ids. Then the findings by severity, counted from docs/intake-findings.md as it stands (never from memory or earlier reports), and "Ready for Phase 4 (attended)."
 </final_report>
 Reminder: every commit names its item with one `Intake:` trailer on <intake-branch>, characterize don't fix, no push, stop before Phase 4.
 ```
