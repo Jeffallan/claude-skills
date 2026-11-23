@@ -100,7 +100,7 @@ adapter-operations:
 |------|-------------|
 | `url` | A URL to a published document or page |
 | `document` | A generated local markdown document |
-| `tickets` | Jira tickets created in the ticketing system |
+| `tickets` | Tickets created in the configured tracker |
 | `report` | A generated report (completion report, retrospective) |
 | `file` | A local file produced on disk |
 | `directory` | A local directory of files produced on disk |
