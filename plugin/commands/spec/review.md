@@ -25,6 +25,10 @@ The panel and verifiers can run in any session, but the owner triage (Step 6) is
    ```
 
 3. The working tree must be clean. Record `head_sha=$(git rev-parse HEAD)`.
+4. Pick the path from `review/rollup.md` and the plan:
+   - No rollup: Steps 1 to 6.
+   - A rollup and no `<spec-name>-rv-<n>` fix ticket in the plan: the last review is still waiting for triage. Go straight to Step 6 with that rollup; run no new panel and no recheck. Under a goal, print the rollup's blocking and warning rows and stop as the guard above says. When code commits landed after the rollup's commit, say so: the owner can ask for a full panel rerun instead.
+   - A rollup and Done fix tickets: the Recheck below.
 
 ## Step 1: Metrics
 

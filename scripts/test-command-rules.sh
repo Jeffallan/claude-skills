@@ -30,6 +30,7 @@ for f in spec/create spec/triage spec/diff spec/review discovery/create discover
     assert_contains "$CMD/$f.md" "in one message" "$f starts its independent read-only agents in one message"
 done
 assert_contains "$CMD/spec/review.md" "shared database or fixed ports" "spec:review keeps verifiers that share a database or ports one at a time"
+assert_contains "$CMD/spec/review.md" "A rollup and no \`<spec-name>-rv-<n>\` fix ticket in the plan: the last review is still waiting for triage" "spec:review takes an untriaged rollup straight to triage, not a new panel or a recheck"
 
 echo "no self-scheduling"
 n=$(grep -cF "never schedule a fallback" "$CMD/spec/review.md" || true)
