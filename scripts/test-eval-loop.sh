@@ -432,6 +432,21 @@ if has "$out" diff-assumptions 1 && ! printf '%s' "$out" | grep -q '"current-com
 else
     fail "spec-current-diff scores only the inputs it is given: $out"
 fi
+# a report may split Assumptions into one table per spec: every table under the heading counts, not only the last
+python3 - "$WORK/diff-report.md" "$WORK/diff-report-split.md" <<'PY'
+import sys
+t = open(sys.argv[1]).read()
+t += "\n**sso**\n\n| ID | Spec | Kind | Assumption | Quoted from | Checked against |\n|----|------|------|------------|-------------|-----------------|\n| sso:A1 | sso | interface | The router takes a session | overview.md | src/api.ts::router |\n"
+open(sys.argv[2], "w").write(t.replace("### Assumptions\n", "### Assumptions\n\n**billing-v2**\n"))
+PY
+set +e
+out=$(python3 "$SCD" --diff-report "$WORK/diff-report-split.md" --gold "$WORK/current-gold.json" 2>&1)
+set -e
+if has "$out" diff-assumptions 1; then
+    pass "spec-current-diff reads every assumptions table, one per spec"
+else
+    fail "spec-current-diff reads every assumptions table, one per spec: $out"
+fi
 
 echo "spec:complete docs scorer"
 

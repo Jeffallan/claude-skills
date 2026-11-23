@@ -182,8 +182,13 @@ def diff_checks(report: str, gold: dict[str, Any]) -> list[dict]:
         )
     ]
 
-    found = tables(report, {"spec", "kind", "assumption", "checked against"})
-    rows = found[-1] if found else []
+    # every table under ### Assumptions (a run may write one per spec); with no such heading, the report's last table
+    cols = {"spec", "kind", "assumption", "checked against"}
+    if "Assumptions" in secs:
+        rows = [r for t in tables(secs["Assumptions"], cols) for r in t]
+    else:
+        found = tables(report, cols)
+        rows = found[-1] if found else []
     missed = []
     for g in gold.get("assumptions", []):
         ok = any(
