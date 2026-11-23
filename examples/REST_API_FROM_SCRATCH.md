@@ -131,8 +131,8 @@ func (h *Handler) createTask(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-Note how the validation error maps to the `422` response in the contract. That match is the point of writing the
-contract first.
+The validation error maps to the `422` response in the contract. Writing the contract first is what gives you
+that match.
 
 ---
 

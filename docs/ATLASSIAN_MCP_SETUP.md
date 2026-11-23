@@ -78,7 +78,7 @@ The rest of this guide sets up the community `mcp-atlassian` server in Docker. B
    - For Server/Data Center: Administrative access to generate personal access tokens
 
 3. **Claude Code CLI installed**
-   - The MCP server integrates with Claude Code for AI-assisted workflows
+   - Claude Code starts the MCP server from the configuration below
 
 ---
 
@@ -99,7 +99,7 @@ API tokens are the standard authentication method for Atlassian Cloud products.
 2. Enter a descriptive label (e.g., "Claude MCP Integration")
 3. Choose an expiry date between 1 and 365 days (new tokens default to one year)
 4. Click **Create**
-5. **Copy the token immediately** - it will not be shown again
+5. **Copy the token immediately**, because Atlassian will not show it again
 
 **Step 3: Note Your Credentials**
 
@@ -108,7 +108,7 @@ You will need:
 - **API token**: The token you just created
 - **Instance URL**: Your Atlassian Cloud URL (e.g., `https://yourcompany.atlassian.net`)
 
-**Important:** The same API token works for both Jira and Confluence if they are on the same Atlassian Cloud instance.
+One API token works for both Jira and Confluence when they are on the same Atlassian Cloud instance.
 
 ---
 
@@ -194,7 +194,7 @@ JIRA_SSL_VERIFY=true  # Set to "false" for self-signed certificates
 
 ### Step 3: Verify .gitignore
 
-Ensure `.env.local` is in your `.gitignore` to prevent accidental credential exposure:
+Make sure `.env.local` is in your `.gitignore` so git never picks up your credentials:
 
 ```bash
 # Check if .env.local is ignored
@@ -229,7 +229,7 @@ Create or update `.mcp.json` in your project root:
 
 ### Step 2: Pull the Docker Image
 
-Pre-pull the image to ensure it is available:
+Pull the image before the first run:
 
 ```bash
 docker pull ghcr.io/sooperset/mcp-atlassian:latest
@@ -518,4 +518,4 @@ If you suspect a token has been compromised:
 - [MCP Atlassian GitHub Repository](https://github.com/sooperset/mcp-atlassian)
 - [Atlassian Rovo MCP Server](https://github.com/atlassian/atlassian-mcp-server)
 - [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp), including [MCP servers from claude.ai](https://code.claude.com/docs/en/mcp#use-mcp-servers-from-claude-ai)
-- [Tracker Setup](./TRACKER_SETUP.md) - The Jira adapter the workflow commands use
+- [Tracker Setup](./TRACKER_SETUP.md): the Jira adapter the workflow commands use
