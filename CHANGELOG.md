@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-23
+
 ### Added
 - Workflow: v0.5.0 workflow commands, `spec:triage` and `spec:review`, plus rewritten `discovery:create`, `discovery:approve`, `spec:create`, `spec:complete`, `ticket:execute` and `ticket:complete`. Specs live as markdown under `docs/specs/{todo,completed}/` with a generated `INDEX.md`; tickets stay in the tracker (#253)
 - Workflow: tracker adapters for Jira, GitHub Issues, GitHub Projects, Linear and text tickets, and a GitHub code-host adapter, configured in `.claude/workflow-config.json` with a setup wizard (`references/adapters/`). The wizard recommends a tracker only from what the repo shows (an existing config, a tickets folder, a GitHub remote); a Jira or Linear MCP server connected to the session is offered, never recommended on its own (#62, #119)
@@ -27,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workflow: `spec:current` checks the system description against the code and completed specs, updates it through the `architect` agent, and compiles `docs/current-state.json` (components with status, open findings, docs drift) with the new `guard current-state`, which refuses a malformed table or unknown status and keeps inline code intact at a cell's edge
 - Workflow: `spec:diff [spec ...]` prints what changes if the given specs land in order: current and target component diagrams, a table per spec, overlaps between specs, and each spec's assumptions (`references/specs/assumptions.md`)
 - Evals: `evals/discovery/` and `evals/common-ground/` with `make eval-discovery` and `make eval-common-ground`, scoring discovery routing, decisions and created tickets, and common-ground conflict recall, false flags and spec attribution, tested on synthetic runs in `make test`
+- Docs: a "What's New in v0.5.0" section at the top of the README, and a workflow diagram in its Project Workflow section
+- Docs: Supported Agents is a per-agent install guide: a Skills Directory Locations table with each agent's project and user folders, one install section per agent, both cross-agent installers with their agent ids, manual copy and uninstall. Agent rows are corrected (Goose under the Agentic AI Foundation, Amp under Amp Frontier Corporation, OpenCode's current repo, Letta Code), and Roo Code moves to a Discontinued section
+- Docs: `scripts/test-doc-links.sh` checks every relative link and anchor in the user docs, in `make test` and CI
 
 ### Changed
 - common-ground: checks the assumptions outstanding specs make against `docs/current-state.json` through the `assumption-checker` agent, takes spec names (`[--list] [--check] [--graph] [spec ...]`), and keeps its ground file in the repository as `docs/COMMON-GROUND.md` and `docs/ground.index.json` instead of under `~/.claude/common-ground/`
@@ -34,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workflow: commands move to `commands/{discovery,spec,ticket}/` and are named `discovery:*`, `spec:*` and `ticket:*` (#123). "Spec" replaces "epic". Discovery takes topics or tickets instead of an epic key and creates tickets only; `spec:triage` forms groups. It keeps every ticket you name in a spec, flags contradictions for `spec:create` to settle instead of dropping a ticket, and offers a split only as a suggestion (#121, #122, #103)
 - Workflow: ticket commands write the failing test first, never write to the tracker, and commit with a neutral `Ticket: <id>` trailer. Every script a RED or GREEN command runs lives in the repo, never a scratch path that a reboot deletes. Only `spec:complete` closes tickets, after the merge
 - skill-linter 0.4.0 is pinned through one stamped value, `runtimePin`, which `stamp` writes into commands, references, docs, scripts, `Makefile`, `CLAUDE.md` and CI. CI's Validate job moves from skill-linter 0.2.0
+- Privacy policy: describes what the v0.5.0 plugin and runtime keep locally and which tools reach the network (the GitHub CLI for pull request status, headless Claude sessions from `guard run-batches`, tracker APIs and MCP servers), that text tickets still reach a GitHub code host through the pushed branch and PR, and that the docs site loads Mermaid from jsDelivr and the star count from GitHub's API on every page
+- Docs: paths, install commands and claims brought up to date with the `plugin/` layout and the v0.5.0 commands (QUICKSTART's plugin install command, the guard hooks belonging to the plugin, the workflow schema's output types and adapter operations), and a human-voice pass over the user docs
 
 ### Removed
 - Workflow: `complete-sprint` and the `project:<phase>:<command>` names. `create-implementation-plan` folds into `spec:create`, `complete-epic` into `spec:complete`, and the retrospective phase is dropped
@@ -660,7 +667,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...v0.5.0
 [0.4.22]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...v0.4.22
 [0.4.21]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...v0.4.21
 [0.4.20]: https://github.com/jeffallan/claude-skills/compare/v0.4.19...v0.4.20

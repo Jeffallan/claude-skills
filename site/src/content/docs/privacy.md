@@ -3,7 +3,7 @@ title: Privacy Policy
 description: How the Fullstack Dev Skills Plugin and its documentation site handle information
 ---
 
-**Effective:** October 26, 2026
+**Effective:** November 23, 2026
 
 This privacy policy describes how the **Fullstack Dev Skills Plugin** (`claude-skills`) and its companion documentation site at `https://jeffallan.github.io/claude-skills/` handle information.
 
