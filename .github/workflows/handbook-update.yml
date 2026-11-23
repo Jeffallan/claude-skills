@@ -18,7 +18,9 @@ permissions:
 jobs:
   update:
     if: vars.HANDBOOK_APP_ID != ''
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.RUNNER_LABELS || '["ubuntu-latest"]') }}
+    env:
+      UV_LINK_MODE: copy  # uv's clone into its cache hits EAGAIN (os error 11) on self-hosted NAS runners
     steps:
       # Two tokens, so a repo outside Jeffallan (an org repo) can take the handbook too: the handbook
       # app reads the private handbook; the org's own app (ORG_APP_ID, when set) writes to this repo.
@@ -46,7 +48,13 @@ jobs:
         with:
           node-version: "24"
       - name: Let git read the private handbook
-        run: git config --global url."https://x-access-token:${{ steps.handbook.outputs.token }}@github.com/Jeffallan/handbook".insteadOf "https://github.com/Jeffallan/handbook"
+        # In $GITHUB_ENV, not ~/.gitconfig: a self-hosted runner keeps ~/.gitconfig, and git would use an old token.
+        # Entries written there by earlier runs still win over $GITHUB_ENV, so remove them first.
+        run: |
+          { git config --global --get-regexp '^url\..*\.insteadof$' '^https://github.com/Jeffallan/handbook$' || true; } | cut -d' ' -f1 | xargs -r -n1 git config --global --unset-all
+          echo "GIT_CONFIG_COUNT=1" >> "$GITHUB_ENV"
+          echo "GIT_CONFIG_KEY_0=url.https://x-access-token:${{ steps.handbook.outputs.token }}@github.com/Jeffallan/handbook.insteadOf" >> "$GITHUB_ENV"
+          echo "GIT_CONFIG_VALUE_0=https://github.com/Jeffallan/handbook" >> "$GITHUB_ENV"
       - name: Check for a new handbook version
         id: check
         run: |
@@ -60,7 +68,7 @@ jobs:
         run: uvx copier update --defaults --trust
       - name: Open the update PR
         if: steps.check.outputs.available == 'true'
-        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           token: ${{ steps.app.outputs.token }}
           branch: handbook/update
