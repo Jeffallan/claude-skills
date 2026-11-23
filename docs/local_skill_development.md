@@ -27,7 +27,7 @@ That session loads the skills, commands and hooks from your working copy; every 
 
 ## How Plugin Loading Works
 
-Claude Code loads plugins from a **cache** directory, not from your source code. Understanding this is key to the development workflow.
+Claude Code loads plugins from a **cache** directory, not from your source code.
 
 | Directory | Purpose |
 |-----------|---------|
@@ -57,7 +57,7 @@ This returns something like:
 "installPath": "/home/<user>/.claude/plugins/cache/<plugin>/<name>/<version>"
 ```
 
-Note the full path — you'll symlink this directory.
+Note the full path: you'll symlink this directory.
 
 ### Step 2: Back Up the Cached Version
 
@@ -91,11 +91,11 @@ ls -la ~/.claude/plugins/cache/<plugin>/<name>/
 Once the symlink is in place:
 
 1. **Edit skills, commands, or references** in your working copy
-2. **Restart Claude Code** — exit the current session and start a new one. Plugins load at session start; changes are not hot-reloaded.
-3. **Test your changes** — invoke the skill or command as a user would
-4. **Iterate** — repeat steps 1-3
+2. **Restart Claude Code**: exit the current session and start a new one. Plugins load at session start; changes are not hot-reloaded.
+3. **Test your changes**: invoke the skill or command as a user would
+4. **Iterate**: repeat steps 1-3
 
-No commits, pushes, or version bumps needed during development.
+You don't need commits, pushes, or version bumps during development.
 
 ---
 
@@ -124,7 +124,7 @@ If your symlink stops working after you didn't touch it, check whether an auto-u
 
 ### Working copy differs from a clean cache
 
-The cache is normally a clean snapshot — no `.git/`, no IDE files, no uncommitted work. Your symlinked working copy includes all of that. This is generally harmless — the plugin loader reads markdown files and ignores unknown entries — but be aware:
+The cache is normally a clean snapshot, without `.git/`, IDE files or uncommitted work. Your symlinked working copy includes all of that. This is generally harmless, since the plugin loader reads markdown files and ignores unknown entries, but be aware:
 
 - New files that reference structures you haven't created yet may cause confusing behavior
 - `.git/`, `.DS_Store`, `node_modules/`, and similar directories are exposed but ignored

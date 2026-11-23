@@ -73,22 +73,22 @@ Introduced 9 project workflow commands spanning discovery, planning, execution, 
 
 **Scope:** Global-to-local config migration, per-project skill activation, workflow infrastructure hardening.
 
-This release moves configuration from global to per-project, enabling teams to customize skill sets and workflow behavior per repository. Builds on the backend adapter pattern from v0.5.0.
+This release moves configuration from global to per-project, so teams can customize skill sets and workflow behavior per repository. It builds on the backend adapter pattern from v0.5.0.
 
 ### Configuration Migration
-- [Discussion #112](https://github.com/Jeffallan/claude-skills/discussions/112): Global-to-local config migration — `.claude/skills/` local install strategy, meta-skill/project analyzer
-- Per-project skill activation — select which skills are active for a given repository
+- [Discussion #112](https://github.com/Jeffallan/claude-skills/discussions/112): Global-to-local config migration (`.claude/skills/` local install strategy, meta-skill/project analyzer)
+- Per-project skill activation: select which skills are active for a given repository
 
 ### Workflow Infrastructure
-- [#50](https://github.com/Jeffallan/claude-skills/issues/50): Context Persistence — auto-store epic workflow state
-- [#51](https://github.com/Jeffallan/claude-skills/issues/51): State Validation — prevent commands from running out of order
-- [#52](https://github.com/Jeffallan/claude-skills/issues/52): Error Recovery — resume/rollback/retry mechanisms
-- [#53](https://github.com/Jeffallan/claude-skills/issues/53): Extract Shared Templates — centralize checkpoint patterns
-- [#54](https://github.com/Jeffallan/claude-skills/issues/54): Regression Test Suite — automated execution testing
-- [#55](https://github.com/Jeffallan/claude-skills/issues/55): Performance & Security Testing — systematic integration
+- [#50](https://github.com/Jeffallan/claude-skills/issues/50): Context Persistence (auto-store epic workflow state)
+- [#51](https://github.com/Jeffallan/claude-skills/issues/51): State Validation (prevent commands from running out of order)
+- [#52](https://github.com/Jeffallan/claude-skills/issues/52): Error Recovery (resume/rollback/retry mechanisms)
+- [#53](https://github.com/Jeffallan/claude-skills/issues/53): Extract Shared Templates (centralize checkpoint patterns)
+- [#54](https://github.com/Jeffallan/claude-skills/issues/54): Regression Test Suite (automated execution testing)
+- [#55](https://github.com/Jeffallan/claude-skills/issues/55): Performance & Security Testing (systematic integration)
 
 ### Common Ground
-- [#109](https://github.com/Jeffallan/claude-skills/issues/109): Common-ground local storage — persist assumptions per project
+- [#109](https://github.com/Jeffallan/claude-skills/issues/109): Common-ground local storage (persist assumptions per project)
 
 ### Workflow Setup
 - A per-project setup skill that installs the workflow's project-local pieces, and a hook suggester
@@ -103,18 +103,18 @@ This release moves configuration from global to per-project, enabling teams to c
 **Scope:** Improved skill discovery and routing, common-ground workflow integration. Depends on v0.6.0 local config.
 
 ### Skill Routing Improvements
-- [#65](https://github.com/Jeffallan/claude-skills/issues/65): Cross-Domain Recommendations — suggest complementary skills from different domains
-- [#66](https://github.com/Jeffallan/claude-skills/issues/66): Enhanced Routing Logic — context-aware skill selection
-- [#68](https://github.com/Jeffallan/claude-skills/issues/68): Skill Dependency Mapping — represent skill relationships
-- [#69](https://github.com/Jeffallan/claude-skills/issues/69): Skill metadata enhancement — structured `metadata` field for richer skill descriptors
+- [#65](https://github.com/Jeffallan/claude-skills/issues/65): Cross-Domain Recommendations (suggest complementary skills from different domains)
+- [#66](https://github.com/Jeffallan/claude-skills/issues/66): Enhanced Routing Logic (context-aware skill selection)
+- [#68](https://github.com/Jeffallan/claude-skills/issues/68): Skill Dependency Mapping (represent skill relationships)
+- [#69](https://github.com/Jeffallan/claude-skills/issues/69): Skill metadata enhancement (structured `metadata` field for richer skill descriptors)
 
 ### Common Ground Enhancements
-- [#108](https://github.com/Jeffallan/claude-skills/issues/108): Common-ground SessionStart hook — automatic assumption surfacing on session start
-- [#110](https://github.com/Jeffallan/claude-skills/issues/110): Common-ground progressive disclosure — phased assumption surfacing
-- [#111](https://github.com/Jeffallan/claude-skills/issues/111): Common-ground UserPromptSubmit hook — contextual assumption checks
+- [#108](https://github.com/Jeffallan/claude-skills/issues/108): Common-ground SessionStart hook (automatic assumption surfacing on session start)
+- [#110](https://github.com/Jeffallan/claude-skills/issues/110): Common-ground progressive disclosure (phased assumption surfacing)
+- [#111](https://github.com/Jeffallan/claude-skills/issues/111): Common-ground UserPromptSubmit hook (contextual assumption checks)
 
 ### Feasibility Evaluation
-- [#64](https://github.com/Jeffallan/claude-skills/issues/64): Smart Skill Discovery — consolidates #70, #71, #72; requires third-party tooling evaluation (vector embeddings, semantic search). Tracked separately pending feasibility assessment.
+- [#64](https://github.com/Jeffallan/claude-skills/issues/64): Smart Skill Discovery, which consolidates #70, #71, #72 and requires third-party tooling evaluation (vector embeddings, semantic search). It is tracked separately pending a feasibility assessment.
 
 ---
 
@@ -148,7 +148,7 @@ This release moves configuration from global to per-project, enabling teams to c
 
 ## Contributing to the Roadmap
 
-We welcome community input on the roadmap direction. Here's how you can contribute:
+Community input on the roadmap's direction is welcome in any of these ways:
 
 ### Suggest Features
 - Open a GitHub issue with the `enhancement` label
@@ -201,4 +201,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: October 2026 (v0.4.22)*
+*This roadmap may change with community feedback, technical constraints and new priorities. Last updated: October 2026 (v0.4.22)*
