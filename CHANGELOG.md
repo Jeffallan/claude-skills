@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Workflow examples: `examples/` holds three step-by-step walkthroughs that chain skills on one task, a Go REST API from spec to Docker image, a slow Django endpoint debugged in production, and JWT authentication for a Spring Boot API, each giving the prompt, the skill it triggers and a short excerpt. The README links them (#317, closing #98)
+
+### Changed
+- Handbook v0.6.3: the handbook-update and notes-check workflows run on the runner labels in the `RUNNER_LABELS` variable (default `ubuntu-latest`) and pass the handbook token through the environment instead of `~/.gitconfig`; the docs site moves to Starlight 0.43.1, Astro 7.4.12 and Prettier 3.10.1 (#333)
+
 ## [0.4.21] - 2026-11-20
 
 ### Added
