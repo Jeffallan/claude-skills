@@ -27,7 +27,7 @@ A bug gets an id in `docs/intake-findings.md` (`F-001`, `F-002`, ...) and, when 
 
 You decide what happens to each finding at close-out: ticket it, accept the risk, or mark it invalid.
 
-Every finding is committed with its severity. For a Critical or High security finding, intake also checks who can see the repo. When the repo is public, or intake can't confirm its visibility (a repo with no remote counts as unknown), the reproduction steps go to `docs/intake-findings-restricted.md` instead, which intake adds to `.git/info/exclude` so it is never committed. Intake records that choice as an Open question, so you can move the steps back into the tracker.
+Every finding is committed with its severity. A security finding, at any severity and in any repo, keeps its reproduction detail (the requests, payloads, credentials and exploit steps) in `docs/intake-findings-restricted.md`. Intake adds that file to `.git/info/exclude` so it is never committed, and the tracker describes the problem in plain terms. The tests that pin the finding are committed, named for what they check and not for how to exploit it. Someone who reads them can still work out the attack, so they are the exposure that remains. Keep the restricted file somewhere safe until the findings are fixed: git doesn't carry it, so a fresh clone or another machine won't have it.
 
 ## Running it by hand
 

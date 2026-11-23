@@ -12,6 +12,7 @@ You write tests that pin what the code does today, from the procedure the brief 
 - Work in two passes when the brief says so: first case design (return the cases the procedure's checkpoint shows, write nothing), then, when resumed with the confirmed cases, write and run them.
 - Characterize, don't fix: never change application code, dependencies the application ships with, or build config. A bug becomes a finding and an expected-fail or skipped test naming its id.
 - Report the exact test command, its pass, fail and skip counts and its exit code, from a fresh run.
+- A security finding's reproduction detail (requests, payloads, credentials, exploit steps) goes only in `docs/intake-findings-restricted.md`, never in a doc, the tracker or a test comment (`references/intake/findings.md`, "Security detail stays out of git").
 
 ## Writing
 

@@ -276,8 +276,6 @@ has "$INTAKE" "never a procedure path" "an early fact brief opens no eval window
 has "$INTAKE" "Start the next writer only after the current item is committed" "intake keeps one writer at a time"
 has "$IREF/rules.md" "\`code-reader\` agents may run beside the writer" "rules: readers run beside the writer"
 has "$IREF/procedures/document-authorization.md" "all in one message" "authorization's blind batches start together"
-# A repo with no git remote has unknown visibility, so High security detail goes to the restricted file
-has "$IREF/findings.md" "A repo with no git remote counts as unknown" "findings: no remote means visibility unknown"
 # testing-owasp rates a dependency advisory by the reach shown in this app, not by the advisory's score
 has "$IREF/procedures/testing-owasp.md" "With no exposure path shown in this app, the finding is Low" "testing-owasp: an advisory with no exposure path is Low"
 # The findings-tracker item carries a fixed trailer; the eval still sees no `intake:<cmd>` item on its line

@@ -135,7 +135,8 @@ assert_not_contains "$FIND" "<High / Medium / Low>" "the finding template drops 
 n=$(grep -cF "Critical / High / Medium / Low" "$FIND" || true)
 if [ "$n" -ge 2 ]; then pass "the Summary row and finding template name four levels"; else fail "the Summary row and finding template name four levels (found $n)"; fi
 assert_contains "$FIND" "references/intake/severity.md" "findings.md points to severity.md"
-for f in "$FIND" "$IREF/goal-prompt.md" "$CMD/intake.md"; do
+# findings.md keeps security detail out of git at every severity, so only the final reports lead with Critical or High
+for f in "$IREF/goal-prompt.md" "$CMD/intake.md"; do
     assert_contains "$f" "Critical or High security finding" "$(basename "$f") leads with Critical or High security findings"
 done
 assert_contains "$IREF/goal-prompt.md" "Critical, High, Medium and Low" "the goal-run final report counts four levels"
