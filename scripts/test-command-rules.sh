@@ -267,6 +267,12 @@ for s in "broad claims" "describe the components the diff touches" "none, no, on
 done
 assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "absolute statements" "the spec:complete page explains the broad-claims pass"
 
+echo "every attended-only guard ends with the BLOCKED line followed by git status --short (unattended.md)"
+while IFS= read -r line; do
+    f=${line%%:*}
+    case "$line" in *'git status --short'*) pass "$(basename "$f") guard prints git status after BLOCKED" ;; *) fail "$(basename "$f") guard prints git status after BLOCKED" ;; esac
+done < <(grep -rn 'needs the owner`' "$PLUGIN/commands")
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
