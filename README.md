@@ -17,6 +17,40 @@
 
 ---
 
+## What's New in v0.5.0
+
+v0.5.0 rebuilds the project workflow around specs. Tickets stay in your tracker, specs live as Markdown in your repo, and each ticket is built with its failing test first, by hand or in an unattended goal run.
+
+**Install**
+- The plugin now ships from the `plugin/` folder on `main`, listed by the root marketplace entry. The [Quick Start](#quick-start) commands are unchanged, updating the plugin installs what `main` holds, and the separate `plugin` distribution branch is gone. See [plugin/README.md](plugin/README.md).
+- The workflow commands need [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which a setup wizard offers to create. See [Tracker Setup](docs/TRACKER_SETUP.md).
+
+**Adopting an existing codebase**
+- `intake` documents the code, pins its current behavior in characterization tests and records each bug it finds as an `F-NNN` finding while leaving the behavior unchanged. It also writes a baseline spec and `docs/system-description.md`, and runs by hand or as one goal with a commit per item. See [Intake](docs/INTAKE.md).
+
+**From tickets to a merged spec**
+- `discovery:create` and `discovery:approve` turn rough input into tickets you approve before they reach the tracker. See [Discovery](docs/WORKFLOW_COMMANDS.md#discovery).
+- `spec:triage` groups tickets into specs. `spec:create` checks each ticket's readiness against the code, then writes the plan and goal prompt. Specs sit under `docs/specs/{todo,completed}/` with a generated `INDEX.md`. See [Specs](docs/WORKFLOW_COMMANDS.md#specs).
+- `ticket:execute` and `ticket:complete` build one ticket test first and commit it with a `Ticket: <id>` trailer. Neither writes to the tracker. See [Tickets](docs/WORKFLOW_COMMANDS.md#tickets).
+- `spec:review` runs a reviewer panel over the spec diff and a blind verifier per finding, then a rollup and gate. `spec:complete` opens and merges the PR, closes the tickets, and its `docs:verify` step checks the README and `docs/` for claims the diff made stale, fixing each one only on your yes. `spec:status` shows where every spec stands. See [Review and completion](docs/WORKFLOW_COMMANDS.md#review-and-completion).
+
+**Goal runs and the guard**
+- `spec:create` prints launch commands for a goal run over the whole spec or the next batch. The launch denies pushes, PR and issue writes, API writes and questions to you; a stuck ticket is blocked with `guard block` and the run continues. See [Goal Runs](docs/GOAL_RUNS.md).
+- The ticket guard ships inside the plugin as `runtime/guard.pyz` and runs through `uv run`. Plugin hooks freeze RED tests, re-run GREEN before a goal run stops and restore ticket context after a compaction. They exit at once unless a ticket is in progress.
+
+**Current state and assumptions**
+- `spec:current` checks `docs/system-description.md` against the code and compiles `docs/current-state.json`. `spec:diff [spec ...]` shows what changes if the given specs land in order, with overlaps and each spec's assumptions. See [Current state and assumptions](docs/WORKFLOW_COMMANDS.md#current-state-and-assumptions).
+- `common-ground` checks those assumptions against the current state through the `assumption-checker` agent and keeps its ground file in the repo as `docs/COMMON-GROUND.md`. See [Common Ground](docs/COMMON_GROUND.md).
+
+**Agents and trackers**
+- Long or parallel work runs in the plugin's agents: `code-reader`, `doc-writer`, `test-writer`, `security-prober`, `architect`, `reviewer`, `verifier` and `assumption-checker`. Agents never commit. See [Agents](docs/WORKFLOW_COMMANDS.md#agents).
+- Tracker adapters cover Jira, GitHub Issues, GitHub Projects, Linear and text tickets, plus a GitHub code-host adapter. See [Tracker Setup](docs/TRACKER_SETUP.md).
+
+**Upgrading from 0.4.x**
+- The `project:<phase>:<command>` names are gone. Commands are now `discovery:*`, `spec:*` and `ticket:*`, and "spec" replaces "epic".
+- `create-implementation-plan` folds into `spec:create` and `complete-epic` into `spec:complete`. `complete-sprint` and the retrospective phase are removed.
+- `common-ground` used to keep its file under `~/.claude/common-ground/`. When one exists for the repository, it offers to move those assumptions in.
+
 ## Quick Start
 
 ```bash
