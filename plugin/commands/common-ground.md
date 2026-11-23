@@ -81,6 +81,8 @@ Runs first in the default mode and is the core of `--check`, whenever an outstan
    End your report with "Skills loaded: ...".
    ```
 
+   The brief carries only the assumption list and the checker's fixed rules, never hints about what a verdict should be.
+
 4. **Report** in this table, conflicts first, then unknowns, then the rows that hold. The common-ground eval scores this table, so keep its columns:
 
    ```markdown

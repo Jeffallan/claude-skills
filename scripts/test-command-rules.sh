@@ -237,6 +237,11 @@ for s in "every assumption as its own row" "holds included" "never group or elid
     if printf '%s\n' "$cg_report" | grep -qF -- "$s"; then pass "common-ground's report step says $s"; else fail "common-ground's report step says $s"; fi
 done
 
+echo "common-ground briefs the assumption-checker without verdict hints"
+cg_check=$(sed -n '/^3\. \*\*Check them\.\*\*/,/^4\. \*\*Report\*\*/p' "$CGC")
+s="carries only the assumption list and the checker's fixed rules, never hints about what a verdict should be"
+if printf '%s\n' "$cg_check" | grep -qF -- "$s"; then pass "common-ground's check step keeps verdict hints out of the brief"; else fail "common-ground's check step keeps verdict hints out of the brief"; fi
+
 echo "common-ground --graph lives in the index, so a regenerated ground file keeps it"
 FM="$REF/common-ground/file-management.md"
 schema=$(sed -n '/^### Schema$/,/^### Field Definitions$/p' "$FM")
