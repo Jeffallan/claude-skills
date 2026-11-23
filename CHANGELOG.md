@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- A Stop hook that can't find uv while a ticket is in progress blocks the first stop only. A session can't install uv, so blocking every stop kept an unattended goal run from ending until Claude Code's continuation cap cut it off. When Claude Code reports that a Stop hook already kept the session going (`stop_hook_active`), the hook lets the stop through, prints the uv message and shows the user that the guard did not run, so GREEN was not checked. The other hooks still block as before
+
 ## [0.5.1] - 2026-11-23
 
 ### Fixed
