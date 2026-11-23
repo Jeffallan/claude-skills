@@ -19,9 +19,9 @@ the workflow each step follows.
 ## How these examples were written
 
 These are worked examples, not pasted session transcripts. Each step follows the Core Workflow in that skill's
-`SKILL.md`, and the code excerpts use the framework versions listed in [CONTRIBUTING.md](../CONTRIBUTING.md). Run
-the prompts in your own project and your wording and output will differ. That is expected. The prompts, the skill
-order, and the checks at each step are the parts to copy.
+`SKILL.md`, and the code excerpts use the framework versions listed in [CONTRIBUTING.md](../CONTRIBUTING.md). When you run
+the prompts in your own project, your wording and output will differ. The prompts, the skill order, and the
+checks at each step are the parts to copy.
 
 One question from issue #98: where do the files a skill produces go? That is your team's call. Many teams commit
 the spec from `feature-forge` with the code. Others turn the spec into tickets first and work one ticket per pull

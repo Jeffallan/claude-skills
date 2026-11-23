@@ -85,7 +85,7 @@ public class SecurityConfig {
 }
 ```
 
-Two details matter. The API is stateless and sends no session cookie, so CSRF is off everywhere except the one
+The API is stateless and sends no session cookie, so CSRF is off everywhere except the one
 endpoint that does read a cookie: the refresh endpoint, which takes the refresh token from the httpOnly cookie
 set at login and keeps CSRF protection through CookieCsrfTokenRepository. Passwords use BCrypt with a cost of
 12, the same encoder this project's security reference uses.
@@ -143,8 +143,7 @@ Audit the authentication code we just added. List findings by severity, with the
 ```
 
 **What the skill does:** `security-reviewer` scans first, then reports. One scan it runs is
-`semgrep --config=auto .`, from its own workflow. Findings come back as a short list with a fix for each, not a
-pass or fail stamp.
+`semgrep --config=auto .`, from its own workflow. Findings come back as a short list with a fix for each.
 
 **Output excerpt:**
 
@@ -162,4 +161,4 @@ Fix the findings, run `./mvnw test` again, and the change is ready for review.
 
 1. The threat model in step 1 decided where the refresh token lives. Steps 2-4 just kept that promise.
 2. The tests in step 3 encode the access rules, so a later config edit cannot open an endpoint by accident.
-3. The audit in step 4 checks the finished code, not the plan. Run it last, on the code you will actually ship.
+3. The audit in step 4 checks the finished code, so run it last, on the code you will ship.
