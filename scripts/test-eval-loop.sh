@@ -107,6 +107,15 @@ out=$(python3 "$DISC" --repo "$R" --topic billing --gold "$WORK/disc5-gold.json"
 set -e
 if has "$out" routing 0; then pass "discovery needs the whole route to match an alternative"; else fail "discovery needs the whole route to match an alternative: $out"; fi
 
+# gold_edit <src> <dst> <python statement on d>: a copy of a gold file with one change
+gold_edit() {
+    python3 - "$1" "$2" "$3" <<'PY'
+import json, sys
+src, dst, stmt = sys.argv[1:]
+d = json.load(open(src)); exec(stmt); json.dump(d, open(dst, "w"))
+PY
+}
+
 echo "common-ground scorer"
 
 cat >"$WORK/cg-report.md" <<'MD'
@@ -259,16 +268,49 @@ if has "$out" conflict-recall 0; then pass "common-ground either: an unknown row
 out=$(cg_either "")
 if has "$out" conflict-recall 0; then pass "common-ground either: a missing row fails conflict-recall"; else fail "common-ground either: a missing row fails conflict-recall: $out"; fi
 out=$(cg_either "| sso:A7 | conflicts | sso | Receipts go through the Mailer | createApp passes no Mailer | spec:create sso |")
-if has "$out" conflict-recall 0 && has "$out" right-spec 0 && has "$out" no-false-flags 1; then pass "common-ground either: a conflicts row on another spec fails recall and right-spec"; else fail "common-ground either: a conflicts row on another spec fails recall and right-spec: $out"; fi
+if has "$out" conflict-recall 0 && has "$out" right-spec 0 && has "$out" no-false-flags 0; then pass "common-ground either: a conflicts row on another spec fails recall, right-spec and no-false-flags"; else fail "common-ground either: a conflicts row on another spec fails recall, right-spec and no-false-flags: $out"; fi
 
-# gold_edit <src> <dst> <python statement on d>: a copy of a gold file with one change
-gold_edit() {
-    python3 - "$1" "$2" "$3" <<'PY'
-import json, sys
-src, dst, stmt = sys.argv[1:]
-d = json.load(open(src)); exec(stmt); json.dump(d, open(dst, "w"))
-PY
+# Each gold entry matches only rows of its own spec: a flag whose text collides with another spec's pattern is no
+# match for it. right-spec fails only when a gold conflict is missed on its spec and flagged on another one.
+cat >"$WORK/cg-spec-gold.json" <<'JSON'
+{"conflicts": [{"spec": "audit-log", "match": "npm run (sweep|migrate)"}],
+ "holds": [{"spec": "due-reminders", "match": "sweep"}]}
+JSON
+cg_spec() { # $1 = gold file, then the report rows
+    local g=$1
+    shift
+    printf '%s\n' "| ID | Verdict | Spec | Assumption | Source | Fix |" "|----|---------|------|------------|--------|-----|" "$@" >"$WORK/cg-spec.md"
+    python3 "$CG" --report "$WORK/cg-spec.md" --gold "$g" 2>&1 || true
 }
+AUD="| audit-log:A6 | conflicts | audit-log | The CLI tasks write over HTTP | npm run sweep writes SQLite directly | spec:create audit-log |"
+SWP="| due-reminders:A1 | holds | due-reminders | The overdue sweep runs hourly | components: Overdue sweep | - |"
+DUE="| due-reminders:A16 | conflicts | due-reminders | Reminders cover all sweeps | npm run sweep sends none | spec:create due-reminders |"
+out=$(cg_spec "$WORK/cg-spec-gold.json" "$AUD" "$SWP" "$DUE")
+if has "$out" conflict-recall 1 && has "$out" right-spec 1 && has "$out" no-false-flags 0; then pass "common-ground: a flag colliding with another spec's pattern is a false flag on its own spec, not a wrong spec"; else fail "common-ground: a flag colliding with another spec's pattern is a false flag on its own spec, not a wrong spec: $out"; fi
+out=$(cg_spec "$WORK/cg-spec-gold.json" "$SWP" "$DUE")
+if has "$out" conflict-recall 0 && has "$out" right-spec 0; then pass "common-ground: a gold conflict flagged only on another spec fails recall and right-spec"; else fail "common-ground: a gold conflict flagged only on another spec fails recall and right-spec: $out"; fi
+gold_edit "$WORK/cg-spec-gold.json" "$WORK/cg-spec-bad.json" 'd["holds"][0]["spec"] = "audit-log"'
+out=$(cg_spec "$WORK/cg-spec-bad.json" "$AUD" "$SWP" "| audit-log:A2 | holds | audit-log | The sweep is a timer | server.ts | - |")
+if has "$out" holds-recognized 1; then pass "common-ground: a gold hold matches a holds row of its own spec"; else fail "common-ground: a gold hold matches a holds row of its own spec: $out"; fi
+out=$(cg_spec "$WORK/cg-spec-bad.json" "$AUD" "$SWP")
+if has "$out" holds-recognized 0; then pass "common-ground: a gold hold does not match a holds row of another spec"; else fail "common-ground: a gold hold does not match a holds row of another spec: $out"; fi
+
+# A gold optional entry is a true conflict a run need not flag: a conflicts row matching it on its spec is no false
+# flag, and a run without it still passes conflict-recall.
+cat >"$WORK/cg-opt-gold.json" <<'JSON'
+{"conflicts": [{"spec": "audit-log", "match": "npm run (sweep|migrate)"}],
+ "optional": [{"spec": "due-reminders", "match": "all sweeps"}]}
+JSON
+out=$(cg_spec "$WORK/cg-opt-gold.json" "$AUD" "$DUE")
+for c in conflict-recall no-false-flags right-spec; do
+    if has "$out" "$c" 1; then pass "common-ground optional: a conflicts row matching it passes $c"; else fail "common-ground optional: a conflicts row matching it passes $c: $out"; fi
+done
+out=$(cg_spec "$WORK/cg-opt-gold.json" "$AUD")
+if has "$out" conflict-recall 1 && has "$out" no-false-flags 1 && printf '%s' "$out" | grep -qF "1 of 1 gold conflicts"; then pass "common-ground optional: a run without it passes conflict-recall and does not count it"; else fail "common-ground optional: a run without it passes conflict-recall and does not count it: $out"; fi
+gold_edit "$WORK/cg-opt-gold.json" "$WORK/cg-opt-bad.json" 'd["optional"][0]["spec"] = "audit-log"'
+out=$(cg_spec "$WORK/cg-opt-bad.json" "$AUD" "$DUE")
+if has "$out" no-false-flags 0; then pass "common-ground optional: an entry of another spec does not cover the row"; else fail "common-ground optional: an entry of another spec does not cover the row: $out"; fi
+
 
 echo "spec:current and spec:diff scorer"
 

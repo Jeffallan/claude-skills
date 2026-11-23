@@ -104,43 +104,40 @@ def score(report: str, gold: dict) -> list[dict]:
     flags = [r for r in rows(report) if verdict(r) == "conflicts"]
     holds = [r for r in rows(report) if verdict(r) == "holds"]
     text = lambda r: f"{r.get('assumption', '')} {r.get('source', '')}"  # noqa: E731
-    missed, wrong_spec, matched = [], [], set()
-    for g in gold.get("conflicts", []):
-        hits = [i for i, r in enumerate(flags) if re.search(g["match"], text(r), re.I)]
-        if not hits:
-            missed.append(g["match"])
-        matched.update(hits)
-        wrong_spec += [
-            f"{g['match']}: flagged on {flags[i]['spec']}, want {g['spec']}"
-            for i in hits
-            if flags[i].get("spec") != g["spec"]
-        ]
-    # An either entry passes as a conflicts row of its spec, or as a holds row of its spec that names the caveat
     full = lambda r: f"{text(r)} {r.get('fix', '')}"  # noqa: E731
-    for g in gold.get("either", []):
-        hits = [i for i, r in enumerate(flags) if re.search(g["match"], text(r), re.I)]
+    # A gold entry matches only rows of its own spec: text that collides with another spec's pattern is no match
+    on = lambda g, r: r.get("spec") == g["spec"] and re.search(g["match"], text(r), re.I)  # noqa: E731
+    missed, matched = [], set()
+    for g in gold.get("conflicts", []):
+        hits = [i for i, r in enumerate(flags) if on(g, r)]
+        if not hits:
+            missed.append(g)
         matched.update(hits)
-        wrong_spec += [
-            f"{g['match']}: flagged on {flags[i]['spec']}, want {g['spec']}"
-            for i in hits
-            if flags[i].get("spec") != g["spec"]
-        ]
+    # An either entry passes as a conflicts row of its spec, or as a holds row of its spec that names the caveat
+    for g in gold.get("either", []):
+        matched.update(i for i, r in enumerate(flags) if on(g, r))
         if not any(
-            r.get("spec") == g["spec"]
-            and re.search(g["match"], text(r), re.I)
+            on(g, r)
             and (
                 verdict(r) == "conflicts" or (verdict(r).startswith("holds") and re.search(g["caveat"], full(r), re.I))
             )
             for r in rows(report)
         ):
-            missed.append(g["match"])
+            missed.append(g)
+    # An optional entry is true but not required: a flag matching it is no false flag, and recall never needs it
+    for g in gold.get("optional", []):
+        matched.update(i for i, r in enumerate(flags) if on(g, r))
     false = [flags[i].get("id", "?") for i in range(len(flags)) if i not in matched]
-    n = len(gold.get("conflicts", [])) + len(gold.get("either", []))
-    not_held = [
-        g["match"]
-        for g in gold.get("holds", [])
-        if not any(re.search(g["match"], text(r), re.I) and r.get("spec") == g["spec"] for r in holds)
+    # right-spec: a gold conflict the run missed on its spec but flagged on another one
+    wrong_spec = [
+        f"{g['match']}: flagged on {flags[i].get('spec')}, want {g['spec']}"
+        for g in missed
+        for i in range(len(flags))
+        if i not in matched and re.search(g["match"], text(flags[i]), re.I)
     ]
+    missed = [g["match"] for g in missed]
+    n = len(gold.get("conflicts", [])) + len(gold.get("either", []))
+    not_held = [g["match"] for g in gold.get("holds", []) if not any(on(g, r) for r in holds)]
     return [
         check(
             "conflict-recall",
