@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Comprehensive skill pack for full-stack developers covering frameworks, workflows, and security",
-    "version": "0.4.21"
+    "version": "0.4.22"
   },
   "plugins": [
     {
@@ -16,7 +16,7 @@
         "ref": "plugin"
       },
       "description": "70 specialized skills for full-stack development: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 9 backend frameworks, 8 frontend/mobile, plus infrastructure, DevOps, security, and testing skills. Includes 9 project workflow commands for epic planning, discovery, execution, and retrospectives.",
-      "version": "0.4.21",
+      "version": "0.4.22",
       "author": {
         "name": "jeffallan",
         "email": "jeff@synergetic.solutions",

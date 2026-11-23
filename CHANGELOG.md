@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.22] - 2026-11-23
+
 ### Added
 - Workflow examples: `examples/` holds three step-by-step walkthroughs that chain skills on one task, a Go REST API from spec to Docker image, a slow Django endpoint debugged in production, and JWT authentication for a Spring Boot API, each giving the prompt, the skill it triggers and a short excerpt. The README links them (#317, closing #98)
 
 ### Changed
 - Handbook v0.6.3: the handbook-update and notes-check workflows run on the runner labels in the `RUNNER_LABELS` variable (default `ubuntu-latest`) and pass the handbook token through the environment instead of `~/.gitconfig`; the docs site moves to Starlight 0.43.1, Astro 7.4.12 and Prettier 3.10.1 (#333)
+
+### Contributors
+- @CloudCorpRecords: multi-skill workflow examples (#317)
 
 ## [0.4.21] - 2026-11-20
 
@@ -621,7 +626,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...HEAD
+[0.4.22]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...v0.4.22
 [0.4.21]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...v0.4.21
 [0.4.20]: https://github.com/jeffallan/claude-skills/compare/v0.4.19...v0.4.20
 [0.4.19]: https://github.com/jeffallan/claude-skills/compare/v0.4.18...v0.4.19
