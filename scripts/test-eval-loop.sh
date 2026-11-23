@@ -231,6 +231,36 @@ out=$(python3 "$CG" --report "$WORK/cg-twice.md" --gold "$WORK/cg-holds-gold.jso
 set -e
 if has "$out" holds-recognized 0; then pass "common-ground: a gold hold reported unknown fails holds-recognized"; else fail "common-ground: a gold hold reported unknown fails holds-recognized: $out"; fi
 
+# A gold "either" entry passes conflict-recall as a conflicts row, or as a holds row whose text names the caveat; a
+# conflicts row matching it is no false flag, and it is not required by holds-recognized.
+cat >"$WORK/cg-either-gold.json" <<'JSON'
+{"conflicts": [{"spec": "sso", "match": "F-001"}],
+ "holds": [{"spec": "sso", "match": "API is wired"}],
+ "either": [{"spec": "billing-v2", "match": "receipt", "caveat": "finesRouter|createApp"}]}
+JSON
+cg_either() { # $1 = the receipt row, or nothing for no row
+    printf '%s\n' "| ID | Verdict | Spec | Assumption | Source | Fix |" "|----|---------|------|------------|--------|-----|" \
+        "| sso:A2 | conflicts | sso | F-001 is fixed | findings: F-001 (open) | spec:create sso |" \
+        "| sso:A3 | holds | sso | The API is wired | components: API | - |" ${1:+"$1"} >"$WORK/cg-either.md"
+    python3 "$CG" --report "$WORK/cg-either.md" --gold "$WORK/cg-either-gold.json" 2>&1 || true
+}
+out=$(cg_either "| billing-v2:A7 | conflicts | billing-v2 | Receipts go through the Mailer | createApp passes no Mailer | spec:create billing-v2 |")
+for c in conflict-recall no-false-flags right-spec holds-recognized; do
+    if has "$out" "$c" 1; then pass "common-ground either: a conflicts row passes $c"; else fail "common-ground either: a conflicts row passes $c: $out"; fi
+done
+out=$(cg_either "| billing-v2:A7 | holds | billing-v2 | Receipts go through the Mailer | mail.ts | none (createApp must pass it to finesRouter) |")
+if has "$out" conflict-recall 1 && has "$out" holds-recognized 1; then pass "common-ground either: a holds row naming the caveat in Fix passes"; else fail "common-ground either: a holds row naming the caveat in Fix passes: $out"; fi
+out=$(cg_either "| billing-v2:A7 | holds (caveat) | billing-v2 | Receipts go through the Mailer | createApp doesn't pass it to finesRouter | none |")
+if has "$out" conflict-recall 1; then pass "common-ground either: a verdict starting with holds and the caveat in Source passes"; else fail "common-ground either: a verdict starting with holds and the caveat in Source passes: $out"; fi
+out=$(cg_either "| billing-v2:A7 | holds | billing-v2 | Receipts go through the Mailer | mail.ts | none |")
+if has "$out" conflict-recall 0; then pass "common-ground either: a holds row without the caveat fails conflict-recall"; else fail "common-ground either: a holds row without the caveat fails conflict-recall: $out"; fi
+out=$(cg_either "| billing-v2:A7 | unknown | billing-v2 | Receipts go through the Mailer | createApp, finesRouter | - |")
+if has "$out" conflict-recall 0; then pass "common-ground either: an unknown row fails conflict-recall"; else fail "common-ground either: an unknown row fails conflict-recall: $out"; fi
+out=$(cg_either "")
+if has "$out" conflict-recall 0; then pass "common-ground either: a missing row fails conflict-recall"; else fail "common-ground either: a missing row fails conflict-recall: $out"; fi
+out=$(cg_either "| sso:A7 | conflicts | sso | Receipts go through the Mailer | createApp passes no Mailer | spec:create sso |")
+if has "$out" conflict-recall 0 && has "$out" right-spec 0 && has "$out" no-false-flags 1; then pass "common-ground either: a conflicts row on another spec fails recall and right-spec"; else fail "common-ground either: a conflicts row on another spec fails recall and right-spec: $out"; fi
+
 # gold_edit <src> <dst> <python statement on d>: a copy of a gold file with one change
 gold_edit() {
     python3 - "$1" "$2" "$3" <<'PY'

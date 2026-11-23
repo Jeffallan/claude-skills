@@ -115,8 +115,27 @@ def score(report: str, gold: dict) -> list[dict]:
             for i in hits
             if flags[i].get("spec") != g["spec"]
         ]
+    # An either entry passes as a conflicts row of its spec, or as a holds row of its spec that names the caveat
+    full = lambda r: f"{text(r)} {r.get('fix', '')}"  # noqa: E731
+    for g in gold.get("either", []):
+        hits = [i for i, r in enumerate(flags) if re.search(g["match"], text(r), re.I)]
+        matched.update(hits)
+        wrong_spec += [
+            f"{g['match']}: flagged on {flags[i]['spec']}, want {g['spec']}"
+            for i in hits
+            if flags[i].get("spec") != g["spec"]
+        ]
+        if not any(
+            r.get("spec") == g["spec"]
+            and re.search(g["match"], text(r), re.I)
+            and (
+                verdict(r) == "conflicts" or (verdict(r).startswith("holds") and re.search(g["caveat"], full(r), re.I))
+            )
+            for r in rows(report)
+        ):
+            missed.append(g["match"])
     false = [flags[i].get("id", "?") for i in range(len(flags)) if i not in matched]
-    n = len(gold.get("conflicts", []))
+    n = len(gold.get("conflicts", [])) + len(gold.get("either", []))
     not_held = [
         g["match"]
         for g in gold.get("holds", [])
