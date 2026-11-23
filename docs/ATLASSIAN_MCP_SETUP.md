@@ -78,7 +78,7 @@ The rest of this guide sets up the community `mcp-atlassian` server in Docker. B
    - For Server/Data Center: Administrative access to generate personal access tokens
 
 3. **Claude Code CLI installed**
-   - Claude Code starts the MCP server from the configuration below
+   - Claude Code connects to the remote server, or runs the Docker server from the configuration below
 
 ---
 
