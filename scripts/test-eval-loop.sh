@@ -513,6 +513,26 @@ if has "$out" verify-recall 0 && has "$out" verify-false-flags 1; then
 else
     fail "spec-complete-docs: an empty docs:verify table misses the required claims and flags nothing: $out"
 fi
+# docs:verify split into Stale / Holds / Unknown tables (an extra ID column on one): every table counts, not only the last
+python3 - "$WORK/verify.md" "$WORK/verify-split.md" <<'PY'
+import sys
+rows = [l for l in open(sys.argv[1]) if l.startswith("| ") and not l.startswith("| Doc")]
+stale = [r for r in rows if "| fixed |" in r]
+holds = [r for r in rows if "| holds |" in r]
+out = "## Stale\n\n| ID | Doc | Claim | Verdict | Evidence |\n|----|-----|-------|---------|----------|\n"
+out += "".join(f"| V{i} {r}" for i, r in enumerate(stale, 1))
+out += "\n## Holds\n\n| Doc | Claim | Verdict | Evidence |\n|-----|-------|---------|----------|\n" + "".join(holds)
+out += "\n## Unknown\n\n| Doc | Claim | Verdict | Evidence |\n|-----|-------|---------|----------|\n| docs/README.md | \"Exports are fast\" | unknown | none |\n"
+open(sys.argv[2], "w").write(out)
+PY
+set +e
+out=$(co_score "$WORK/sd-after.md" "$WORK/verify-split.md")
+set -e
+if has "$out" verify-recall 1 && has "$out" verify-false-flags 1; then
+    pass "spec-complete-docs reads every docs:verify table, not only the last"
+else
+    fail "spec-complete-docs reads every docs:verify table, not only the last: $out"
+fi
 
 echo "discovery approve-outcome checks"
 

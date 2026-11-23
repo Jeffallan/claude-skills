@@ -85,8 +85,8 @@ def description_checks(before: str, after: str, gold: dict[str, Any]) -> list[di
 
 def verify_checks(report: str, gold: dict[str, Any]) -> list[dict]:
     """Every required stale claim is flagged on its doc, and no true claim is."""
-    found = tables(report, {"doc", "claim"})
-    rows = found[-1] if found else []
+    # every table: a run may split the file into Stale, Holds and Unknown tables
+    rows = [r for t in tables(report, {"doc", "claim"}) for r in t]
     # without a Verdict column (an earlier proposed shape) every row is a flag
     flags = [r for r in rows if "verdict" not in r or FLAGGED.search(verdict(r))]
     excluded = tuple(gold.get("excluded_docs", []))
