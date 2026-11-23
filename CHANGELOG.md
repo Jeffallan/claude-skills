@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-23
+
+### Fixed
+- Guard hooks fail closed when uv can't be found while a ticket is in progress. Each hook ran `uv` from the PATH Claude Code starts with, which can lack the shell profile that adds `~/.local/bin` (Claude Code started from a desktop app or an IDE). The hook then exited 127, which Claude Code treats as non-blocking, so edits to frozen RED tests and a goal run's stop check went through unchecked. The hooks now also look in `~/.local/bin` and `~/.cargo/bin`, and otherwise block with a message naming the cause. Without a ticket in progress nothing changes. Goal Runs explains the message
+- CI: the Validate job installs uv, which the plugin tree tests need to run the hooks
+
 ## [0.5.0] - 2026-11-23
 
 ### Added
@@ -667,7 +673,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/jeffallan/claude-skills/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...v0.5.0
 [0.4.22]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...v0.4.22
 [0.4.21]: https://github.com/jeffallan/claude-skills/compare/v0.4.20...v0.4.21
