@@ -37,4 +37,4 @@ Claude often operates on assumptions about project context, technology choices, 
 
 ## Usage
 
-Can be invoked at any point during the workflow — during intake, before planning, mid-execution, or whenever assumptions are building up. There is no prescribed moment; use judgment.
+You can run it at any point in the workflow: during intake, before planning, mid-execution, or whenever assumptions are building up. There is no prescribed moment; use judgment.

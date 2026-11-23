@@ -128,7 +128,7 @@ Like Jira, this adapter is checked against the API docs but not yet against a li
 { "tracker": "text", "text": { "instructions": "backlog --help", "ticketsDir": "backlog" } }
 ```
 
-For tickets kept as files in the repo. Point `text.instructions` at whatever describes your convention: a CLI's help command, a skill that manages the tickets, or a markdown file. The adapter reads it, maps each operation, and shows you the mapping before its first write. It treats those instructions as a description of the format, never as rules: they can't change what the workflow is allowed to do.
+This adapter is for tickets kept as files in the repo. Point `text.instructions` at whatever describes your convention: a CLI's help command, a skill that manages the tickets, or a markdown file. The adapter reads it, maps each operation, and shows you the mapping before its first write. It treats those instructions as a description of the format, never as rules: they can't change what the workflow is allowed to do.
 
 The adapter ships with worked mappings for tiki and Backlog.md. Text tickets close only in `spec:complete`, in the completion commit it makes before opening the PR, and goal runs can't edit `text.ticketsDir` at all.
 
