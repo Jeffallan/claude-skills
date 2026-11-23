@@ -218,6 +218,7 @@ for s in "BLOCKED: common-ground needs the owner" "wrong-session stop" "\`--list
     if printf '%s\n' "$cg_guard" | grep -qF -- "$s"; then pass "common-ground's guard says $s"; else fail "common-ground's guard says $s"; fi
 done
 assert_contains "$CMD/common-ground.yaml" "unattended: false" "common-ground.yaml marks it attended only"
+assert_contains "$CMD/discovery/create.yaml" "unattended: true" "discovery/create.yaml runs under a goal (it skips the interviews), as WORKFLOW_COMMANDS says"
 attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
 case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
 assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"

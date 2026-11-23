@@ -17,6 +17,6 @@ requires:
 status: existing
 argument-hint: "<topic-or-ticket>"
 repeat: false
-unattended: false
+unattended: true
 adapter-operations:
   - read
