@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-23
+
 ### Changed
 - Intake: v0.5.0 kept reproduction detail out of git only for Critical and High security findings in public repos or repos of unknown visibility. Now every security finding, at any severity and in every repo, keeps its reproduction detail in the git-excluded `docs/intake-findings-restricted.md`, and its tests are committed with neutral names
 
@@ -679,7 +681,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/jeffallan/claude-skills/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/jeffallan/claude-skills/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...v0.5.0
 [0.4.22]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...v0.4.22
