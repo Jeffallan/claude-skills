@@ -107,7 +107,7 @@ type Task struct {
 	ID     int64     `json:"id"`
 	Title  string    `json:"title"`
 	Status string    `json:"status"`
-	DueAt  time.Time `json:"due_at,omitempty"`
+	DueAt  *time.Time `json:"due_at,omitempty"`
 }
 
 func (h *Handler) createTask(w http.ResponseWriter, r *http.Request) {

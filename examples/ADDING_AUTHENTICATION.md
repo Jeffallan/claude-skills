@@ -64,7 +64,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/api/auth/refresh", "POST")))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
@@ -83,9 +85,10 @@ public class SecurityConfig {
 }
 ```
 
-Two details matter. CSRF is off because the API is stateless and sends no session cookie; that reasoning goes in
-the commit message. Passwords use BCrypt with a cost of 12, the same encoder this project's security reference
-uses.
+Two details matter. The API is stateless and sends no session cookie, so CSRF is off everywhere except the one
+endpoint that does read a cookie: the refresh endpoint, which takes the refresh token from the httpOnly cookie
+set at login and keeps CSRF protection through CookieCsrfTokenRepository. Passwords use BCrypt with a cost of
+12, the same encoder this project's security reference uses.
 
 ---
 
