@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook pre-tool-use"
+            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; u=\"$(command -v uv)\"; for c in \"$HOME/.local/bin/uv\" \"$HOME/.cargo/bin/uv\"; do [ -n \"$u\" ] || { [ -x \"$c\" ] && u=\"$c\"; }; done; [ -n \"$u\" ] || { echo \"ticket-guard: uv not found on the PATH Claude Code runs hooks with, or in ~/.local/bin or ~/.cargo/bin. A ticket is in progress, so the guard blocks this instead of letting it through unchecked. Put uv on that PATH and retry (see Goal Runs, 'When something goes wrong').\" >&2; exit 2; }; exec \"$u\" run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook pre-tool-use"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook post-tool-use"
+            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; u=\"$(command -v uv)\"; for c in \"$HOME/.local/bin/uv\" \"$HOME/.cargo/bin/uv\"; do [ -n \"$u\" ] || { [ -x \"$c\" ] && u=\"$c\"; }; done; [ -n \"$u\" ] || { echo \"ticket-guard: uv not found on the PATH Claude Code runs hooks with, or in ~/.local/bin or ~/.cargo/bin. A ticket is in progress, so the guard blocks this instead of letting it through unchecked. Put uv on that PATH and retry (see Goal Runs, 'When something goes wrong').\" >&2; exit 2; }; exec \"$u\" run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook post-tool-use"
           }
         ]
       }
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook stop"
+            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; u=\"$(command -v uv)\"; for c in \"$HOME/.local/bin/uv\" \"$HOME/.cargo/bin/uv\"; do [ -n \"$u\" ] || { [ -x \"$c\" ] && u=\"$c\"; }; done; [ -n \"$u\" ] || { echo \"ticket-guard: uv not found on the PATH Claude Code runs hooks with, or in ~/.local/bin or ~/.cargo/bin. A ticket is in progress, so the guard blocks this instead of letting it through unchecked. Put uv on that PATH and retry (see Goal Runs, 'When something goes wrong').\" >&2; exit 2; }; exec \"$u\" run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook stop"
           }
         ]
       }
@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook session-start"
+            "command": "m=\"$(git -C \"${CLAUDE_PROJECT_DIR:-.}\" rev-parse --absolute-git-dir 2>/dev/null)/ticket-guard/marker.json\"; [ -f \"$m\" ] || exit 0; u=\"$(command -v uv)\"; for c in \"$HOME/.local/bin/uv\" \"$HOME/.cargo/bin/uv\"; do [ -n \"$u\" ] || { [ -x \"$c\" ] && u=\"$c\"; }; done; [ -n \"$u\" ] || { echo \"ticket-guard: uv not found on the PATH Claude Code runs hooks with, or in ~/.local/bin or ~/.cargo/bin. A ticket is in progress, so the guard blocks this instead of letting it through unchecked. Put uv on that PATH and retry (see Goal Runs, 'When something goes wrong').\" >&2; exit 2; }; exec \"$u\" run -q --no-project --python \">=3.11\" \"${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook session-start"
           }
         ]
       }

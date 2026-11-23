@@ -51,6 +51,8 @@ This saves the ticket's changes to `.git/ticket-guard/blocked/<ticket>.patch` (n
 
 **New issues aren't worked.** Anything the run notices that's outside the spec goes into the plan's Proposed tracker changes, with an example, the files involved and a duplicate check. `spec:complete` offers to file them later.
 
+**"uv not found" from a hook.** The guard's hooks run with the environment Claude Code started with, which can lack the shell profile that puts uv on your PATH (common when Claude Code starts from a desktop app or an IDE). The hooks also look in `~/.local/bin` and `~/.cargo/bin`. When they still can't find uv while a ticket is in progress, they block the edit or the stop and print this message, so nothing goes through unchecked. Put uv on the PATH Claude Code starts with, or start Claude Code from a shell that has it, and retry.
+
 **`BLOCKED:` is for the whole spec.** A run ends with `BLOCKED:` only when nothing more can be done: the environment won't build, the sources contradict each other on something every ticket needs, and the like. A run where only blocked tickets remain finishes normally and lists them first in its report.
 
 ## What keeps a run honest
