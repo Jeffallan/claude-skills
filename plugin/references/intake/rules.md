@@ -1,0 +1,215 @@
+# Intake Rules
+
+The rules every intake procedure shares: where the output goes, how a documentation procedure checks scope and audits its document, how a testing procedure proves its tests run, and how both behave in a goal run. The `intake` command runs each procedure (`references/intake/procedures/<procedure>.md`, called `intake:<procedure>` in the checklist, doc frontmatter and commit trailers) in an agent, and the agent reads this file before its first phase. "Command" below means the procedure. Findings and the tests that pin them follow `references/intake/findings.md`.
+
+## Output layout
+
+Documentation commands write one document each under `docs/`, grouped by category. Testing commands write into the project's existing test tree; they never create a parallel one.
+
+```
+docs/
+├── README.md                         # intake:create-onboarding, the docs index (README-intake.md when the project has its own)
+├── intake-findings.md                # the findings tracker, every command appends
+├── intake-existing-docs.md           # intake:existing-docs, the docs the project already had
+├── system-description.md             # intake:create-system-description
+├── architecture/
+│   ├── data-model.md                 # intake:document-data-model
+│   ├── file-tree.md                  # intake:document-file-tree
+│   ├── external-integrations.md      # intake:document-integrations
+│   └── api-reference.md              # intake:document-api
+├── domain/
+│   ├── user-model.md                 # intake:document-user-model
+│   ├── features.md                   # intake:document-features
+│   └── glossary.md                   # intake:document-glossary
+├── security/
+│   ├── security.md                   # intake:document-security
+│   └── authorization.md              # intake:document-authorization
+├── flows/
+│   └── user-flow.md                  # intake:document-user-flow
+├── operations/
+│   ├── configuration.md              # intake:document-config
+│   └── analytics-events.md           # intake:document-analytics
+└── specs/completed/baseline/
+    └── overview.md                   # the baseline spec, see intake:create-system-description
+```
+
+- The five categories are `docs/architecture/` (how it is built), `docs/domain/` (what it does), `docs/security/`, `docs/flows/` (user journeys) and `docs/operations/` (how it runs).
+- Cross-link sibling docs with relative paths (`../security/authorization.md`).
+- Each command owns its file. A rerun edits it in place (see "Reruns"); it never rewrites the whole file. The findings tracker is the exception: commands only append to it.
+- The docs index is `docs/README.md`, or `docs/README-intake.md` when the project already had its own `docs/README.md` (an owner doc, see "Existing docs"). Once the index exists, a command that writes a new doc adds it there in the same commit (`intake:create-system-description` adds `system-description.md` and `specs/`).
+- A later command that proves an earlier doc wrong, incomplete or stale corrects it in its own commit: a doc saying a test "will" pin a behavior that is now pinned, a finding called "suspected" that a test confirmed, the test trees `intake:testing-setup` adds go into `file-tree.md`, an account path a testing command finds goes into `user-model.md` and `security.md`. Keep the doc's structure and add a dated line to its `## Accuracy audit` naming what changed and why. A doc that stops matching the code is worse than no doc.
+
+## Existing docs
+
+Docs the project had before intake are the owner's. Intake never edits them. `intake:existing-docs` lists them in `docs/intake-existing-docs.md` and checks their claims against the code:
+
+- A claim the code contradicts is a finding with its evidence (the doc and the symbol), like any other bug.
+- A claim no code can settle ("deploys take five minutes") is marked unverified in the inventory, never a finding.
+- A topic an existing doc covers fully is linked from the intake doc for that topic, not repeated. A topic it covers in part or not at all is written by the intake procedure for it, as usual.
+- When an owner doc sits at an intake doc's path, the intake doc goes beside it as `<name>-intake.md`, and each lists the other in `related:`.
+
+The docs index lists the owner docs too, marking each "owner-written" with its open finding ids. When the owner's `docs/README.md` holds the index path, intake's index is `docs/README-intake.md` and lists that README among the owner docs.
+
+## Doc frontmatter and citations
+
+Every intake doc starts with frontmatter:
+
+```markdown
+---
+command: intake:document-api
+verified: 95a4f38
+sources:
+  - backend/api/urls.py
+  - backend/api/apps/*/views.py
+related: [security/authorization.md, architecture/data-model.md]
+---
+```
+
+| Key | Holds | Written |
+|-----|-------|---------|
+| `command` | The intake procedure that owns the doc (`intake:<procedure>`). A doc without it is the project's own | When the command first writes the doc |
+| `verified` | The short SHA of HEAD when the doc's accuracy audit last ran: the code the doc was checked against | At every full audit: the command's first run, a rerun, a drift repair. A ticket that edits the doc leaves it alone, since a commit that changes code and the doc together counts as the doc's update |
+| `sources` | Globs of the code the doc describes, matched against repo paths (`*` crosses folders). They catch new code no citation names yet. Keep them narrow: the files this doc's claims come from (`backend/api/urls.py`, `backend/api/apps/*/views.py`), never a whole tree (`backend/**`). A ticket that adds a file matching a doc's glob must update or waive that doc | When the command writes the doc; widened when the doc's scope grows |
+| `related` | The docs that state facts this one depends on, or that depend on it, as paths under `docs/`, each link two-way | Whenever a cross-link changes |
+
+`guard docs-drift` lists each doc whose code changed since its `verified` commit, through a cited symbol or a `sources` glob, in commits that didn't also update the doc, and each doc edited outside the workflow since then (a commit with no `Intake:` or `Ticket:` trailer).
+
+Cite only the project's own code. Installed dependencies and other vendored code (`node_modules/`, a virtualenv, `vendor/`, anything git ignores) are not the project's responsibility and change on every install: name the package and the version the lockfile pins, and describe the behavior the project relies on, never a `path::symbol` inside it. `sources:` globs never reach into vendored code either. Cite code by symbol: `` `app/billing/services.py::round_minutes` ``, `` `app/models.py::Profile.save` `` for a method, the key name for configuration. Never cite `path:line`: `intake:document-codebase` and every later docstring move lines, so a line number goes stale before the run ends. After a ticket workflow adopts these docs, `ticket:execute` finds the docs a change affects through these citations and `related:` links.
+
+Check both before committing a doc:
+
+```bash
+uv run -q --no-project --python ">=3.11" "${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz" docs-check
+```
+
+It reports a `related:` doc that is missing or doesn't link back, a citation whose file or symbol is gone, a citation into vendored or git-ignored code, and a `verified` that isn't a commit. Fix what it lists in intake docs; an owner doc it lists goes in the inventory instead.
+
+## Reruns
+
+A rerun of a documentation command updates its doc; it never regenerates it from the template. People edit these docs, and a rewrite would destroy their edits.
+
+1. Run `guard docs-drift` and read the doc's rows: what changed in the code since `verified`, and whether the doc was edited outside the workflow.
+2. Re-audit the doc against the code as it is now, starting with what drift lists.
+3. Edit only the sections whose claims the code no longer bears out, or that a `sources` match shows are missing something. Keep every other passage as it stands, hand edits included, and keep sections the template doesn't have.
+4. A hand-edited passage the code contradicts is corrected like any other claim. Name it in the `## Accuracy audit` entry, so the owner sees their text changed and why.
+5. Set `verified` to the HEAD the audit ran against, and add a dated entry to `## Accuracy audit`.
+
+A doc whose `command` names another command, or that has none, is not this command's to edit: link to it, and record contradictions as findings.
+
+## What intake may change
+
+Intake changes docs, tests, test configuration and docstrings. Nothing else.
+
+| May change | Never changes |
+|------------|---------------|
+| Files under `docs/` | Application code, other than comments and docstrings |
+| Test files, fixtures and helpers | Dependencies the application ships with |
+| Test runner config, test scripts in the package manifest, dev-only test dependencies | Build, deploy or runtime config |
+| Comments and docstrings | Database schemas or migrations |
+
+Intake never deletes or prunes a shared cache outside the repo (browser builds, package caches, toolchains): other projects on the machine use them. Install what a layer needs beside what is there.
+
+A command that finds it can't test something without changing application code records a finding and leaves the code alone. `intake:testing-setup` may add a test-only hook (an environment flag the test config sets) only when the code has no seam at all, and records it as a finding so the owner sees it.
+
+### A red baseline
+
+When the existing suite fails before intake starts, find out why before any other testing work. `intake:testing-setup` owns this.
+
+- **The test code is stale**: a factory, fixture or helper under the test tree no longer matches the code (a field moved to another model, an import was renamed). That is test infrastructure, so repair it, record a finding naming the commit that broke it, and let the repaired tests characterize the code like any others.
+- **The application misbehaves**: the test is right and the code is wrong. Keep the test, mark it expected-fail with a new finding id, and add a passing characterization test beside it.
+- **The environment won't build**: a dependency that no longer installs, an image that fails to build. Build config is outside intake, so work around it outside the repo (a scratch image, a pinned tool), record a finding, and name the workaround in the test command you report.
+
+Never leave the suite red. The goal run's `<done_when>` and the intake eval's `characterization-green` both need the test command to exit 0 at the end; neither compares before and after.
+
+## Checkpoint
+
+Every command has one checkpoint before it writes: the documentation commands after discovery, the testing commands after designing their cases. The checkpoint shows the scope (what was found, what will be written, where) so a wrong scope costs nothing.
+
+Attended, it runs as pause and resume, because an agent can't ask the owner:
+
+1. The `intake` command starts the procedure's agent for discovery (or case design). The agent returns its scope as its report and writes nothing.
+2. The `intake` command shows the scope and waits for the owner.
+3. The `intake` command resumes the same agent with `SendMessage`, giving the confirmed or corrected scope, and the agent writes with its discovery still in context.
+
+In a goal run there is no stop, since nobody would answer it. The agent runs the procedure in one pass: at the checkpoint it puts the scope it would have shown in its report under `Checkpoint draft:` and goes on to write ("In a goal run" below). The `intake` command copies the draft into the item's checklist note.
+
+## Agents and commits
+
+The procedures run in writing agents (`doc-writer`, `test-writer`, `security-prober`, `architect`); `code-reader` agents only read.
+
+- One writing agent runs at a time, except the three parallel testing items (`intake:testing-features`, `intake:testing-authorization`, `intake:testing-owasp`), which the `intake` command starts together after `intake:testing-setup`. They leave the tracker alone and report their findings under provisional ids, and the command assigns the real ones ("Parallel testing writers" in the command). `code-reader` agents may run beside the writer and each other, since they never write: the `intake` command starts the next item's fact pass while the current item writes.
+- Agents never commit, stage or branch. After each writing agent, the `intake` command reviews its diff against "What intake may change" and commits it with the item's trailer, using the note and message the agent drafted ("The item report").
+- An agent can't start agents. A procedure that needs independent readers (the second pass of `document-authorization`) returns their inputs, and the `intake` command starts `code-reader` agents and resumes the writer with their reports.
+- While a ticket marker exists, no agent writes: ticket work happens in the main session, where the guard's hooks apply. The plugin's hooks also fire on an agent's tool calls, so they still catch an agent edit there.
+
+## The item report
+
+A writing agent runs its item's own check after its last edit and before it reports: `guard docs-check` for a documentation item, the project's test command for a testing item. The `intake` command commits from the report without rerunning that check, so the output must be fresh and complete. The agent ends its report with this block, then its `Skills loaded:` line:
+
+```
+Changed files:
+<every path created, edited or deleted, one per line>
+Checks:
+<the command as run> (exit <code>)
+<its summary: pass, fail and skip counts (blocked ones with their reason), or every row docs-check listed>
+Checklist note:
+  - <YYYY-MM-DD>: <evidence>. Findings: <ids raised, or none>. Re-rated: <F-0xx <old> -> <new> (<reason>), or none>. Skills: <skills loaded, and `<skill> not loaded: <reason>` for any it didn't load>. human-voice: <writing-with-agents:human-voice | by hand>
+  - Checkpoint draft: <the scope, in a goal run only>
+Commit message:
+<docs|test>(intake): <procedure>
+
+Intake: intake:<procedure>
+```
+
+- The note follows "Human-voice pass" and "Skills" below. The human-voice line is for a documentation item only.
+- The message's last paragraph holds only trailers. The `intake` command adds its own (`Co-Authored-By:`) to that paragraph, with no blank line between them.
+- Report a check's output as it ran, failing or not. A failure the agent can fix within "What intake may change" is fixed and the check rerun before reporting.
+- In the parallel testing batch, a `Tracker edits:` section follows `Checks:`, as the batch lines in the `intake` command describe.
+- An item that commits twice (`intake:testing-authorization`'s matrix update) drafts a message for each, naming which changed files go in which.
+
+## Human-voice pass
+
+Every documentation command gives its document's prose a human-voice pass after writing it and before the accuracy audit: people read these docs too. When the `writing-with-agents:human-voice` command is available, run it in embedded mode on the prose; otherwise remove the usual tells by hand (no em dashes, no sentences opening with "And" or "But", no "not just X, but Y" shapes, no filler). Leave code, commands, paths, identifiers, tables of facts, frontmatter and `path::symbol` citations exactly as they are. The pass may change wording, never a claim; the audit below then re-checks every claim against the code. Record it in the item's checklist note as `human-voice: writing-with-agents:human-voice` when you called the command on this document in this item, or `human-voice: by hand` when you made the pass yourself. The intake eval checks each note against a call inside that item, and scans the finished prose for the tells.
+
+## Accuracy audit
+
+Every documentation command ends with an audit, because agents read its document as the implementation contract. After writing and the human-voice pass, re-read each claim against the code: names, types, paths, constraints, defaults, call sites. Then:
+
+- Fix or remove any claim the code doesn't prove. Prefer "unknown" or "not enforced" over a guess.
+- Ground every example in a real call site, and cite it as `path::symbol`.
+- Keep each fact in one doc. Read the docs already written for anything this one restates: the doc that owns the topic keeps the fact, and this one links to it. A sentence repeated word for word across docs fails the eval, and a fact kept in six docs needs six edits when it changes.
+- When two sources disagree (a type and a rule, a doc and the code), keep both in the document, flag the discrepancy and add a finding.
+- Set the frontmatter's `verified` to the short SHA of the HEAD the audit ran against.
+- End the document with an `## Accuracy audit` section: the date, the commit, what was checked and how, and the finding ids it raised. The eval looks for this section.
+
+## Run and verify
+
+Every testing command ends by running what it wrote, because its output is code that must execute.
+
+- Run the suite with the project's own script and capture fresh output in the summary: the command, the pass, fail and skip counts, and the exit code.
+- Every characterization test passes. Every intended-behavior test is skipped or expected-fail and names its finding id. A table-driven test names its finding id in the row itself, never through a helper's default argument, so a reader at the row sees which finding it pins.
+- Update the tracker in the same commit as the tests: a Test coverage row per finding, the finding's `Tests:` line, and its text when the test confirmed or disproved it (`references/intake/findings.md`, "Every finding has evidence").
+- Seed related records so their ids differ across tables (user 1 owns profile 7). A fresh database often numbers everything from 1, so code that uses one table's id for another passes by coincidence.
+- A deny or error-path test asserts the specific denial or error, never just "it threw". A test that passes because something unrelated failed is a false pass.
+- Keep the type checker and linter as clean as they were before the run.
+- A layer that can't run here (no emulator, no browser, a missing secret) is reported as blocked with the reason. It never counts as passing. Its tests skip with a `BLOCKED: <reason>` message, so the rest of the suite still runs and exits 0; the summary and the item report's `Checks:` give the blocked count and its reason beside the pass and fail counts. An exit 0 with blocked tests is not a green suite: say which layer didn't run.
+- `intake:testing-setup` proves each layer with a smoke test before any other testing command writes a real test.
+
+## In a goal run
+
+Intake commands run unattended inside a `/goal` run, under the rules in `references/specs/unattended.md` that apply to ticket commands. Two rules change for intake:
+
+- **Never call `AskUserQuestion`.** The checkpoint becomes a draft: the agent reports the scope it would have shown as its checkpoint draft, which goes in the item's checklist note, and continues with it. It never stops to wait. A routine scope confirmation is not a question. Add an Open questions row to `docs/intake-findings.md`, with a draft decision, only when the owner could reasonably choose differently and the choice changes what gets written: a layer skipped, a surface left out, a contradiction picked one way.
+- **Never block on a missing document.** A command whose input doc is absent works from the code alone and adds an Open question saying so.
+
+The rest holds unchanged: no tracker writes, no history rewrites, agents write one at a time (but for the parallel testing items) and never commit ("Agents and commits"). A command that can't finish (a layer won't run, the project won't build) records why in its summary and the Open questions, and the run moves to the next command. Only a stop the goal prompt lists ends the run with `BLOCKED:`.
+
+Outside a goal, an `intake` run that finds `AskUserQuestion` unavailable at its checkpoint never drafts in its place: it takes the wrong-session stop in `references/specs/unattended.md`.
+
+## Skills
+
+Each command names its skills by exact name. The language and framework skill is chosen by detection: read the package manifest and lockfile, the framework config and the test config, then pick the matching `fullstack-dev-skills:` skill. A stack with no matching skill gets none, and the command says so rather than borrowing a neighbor's.
+
+The `intake` command names the skills in the agent's brief ("Use the <skill> skill to ..."): the procedure's "Skills to load" list plus the detected stack skills. The agent calls the Skill tool for each before the step that needs it, and ends its report with `Skills loaded: ...`. The `intake` command resumes or reruns an agent whose list lacks a skill it was given.
+
+The checklist note records only what the item's agents did. Name a skill there only when an agent reported loading it in this item. A skill the procedure lists but no agent loaded gets `<skill> not loaded: <reason>` instead. The next session trusts the note, and the intake eval checks every named skill against the transcripts, the agents' included.

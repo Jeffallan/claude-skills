@@ -55,7 +55,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Microservices Architect](https://jeffallan.github.io/claude-skills/skills/api-architecture/microservices-architect/)**: Microservices patterns, service mesh, distributed systems
 - **[MCP Developer](https://jeffallan.github.io/claude-skills/skills/api-architecture/mcp-developer/)**: Model Context Protocol development and integration
 - **[Architecture Designer](https://jeffallan.github.io/claude-skills/skills/api-architecture/architecture-designer/)**: System design, choosing architectures, ADRs
-- **[Feature Forge](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)**: Creating new features, gathering requirements, writing specs
+- **[Feature Forge](https://jeffallan.github.io/claude-skills/skills/workflow/feature-forge/)**: Creating new features, gathering requirements, writing specs. The workflow runs it inside `discovery:create` for vague items and inside `spec:create` for open questions
 - **[Spec Miner](https://jeffallan.github.io/claude-skills/skills/workflow/spec-miner/)**: Analyzing existing code, reverse-engineering specifications
 
 ### Quality & Testing
@@ -99,38 +99,39 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 - **[Debugging Wizard](https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/)**: Systematic debugging across all languages
 - **[Fullstack Guardian](https://jeffallan.github.io/claude-skills/skills/security/fullstack-guardian/)**: Implementing features across full stack
 - **[The Fool](https://jeffallan.github.io/claude-skills/skills/workflow/the-fool/)**: Challenge ideas and decisions with 5 structured reasoning modes
+- **[Ticket Guard](https://jeffallan.github.io/claude-skills/skills/workflow/ticket-guard/)**: Guarding one workflow ticket with RED and GREEN evidence, a test freeze and compaction recovery
 
 ## Skill Workflows
 
 ### New Feature Development
-1. **Feature Forge** - Define requirements and spec
-2. **Architecture Designer** - Design system architecture (if complex)
-3. **Fullstack Guardian** + Framework Skills - Implement
-4. **Test Master** + **Playwright Expert** - Test comprehensively
-5. **Code Reviewer** - Review code
-6. **Security Reviewer** - Security review
-7. **DevOps Engineer** - Deploy
-8. **Monitoring Expert** - Add observability
+1. **Feature Forge**: Define requirements and spec
+2. **Architecture Designer**: Design system architecture (if complex)
+3. **Fullstack Guardian** + Framework Skills: Implement
+4. **Test Master** + **Playwright Expert**: Test
+5. **Code Reviewer**: Review code
+6. **Security Reviewer**: Security review
+7. **DevOps Engineer**: Deploy
+8. **Monitoring Expert**: Add observability
 
 ### Bug Fixing
-1. **Debugging Wizard** - Identify root cause
-2. **Fullstack Guardian** + Framework Skills - Fix
-3. **Test Master** - Add regression tests
-4. **Code Reviewer** - Review fix
-5. **DevOps Engineer** - Deploy
+1. **Debugging Wizard**: Identify root cause
+2. **Fullstack Guardian** + Framework Skills: Fix
+3. **Test Master**: Add regression tests
+4. **Code Reviewer**: Review fix
+5. **DevOps Engineer**: Deploy
 
 ### Code Review Process
-1. **Code Reviewer** - General code review
-2. **Security Reviewer** - Security-focused review
-3. **Architecture Designer** - Architectural review (if needed)
+1. **Code Reviewer**: General code review
+2. **Security Reviewer**: Security-focused review
+3. **Architecture Designer**: Architectural review (if needed)
 
 To install the code review skill and see an example report, open the [Code Reviewer page](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/).
 
 ### Legacy Code Analysis
-1. **Spec Miner** - Reverse-engineer specs
-2. **Architecture Designer** - Document architecture
-3. **Code Documenter** - Add missing documentation
-4. **Security Reviewer** - Security audit
+1. **Spec Miner**: Reverse-engineer specs
+2. **Architecture Designer**: Document architecture
+3. **Code Documenter**: Add missing documentation
+4. **Security Reviewer**: Security audit
 
 ## Decision Trees
 
@@ -213,7 +214,7 @@ To install the code review skill and see an example report, open the [Code Revie
 
 ## Skill Combinations
 
-Common combinations for maximum effectiveness:
+Skills that are often combined:
 
 ### Full Feature Development
 - Feature Forge + Fullstack Guardian + Framework Skills + Test Master + DevOps Engineer

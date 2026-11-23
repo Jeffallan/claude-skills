@@ -146,6 +146,26 @@ make validate > /dev/null 2>&1 || EXIT=$?
 
 assert_exit_zero $EXIT "validate exits 0"
 
+# ─── Test 9: evidence target is wired to its script ──────────────────
+echo "--- Test 9: evidence ---"
+
+if make -n evidence 2>/dev/null | grep "bash scripts/evidence.sh" >/dev/null; then
+    pass "evidence runs scripts/evidence.sh"
+else
+    fail "evidence runs scripts/evidence.sh"
+fi
+EXIT=0
+bash -n scripts/evidence.sh > /dev/null 2>&1 || EXIT=$?
+assert_exit_zero $EXIT "scripts/evidence.sh parses"
+if make -n evidence EXPECT_UPSTREAM=1 RETIRED='old-name' 2>/dev/null | grep "EXPECT_UPSTREAM=1 RETIRED='old-name' bash scripts/evidence.sh" >/dev/null; then
+    pass "evidence passes EXPECT_UPSTREAM and RETIRED to the script"
+else
+    fail "evidence passes EXPECT_UPSTREAM and RETIRED to the script"
+fi
+for var in EXPECT_UPSTREAM RETIRED; do
+    if grep -q "\${$var:-" scripts/evidence.sh; then pass "evidence.sh reads $var with a default"; else fail "evidence.sh reads $var with a default"; fi
+done
+
 # ─── Summary ─────────────────────────────────────────────────────────
 echo ""
 echo "========================================"

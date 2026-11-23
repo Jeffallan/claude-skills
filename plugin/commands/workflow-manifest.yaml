@@ -1,0 +1,93 @@
+version: "1.0"
+
+phases:
+  intake:
+    description: docs/workflow/intake-phase.md
+    depends_on: []
+    run_once: true
+    commands:
+      - command: "intake"
+        definition: plugin/commands/intake.yaml
+
+  discovery:
+    description: docs/workflow/discovery-phase.md
+    depends_on:
+      - phase: intake
+        strength: recommended
+    optional: true             # Way in when no tickets exist; existing tickets start at spec:triage
+    external_skills:
+      - skill: feature-forge   # Interviews vague items; output saved in the topic folder
+        role: companion
+      - skill: spec-miner      # Light pass so proposed tickets reflect existing code
+        role: companion
+    commands:
+      - command: "discovery:create"
+        definition: plugin/commands/discovery/create.yaml
+      - command: "discovery:approve"
+        definition: plugin/commands/discovery/approve.yaml
+
+  # triage groups tickets and cuts the branch, create plans, the ticket phase runs,
+  # review checks the branch diff, complete opens the PR, merges and closes tickets
+  spec:
+    description: docs/workflow/spec-phase.md
+    depends_on:
+      - phase: discovery
+        strength: recommended
+    external_skills:
+      - skill: spec-miner              # spec:create codebase analysis; spec:complete docs:verify
+        role: companion
+      - skill: architecture-designer   # spec:create when structure changes; spec:review panel
+        role: companion
+      - skill: security-reviewer       # spec:create and spec:review when auth or sensitive data are touched
+        role: companion
+      - skill: api-designer            # spec:create and spec:review when routes or schemas are touched
+        role: companion
+      - skill: feature-forge           # spec:create open questions
+        role: companion
+      - skill: the-fool                # spec:create optional challenge pass
+        role: companion
+      - skill: prompt-engineer         # spec:create goal prompt
+        role: companion
+      - skill: code-reviewer           # spec:review panel, always
+        role: companion
+      - skill: test-master             # spec:create RED tests; spec:review panel, always
+        role: companion
+      - skill: secure-code-guardian    # spec:review panel when auth, crypto or input handling are touched
+        role: companion
+      - skill: debugging-wizard        # spec:review blind verifiers
+        role: companion
+    commands:
+      - command: "spec:triage"
+        definition: plugin/commands/spec/triage.yaml
+      - command: "spec:create"
+        definition: plugin/commands/spec/create.yaml
+      - command: "spec:review"
+        definition: plugin/commands/spec/review.yaml
+      - command: "spec:complete"
+        definition: plugin/commands/spec/complete.yaml
+      - command: "spec:status"
+        definition: plugin/commands/spec/status.yaml
+      - command: "spec:current"
+        definition: plugin/commands/spec/current.yaml
+      - command: "spec:diff"
+        definition: plugin/commands/spec/diff.yaml
+
+  # Runs between spec:create and spec:review, one ticket at a time, attended or in a goal run
+  ticket:
+    description: docs/workflow/ticket-phase.md
+    depends_on:
+      - phase: spec
+        strength: required
+    external_skills:
+      - skill: test-master     # RED tests written before the code
+        role: companion
+    commands:
+      - command: "ticket:execute"
+        definition: plugin/commands/ticket/execute.yaml
+      - command: "ticket:complete"
+        definition: plugin/commands/ticket/complete.yaml
+
+utilities:
+  - command: common-ground
+    definition: plugin/commands/common-ground.yaml
+    invocation: on-demand

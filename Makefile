@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink validate test site-dev site-build lint format lint-fix
+.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground eval-goal-guard eval-spec-current-diff eval-spec-complete-docs site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -21,9 +21,9 @@ dev-link:
 		exit 1; \
 	fi
 	mv "$(CACHE_DIR)" "$(CACHE_DIR).bak"
-	ln -s "$(CURDIR)" "$(CACHE_DIR)"
+	ln -s "$(CURDIR)/plugin" "$(CACHE_DIR)"
 	@echo ""
-	@echo "Linked: $(CACHE_DIR) -> $(CURDIR)"
+	@echo "Linked: $(CACHE_DIR) -> $(CURDIR)/plugin"
 	@echo "Restart Claude Code to load changes from your working copy."
 
 dev-unlink:
@@ -41,13 +41,38 @@ dev-unlink:
 	@echo "Restored cache from backup."
 	@echo "Restart Claude Code to load the released version."
 
-validate:
-	uvx skill-linter@0.2.0 release
-	uvx skill-linter@0.2.0 stamp --check
+guard:
+	python3 scripts/build-guard.py runtime plugin/runtime/guard.pyz
 
-test:
+guard-check:
+	python3 scripts/build-guard.py runtime plugin/runtime/guard.pyz --check
+
+guard-test:
+	cd runtime && PYTHONPATH=. uv run --no-project --with pytest python -m pytest tests -q -p no:cacheprovider
+
+validate:
+	uvx skill-linter@0.4.0 release
+	uvx skill-linter@0.4.0 stamp --check
+
+test: guard-check guard-test
 	bash scripts/test-makefile.sh
-	bash scripts/test-build-plugin-dist.sh
+	bash scripts/test-plugin-tree.sh
+	bash scripts/test-review-wiring.sh
+	bash scripts/test-launch-command.sh
+	bash scripts/test-command-rules.sh
+	bash scripts/test-command-docs.sh
+	bash scripts/test-doc-links.sh
+	bash scripts/test-severity-rules.sh
+	bash scripts/test-eval-workflow.sh
+	bash scripts/test-eval-intake.sh
+	bash scripts/test-eval-loop.sh
+	bash scripts/test-eval-severity.sh
+
+EXPECT_UPSTREAM ?= 0
+RETIRED ?= spec:reopen\|create-epic\|complete-sprint\|execute-ticket\|discovery:synthesize\|--roadmap\|commands/intake/
+
+evidence:
+	EXPECT_UPSTREAM=$(EXPECT_UPSTREAM) RETIRED='$(RETIRED)' bash scripts/evidence.sh
 
 site-dev:
 	cd site && npm run dev
@@ -67,3 +92,39 @@ format:
 	cd site && npx prettier --plugin prettier-plugin-astro --write "src/**" "scripts/**" astro.config.mjs
 
 lint-fix: format
+
+eval-workflow:
+	@python3 scripts/eval_workflow_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPO),--repo "$(REPO)") $(if $(SPEC),--spec "$(SPEC)") \
+		$(if $(GOLD),--gold "$(GOLD)") $(foreach t,$(TRANSCRIPTS),--transcript "$(t)") $(if $(REFLOG),--reflog "$(REFLOG)") \
+		$(if $(PLUGIN),--version "$(PLUGIN)") $(if $(MODEL),--model "$(MODEL)")
+
+eval-intake:
+	@python3 scripts/eval_intake_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPO),--repo "$(REPO)") $(if $(START),--start "$(START)") \
+		$(if $(TEST_CMD),--test-cmd "$(TEST_CMD)") $(foreach g,$(TEST_PATHS),--test-path "$(g)") $(foreach t,$(TRANSCRIPTS),--transcript "$(t)") $(if $(REFLOG),--reflog "$(REFLOG)") \
+		$(if $(PLUGIN),--version "$(PLUGIN)") $(if $(MODEL),--model "$(MODEL)")
+
+eval-baseline:
+	@python3 scripts/eval_intake_baseline.py $(if $(PRINT),--print) "$(EVAL)"
+
+eval-discovery:
+	@python3 scripts/eval_discovery_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPO),--repo "$(REPO)") $(if $(TOPIC),--topic "$(TOPIC)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-common-ground:
+	@python3 scripts/eval_common_ground_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPORT),--report "$(REPORT)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-goal-guard:
+	@python3 scripts/eval_goal_guard.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(DIR),--dir "$(DIR)") $(if $(COMMAND),--command "$(COMMAND)") $(foreach t,$(TRANSCRIPTS),--transcript "$(t)")
+
+eval-spec-current-diff:
+	@python3 scripts/eval_spec_current_diff_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(REPO),--repo "$(REPO)") $(if $(START),--start "$(START)") $(if $(DIFF_REPORT),--diff-report "$(DIFF_REPORT)") \
+		$(if $(DIFF_BEFORE),--diff-before "$(DIFF_BEFORE)") $(if $(DIFF_AFTER),--diff-after "$(DIFF_AFTER)") $(if $(GOLD),--gold "$(GOLD)")
+
+eval-spec-complete-docs:
+	@python3 scripts/eval_spec_complete_docs_run.py $(if $(EVAL),--eval "$(EVAL)" --run "$(RUN)") \
+		$(if $(BEFORE),--before "$(BEFORE)") $(if $(AFTER),--after "$(AFTER)") $(if $(VERIFY),--verify "$(VERIFY)") $(if $(GOLD),--gold "$(GOLD)")

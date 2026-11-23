@@ -75,6 +75,28 @@ syncSite({
       category: 'guides',
     },
     {
+      src: 'docs/INTAKE.md',
+      dest: 'guides/intake.md',
+      title: 'Intake',
+      description:
+        'Adopt an existing codebase: document it, pin its behavior in tests and track its bugs',
+      category: 'guides',
+    },
+    {
+      src: 'docs/TRACKER_SETUP.md',
+      dest: 'guides/tracker-setup.md',
+      title: 'Tracker Setup',
+      description: 'Configure the workflow tracker adapters and code host',
+      category: 'guides',
+    },
+    {
+      src: 'docs/GOAL_RUNS.md',
+      dest: 'guides/goal-runs.md',
+      title: 'Goal Runs',
+      description: 'Launch, follow and check unattended goal runs',
+      category: 'guides',
+    },
+    {
       src: 'docs/COMMON_GROUND.md',
       dest: 'guides/common-ground.md',
       title: 'Common Ground',
@@ -106,8 +128,9 @@ syncSite({
   ],
   workflowsDir: 'docs/workflow',
   linkMap: {
-    '../commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
-    'commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
+    '../plugin/commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
+    'plugin/commands/common-ground.md': `${BASE_PATH}/guides/common-ground/`,
+    '../GOAL_RUNS.md': `${BASE_PATH}/guides/goal-runs/`,
     LICENSE: `${GITHUB_BLOB}/LICENSE`,
     'docs/v0.5.0-plan.md': `${GITHUB_BLOB}/docs/v0.5.0-plan.md`,
   },

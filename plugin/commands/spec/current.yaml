@@ -1,0 +1,20 @@
+command: "spec:current"
+phase: spec
+path: plugin/commands/spec/current.md
+description: docs/workflow/spec-current.md
+inputs: []
+outputs:
+  - name: current-state
+    type: file
+    path: docs/current-state.json
+    description: Compiled current state (components with status, open findings, drift), each row naming its source
+  - name: system-description
+    type: file
+    path: docs/system-description.md
+    description: The system description with completed specs folded in, when the owner approves the changes
+requires: []
+status: existing
+argument-hint: ""
+repeat: true
+unattended: true
+adapter-operations: []

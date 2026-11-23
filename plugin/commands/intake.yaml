@@ -1,0 +1,20 @@
+command: "intake"
+phase: intake
+path: plugin/commands/intake.md
+description: docs/workflow/intake-phase.md
+inputs:
+  - name: procedure
+    type: string
+    required: false
+    description: One intake procedure to run or rerun, followed by its options. Without it, the checklist is worked from the first unchecked item.
+outputs:
+  - name: intake-docs
+    type: directory
+    path: docs/
+    description: The intake docs, the findings tracker, the checklist and the system description, one commit per checklist item.
+requires: []
+status: existing
+argument-hint: "[procedure]"
+repeat: true
+unattended: true
+adapter-operations: []

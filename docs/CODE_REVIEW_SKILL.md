@@ -30,10 +30,10 @@ To install the code review skill on its own, copy its folder into your personal 
 
 ```bash
 git clone https://github.com/jeffallan/claude-skills.git
-cp -r claude-skills/skills/code-reviewer ~/.claude/skills/
+cp -r claude-skills/plugin/skills/code-reviewer ~/.claude/skills/
 ```
 
-For Cursor, Codex CLI, Gemini CLI and other agents, see [Getting Started](https://jeffallan.github.io/claude-skills/getting-started/).
+For Cursor, Codex CLI, Gemini CLI and other agents, see [Supported Agents](https://jeffallan.github.io/claude-skills/guides/supported-agents/).
 
 ## How to start a review
 

@@ -1,0 +1,22 @@
+command: "discovery:create"
+phase: discovery
+path: plugin/commands/discovery/create.md
+description: docs/workflow/discovery-create.md
+inputs:
+  - name: topic-input
+    type: string
+    required: true
+    description: Feature sets, business requirements, a build request, or an existing ticket ID with real unknowns
+outputs:
+  - name: discovery-document
+    type: file
+    path: "{specsRoot}/todo/discovery/{topic}/discovery.md"
+    description: Feature list, open questions, proposed tickets and status for one discovery topic
+requires:
+  - ticketing
+status: existing
+argument-hint: "<topic-or-ticket>"
+repeat: false
+unattended: true
+adapter-operations:
+  - read

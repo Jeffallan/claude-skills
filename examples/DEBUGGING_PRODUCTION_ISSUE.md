@@ -64,7 +64,7 @@ print(len(ctx))  # 203 queries for a page of 100 orders
 ```
 
 203 queries for 100 rows confirms the hypothesis: one query for the orders, then one per order for the customer
-and one per order for its items. No fix yet. The count is the evidence the fix has to change.
+and one per order for its items. Hold off on the fix: the count is the evidence it has to change.
 
 ---
 

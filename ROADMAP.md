@@ -2,12 +2,12 @@
 
 ## Current Status
 
-**Version:** v<!-- VERSION -->0.4.22<!-- /VERSION --> (Released October 2026)
+**Version:** v<!-- VERSION -->0.5.0<!-- /VERSION --> (Released October 2026)
 
-- **<!-- SKILL_COUNT -->70<!-- /SKILL_COUNT --> Skills** across 12 domains
-- **<!-- REFERENCE_COUNT -->392<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
+- **<!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> Skills** across 12 domains
+- **<!-- REFERENCE_COUNT -->393<!-- /REFERENCE_COUNT --> Reference Files** with progressive disclosure architecture
 - **30+ Frameworks** and technologies covered
-- **<!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Project Workflow Commands** for epic planning, discovery, execution, and retrospectives
+- **<!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> Project Workflow Commands** for intake, discovery, specs, test-first tickets and assumption checks
 - **50% Token Reduction** through selective disclosure architecture
 - Skills organized by domain: Backend, Frontend, DevOps, Mobile, Data, Security, Product, and Business
 
@@ -41,38 +41,31 @@ Introduced 9 project workflow commands spanning discovery, planning, execution, 
 
 ## v0.5.0 - Workflow Overhaul
 
-**Scope:** Decouple workflow commands from Jira/Confluence, add per-project backend configuration, create a project intake phase, rework discovery for product-centric workflows, integrate feature-forge into the pipeline.
+**Scope:** One path from tracker tickets to a reviewed, merged PR, with specs kept as markdown in the repo and tickets reached through tracker adapters. Designed in [#253](https://github.com/Jeffallan/claude-skills/issues/253).
 
-See [`docs/v0.5.0-plan.md`](docs/v0.5.0-plan.md) for the consolidated implementation plan.
+### Commands
+- Nine workflow commands in three folders: `discovery:create`, `discovery:synthesize`, `discovery:approve`, `spec:triage`, `spec:create`, `spec:review`, `spec:complete`, `ticket:execute`, `ticket:complete` ([#123](https://github.com/Jeffallan/claude-skills/issues/123))
+- "Spec" replaces "epic"; `complete-sprint` and the planning commands are folded into `spec:create` and `spec:complete`
+- [#103](https://github.com/Jeffallan/claude-skills/issues/103): grouping happens in `spec:triage`, which creates or finds each spec's group in the tracker
 
-### Backend Adapter Pattern
-- [#62](https://github.com/Jeffallan/claude-skills/issues/62): Generalize workflow commands for multiple ticketing and documentation systems
-- [#119](https://github.com/Jeffallan/claude-skills/issues/119): Backend adapter reference files (9 reference files for local, Jira, GitHub Issues, Confluence, GitHub Wiki backends)
-- Per-project config via `.claude/workflow-config.json` — ticketing (`local` | `jira` | `github-issues`) and documentation (`local` | `confluence` | `github-wiki`)
+### Tracker adapters
+- [#62](https://github.com/Jeffallan/claude-skills/issues/62), [#119](https://github.com/Jeffallan/claude-skills/issues/119): Jira, GitHub Issues, GitHub Projects, Linear and a per-project text adapter, plus a GitHub code-host adapter, configured in `.claude/workflow-config.json`
 
-### Intake Commands (New Phase)
-- [#120](https://github.com/Jeffallan/claude-skills/issues/120): Three new commands — `intake:document-codebase`, `intake:capture-behavior`, `intake:create-system-description`
-- Generates living system documentation, characterization tests, and SOC2-style system description
+### Discovery and Feature Forge
+- [#121](https://github.com/Jeffallan/claude-skills/issues/121): topic-based discovery that creates tickets only
+- [#122](https://github.com/Jeffallan/claude-skills/issues/122): Feature Forge runs inside `discovery:create` and `spec:create`
 
-### Discovery Rework
-- [#121](https://github.com/Jeffallan/claude-skills/issues/121): Full rewrite — topic-based input (not Jira epic key), local-first sources, produces epics AND tickets
-- [#103](https://github.com/Jeffallan/claude-skills/issues/103): Epic creation gap fix — discovery now creates epics, not just tickets
+### Goal runs and review
+- Unattended goal runs with launch-scoped denies, test-first tickets with recorded RED and GREEN evidence, and the plugin's guard hooks
+- `spec:review` with blind per-finding verifiers, a rollup and a gate
+- The workflow runtime ships inside the plugin (`runtime/guard.pyz`) and runs through `uv`
 
-### Feature-Forge Integration
-- [#122](https://github.com/Jeffallan/claude-skills/issues/122): System description context (Step 0), discovery recommendation ("Needs additional discovery" standing option), output boundaries (optional EARS), skill-aware ticket generation
+---
 
-### Namespace & Directory Restructure
-- [#123](https://github.com/Jeffallan/claude-skills/issues/123): Drop `project:` prefix — `project:phase:action` becomes `phase:action`; flatten `commands/project/` to `commands/`; remove `complete-sprint` command
+## v0.5.x - Intake
 
-### Already Completed (Phase 1-2)
-- [#124](https://github.com/Jeffallan/claude-skills/issues/124): YAML workflow definition schema + DAG manifest
-- [#125](https://github.com/Jeffallan/claude-skills/issues/125): Narrative document restructure with per-command metadata
-
-### Infrastructure
-- [#126](https://github.com/Jeffallan/claude-skills/issues/126): CI portability check — GitHub Action asserting `npx skills` detection matches `version.json`
-
-### Command Count: 11
-- 3 new (intake), 7 reworked (backend-agnostic), 1 removed (complete-sprint)
+- [#120](https://github.com/Jeffallan/claude-skills/issues/120): `intake:document-codebase`, `intake:capture-behavior`, `intake:create-system-description`, retrofitted to write baseline specs
+- `spec:complete` proposes system-description updates once per spec
 
 ---
 
@@ -80,22 +73,28 @@ See [`docs/v0.5.0-plan.md`](docs/v0.5.0-plan.md) for the consolidated implementa
 
 **Scope:** Global-to-local config migration, per-project skill activation, workflow infrastructure hardening.
 
-This release moves configuration from global to per-project, enabling teams to customize skill sets and workflow behavior per repository. Builds on the backend adapter pattern from v0.5.0.
+This release moves configuration from global to per-project, so teams can customize skill sets and workflow behavior per repository. It builds on the backend adapter pattern from v0.5.0.
 
 ### Configuration Migration
-- [Discussion #112](https://github.com/Jeffallan/claude-skills/discussions/112): Global-to-local config migration — `.claude/skills/` local install strategy, meta-skill/project analyzer
-- Per-project skill activation — select which skills are active for a given repository
+- [Discussion #112](https://github.com/Jeffallan/claude-skills/discussions/112): Global-to-local config migration (`.claude/skills/` local install strategy, meta-skill/project analyzer)
+- Per-project skill activation: select which skills are active for a given repository
 
 ### Workflow Infrastructure
-- [#50](https://github.com/Jeffallan/claude-skills/issues/50): Context Persistence — auto-store epic workflow state
-- [#51](https://github.com/Jeffallan/claude-skills/issues/51): State Validation — prevent commands from running out of order
-- [#52](https://github.com/Jeffallan/claude-skills/issues/52): Error Recovery — resume/rollback/retry mechanisms
-- [#53](https://github.com/Jeffallan/claude-skills/issues/53): Extract Shared Templates — centralize checkpoint patterns
-- [#54](https://github.com/Jeffallan/claude-skills/issues/54): Regression Test Suite — automated execution testing
-- [#55](https://github.com/Jeffallan/claude-skills/issues/55): Performance & Security Testing — systematic integration
+- [#50](https://github.com/Jeffallan/claude-skills/issues/50): Context Persistence (auto-store epic workflow state)
+- [#51](https://github.com/Jeffallan/claude-skills/issues/51): State Validation (prevent commands from running out of order)
+- [#52](https://github.com/Jeffallan/claude-skills/issues/52): Error Recovery (resume/rollback/retry mechanisms)
+- [#53](https://github.com/Jeffallan/claude-skills/issues/53): Extract Shared Templates (centralize checkpoint patterns)
+- [#54](https://github.com/Jeffallan/claude-skills/issues/54): Regression Test Suite (automated execution testing)
+- [#55](https://github.com/Jeffallan/claude-skills/issues/55): Performance & Security Testing (systematic integration)
 
 ### Common Ground
-- [#109](https://github.com/Jeffallan/claude-skills/issues/109): Common-ground local storage — persist assumptions per project
+- [#109](https://github.com/Jeffallan/claude-skills/issues/109): Common-ground local storage (persist assumptions per project)
+
+### Workflow Setup
+- A per-project setup skill that installs the workflow's project-local pieces, and a hook suggester
+
+### v0.6.x - Parallel Tickets
+- Parallel worktree waves in goal runs, after the setup skill installs a project-local ticket agent
 
 ---
 
@@ -104,18 +103,18 @@ This release moves configuration from global to per-project, enabling teams to c
 **Scope:** Improved skill discovery and routing, common-ground workflow integration. Depends on v0.6.0 local config.
 
 ### Skill Routing Improvements
-- [#65](https://github.com/Jeffallan/claude-skills/issues/65): Cross-Domain Recommendations — suggest complementary skills from different domains
-- [#66](https://github.com/Jeffallan/claude-skills/issues/66): Enhanced Routing Logic — context-aware skill selection
-- [#68](https://github.com/Jeffallan/claude-skills/issues/68): Skill Dependency Mapping — represent skill relationships
-- [#69](https://github.com/Jeffallan/claude-skills/issues/69): Skill metadata enhancement — structured `metadata` field for richer skill descriptors
+- [#65](https://github.com/Jeffallan/claude-skills/issues/65): Cross-Domain Recommendations (suggest complementary skills from different domains)
+- [#66](https://github.com/Jeffallan/claude-skills/issues/66): Enhanced Routing Logic (context-aware skill selection)
+- [#68](https://github.com/Jeffallan/claude-skills/issues/68): Skill Dependency Mapping (represent skill relationships)
+- [#69](https://github.com/Jeffallan/claude-skills/issues/69): Skill metadata enhancement (structured `metadata` field for richer skill descriptors)
 
 ### Common Ground Enhancements
-- [#108](https://github.com/Jeffallan/claude-skills/issues/108): Common-ground SessionStart hook — automatic assumption surfacing on session start
-- [#110](https://github.com/Jeffallan/claude-skills/issues/110): Common-ground progressive disclosure — phased assumption surfacing
-- [#111](https://github.com/Jeffallan/claude-skills/issues/111): Common-ground UserPromptSubmit hook — contextual assumption checks
+- [#108](https://github.com/Jeffallan/claude-skills/issues/108): Common-ground SessionStart hook (automatic assumption surfacing on session start)
+- [#110](https://github.com/Jeffallan/claude-skills/issues/110): Common-ground progressive disclosure (phased assumption surfacing)
+- [#111](https://github.com/Jeffallan/claude-skills/issues/111): Common-ground UserPromptSubmit hook (contextual assumption checks)
 
 ### Feasibility Evaluation
-- [#64](https://github.com/Jeffallan/claude-skills/issues/64): Smart Skill Discovery — consolidates #70, #71, #72; requires third-party tooling evaluation (vector embeddings, semantic search). Tracked separately pending feasibility assessment.
+- [#64](https://github.com/Jeffallan/claude-skills/issues/64): Smart Skill Discovery, which consolidates #70, #71, #72 and requires third-party tooling evaluation (vector embeddings, semantic search). It is tracked separately pending a feasibility assessment.
 
 ---
 
@@ -149,7 +148,7 @@ This release moves configuration from global to per-project, enabling teams to c
 
 ## Contributing to the Roadmap
 
-We welcome community input on the roadmap direction. Here's how you can contribute:
+Community input on the roadmap's direction is welcome in any of these ways:
 
 ### Suggest Features
 - Open a GitHub issue with the `enhancement` label
@@ -202,4 +201,4 @@ We welcome community input on the roadmap direction. Here's how you can contribu
 
 ---
 
-*This roadmap is a living document and subject to change based on community feedback, technical constraints, and emerging priorities. Last updated: October 2026 (v0.4.22)*
+*This roadmap may change with community feedback, technical constraints and new priorities. Last updated: October 2026 (v0.5.0)*

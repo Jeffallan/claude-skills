@@ -1,30 +1,27 @@
 # discovery:create
 
-Create a structured discovery workspace with research questions, hypotheses, and a research plan for a given topic.
+Turn a feature set, requirement, build request or unclear ticket into a discovery topic with proposed tickets.
 
 ---
 
 ## Overview
 
-Given an epic key, the agent fetches the epic and its linked tickets, extracts explicit and implicit questions, categorizes them by theme (customer discovery, technical feasibility, business viability, scope boundaries), and identifies appropriate research methods. The output is a published Confluence discovery document that structures the human research phase.
+The command lists each item in the input, runs a light `spec-miner` pass so proposed tickets reflect the existing code, and routes each item: clear items get proposed tickets, vague ones go through a Feature Forge interview saved in the topic folder, and items with real unknowns go to research. When a goal is active, it skips the interviews, records each vague item's open questions in `discovery.md` and asks you to rerun attended.
 
 ## Inputs
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `epic-key` | string | yes | Jira epic key for the discovery epic (e.g., CC-60) |
+| `topic-input` | string | yes | Feature sets, business requirements, a build request, or an existing ticket ID with real unknowns |
 
 ## Outputs
 
 | Name | Type | Path | Description |
 |------|------|------|-------------|
-| `discovery-document` | url | `/epics/Discovery/{epic-key}/` | Confluence page with hypothesis map, research questions matrix, dependencies, research plan, decision framework, and risk register |
-
-## Prerequisites
-
-- Epic exists in Jira with linked tickets
-- Jira and Confluence access configured
+| `discovery-document` | file | `{specsRoot}/todo/discovery/{topic}/discovery.md` | Feature list, open questions, proposed tickets and status |
+| `feature-specs` | files | `{specsRoot}/todo/discovery/{topic}/{feature}.md` | One Feature Forge specification per vague item |
+| `sources` | directory | `{specsRoot}/todo/discovery/{topic}/sources/` | Created for research items; research results go here as markdown |
 
 ## Next Steps
 
-After the discovery document is created, humans conduct research (interviews, spikes, competitive analysis). When research is complete, run `discovery:synthesize` with the discovery document URL and any additional research artifact URLs.
+Either way, run `discovery:approve` next. With research items, gather findings in `sources/` first: `discovery:approve` synthesizes them before it asks for decisions.

@@ -1,0 +1,30 @@
+command: "discovery:approve"
+phase: discovery
+path: plugin/commands/discovery/approve.md
+description: docs/workflow/discovery-approve.md
+inputs:
+  - name: topic
+    type: string
+    required: true
+    description: Discovery topic name to approve
+  - name: decisions
+    type: list[string]
+    required: false
+    description: Pre-resolved blocking decisions (e.g., --decision=D1:B --decision=D2:Y)
+outputs:
+  - name: synthesis-document
+    type: file
+    path: "{specsRoot}/todo/discovery/{topic}/synthesis.md"
+    description: Findings, unknowns, blocking decisions and proposed tickets, written first when research ran and no synthesis exists
+  - name: created-tickets
+    type: tickets
+    description: Tickets created in the configured tracker, ready for spec:triage
+requires:
+  - ticketing
+status: existing
+argument-hint: "<topic> [--decision=<id>:<value>...]"
+repeat: false
+unattended: false
+adapter-operations:
+  - create
+  - read

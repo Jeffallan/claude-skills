@@ -1,0 +1,34 @@
+command: "common-ground"
+path: plugin/commands/common-ground.md
+description: docs/workflow/common-ground.md
+inputs:
+  - name: list
+    type: flag
+    required: false
+    description: Read-only view of all tracked assumptions
+  - name: check
+    type: flag
+    required: false
+    description: Quick validation of current assumptions
+  - name: graph
+    type: flag
+    required: false
+    description: Generate mermaid diagram of reasoning structure
+  - name: specs
+    type: list[string]
+    required: false
+    description: Outstanding specs whose assumptions to check, in order. Without them, every outstanding spec.
+outputs:
+  - name: ground-file
+    type: file
+    path: "{docsRoot}/COMMON-GROUND.md"
+    description: Human-readable ground file with tracked assumptions organized by confidence tier
+  - name: ground-index
+    type: file
+    path: "{docsRoot}/ground.index.json"
+    description: Machine-readable assumption index for programmatic access
+requires: []
+status: existing
+argument-hint: "[--list] [--check] [--graph] [spec ...]"
+repeat: false
+unattended: false

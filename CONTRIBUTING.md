@@ -1,7 +1,5 @@
 # Contributing to Fullstack Dev Skills Plugin
 
-Guidelines for contributing to this project.
-
 ## How to Contribute
 
 ### Reporting Issues
@@ -44,7 +42,7 @@ git checkout -b fix/your-bug-fix
 **For New Skills:**
 ```bash
 # Create skill directory
-mkdir -p skills/my-new-skill
+mkdir -p plugin/skills/my-new-skill
 
 # Create SKILL.md following the structure below
 ```
@@ -52,7 +50,7 @@ mkdir -p skills/my-new-skill
 #### 4. Test Your Changes
 ```bash
 # Copy skills to test location
-cp -r skills/* ~/.claude/skills/
+cp -r plugin/skills/* ~/.claude/skills/
 
 # Restart Claude Code and test
 # Verify your skill activates correctly
@@ -64,7 +62,7 @@ cp -r skills/* ~/.claude/skills/
 Run skill-linter to catch issues before CI:
 
 ```bash
-uvx skill-linter@0.2.0 check --skill your-skill-name
+uvx skill-linter@0.4.0 check --skill your-skill-name
 ```
 
 #### 5. Commit Your Changes
@@ -107,9 +105,9 @@ Hooks run automatically on `git commit`. To run manually:
 pre-commit run --all-files
 
 # Or use Make targets:
-make lint      # Check all formatting (Python, JS/TS, Markdown, Astro)
+make lint      # Check formatting (Python, JS/TS, Astro)
 make format    # Auto-fix all formatting
-make validate  # Run skill validation, markdown checks, and docs sync
+make validate  # skill-linter release (skills, commands, Markdown structure) and stamp --check
 ```
 
 ### Conventions
@@ -119,7 +117,6 @@ make validate  # Run skill validation, markdown checks, and docs sync
 | Python | ruff | ruff-format | `ruff.toml` | `scripts/*.py` |
 | Python | pyright | — | `pyrightconfig.json` | `scripts/*.py` |
 | JS/TS/CSS | — | prettier | `.prettierrc` | `site/`, `assets/` |
-| Markdown | — | prettier | `.prettierrc` | `skills/`, `docs/`, `*.md` (excludes `commands/`) |
 | Astro | — | prettier + prettier-plugin-astro | — | `site/src/**/*.astro` |
 
 ### Key settings
@@ -127,7 +124,7 @@ make validate  # Run skill validation, markdown checks, and docs sync
 - **Line length:** 120 (Python and Prettier)
 - **Python target:** 3.11+
 - **Quote style:** double (Python), single (JS/TS)
-- **Markdown in `commands/`** is excluded from formatting — these are prompt templates where whitespace may be intentional
+- **Markdown** isn't auto-formatted; `skill-linter` checks its structure (fences, tables, comments)
 
 ### CI
 
@@ -242,7 +239,7 @@ For skills with extensive reference material, use the progressive disclosure pat
 
 **Structure:**
 ```text
-skills/my-skill/
+plugin/skills/my-skill/
 ├── SKILL.md           # Lean main file (~80-100 lines)
 └── references/        # Domain-specific reference files
     ├── topic-a.md     # Loaded when topic A is relevant

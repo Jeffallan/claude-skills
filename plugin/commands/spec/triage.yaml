@@ -1,0 +1,31 @@
+command: "spec:triage"
+phase: spec
+path: plugin/commands/spec/triage.md
+description: docs/workflow/spec-triage.md
+inputs:
+  - name: scope
+    type: string
+    required: false
+    description: Ticket IDs, a tracker query, discovery:<topic>, or a grouping such as "A, B and C together; D alone"; with none, the open ungrouped tickets
+outputs:
+  - name: spec-groups
+    type: tickets
+    description: One tracker group per approved spec, with its tickets linked and a Spec line on each
+  - name: spec-branches
+    type: directory
+    description: One spec/<spec-name> branch per approved spec, cut from the default branch
+requires:
+  - ticketing
+status: existing
+argument-hint: "[ticket-ids | tracker-query | discovery:<topic> | grouping]"
+repeat: true
+unattended: false
+adapter-operations:
+  - read
+  - list-ungrouped
+  - list-spec-tickets
+  - ensure-group
+  - link
+  - unlink
+  - update
+  - link-groups

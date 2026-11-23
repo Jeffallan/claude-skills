@@ -17,11 +17,11 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install skill-linter
-        run: pip install skill-linter==0.2.0
+      - name: Set up uv (the plugin's hooks run the guard through uv)
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
 
-      - name: Fetch the plugin branch the marketplace entry points at
-        run: git fetch --no-tags --depth=1 origin +refs/heads/plugin:refs/remotes/origin/plugin
+      - name: Install skill-linter
+        run: pip install skill-linter==0.4.0
 
       - name: Check skills and the shipped plugin tree
         run: skill-linter release
@@ -29,8 +29,14 @@ jobs:
       - name: Check stamped counts and versions
         run: skill-linter stamp --check
 
-      - name: Test plugin distribution build
-        run: bash scripts/test-build-plugin-dist.sh
+      - name: Test the plugin tree
+        run: bash scripts/test-plugin-tree.sh
+
+      - name: Test that the docs match the commands
+        run: bash scripts/test-command-docs.sh
+
+      - name: Test that the doc links and anchors resolve
+        run: bash scripts/test-doc-links.sh
 
   lint:
     name: Lint & Format Check

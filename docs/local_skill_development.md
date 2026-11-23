@@ -13,11 +13,21 @@ make dev-unlink  # Restore the released version
 
 Restart Claude Code after running either command.
 
+### One session only: `--plugin-dir`
+
+To try the working copy in a single session without touching the plugin cache, start Claude Code with the repo's `plugin/` folder as a plugin directory. That folder is exactly what ships:
+
+```bash
+claude --plugin-dir ~/path/to/claude-skills/plugin
+```
+
+That session loads the skills, commands and hooks from your working copy; every other session keeps the installed version. `make evidence` loads `plugin/` this way and checks which commands load from it.
+
 ---
 
 ## How Plugin Loading Works
 
-Claude Code loads plugins from a **cache** directory, not from your source code. Understanding this is key to the development workflow.
+Claude Code loads plugins from a **cache** directory, not from your source code.
 
 | Directory | Purpose |
 |-----------|---------|
@@ -47,7 +57,7 @@ This returns something like:
 "installPath": "/home/<user>/.claude/plugins/cache/<plugin>/<name>/<version>"
 ```
 
-Note the full path — you'll symlink this directory.
+Note the full path: you'll symlink this directory.
 
 ### Step 2: Back Up the Cached Version
 
@@ -61,7 +71,7 @@ mv ~/.claude/plugins/cache/<plugin>/<name>/<version> \
 Point the cache path to your local development clone:
 
 ```bash
-ln -s /path/to/your/working/copy \
+ln -s /path/to/your/working/copy/plugin \
    ~/.claude/plugins/cache/<plugin>/<name>/<version>
 ```
 
@@ -71,7 +81,7 @@ ln -s /path/to/your/working/copy \
 
 ```bash
 ls -la ~/.claude/plugins/cache/<plugin>/<name>/
-# Should show: <version> -> /path/to/your/working/copy
+# Should show: <version> -> /path/to/your/working/copy/plugin
 ```
 
 ---
@@ -81,11 +91,11 @@ ls -la ~/.claude/plugins/cache/<plugin>/<name>/
 Once the symlink is in place:
 
 1. **Edit skills, commands, or references** in your working copy
-2. **Restart Claude Code** — exit the current session and start a new one. Plugins load at session start; changes are not hot-reloaded.
-3. **Test your changes** — invoke the skill or command as a user would
-4. **Iterate** — repeat steps 1-3
+2. **Restart Claude Code**: exit the current session and start a new one. Plugins load at session start; changes are not hot-reloaded.
+3. **Test your changes**: invoke the skill or command as a user would
+4. **Iterate**: repeat steps 1-3
 
-No commits, pushes, or version bumps needed during development.
+You don't need commits, pushes, or version bumps during development.
 
 ---
 
@@ -114,7 +124,7 @@ If your symlink stops working after you didn't touch it, check whether an auto-u
 
 ### Working copy differs from a clean cache
 
-The cache is normally a clean snapshot — no `.git/`, no IDE files, no uncommitted work. Your symlinked working copy includes all of that. This is generally harmless — the plugin loader reads markdown files and ignores unknown entries — but be aware:
+The cache is normally a clean snapshot, without `.git/`, IDE files or uncommitted work. Your symlinked working copy includes all of that. This is generally harmless, since the plugin loader reads markdown files and ignores unknown entries, but be aware:
 
 - New files that reference structures you haven't created yet may cause confusing behavior
 - `.git/`, `.DS_Store`, `node_modules/`, and similar directories are exposed but ignored
@@ -144,7 +154,7 @@ To compare against the released version, temporarily revert the symlink (see abo
 ```bash
 # Setup (one-time)
 CACHE=~/.claude/plugins/cache/<plugin>/<name>/<version>
-WORKDIR=/path/to/your/working/copy
+WORKDIR=/path/to/your/working/copy/plugin
 
 mv "$CACHE" "${CACHE}.bak"
 ln -s "$WORKDIR" "$CACHE"

@@ -178,7 +178,7 @@ For each PR:
 2. Squash-merge with subject `type(scope): title (#N)`
    - Conflicted fork PRs: squash locally (`git merge --squash`), add `Co-authored-by:` with the contributor's commit email, then close the PR with a comment pointing at the commit
 3. Record it in a separate commit, `docs(changelog): record #N <summary> under Unreleased`, adding an entry under `[Unreleased]` → Added/Changed/Fixed that ends with `(#N)` (append `closing #ISSUE` when it resolves one)
-4. If skill or reference counts changed, run `uvx skill-linter@0.2.0 stamp` in the same push, otherwise `stamp --check` fails CI on main
+4. If skill or reference counts changed, run `uvx skill-linter@0.4.0 stamp` in the same push, otherwise `stamp --check` fails CI on main
 5. Post-merge corrections go in their own commit with their own `### Changed` entry
 
 At release time, credit contributors (including issue reporters) in a `### Contributors` section of the version entry:
@@ -221,12 +221,12 @@ Version and counts are managed through `version.json`:
 2. Stamp the counts and version:
 
 ```bash
-uvx skill-linter@0.2.0 stamp
+uvx skill-linter@0.4.0 stamp
 ```
 
 This computes the counts from the filesystem (skills, per-domain skills, references, workflows), writes them to `version.json`, and stamps the version and counts into the files listed under `[[tool.skill-linter.stamp.files]]` in `pyproject.toml` (README.md, QUICKSTART.md, plugin.json, marketplace.json, the docs site and others).
 
-`uvx skill-linter@0.2.0 stamp --check` reports stale files without writing (CI runs it).
+`uvx skill-linter@0.4.0 stamp --check` reports stale files without writing (CI runs it).
 
 ### 2. Update CHANGELOG.md
 
@@ -255,11 +255,11 @@ Add version comparison link at bottom:
 **For new skills:**
 - Add to `SKILLS_GUIDE.md` in appropriate category
 - Add to decision trees if applicable
-- Run `uvx skill-linter@0.2.0 stamp` to update counts
+- Run `uvx skill-linter@0.4.0 stamp` to update counts
 
 **For new commands:**
 - Add to `docs/WORKFLOW_COMMANDS.md`
-- Run `uvx skill-linter@0.2.0 stamp` to update counts
+- Run `uvx skill-linter@0.4.0 stamp` to update counts
 
 **For modified skills/commands:**
 - Update any cross-references
@@ -292,10 +292,10 @@ This runs [skill-linter](https://pypi.org/project/skill-linter/), configured in 
 
 **Options:**
 ```bash
-uvx skill-linter@0.2.0 check --skill react-expert   # One skill's rules only
-uvx skill-linter@0.2.0 check --only markdown        # One rule group
-uvx skill-linter@0.2.0 check --format json          # JSON output
-uvx skill-linter@0.2.0 rules                        # Every rule, its group and severity
+uvx skill-linter@0.4.0 check --skill react-expert   # One skill's rules only
+uvx skill-linter@0.4.0 check --only markdown        # One rule group
+uvx skill-linter@0.4.0 check --format json          # JSON output
+uvx skill-linter@0.4.0 rules                        # Every rule, its group and severity
 ```
 
 **Exit codes:** 0 = no errors (warnings OK), 1 = errors found
@@ -309,13 +309,13 @@ After running validation, manually verify:
 grep -r "OLD_VERSION" --include="*.md" --include="*.json" --include="*.html"
 ```
 
-### 7. Plugin Branch
+### 7. Plugin Folder
 
-The plugin ships from the `plugin` branch, not from `main`. Pushing the `vX.Y.Z` tag runs `.github/workflows/publish-plugin.yml`, which rebuilds that branch from `scripts/build-plugin-dist.sh` (only `.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `README.md`, `LICENSE`). Both the marketplace entry and the Claude plugin directory read from it.
+The plugin ships from the `plugin/` folder on `main`: `.claude-plugin/marketplace.json` at the repo root lists it with `"source": "./plugin"`, the layout `writing-with-agents` uses. Only what is inside `plugin/` ships (`.claude-plugin/plugin.json`, `skills/`, `commands/`, `references/`, `hooks/`, `runtime/guard.pyz`, `README.md`, `LICENSE`).
 
-- Never edit the `plugin` branch by hand; the next publish overwrites it
-- After the tag push, confirm the workflow succeeded and the branch's latest commit names the new tag
-- A file the plugin needs at runtime must live under one of the shipped paths, or it will be missing from installs
+- Marketplace users get whatever `main` holds when they update, so merge to `main` only at release
+- A file the plugin needs at runtime must live under `plugin/`, or it will be missing from installs
+- `plugin/LICENSE` is a copy of the root `LICENSE`; change both together
 
 ---
 

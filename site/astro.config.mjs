@@ -7,7 +7,7 @@ import { indexNowOptions } from './src/components/site-seo/indexnow.mjs';
 
 const SITE_URL = 'https://jeffallan.github.io/claude-skills';
 const DESCRIPTION =
-  '70 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
+  '71 specialized skills for Claude Code — progressive disclosure, context engineering, and full-stack coverage.';
 
 export default defineConfig({
   site: 'https://jeffallan.github.io',
@@ -110,6 +110,12 @@ export default defineConfig({
           label: 'Guides',
           items: [
             { label: 'Workflow Commands', link: '/guides/workflow-commands/' },
+            { label: 'Intake', link: '/guides/intake/' },
+            { label: 'Tracker Setup', link: '/guides/tracker-setup/' },
+            { label: 'Goal Runs', link: '/guides/goal-runs/' },
+            { label: 'Tracker Setup', link: '/guides/tracker-setup/' },
+            { label: 'Intake', link: '/guides/intake/' },
+            { label: 'Goal Runs', link: '/guides/goal-runs/' },
             { label: 'Common Ground', link: '/guides/common-ground/' },
             {
               label: 'Atlassian MCP Setup',
@@ -134,8 +140,54 @@ export default defineConfig({
               collapsed: true,
               items: [
                 { label: 'Overview', link: '/workflows/intake-phase/' },
+                { label: 'intake:existing-docs', link: '/workflows/intake-existing-docs/' },
                 { label: 'intake:document-codebase', link: '/workflows/intake-document-codebase/' },
-                { label: 'intake:capture-behavior', link: '/workflows/intake-capture-behavior/' },
+                {
+                  label: 'intake:document-data-model',
+                  link: '/workflows/intake-document-data-model/',
+                },
+                {
+                  label: 'intake:document-file-tree',
+                  link: '/workflows/intake-document-file-tree/',
+                },
+                {
+                  label: 'intake:document-integrations',
+                  link: '/workflows/intake-document-integrations/',
+                },
+                { label: 'intake:document-api', link: '/workflows/intake-document-api/' },
+                {
+                  label: 'intake:document-user-model',
+                  link: '/workflows/intake-document-user-model/',
+                },
+                { label: 'intake:document-features', link: '/workflows/intake-document-features/' },
+                { label: 'intake:document-glossary', link: '/workflows/intake-document-glossary/' },
+                { label: 'intake:document-security', link: '/workflows/intake-document-security/' },
+                {
+                  label: 'intake:document-authorization',
+                  link: '/workflows/intake-document-authorization/',
+                },
+                {
+                  label: 'intake:document-user-flow',
+                  link: '/workflows/intake-document-user-flow/',
+                },
+                { label: 'intake:document-config', link: '/workflows/intake-document-config/' },
+                {
+                  label: 'intake:document-analytics',
+                  link: '/workflows/intake-document-analytics/',
+                },
+                { label: 'intake:create-onboarding', link: '/workflows/intake-create-onboarding/' },
+                { label: 'Capture behavior', link: '/workflows/intake-capture-behavior/' },
+                { label: 'intake:testing-setup', link: '/workflows/intake-testing-setup/' },
+                { label: 'intake:testing-features', link: '/workflows/intake-testing-features/' },
+                {
+                  label: 'intake:testing-authorization',
+                  link: '/workflows/intake-testing-authorization/',
+                },
+                { label: 'intake:testing-owasp', link: '/workflows/intake-testing-owasp/' },
+                {
+                  label: 'intake:testing-user-flows',
+                  link: '/workflows/intake-testing-user-flows/',
+                },
                 {
                   label: 'intake:create-system-description',
                   link: '/workflows/intake-create-system-description/',
@@ -148,40 +200,30 @@ export default defineConfig({
               items: [
                 { label: 'Overview', link: '/workflows/discovery-phase/' },
                 { label: 'discovery:create', link: '/workflows/discovery-create/' },
-                { label: 'discovery:synthesize', link: '/workflows/discovery-synthesize/' },
                 { label: 'discovery:approve', link: '/workflows/discovery-approve/' },
               ],
             },
             {
-              label: 'Planning Phase',
+              label: 'Spec Phase',
               collapsed: true,
               items: [
-                { label: 'Overview', link: '/workflows/planning-phase/' },
-                { label: 'planning:epic-plan', link: '/workflows/planning-epic-plan/' },
-                { label: 'planning:impl-plan', link: '/workflows/planning-impl-plan/' },
+                { label: 'Overview', link: '/workflows/spec-phase/' },
+                { label: 'spec:triage', link: '/workflows/spec-triage/' },
+                { label: 'spec:create', link: '/workflows/spec-create/' },
+                { label: 'spec:review', link: '/workflows/spec-review/' },
+                { label: 'spec:complete', link: '/workflows/spec-complete/' },
+                { label: 'spec:status', link: '/workflows/spec-status/' },
+                { label: 'spec:current', link: '/workflows/spec-current/' },
+                { label: 'spec:diff', link: '/workflows/spec-diff/' },
               ],
             },
             {
-              label: 'Execution Phase',
+              label: 'Ticket Phase',
               collapsed: true,
               items: [
-                { label: 'Overview', link: '/workflows/execution-phase/' },
-                { label: 'execution:execute-ticket', link: '/workflows/execution-execute-ticket/' },
-                {
-                  label: 'execution:complete-ticket',
-                  link: '/workflows/execution-complete-ticket/',
-                },
-              ],
-            },
-            {
-              label: 'Retrospective Phase',
-              collapsed: true,
-              items: [
-                { label: 'Overview', link: '/workflows/retrospective-phase/' },
-                {
-                  label: 'retrospectives:complete-epic',
-                  link: '/workflows/retrospective-complete-epic/',
-                },
+                { label: 'Overview', link: '/workflows/ticket-phase/' },
+                { label: 'ticket:execute', link: '/workflows/ticket-execute/' },
+                { label: 'ticket:complete', link: '/workflows/ticket-complete/' },
               ],
             },
             { label: 'common-ground', link: '/workflows/common-ground/' },

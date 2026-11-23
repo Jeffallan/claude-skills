@@ -17,7 +17,7 @@ Get up and running with the Fullstack Dev Skills Plugin.
 
 ### Install from GitHub
 ```bash
-claude plugin install https://github.com/jeffallan/claude-skills
+claude plugin install fullstack-dev-skills --marketplace jeffallan/claude-skills
 ```
 
 ### Install via skills.sh
@@ -25,18 +25,22 @@ claude plugin install https://github.com/jeffallan/claude-skills
 npx skills add jeffallan/claude-skills
 ```
 
-> **Note:** This method installs skills only. Slash commands (`/common-ground`, `/project:*`) are not included.
+> **Note:** This method installs skills only. Slash commands (`/common-ground` and the workflow commands) are not included.
+
+[Supported Agents](docs/SUPPORTED_AGENTS.md#skills-cli) lists the agent ids and flags for Cursor, Codex CLI and other agents.
 
 ### Install via Agent Skills CLI
 ```bash
 npx agent-skills-cli@latest add @Jeffallan/claude-skills
 ```
 
-> **Note:** This method installs skills only. Slash commands (`/common-ground`, `/project:*`) are not included. Installs to 42+ AI agents including Claude, Cursor, Copilot, Windsurf, and more. [Learn more](https://www.agentskills.in)
+> **Note:** This method installs skills only. Slash commands (`/common-ground` and the workflow commands) are not included. It installs to 42+ AI agents including Claude, Cursor, Copilot, Windsurf, and more. [Learn more](https://www.agentskills.in)
+
+[Supported Agents](docs/SUPPORTED_AGENTS.md#skills-cli) lists its agent ids and the folders it writes to.
 
 ### Local Development
 ```bash
-cp -r ./skills/* ~/.claude/skills/
+cp -r ./plugin/skills/* ~/.claude/skills/
 ```
 Restart Claude Code after copying.
 
@@ -62,11 +66,11 @@ Verify skills are working:
 
 ### 1. What's Included
 
-<!-- SKILL_COUNT -->70<!-- /SKILL_COUNT --> skills covering:
+<!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> skills covering:
 - <!-- SKILL_COUNT:language -->12<!-- /SKILL_COUNT:language --> Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
 - <!-- SKILL_COUNT:backend -->9<!-- /SKILL_COUNT:backend --> Backend Framework Experts (NestJS, Django, Django Storages S3, FastAPI, Flask, Spring Boot, Laravel, Rails, .NET Core)
-- <!-- SKILL_COUNT:frontend -->8<!-- /SKILL_COUNT:frontend --> Frontend & Mobile Experts (React, Next.js, Vue, Vue (JavaScript), Angular, React Native, Flutter)
-- <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> Project Workflow Commands (discovery, planning, execution, retrospectives)
+- <!-- SKILL_COUNT:frontend -->8<!-- /SKILL_COUNT:frontend --> Frontend & Mobile Experts (React, Next.js, Nuxt, Vue, Vue (JavaScript), Angular, React Native, Flutter)
+- <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> Project Workflow Commands: `intake`, discovery, spec, ticket and `common-ground`
 - Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
 ### 2. First Prompt
@@ -86,6 +90,20 @@ Specify the tech stack and Claude activates the appropriate skills:
 ### 3. Learn More
 
 See [Skills Guide](SKILLS_GUIDE.md) for decision trees, skill combinations, and detailed examples for every category.
+
+### 4. Your First Spec
+
+The workflow commands need the full plugin install (the skills-only methods above leave them out) and [uv](https://docs.astral.sh/uv/):
+
+1. Run `/fullstack-dev-skills:spec:triage`. With no `.claude/workflow-config.json` yet, it offers a setup wizard that detects your tracker and asks one question at a time.
+2. Approve the proposed grouping. Triage creates the spec's group in your tracker and a `spec/<spec-name>` branch.
+3. Run `/fullstack-dev-skills:spec:create <spec-name>` and approve the overview. It writes the plan and prints two launch commands: one for the whole spec and one for the next batch.
+4. Work the tickets with `ticket:execute` and `ticket:complete`, or start one of the printed goal runs.
+5. Finish with `spec:review` and `spec:complete`.
+
+For an existing codebase, start with `/fullstack-dev-skills:intake`. It documents the code, pins its behavior in tests and records its bugs, one checklist item at a time. See [Intake](docs/INTAKE.md).
+
+See [Workflow Commands](docs/WORKFLOW_COMMANDS.md) and [Tracker Setup](docs/TRACKER_SETUP.md).
 
 ## Effective Usage
 
@@ -107,6 +125,8 @@ Include relevant information:
 - [Skills Guide](SKILLS_GUIDE.md) - Detailed skill reference with decision trees
 - [Common Ground](docs/COMMON_GROUND.md) - Context engineering guide
 - [Workflow Commands](docs/WORKFLOW_COMMANDS.md) - Workflow commands reference
+- [Tracker Setup](docs/TRACKER_SETUP.md) - Workflow config and tracker adapters
+- [Intake](docs/INTAKE.md) - Adopt an existing codebase
 - [Contributing](CONTRIBUTING.md) - How to customize/extend
 
 ## Troubleshooting
@@ -127,18 +147,18 @@ Include relevant information:
 # Marketplace installs update automatically
 # For manual installs, pull latest and re-copy:
 cd claude-skills && git pull
-cp -r ./skills/* ~/.claude/skills/
+cp -r ./plugin/skills/* ~/.claude/skills/
 ```
 
 ### Need Help
 - Check [Skills Guide](SKILLS_GUIDE.md) for skill-specific guidance
-- Review individual `skills/*/SKILL.md` files
+- Review individual `plugin/skills/*/SKILL.md` files
 - Open an [issue on GitHub](https://github.com/jeffallan/claude-skills/issues)
 
 ## Next Steps
 
 ### Explore Skills
-Browse the `skills/` directory for available skills.
+Browse the `plugin/skills/` directory for available skills.
 
 ### Customize
 Edit any `SKILL.md` to match team conventions.
