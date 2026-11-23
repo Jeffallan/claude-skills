@@ -68,7 +68,7 @@ PHOOKS="$OUT/hooks/hooks.json"
 assert_exists "$PHOOKS" "ships hooks/hooks.json"
 for spec in "PreToolUse:pre-tool-use" "PostToolUse:post-tool-use" "Stop:stop" "SessionStart:session-start"; do
     event=${spec%%:*}; sub=${spec#*:}
-    if python3 -c "import json,sys; h=json.load(open(sys.argv[1]))['hooks'].get(sys.argv[2],[]); c=[x['command'] for g in h for x in g['hooks']]; want='ticket-guard/marker.json\"; [ -f \"\$m\" ] || exit 0; exec uv run -q --no-project --python \">=3.11\" \"\${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook '+sys.argv[3]; sys.exit(0 if len(c)==1 and c[0].endswith(want) else 1)" "$PHOOKS" "$event" "$sub" 2>/dev/null; then
+    if python3 -c "import json,sys; h=json.load(open(sys.argv[1]))['hooks'].get(sys.argv[2],[]); c=[x['command'] for g in h for x in g['hooks']]; want='exec \"\$u\" run -q --no-project --python \">=3.11\" \"\${CLAUDE_PLUGIN_ROOT}/runtime/guard.pyz\" hook '+sys.argv[3]; gate='ticket-guard/marker.json\"; [ -f \"\$m\" ] || exit 0;'; sys.exit(0 if len(c)==1 and c[0].endswith(want) and gate in c[0] and c[0].index(gate) < c[0].index('command -v uv') else 1)" "$PHOOKS" "$event" "$sub" 2>/dev/null; then
         pass "hooks.json has one marker-gated $event hook"
     else
         fail "hooks.json has one marker-gated $event hook"
@@ -122,6 +122,41 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
     fi
     other=$(cd "$RES" && edit S2 | CLAUDE_PROJECT_DIR="$RES" bash -c "$pre" 2>/dev/null || true)
     assert_equal "$other" "" "another session's hook stands down"
+}
+
+# With a ticket in progress and no uv on the hooks' PATH, every hook fails closed (exit 2, a reason on
+# stderr) instead of exiting 127, which Claude Code treats as "nothing to block". A uv in ~/.local/bin
+# is found when the PATH lacks it (Claude Code launched without the shell profile that adds it).
+{
+    NOUV=$(mktemp -d)
+    CLEANUP_DIRS+=("$NOUV")
+    mkdir -p "$NOUV/bin" "$NOUV/home"
+    for tool in sh git; do ln -s "$(command -v "$tool")" "$NOUV/bin/$tool"; done
+    for event in PreToolUse PostToolUse Stop SessionStart; do
+        set +e
+        err=$(cd "$RES" && edit S1 | env -i PATH="$NOUV/bin" HOME="$NOUV/home" CLAUDE_PROJECT_DIR="$RES" CLAUDE_PLUGIN_ROOT="$OUT" "$NOUV/bin/sh" -c "$(hook_cmd "$event")" 2>&1 >/dev/null)
+        rc=$?
+        set -e
+        if [ "$rc" -eq 2 ] && printf '%s' "$err" | grep -q "uv not found"; then
+            pass "the $event hook fails closed without uv while a ticket is in progress"
+        else
+            fail "the $event hook fails closed without uv while a ticket is in progress (rc $rc: $err)"
+        fi
+    done
+    mkdir -p "$NOUV/home/.local/bin"
+    ln -s "$(command -v uv)" "$NOUV/home/.local/bin/uv"
+    mkdir -p "$NOUV/py" && ln -s "$(command -v python3)" "$NOUV/py/python3"
+    found=$(cd "$RES" && edit S1 | env -i PATH="$NOUV/bin:$NOUV/py" HOME="$NOUV/home" CLAUDE_PROJECT_DIR="$RES" CLAUDE_PLUGIN_ROOT="$OUT" "$NOUV/bin/sh" -c "$pre" 2>/dev/null || true)
+    if printf '%s' "$found" | grep -q '"permissionDecision": "deny"'; then
+        pass "the hook finds uv in ~/.local/bin when the PATH lacks it"
+    else
+        fail "the hook finds uv in ~/.local/bin when the PATH lacks it (got: $found)"
+    fi
+    set +e
+    (cd "$NOUV" && git init -q . && env -i PATH="$NOUV/bin" HOME="$NOUV/home" CLAUDE_PROJECT_DIR="$NOUV" "$NOUV/bin/sh" -c "$pre" </dev/null >/dev/null 2>&1)
+    rc=$?
+    set -e
+    assert_exit_zero "$rc" "without a marker the hook needs no uv"
 }
 assert_exists "$OUT/LICENSE" "ships LICENSE"
 
