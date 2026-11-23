@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.21-blue.svg?style=for-the-badge" alt="Version"/></a>
+  <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/version-0.4.22-blue.svg?style=for-the-badge" alt="Version"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License"/></a>
   <a href="https://github.com/jeffallan/claude-skills"><img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg?style=for-the-badge" alt="Claude Code"/></a>
   <a href="https://github.com/jeffallan/claude-skills/stargazers"><img src="https://img.shields.io/github/stars/jeffallan/claude-skills?style=for-the-badge&color=yellow" alt="Stars"/></a>
@@ -78,7 +78,7 @@ The <!-- WORKFLOW_COUNT -->9<!-- /WORKFLOW_COUNT --> workflow commands manage ep
 
 - [**Quick Start Guide**](QUICKSTART.md) - Installation and first steps
 - [**Skills Guide**](SKILLS_GUIDE.md) - Skill reference and decision trees
-- [**Workflow Examples**](examples/README.md) - Step-by-step multi-skill walkthroughs
+- [**Workflow Examples**](https://github.com/jeffallan/claude-skills/blob/main/examples/README.md) - Step-by-step multi-skill walkthroughs
 - [**Common Ground**](docs/COMMON_GROUND.md) - Context engineering with `/common-ground`
 - [**Workflow Commands**](docs/WORKFLOW_COMMANDS.md) - Project workflow commands guide
 - [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup
