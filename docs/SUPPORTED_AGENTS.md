@@ -7,16 +7,16 @@ This plugin follows the [Agent Skills specification](https://agentskills.io/spec
 | Agent | Developer | Type | Skills Documentation |
 |-------|-----------|------|---------------------|
 | [Claude Code](https://claude.ai/claude-code) | Anthropic | CLI | Native support |
-| [GitHub Copilot](https://github.com/features/copilot) | Microsoft/GitHub | VS Code, CLI | [Agent Skills in VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) |
+| [GitHub Copilot](https://github.com/features/copilot) | Microsoft/GitHub | VS Code, CLI | [Agent Skills in VS Code](https://code.visualstudio.com/docs/agent-customization/agent-skills) |
 | [Codex CLI](https://github.com/openai/codex) | OpenAI | CLI | [Codex Skills](https://developers.openai.com/codex/skills/) |
-| [Cursor](https://cursor.com) | Cursor | IDE | [Cursor Skills](https://cursor.com/docs/context/skills) |
+| [Cursor](https://cursor.com) | Cursor | IDE | [Cursor Skills](https://cursor.com/docs/skills) |
 | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google | CLI | [Gemini Skills](https://geminicli.com/docs/cli/skills/) |
-| [Goose](https://github.com/block/goose) | Block | CLI, Desktop | [Goose Docs](https://block.github.io/goose/) |
-| [Letta](https://github.com/letta-ai/letta) | Letta AI | CLI | [Letta Skills](https://docs.letta.com/letta-code/skills/) |
-| [Roo Code](https://github.com/RooCodeInc/Roo-Code) | Roo Code Inc | VS Code | [Roo Skills](https://docs.roocode.com/features/skills) |
+| [Goose](https://github.com/aaif-goose/goose) | Block | CLI, Desktop | [Goose Docs](https://goose-docs.ai/) |
+| [Letta](https://github.com/letta-ai/letta) | Letta AI | CLI | [Letta Skills](https://docs.letta.com/configuration/skills) |
+| [Roo Code](https://github.com/RooCodeInc/Roo-Code) | Roo Code Inc | VS Code | [Roo Skills](https://roocodeinc.github.io/Roo-Code/features/skills/) |
 | [Amp](https://ampcode.com) | Sourcegraph | CLI, VS Code | [Amp Skills](https://ampcode.com/news/agent-skills) |
 | [OpenCode](https://github.com/opencode-ai/opencode) | OpenCode AI | CLI | [OpenCode Skills](https://opencode.ai/docs/skills) |
-| [AdaL CLI](https://sylph.ai/) | SylphAI | CLI | [AdaL Skills](https://docs.sylph.ai/features/plugins-and-skills) |
+| [AdaL CLI](https://sylph.ai/) | SylphAI | CLI | [AdaL Skills](https://docs.sylph.ai/customize/plugins-and-skills/) |
 
 ## Submit a New Agent
 

@@ -13,7 +13,7 @@ output to expect.
 ## How to read an example
 
 Each step gives the prompt to paste into Claude Code, names the skill that prompt triggers, and shows a short
-output excerpt. Skill names are directory names under `skills/`, so you can open the matching `SKILL.md` and check
+output excerpt. Skill names are directory names under `plugin/skills/`, so you can open the matching `SKILL.md` and check
 the workflow each step follows.
 
 ## How these examples were written
