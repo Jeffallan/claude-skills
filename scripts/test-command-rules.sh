@@ -221,6 +221,12 @@ attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
 case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
 assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
 
+echo "common-ground reports every assumption as its own row with a bare verdict"
+cg_report=$(sed -n '/^4\. \*\*Report\*\*/,/^The agent only reads/p' "$CGC")
+for s in "every assumption as its own row" "holds included" "never group or elide" "exactly one of \`holds\`, \`conflicts\` or \`unknown\`" "a caveat goes in the Fix or Source column"; do
+    if printf '%s\n' "$cg_report" | grep -qF -- "$s"; then pass "common-ground's report step says $s"; else fail "common-ground's report step says $s"; fi
+done
+
 echo "common-ground --graph lives in the index, so a regenerated ground file keeps it"
 FM="$REF/common-ground/file-management.md"
 schema=$(sed -n '/^### Schema$/,/^### Field Definitions$/p' "$FM")

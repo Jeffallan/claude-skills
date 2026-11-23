@@ -89,6 +89,8 @@ Runs first in the default mode and is the core of `--check`, whenever an outstan
    | billing-v2:A1 | conflicts | billing-v2 | The export worker is wired | components: Exporter (built, not wired) | spec:create billing-v2 |
    ```
 
+   List every assumption as its own row, holds included: never group or elide rows (no ID ranges, no "(N more)"). The Verdict is exactly one of `holds`, `conflicts` or `unknown`; a caveat goes in the Fix or Source column, never in the Verdict.
+
    The Fix for a conflict is `spec:create <spec>` to rework the spec, or `spec:current` when the state itself is wrong.
 
 The agent only reads; this session presents the result and asks the owner, because agents can't. A conflict the owner accepts as intended (the spec will change that part of the system) becomes a WORKING assumption in the ground file with the spec named.
