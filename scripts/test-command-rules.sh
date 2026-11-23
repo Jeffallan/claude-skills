@@ -225,6 +225,8 @@ echo "assumptions.md extracts every present-tense claim and every uses-relation"
 ASM="$REF/specs/assumptions.md"
 assert_contains "$ASM" "Every sentence that says how the system works now is an assumption" "assumptions.md: present-tense claims are always listed"
 assert_contains "$ASM" "list \"A can reach B\" as its own \`interface\` assumption" "assumptions.md: a uses-relation gets its own reach row"
+assert_contains "$ASM" "When an open finding in \`docs/current-state.json\` touches the assumption, name it in **Checked against** as well" "assumptions.md: an open finding that touches an assumption is cited beside its code"
+assert_contains "$CMD/spec/diff.md" "Print the banner line exactly as written" "spec:diff prints its plan banner verbatim"
 
 echo "an assumption the spec relies on but neither exists nor gets built is a conflict"
 rule="relies on something that doesn't exist and the spec doesn't build it, the verdict is \`conflicts\`"

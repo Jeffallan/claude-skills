@@ -47,6 +47,7 @@ One row per assumption, numbered per spec (`<spec>:A1`, `<spec>:A2`, ...):
 
 - **Quoted from** names the file and section the assumption comes from, so the owner can find the sentence.
 - **Checked against** names where the answer lives: a `components`, `findings` or `drift` row of `docs/current-state.json`, section 3 of `docs/system-description.md` for a flow, a `path::symbol` for an interface, or another spec for `order`.
+- When an open finding in `docs/current-state.json` touches the assumption, name it in **Checked against** as well, beside the code or component (`src/export/worker.ts::postInvoice; F-003`). A long list makes these easy to drop.
 
 ## Order between specs
 

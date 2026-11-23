@@ -73,6 +73,8 @@ Rerun an agent whose "Skills loaded" line lacks the skill its brief named.
 `common-ground <specs>` checks these assumptions against the current state.
 ```
 
+Print the banner line exactly as written, with only `<short HEAD>` filled in.
+
 ## Rules
 
 - Write nothing: no file, no commit, no tracker call. It runs the same attended or under a goal.
