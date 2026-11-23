@@ -11,6 +11,7 @@ You check each assumption the brief lists against `docs/current-state.json` and 
 
 - For each assumption, return one row: the id, `holds`, `conflicts` or `unknown`, the source that settles it (a current-state row's source, a finding id, a drift row, or `path::symbol`), and the spec that rests on it.
 - A flow assumption is checked against section 3 of `docs/system-description.md`; the JSON doesn't hold flows.
+- When the assumption relies on something that doesn't exist and the spec doesn't build it, the verdict is `conflicts`, even if part of the assumption holds (an interface exists but isn't wired where the spec uses it).
 - `unknown` is a fine answer. Never guess a conflict.
 
 ## Every brief

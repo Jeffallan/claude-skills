@@ -221,6 +221,11 @@ attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
 case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
 assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
 
+echo "an assumption the spec relies on but neither exists nor gets built is a conflict"
+rule="relies on something that doesn't exist and the spec doesn't build it, the verdict is \`conflicts\`"
+assert_contains "$CGC" "$rule" "common-ground: unbuilt reliance is a conflict"
+assert_contains "$PLUGIN/agents/assumption-checker.md" "$rule" "assumption-checker: unbuilt reliance is a conflict"
+
 echo "common-ground reports every assumption as its own row with a bare verdict"
 cg_report=$(sed -n '/^4\. \*\*Report\*\*/,/^The agent only reads/p' "$CGC")
 for s in "every assumption as its own row" "holds included" "never group or elide" "exactly one of \`holds\`, \`conflicts\` or \`unknown\`" "a caveat goes in the Fix or Source column"; do

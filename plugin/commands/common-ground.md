@@ -89,7 +89,7 @@ Runs first in the default mode and is the core of `--check`, whenever an outstan
    | billing-v2:A1 | conflicts | billing-v2 | The export worker is wired | components: Exporter (built, not wired) | spec:create billing-v2 |
    ```
 
-   List every assumption as its own row, holds included: never group or elide rows (no ID ranges, no "(N more)"). The Verdict is exactly one of `holds`, `conflicts` or `unknown`; a caveat goes in the Fix or Source column, never in the Verdict.
+   List every assumption as its own row, holds included: never group or elide rows (no ID ranges, no "(N more)"). The Verdict is exactly one of `holds`, `conflicts` or `unknown`; a caveat goes in the Fix or Source column, never in the Verdict. When the assumption relies on something that doesn't exist and the spec doesn't build it, the verdict is `conflicts`, even if part of the assumption holds (an interface exists but isn't wired where the spec uses it).
 
    The Fix for a conflict is `spec:create <spec>` to rework the spec, or `spec:current` when the state itself is wrong.
 
