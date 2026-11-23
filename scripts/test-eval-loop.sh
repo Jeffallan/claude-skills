@@ -562,10 +562,14 @@ set +e
 out=$(da_score "$WORK/disc-old-gold.json")
 rc=$?
 set -e
-for c in dropped-not-created topic-status synthesis decisions-recorded; do
+for c in dropped-not-created topic-status synthesis decisions-recorded blocking-decisions; do
     expect "$out" "$c" s "discovery $c is skipped when the gold set has no key for it"
 done
-if score_is "$out" 3/3 && [ "$rc" -eq 0 ]; then pass "discovery: skipped checks count toward neither score nor total"; else fail "discovery: skipped checks count toward neither score nor total: $out"; fi
+if score_is "$out" 2/2 && [ "$rc" -eq 0 ]; then pass "discovery: skipped checks count toward neither score nor total"; else fail "discovery: skipped checks count toward neither score nor total: $out"; fi
+# An empty gold ticket list tests nothing: approved-tickets is skipped, not a free pass
+printf '{"topic": "desk", "routes": {}, "decisions": [], "tickets": []}\n' >"$WORK/disc-noticket-gold.json"
+out=$(da_score "$WORK/disc-noticket-gold.json" || true)
+expect "$out" approved-tickets s "discovery approved-tickets is skipped when gold lists no tickets"
 
 echo "common-ground run-folder checks"
 

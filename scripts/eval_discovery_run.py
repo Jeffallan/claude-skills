@@ -145,12 +145,17 @@ def score(folder: Path, gold: dict) -> list[dict]:
     not_created = [p for p in gold.get("tickets", []) if not any(re.search(p, t, re.I) for t in created_titles)]
     return [
         check("routing", not wrong, f"{len(gold.get('routes', {}))} items routed as gold" if not wrong else str(wrong)),
-        check("blocking-decisions", not missed, "every gold decision raised" if not missed else f"missing: {missed}"),
+        # An empty gold list tests nothing, so the check is skipped rather than passed
+        check("blocking-decisions", not missed, "every gold decision raised" if not missed else f"missing: {missed}")
+        if gold.get("decisions")
+        else skip("blocking-decisions", "no decisions in gold"),
         check(
             "approved-tickets",
             not not_created,
             "every gold ticket created" if not not_created else f"not created: {not_created}",
-        ),
+        )
+        if gold.get("tickets")
+        else skip("approved-tickets", "no tickets in gold"),
         *approve_checks(folder, gold, texts, created_titles),
     ]
 
