@@ -1776,6 +1776,18 @@ if has "$out" findings-evidence 0 && printf '%s' "$out" | grep -q 'a {member,adm
 else
     fail "a brace-set member with no test fails findings-evidence, naming the cited title: $out"
 fi
+# braces with spaces are an object literal in the title, never a brace set (bash doesn't expand `{a, b}` either)
+printf 'it("F-001 rejects a { title, body } payload with 400", () => {})\n' >>"$V/tests/unit/matrix.spec.js"
+sed -i 's|- \*\*Tests:\*\* `.*|- **Tests:** `tests/unit/matrix.spec.js::F-001 rejects a { title, body } payload with 400`|' "$V/docs/intake-findings.md"
+commit_item "$V" intake:testing-features "test(intake): fix"
+set +e
+out=$(score "$V" --test-cmd "true")
+set -e
+if has "$out" findings-evidence 1; then
+    pass "a title with a spaced object literal { a, b } is one test, found as written"
+else
+    fail "a title with a spaced object literal { a, b } is one test, found as written: $out"
+fi
 
 # Version 22: a skip call's reason may be its second argument (Playwright's `test.skip(cond, "BLOCKED: ...")`,
 # `testInfo.skip(true, ...)`) or a title-first skip's title, and an n/a: reason may follow a cell id and a separator

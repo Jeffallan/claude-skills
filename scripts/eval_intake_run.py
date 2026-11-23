@@ -1267,8 +1267,9 @@ def placeholder_title(name: str) -> re.Pattern[str] | None:
     return re.compile(r"(?:\$\{[^}]*\}|[^\n`'\"]+?)".join(map(re.escape, parts))) if len(parts) > 1 else None
 
 
-# A shell brace set, `{paused,suspended}`, never the `${...}` of a template literal
-BRACE_SET = re.compile(r"(?<!\$)\{([^{}]*,[^{}]*)\}")
+# A shell brace set, `{paused,suspended}`: never the `${...}` of a template literal, nor a spaced `{ a, b }` object
+# literal in a title (bash leaves a set with spaces unexpanded too)
+BRACE_SET = re.compile(r"(?<!\$)\{([^{}\s]*,[^{}\s]*)\}")
 
 
 def brace_expand(name: str) -> list[str]:
