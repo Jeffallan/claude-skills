@@ -22,7 +22,7 @@
 v0.5.0 rebuilds the project workflow around specs. Tickets stay in your tracker, specs live as Markdown in your repo, and each ticket is built with its failing test first, by hand or in an unattended goal run.
 
 **Install**
-- The plugin now ships from the `plugin/` folder on `main`, listed by the root marketplace entry. The [Quick Start](#quick-start) commands are unchanged, updating the plugin installs what `main` holds, and the separate `plugin` distribution branch is gone. See [plugin/README.md](plugin/README.md).
+- The plugin now ships from the `plugin/` folder on `main`, listed by the root marketplace entry. The [Quick Start](#quick-start) commands are unchanged. Updating the plugin installs what `main` holds, and the separate `plugin` distribution branch is gone. See [plugin/README.md](plugin/README.md).
 - The workflow commands need [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which a setup wizard offers to create. See [Tracker Setup](docs/TRACKER_SETUP.md).
 
 **Adopting an existing codebase**
@@ -103,7 +103,7 @@ Check the assumptions your specs and Claude make against your system's current s
 
 ## Project Workflow
 
-The <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> workflow commands take a group of tickets from your tracker to a reviewed, merged pull request: `spec:triage` groups tickets into specs, `spec:create` plans one, `ticket:execute` and `ticket:complete` build it test-first (by hand or in an unattended goal run), and `spec:review` and `spec:complete` review it and merge it. Specs live as markdown in your repo; tickets stay in Jira, GitHub Issues, GitHub Projects, Linear or text files. See the [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md). `spec:current` and `spec:diff` show the system as it is and what the outstanding specs would change. Adopting an existing codebase? The `intake` command documents it, pins its current behavior in tests and tracks its bugs first; see [**Intake**](docs/INTAKE.md).
+The <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> workflow commands take a group of tickets from your tracker to a reviewed, merged pull request: `spec:triage` groups tickets into specs, `spec:create` plans one, `ticket:execute` and `ticket:complete` build it test-first (by hand or in an unattended goal run), and `spec:review` and `spec:complete` review it and merge it. Specs live as markdown in your repo; tickets stay in Jira, GitHub Issues, GitHub Projects, Linear or text files. See the [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md). `spec:current` and `spec:diff` show the system as it is and what the outstanding specs would change. For an existing codebase, run the `intake` command first. It documents the code, pins its current behavior in tests and tracks its bugs; see [**Intake**](docs/INTAKE.md).
 
 ```mermaid
 flowchart LR
@@ -143,7 +143,7 @@ See [Changelog](CHANGELOG.md) for full version history and release notes.
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details.
+MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Support
 

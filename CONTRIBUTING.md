@@ -1,7 +1,5 @@
 # Contributing to Fullstack Dev Skills Plugin
 
-Guidelines for contributing to this project.
-
 ## How to Contribute
 
 ### Reporting Issues

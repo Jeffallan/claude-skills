@@ -32,7 +32,7 @@ npx skills add jeffallan/claude-skills
 npx agent-skills-cli@latest add @Jeffallan/claude-skills
 ```
 
-> **Note:** This method installs skills only. Slash commands (`/common-ground` and the workflow commands) are not included. Installs to 42+ AI agents including Claude, Cursor, Copilot, Windsurf, and more. [Learn more](https://www.agentskills.in)
+> **Note:** This method installs skills only. Slash commands (`/common-ground` and the workflow commands) are not included. It installs to 42+ AI agents including Claude, Cursor, Copilot, Windsurf, and more. [Learn more](https://www.agentskills.in)
 
 ### Local Development
 ```bash
@@ -97,7 +97,7 @@ The workflow commands need the full plugin install (the skills-only methods abov
 4. Work the tickets with `ticket:execute` and `ticket:complete`, or start one of the printed goal runs.
 5. Finish with `spec:review` and `spec:complete`.
 
-Adopting an existing codebase? Start with `/fullstack-dev-skills:intake`. It documents the code, pins its behavior in tests and records its bugs, one checklist item at a time. See [Intake](docs/INTAKE.md).
+For an existing codebase, start with `/fullstack-dev-skills:intake`. It documents the code, pins its behavior in tests and records its bugs, one checklist item at a time. See [Intake](docs/INTAKE.md).
 
 See [Workflow Commands](docs/WORKFLOW_COMMANDS.md) and [Tracker Setup](docs/TRACKER_SETUP.md).
 

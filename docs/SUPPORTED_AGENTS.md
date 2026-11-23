@@ -22,10 +22,10 @@ This plugin follows the [Agent Skills specification](https://agentskills.io/spec
 
 To add an agent to this list, open a pull request with the following:
 
-1. **Verify compatibility** — The agent must implement the [Agent Skills specification](https://agentskills.io/specification)
-2. **Add to Compatible Agents table** — Include agent name (with link), developer, type, and skills documentation link
+1. **Verify compatibility**: the agent must implement the [Agent Skills specification](https://agentskills.io/specification)
+2. **Add to Compatible Agents table**: include agent name (with link), developer, type, and skills documentation link
 3. **Add to Skills Directory Locations table** — Document where the agent looks for project and user skills
-4. **Provide evidence** — Link to the agent's skills documentation or announcement
+4. **Provide evidence**: link to the agent's skills documentation or announcement
 
 ### PR Template
 
@@ -44,4 +44,4 @@ Evidence of Agent Skills support: [link to docs/announcement]
 
 ## Specification
 
-- [Agent Skills Specification](https://agentskills.io/specification) — Format definition
+- [Agent Skills Specification](https://agentskills.io/specification): the format definition
