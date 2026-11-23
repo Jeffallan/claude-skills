@@ -6,17 +6,17 @@
 
 ## Overview
 
-Claude operates on assumptions—about your tech stack, coding standards, architecture decisions, and preferences. These assumptions are often correct, but when they're wrong, they lead to misaligned work that needs to be redone.
+Claude works from assumptions about your tech stack, coding standards, architecture decisions and preferences. These assumptions are often correct. When one is wrong, the work built on it has to be redone.
 
-**Common Ground** makes these assumptions explicit. Instead of Claude silently assuming "this project uses TypeScript strict mode" or "we prefer functional components," it surfaces these beliefs for your validation before proceeding.
+Common Ground makes these assumptions explicit. When Claude would otherwise assume "this project uses TypeScript strict mode" or "we prefer functional components" without a word, it shows you the belief to confirm before it goes on.
 
 ---
 
 ## Background & Motivation
 
-This command emerged from a conversation about a fundamental asymmetry in human-AI collaboration: Claude builds an internal model of reality—assumptions, inferences, premises—that shapes everything it produces, but users have no way to see or correct that model until something goes wrong downstream.
+This command came out of a conversation about an imbalance in working with an AI: Claude builds an internal model of reality (assumptions, inferences, premises) that shapes everything it produces, but users have no way to see or correct that model until something goes wrong downstream.
 
-The result is a **steering problem**: once Claude commits to a path, course-correcting feels like fighting momentum rather than navigating together. This command addresses that by making the hidden visible—surfacing Claude's assumptions as an editable artifact so both parties can align before work begins.
+The result is a steering problem: once Claude commits to a path, correcting its course feels like fighting momentum. This command writes Claude's assumptions down as a file you can edit, so you and Claude can agree on them before work begins.
 
 ### Origin Story
 
@@ -32,13 +32,13 @@ This resonated with a user frustration: *"I don't have an ergonomic way to say '
 
 ### Why "Common Ground"?
 
-The command was originally called `/reality-check`, but the name was changed to better reflect what it actually does.
+The command was first called `/reality-check`. It was renamed to fit what it does.
 
-It's not verification against truth—it's the creation of **common ground**: a shared place to stand, knowing we still see it differently, but at least pointing at the same patch of earth.
+A reality check suggests verifying against the truth. This command builds common ground: a shared place to stand, where we still see it differently but at least point at the same patch of earth.
 
-This reflects a deeper insight about intersubjectivity: two minds can never achieve perfect transparency, but they can narrow the gap through iteration. Each cycle of *surface → interpret → respond → correct* leaves us more aligned.
+The idea comes from intersubjectivity: two minds can never be fully transparent to each other, but they can narrow the gap by iterating. Each cycle of *surface → interpret → respond → correct* leaves us closer.
 
-The ground file isn't ground truth—it's a **coordination point** that constrains our misunderstandings and gives us something concrete to build from together
+The ground file is a coordination point, and it can still be wrong. It limits how far our misunderstandings drift and gives us something concrete to build from together.
 
 ---
 
@@ -64,7 +64,7 @@ The ground file isn't ground truth—it's a **coordination point** that constrai
 
 ### The Two-Phase Flow
 
-When you run `/common-ground` without flags, Claude executes a two-phase interactive process:
+When you run `/common-ground` without flags, Claude runs an interactive process in two phases:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -158,7 +158,7 @@ OPEN ─────────────► WORKING ────────
 
 ## Assumption Types
 
-Every assumption has a **type** that records its origin. Types are immutable—they serve as an audit trail.
+Every assumption has a **type** that records its origin. Types are immutable, which makes them an audit trail.
 
 | Type | Meaning | Example |
 |------|---------|---------|
@@ -270,7 +270,7 @@ A companion `ground.index.json` provides structured access:
 
 ## Reasoning Graph (`--graph`)
 
-The `--graph` flag generates a mermaid diagram showing not just *what* Claude assumes, but *how* it arrived at those assumptions.
+The `--graph` flag generates a mermaid diagram of what Claude assumes and how it arrived at each assumption.
 
 The diagram is stored in `ground.index.json` under `graph`, and `COMMON-GROUND.md` shows it as a `## Reasoning Graph` section each time it is regenerated from the index. A later change to your assumptions keeps the graph.
 
@@ -373,7 +373,7 @@ When Claude produces something unexpected:
 /common-ground --list
 ```
 
-Check what assumptions led to that output. Often reveals a misaligned premise.
+Check which assumptions led to that output; a wrong premise is often the cause.
 
 ---
 
@@ -389,7 +389,7 @@ Don't rush assumptions to ESTABLISHED. WORKING tier is appropriate for most infe
 
 ### 3. Keep OPEN Items Visible
 
-Uncertain assumptions in OPEN tier are valuable. They remind Claude to ask rather than guess.
+Keep uncertain assumptions in the OPEN tier, where they remind Claude to ask rather than guess.
 
 ### 4. Review After Major Changes
 
@@ -419,10 +419,10 @@ Focus on specific subtrees: "Expand only the authentication branch"
 
 ## Related Documentation
 
-- [Workflow Commands](WORKFLOW_COMMANDS.md) — Project workflow commands
-- [Atlassian MCP Setup](ATLASSIAN_MCP_SETUP.md) — Jira/Confluence integration
-- [plugin/commands/common-ground.md](../plugin/commands/common-ground.md) — Technical implementation
-- [Common Ground Workflow](workflow/common-ground.md) — Workflow integration details
+- [Workflow Commands](WORKFLOW_COMMANDS.md): project workflow commands
+- [Atlassian MCP Setup](ATLASSIAN_MCP_SETUP.md): Jira/Confluence integration
+- [plugin/commands/common-ground.md](../plugin/commands/common-ground.md): technical implementation
+- [Common Ground Workflow](workflow/common-ground.md): workflow integration details
 
 ---
 

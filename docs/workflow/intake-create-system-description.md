@@ -27,7 +27,7 @@ A project that started from discovery has no intake documentation docs, even aft
 
 Each later run reads the description's Change history and folds in only the completed specs it doesn't list, changing just the sections they touch. `--full` rewrites everything. Every section names its sources, and open findings that affect a section appear in it by id.
 
-The planned view of where the outstanding specs take the architecture is `spec:diff` now; it prints the plan and writes no page.
+`spec:diff` shows where the outstanding specs take the architecture; it prints the plan and writes no page.
 
 `spec:complete` keeps the description current one spec at a time: in its completion commit, before the PR opens, it proposes updates for the finished spec and applies the ones the owner approves. `spec:current` runs this procedure's rerun path through the `architect` agent to fold in anything still missing, then compiles `docs/current-state.json` from it.
 
