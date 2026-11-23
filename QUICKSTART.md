@@ -27,12 +27,16 @@ npx skills add jeffallan/claude-skills
 
 > **Note:** This method installs skills only. Slash commands (`/common-ground` and the workflow commands) are not included.
 
+[Supported Agents](docs/SUPPORTED_AGENTS.md#skills-cli) lists the agent ids and flags for Cursor, Codex CLI and other agents.
+
 ### Install via Agent Skills CLI
 ```bash
 npx agent-skills-cli@latest add @Jeffallan/claude-skills
 ```
 
 > **Note:** This method installs skills only. Slash commands (`/common-ground` and the workflow commands) are not included. It installs to 42+ AI agents including Claude, Cursor, Copilot, Windsurf, and more. [Learn more](https://www.agentskills.in)
+
+[Supported Agents](docs/SUPPORTED_AGENTS.md#skills-cli) lists its agent ids and the folders it writes to.
 
 ### Local Development
 ```bash
