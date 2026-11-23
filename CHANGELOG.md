@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Handbook v0.6.3: the handbook-update and notes-check workflows run on the runner labels in the `RUNNER_LABELS` variable (default `ubuntu-latest`) and pass the handbook token through the environment instead of `~/.gitconfig`; the docs site moves to Starlight 0.43.1, Astro 7.4.12 and Prettier 3.10.1 (#333)
 
+### Fixed
+- Docs site: the README's Workflow Examples link points at GitHub, since the site doesn't publish `examples/` and its link check failed the build after #317
+
 ### Contributors
 - @CloudCorpRecords: multi-skill workflow examples (#317)
 
