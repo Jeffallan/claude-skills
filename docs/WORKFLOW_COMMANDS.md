@@ -97,7 +97,7 @@ Discovery is optional. Use it when there are no tickets yet, or when `spec:triag
 **`ticket:execute <ticket-id>`** works one ticket from the plan, never from the tracker, so a run can resume without tracker access.
 
 - It needs a clean working tree (only the spec's own `implementation-plan.md` may show changes) and records the start commit in a marker under `.git/ticket-guard/`.
-- It invokes the `ticket-guard` skill, whose hooks freeze the RED tests, keep goal runs out of the text-ticket folder and re-run the tests before a goal run may stop.
+- It invokes the `ticket-guard` skill, which carries the ticket rules. The plugin's guard hooks freeze the RED tests, keep goal runs out of the text-ticket folder and re-run the tests before a goal run may stop.
 - The failing test comes first and is recorded with `guard run red` (`--type stand-in` for a docs or configuration ticket, `--type refactor` for a refactor, which is refused when its metric tool didn't run). A collection or import error doesn't count as RED, so new tests import the code under test inside the test body.
 - After RED, the code is written until `guard run green` passes, along with the project's `verify` commands.
 - New issues found along the way go to the plan's Proposed tracker changes. Questions go to its Open questions. Neither is worked during the run.
@@ -161,7 +161,7 @@ A goal run works through a spec's tickets without you. `spec:create` prints two 
 - **Whole spec:** one run across compactions.
 - **Next batch:** the next few tickets (`goal.batchSize`, default 3), then stop. For headless runs, `guard run-batches <spec-name>` loops batches in one session and compacts between them.
 
-Each launch command starts a new session with `--disallowedTools` for every write the run must not make: `AskUserQuestion`, `git push`, PR and issue writes, API writes, `guard decide` and `guard decisions import`. It also allows the `ticket-guard` skill, which the hooks need. Judge a run by its final message, never by its exit code. [Goal Runs](GOAL_RUNS.md) covers what happens inside a run.
+Each launch command starts a new session with `--disallowedTools` for every write the run must not make: `AskUserQuestion`, `git push`, PR and issue writes, API writes, `guard decide` and `guard decisions import`. It also allows the `ticket-guard` skill, which carries the ticket rules; the hooks run without it. Judge a run by its final message, never by its exit code. [Goal Runs](GOAL_RUNS.md) covers what happens inside a run.
 
 ## What each command writes
 

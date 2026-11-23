@@ -107,9 +107,9 @@ Hooks run automatically on `git commit`. To run manually:
 pre-commit run --all-files
 
 # Or use Make targets:
-make lint      # Check all formatting (Python, JS/TS, Markdown, Astro)
+make lint      # Check formatting (Python, JS/TS, Astro)
 make format    # Auto-fix all formatting
-make validate  # Run skill validation, markdown checks, and docs sync
+make validate  # skill-linter release (skills, commands, Markdown structure) and stamp --check
 ```
 
 ### Conventions
@@ -119,7 +119,6 @@ make validate  # Run skill validation, markdown checks, and docs sync
 | Python | ruff | ruff-format | `ruff.toml` | `scripts/*.py` |
 | Python | pyright | — | `pyrightconfig.json` | `scripts/*.py` |
 | JS/TS/CSS | — | prettier | `.prettierrc` | `site/`, `assets/` |
-| Markdown | — | prettier | `.prettierrc` | `skills/`, `docs/`, `*.md` (excludes `commands/`) |
 | Astro | — | prettier + prettier-plugin-astro | — | `site/src/**/*.astro` |
 
 ### Key settings
@@ -127,7 +126,7 @@ make validate  # Run skill validation, markdown checks, and docs sync
 - **Line length:** 120 (Python and Prettier)
 - **Python target:** 3.11+
 - **Quote style:** double (Python), single (JS/TS)
-- **Markdown in `commands/`** is excluded from formatting — these are prompt templates where whitespace may be intentional
+- **Markdown** isn't auto-formatted; `skill-linter` checks its structure (fences, tables, comments)
 
 ### CI
 

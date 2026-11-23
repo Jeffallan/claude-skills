@@ -69,7 +69,7 @@ Inside a goal run the wizard can't ask anything, so it writes nothing, prints th
 
 ## What the adapters do
 
-Each tracker gets the same operations, so the commands never contain tracker-specific steps: create, read, list a spec's tickets, link a ticket to a spec, update (append text or set a field), comment, close, reopen, ensure group, link groups, and an optional list of ungrouped tickets.
+Each tracker gets the same operations, so the commands never contain tracker-specific steps: create, read, list a spec's tickets, link a ticket to a spec, unlink it, update (append text or set a field), comment, close, reopen, ensure group, link groups, and an optional list of ungrouped tickets.
 
 A few rules hold everywhere:
 

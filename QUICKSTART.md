@@ -17,7 +17,7 @@ Get up and running with the Fullstack Dev Skills Plugin.
 
 ### Install from GitHub
 ```bash
-claude plugin install https://github.com/jeffallan/claude-skills
+claude plugin install fullstack-dev-skills --marketplace jeffallan/claude-skills
 ```
 
 ### Install via skills.sh
@@ -36,7 +36,7 @@ npx agent-skills-cli@latest add @Jeffallan/claude-skills
 
 ### Local Development
 ```bash
-cp -r ./skills/* ~/.claude/skills/
+cp -r ./plugin/skills/* ~/.claude/skills/
 ```
 Restart Claude Code after copying.
 
@@ -64,8 +64,8 @@ Verify skills are working:
 
 <!-- SKILL_COUNT -->71<!-- /SKILL_COUNT --> skills covering:
 - <!-- SKILL_COUNT:language -->12<!-- /SKILL_COUNT:language --> Language Experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript)
-- <!-- SKILL_COUNT:backend -->9<!-- /SKILL_COUNT:backend --> Backend Framework Experts (NestJS, Django, Django Storages S3, FastAPI, Spring Boot, Laravel, Rails, .NET Core)
-- <!-- SKILL_COUNT:frontend -->8<!-- /SKILL_COUNT:frontend --> Frontend & Mobile Experts (React, Next.js, Vue, Vue (JavaScript), Angular, React Native, Flutter)
+- <!-- SKILL_COUNT:backend -->9<!-- /SKILL_COUNT:backend --> Backend Framework Experts (NestJS, Django, Django Storages S3, FastAPI, Flask, Spring Boot, Laravel, Rails, .NET Core)
+- <!-- SKILL_COUNT:frontend -->8<!-- /SKILL_COUNT:frontend --> Frontend & Mobile Experts (React, Next.js, Nuxt, Vue, Vue (JavaScript), Angular, React Native, Flutter)
 - <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> Project Workflow Commands: `intake`, discovery, spec, ticket and `common-ground`
 - Plus: Infrastructure, DevOps, Security, Architecture, Testing, and more
 
@@ -143,7 +143,7 @@ Include relevant information:
 # Marketplace installs update automatically
 # For manual installs, pull latest and re-copy:
 cd claude-skills && git pull
-cp -r ./skills/* ~/.claude/skills/
+cp -r ./plugin/skills/* ~/.claude/skills/
 ```
 
 ### Need Help

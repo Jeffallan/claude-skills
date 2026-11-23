@@ -72,7 +72,11 @@ patterns = [{ key = "runtimePin", regex = 'skill-linter==([\d.]+)' }]
 
 [[tool.skill-linter.stamp.files]]
 path = "README.md"
-patterns = [{ key = "version", regex = 'version-([\d.]+)-blue\.svg' }]
+patterns = [
+  { key = "version", regex = 'version-([\d.]+)-blue\.svg' },
+  { key = "skillCount", regex = 'desc=(\d+)%20Skills' },
+  { key = "workflowCount", regex = '%E2%80%A2%20(\d+)%20Workflows' },
+]
 [[tool.skill-linter.stamp.files]]
 path = "QUICKSTART.md"
 [[tool.skill-linter.stamp.files]]
@@ -97,6 +101,7 @@ patterns = [
   { key = "skillCount.language", regex = '(\d+) language experts' },
   { key = "skillCount.backend", regex = '(\d+) backend frameworks' },
   { key = "skillCount.frontend", regex = '(\d+) frontend/mobile' },
+  { key = "workflowCount", regex = '(\d+) project workflow commands' },
 ]
 [[tool.skill-linter.stamp.files]]
 path = "site/astro.config.mjs"

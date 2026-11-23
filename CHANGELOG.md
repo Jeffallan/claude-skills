@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Plugin: ships from the `plugin/` folder on `main`, listed by the root marketplace entry with `"source": "./plugin"`. The `plugin` distribution branch, its build script and its publish workflow are gone
 - Workflow: commands move to `commands/{discovery,spec,ticket}/` and are named `discovery:*`, `spec:*` and `ticket:*` (#123). "Spec" replaces "epic". Discovery takes topics or tickets instead of an epic key and creates tickets only; `spec:triage` forms groups. It keeps every ticket you name in a spec, flags contradictions for `spec:create` to settle instead of dropping a ticket, and offers a split only as a suggestion (#121, #122, #103)
 - Workflow: ticket commands write the failing test first, never write to the tracker, and commit with a neutral `Ticket: <id>` trailer. Every script a RED or GREEN command runs lives in the repo, never a scratch path that a reboot deletes. Only `spec:complete` closes tickets, after the merge
-- skill-linter 0.3.5 is pinned through one stamped value, `runtimePin`, which `stamp` writes into commands, references, docs, scripts, `Makefile`, `CLAUDE.md` and CI. CI's Validate job moves from skill-linter 0.2.0
+- skill-linter 0.4.0 is pinned through one stamped value, `runtimePin`, which `stamp` writes into commands, references, docs, scripts, `Makefile`, `CLAUDE.md` and CI. CI's Validate job moves from skill-linter 0.2.0
 
 ### Removed
 - Workflow: `complete-sprint` and the `project:<phase>:<command>` names. `create-implementation-plan` folds into `spec:create`, `complete-epic` into `spec:complete`, and the retrospective phase is dropped

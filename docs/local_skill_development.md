@@ -81,7 +81,7 @@ ln -s /path/to/your/working/copy/plugin \
 
 ```bash
 ls -la ~/.claude/plugins/cache/<plugin>/<name>/
-# Should show: <version> -> /path/to/your/working/copy
+# Should show: <version> -> /path/to/your/working/copy/plugin
 ```
 
 ---

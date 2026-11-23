@@ -18,7 +18,7 @@ command: "discovery:create"
 phase: discovery
 
 # Relative path to the command's .md implementation file
-path: commands/discovery/create.md
+path: plugin/commands/discovery/create.md
 
 # Relative path to the human-readable overview in docs/workflow/
 description: docs/workflow/discovery-create.md
@@ -74,7 +74,7 @@ adapter-operations:
 | `inputs[].description` | string | yes | — | Human-readable description of the input. |
 | `outputs` | list | yes | — | Ordered list of output objects. May be empty (`[]`). |
 | `outputs[].name` | string | yes | — | Kebab-case identifier. |
-| `outputs[].type` | string | yes | — | One of: `url`, `document`, `tickets`, `report`, `file`. |
+| `outputs[].type` | string | yes | — | One of: `url`, `document`, `tickets`, `report`, `file`, `directory`. |
 | `outputs[].path` | string | no | — | Template path for the output location. Supports `{input-name}` interpolation. |
 | `outputs[].description` | string | no | — | Human-readable description of the output. |
 | `requires` | list | yes | — | Backend capabilities needed. Valid value: `ticketing`. Empty list (`[]`) if no backend is needed. |
@@ -82,7 +82,7 @@ adapter-operations:
 | `argument-hint` | string | no | — | CLI syntax hint (e.g., `<spec-name>`). |
 | `repeat` | boolean | no | `false` | `true` if the command is invoked several times per spec (e.g., per-ticket commands). |
 | `unattended` | boolean | no | — | `true` for a command that runs under unattended rules in a goal run (`ticket:execute`, `ticket:complete`); `false` for an attended-only command. skill-linter's WF-02 rejects write operations on an unattended command. |
-| `adapter-operations` | list | no | — | Tracker and code-host operations the command uses: `create`, `read`, `list-spec-tickets`, `link`, `update`, `comment`, `close`, `reopen`, `ensure-group`, `link-groups`, `list-ungrouped`, `open-pr`, `read-pr-feedback`, `reply-resolve`, `check-pr`, `merge-pr`. See `references/adapters/operations.md`. |
+| `adapter-operations` | list | no | — | Tracker and code-host operations the command uses: `create`, `read`, `list-spec-tickets`, `link`, `unlink`, `update`, `comment`, `close`, `reopen`, `ensure-group`, `link-groups`, `list-ungrouped`, `open-pr`, `read-pr-feedback`, `reply-resolve`, `check-pr`, `merge-pr`. See `references/adapters/operations.md`. |
 
 ### Input Types
 
@@ -103,12 +103,13 @@ adapter-operations:
 | `tickets` | Jira tickets created in the ticketing system |
 | `report` | A generated report (completion report, retrospective) |
 | `file` | A local file produced on disk |
+| `directory` | A local directory of files produced on disk |
 
 ---
 
 ## Workflow Manifest Schema
 
-The manifest at `commands/workflow-manifest.yaml` defines the phase DAG and command ordering.
+The manifest at `plugin/commands/workflow-manifest.yaml` defines the phase DAG and command ordering.
 
 ### Annotated Example
 
@@ -131,7 +132,7 @@ phases:
     # Ordered list of commands in this phase
     commands:
       - command: "intake"
-        definition: commands/intake.yaml
+        definition: plugin/commands/intake.yaml
 
   discovery:
     description: docs/workflow/discovery-phase.md
@@ -144,14 +145,14 @@ phases:
         role: prerequisite     # Feature-forge identifies unknowns that trigger discovery
     commands:
       - command: "discovery:create"
-        definition: commands/discovery/create.yaml
+        definition: plugin/commands/discovery/create.yaml
       - command: "discovery:approve"
-        definition: commands/discovery/approve.yaml
+        definition: plugin/commands/discovery/approve.yaml
 
 # Utility commands not tied to a specific phase
 utilities:
   - command: common-ground
-    definition: commands/common-ground.yaml
+    definition: plugin/commands/common-ground.yaml
     invocation: on-demand      # Can be invoked at any point
 ```
 

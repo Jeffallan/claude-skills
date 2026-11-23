@@ -55,7 +55,7 @@ This saves the ticket's changes to `.git/ticket-guard/blocked/<ticket>.patch` (n
 
 ## What keeps a run honest
 
-The commands, the companion skill's hooks and the runtime check each other.
+The commands, the plugin's guard hooks and the runtime check each other.
 
 | Check | When | What it catches |
 |-------|------|-----------------|

@@ -421,7 +421,7 @@ Focus on specific subtrees: "Expand only the authentication branch"
 
 - [Workflow Commands](WORKFLOW_COMMANDS.md) — Project workflow commands
 - [Atlassian MCP Setup](ATLASSIAN_MCP_SETUP.md) — Jira/Confluence integration
-- [commands/common-ground.md](../plugin/commands/common-ground.md) — Technical implementation
+- [plugin/commands/common-ground.md](../plugin/commands/common-ground.md) — Technical implementation
 - [Common Ground Workflow](workflow/common-ground.md) — Workflow integration details
 
 ---
@@ -433,5 +433,5 @@ Focus on specific subtrees: "Expand only the authentication branch"
 | `docs/COMMON-GROUND.md` | Human-readable assumptions, committed |
 | `docs/ground.index.json` | Machine-readable index, committed |
 | `docs/current-state.json` | The compiled current state the checks read (`spec:current`) |
-| `commands/common-ground.md` | Command implementation |
-| `references/common-ground/` | Deep-dive reference files |
+| `plugin/commands/common-ground.md` | Command implementation |
+| `plugin/references/common-ground/` | Deep-dive reference files |

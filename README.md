@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=67%20Skills%20%E2%80%A2%209%20Workflows%20%E2%80%A2%20Built%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25,27&height=200&section=header&text=Claude%20Skills&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=71%20Skills%20%E2%80%A2%2013%20Workflows%20%E2%80%A2%20Built%20for%20Full-Stack%20Devs&descSize=20&descAlignY=55" width="100%"/>
 </p>
 
 <p align="center">
@@ -86,8 +86,8 @@ The <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> workflow commands take a g
 - [**Atlassian MCP Setup**](docs/ATLASSIAN_MCP_SETUP.md) - Atlassian MCP server setup, for Jira
 - [**Local Development**](docs/local_skill_development.md) - Local skill development
 - [**Contributing**](CONTRIBUTING.md) - Contribution guidelines
-- **skills/\*/SKILL.md** - Individual skill documentation
-- **skills/\*/references/** - Deep-dive reference materials
+- **plugin/skills/\*/SKILL.md** - Individual skill documentation
+- **plugin/skills/\*/references/** - Deep-dive reference materials
 
 ## Contributing
 
