@@ -22,7 +22,7 @@
 v0.5.0 rebuilds the project workflow around specs. Tickets stay in your tracker, specs live as Markdown in your repo, and each ticket is built with its failing test first, by hand or in an unattended goal run.
 
 **Install**
-- The plugin now ships from the `plugin/` folder on `main`, listed by the root marketplace entry. The [Quick Start](#quick-start) commands are unchanged. Updating the plugin installs what `main` holds, and the separate `plugin` distribution branch is gone. See [plugin/README.md](plugin/README.md).
+- The plugin now ships from the `plugin/` folder on `main`, listed by the root marketplace entry. The [Quick Start](#quick-start) commands are unchanged. Updating the plugin installs what `main` holds, and the separate `plugin` distribution branch is gone. See [plugin/README.md](https://github.com/jeffallan/claude-skills/blob/main/plugin/README.md).
 - The workflow commands need [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which a setup wizard offers to create. See [Tracker Setup](docs/TRACKER_SETUP.md).
 
 **Adopting an existing codebase**
