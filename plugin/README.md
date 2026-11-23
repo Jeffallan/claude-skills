@@ -21,13 +21,13 @@ The workflow commands cover a project from intake to merge:
 /plugin install fullstack-dev-skills@fullstack-dev-skills
 ```
 
-The workflow commands need [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which the first workflow command offers to create.
+The workflow commands need [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which the first command that needs the tracker offers to create.
 
 ## What the plugin reads, writes and runs
 
 Skills are Markdown instructions, so they read and write only what you ask Claude to work on.
 
-Workflow commands write specs and docs into your repository. Some of that work runs in the plugin's agents (`agents/`): readers that only read, and writers that edit docs and tests in your repository one at a time and never commit; the command reviews each writer's diff and commits it. They change tickets in your tracker through the tools you already have connected, and ask before each tracker change.
+Workflow commands write specs and docs into your repository. Some of that work runs in the plugin's agents (`agents/`): readers that only read, and writers that edit docs and tests in your repository one at a time (except `intake`'s parallel testing batch) and never commit; the command reviews each writer's diff and commits it. They change tickets in your tracker through the tools you already have connected, and ask before each tracker change.
 
 The plugin registers hooks on edits, tool calls, session stop and compaction. A hook exits at once unless a ticket is in progress, which a marker under `.git/ticket-guard/` records. During ticket work the hooks run the bundled guard, `runtime/guard.pyz`, with `uv run`; it records test evidence under `.git/ticket-guard/` and blocks edits to frozen tests.
 

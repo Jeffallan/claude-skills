@@ -12,6 +12,7 @@ The workflow commands take a group of tickets from your tracker to a reviewed, m
 - [Discovery](#discovery)
 - [Specs](#specs)
 - [Tickets](#tickets)
+- [Where each spec stands](#where-each-spec-stands)
 - [Review and completion](#review-and-completion)
 - [Current state and assumptions](#current-state-and-assumptions)
 - [Agents](#agents)
@@ -152,7 +153,7 @@ Long or parallel work runs in the plugin's agents. Each one is defined by the ki
 | `verifier` | Decides whether one finding is real, in a scratch worktree | `spec:review` |
 | `assumption-checker` | Checks spec assumptions against the current state; never writes | `common-ground` |
 
-Agents never commit, and only one writing agent runs at a time. Independent read-only agents start in one message so they run together; the command reviews each writer's diff and commits it. Agents can't ask you anything, so every question stays in the command. During ticket work no agent writes: `ticket:execute` and `ticket:complete` keep every edit in the main session, where the guard's hooks apply.
+Agents never commit, and only one writing agent runs at a time, except `intake`'s three testing writers, which write separate test trees at once. Independent read-only agents start in one message so they run together; the command reviews each writer's diff and commits it. Agents can't ask you anything, so every question stays in the command. During ticket work no agent writes: `ticket:execute` and `ticket:complete` keep every edit in the main session, where the guard's hooks apply.
 
 ## Goal runs
 

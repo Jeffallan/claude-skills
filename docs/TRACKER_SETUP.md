@@ -75,7 +75,7 @@ A few rules hold everywhere:
 
 - **Groups are found by exact name.** Tracker searches are fuzzy, so the adapter filters the results to the exact spec name, and refuses when two groups share it.
 - **Updates append.** The adapter adds text to the end of a ticket and leaves the existing text as it was.
-- **Only `spec:complete` closes tickets,** after the merge, then closes the group. Closing a group closes nothing else.
+- **Only `spec:complete` closes tickets,** after the merge (text tickets close in the completion commit), then closes the group. Closing a group closes nothing else.
 - **Commits stay neutral.** Commits reference tickets with a `Ticket: <id>` trailer, never a Linear issue ID or a Jira `#transition` token, so tracker automation doesn't move tickets early.
 
 ## GitHub Issues
