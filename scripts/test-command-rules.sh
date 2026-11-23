@@ -221,6 +221,11 @@ attended_row=$(grep -F '| Attended-only commands |' "$REF/specs/unattended.md")
 case "$attended_row" in *'`common-ground`'*) pass "unattended.md lists common-ground as attended only" ;; *) fail "unattended.md lists common-ground as attended only" ;; esac
 assert_contains "$PLUGIN/../docs/workflow/common-ground.md" "BLOCKED: common-ground needs the owner" "the common-ground page explains its goal-run stop"
 
+echo "assumptions.md extracts every present-tense claim and every uses-relation"
+ASM="$REF/specs/assumptions.md"
+assert_contains "$ASM" "Every sentence that says how the system works now is an assumption" "assumptions.md: present-tense claims are always listed"
+assert_contains "$ASM" "list \"A can reach B\" as its own \`interface\` assumption" "assumptions.md: a uses-relation gets its own reach row"
+
 echo "an assumption the spec relies on but neither exists nor gets built is a conflict"
 rule="relies on something that doesn't exist and the spec doesn't build it, the verdict is \`conflicts\`"
 assert_contains "$CGC" "$rule" "common-ground: unbuilt reliance is a conflict"

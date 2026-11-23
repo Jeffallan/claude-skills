@@ -30,6 +30,11 @@ A statement the spec relies on about the current system that the spec itself doe
 
 Skip what the spec builds itself, and restatements of the acceptance criteria.
 
+Two kinds are easy to miss:
+
+- Every sentence that says how the system works now is an assumption, wherever it sits (Purpose, Scope, Design, a ticket): "today", "currently", "already", "existing", "the same X the server uses". Those sentences are the spec's beliefs about the present.
+- When a sentence says component A uses B ("the export worker posts through the ledger client"), list "A can reach B" as its own `interface` assumption, beside any row about B itself, unless the spec adds that connection. A spec often relies on wiring that isn't there.
+
 ## The list
 
 One row per assumption, numbered per spec (`<spec>:A1`, `<spec>:A2`, ...):
