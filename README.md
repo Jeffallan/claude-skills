@@ -105,6 +105,15 @@ Check the assumptions your specs and Claude make against your system's current s
 
 The <!-- WORKFLOW_COUNT -->13<!-- /WORKFLOW_COUNT --> workflow commands take a group of tickets from your tracker to a reviewed, merged pull request: `spec:triage` groups tickets into specs, `spec:create` plans one, `ticket:execute` and `ticket:complete` build it test-first (by hand or in an unattended goal run), and `spec:review` and `spec:complete` review it and merge it. Specs live as markdown in your repo; tickets stay in Jira, GitHub Issues, GitHub Projects, Linear or text files. See the [**Workflow Commands Reference**](docs/WORKFLOW_COMMANDS.md). `spec:current` and `spec:diff` show the system as it is and what the outstanding specs would change. Adopting an existing codebase? The `intake` command documents it, pins its current behavior in tests and tracks its bugs first; see [**Intake**](docs/INTAKE.md).
 
+```mermaid
+flowchart LR
+  disc["discovery:create<br>discovery:approve"] -.->|new tickets| triage
+  trk["tickets in<br>your tracker"] --> triage["spec:triage"] --> create["spec:create"]
+  create --> work["ticket:execute<br>ticket:complete"] --> done["spec:review<br>spec:complete"]
+  done -->|merged PR| check["spec:current<br>spec:diff<br>common-ground"]
+  check -.->|conflict| create
+```
+
 > [!TIP]
 > **Setup:** the workflow needs [uv](https://docs.astral.sh/uv/) and a `.claude/workflow-config.json`, which the first command that needs the tracker offers to create. See [**Tracker Setup**](docs/TRACKER_SETUP.md) and [**Goal Runs**](docs/GOAL_RUNS.md).
 

@@ -71,7 +71,7 @@ When you run `/common-ground` without flags, Claude executes a two-phase interac
 │                    PHASE 1: Surface & Select                │
 ├─────────────────────────────────────────────────────────────┤
 │  1. Check outstanding specs' assumptions (spec check)       │
-│  2. Analyze context (config files, code patterns, history)  │
+│  2. Analyze current state, config files and conversation    │
 │  3. Identify assumptions Claude is making                   │
 │  4. Classify by type and proposed confidence tier           │
 │  5. Present for user selection                              │
@@ -84,7 +84,7 @@ When you run `/common-ground` without flags, Claude executes a two-phase interac
 │  1. Show selected assumptions with proposed tiers           │
 │  2. User promotes/demotes confidence levels                 │
 │  3. Add any missing assumptions                             │
-│  4. Save to ground file                                     │
+│  4. Save ground file and index, commit both                 │
 └─────────────────────────────────────────────────────────────┘
 ```
 
