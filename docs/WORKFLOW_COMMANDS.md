@@ -30,16 +30,19 @@ There are two ways in.
 - **You have an idea, a feature list or a ticket nobody can plan yet.** Start at `discovery:create`, which turns it into tickets you approve before they reach the tracker.
 
 ```
-discovery:create ─► discovery:approve (synthesizes research first, when there is some)
-                                                                       │ tickets
-existing tickets ──────────────────────────────────────────────────────┤
+intake (once, when you adopt an existing codebase; recommended before either way in)
+   ┆
+   ├┄► discovery:create ─► discovery:approve (synthesizes research first, when there is some)
+   ┆                                                                   │ tickets
+   └┄► existing tickets ───────────────────────────────────────────────┤
                                                                        ▼
 spec:triage ─► spec:create ─► ticket:execute + ticket:complete (per ticket, often one goal run)
                                                                        │
                                      spec:complete ◄─ spec:review ◄────┘
                                            │
                                            ▼
-                     spec:current ─► spec:diff ─► common-ground ─► (a conflict: back to spec:create)
+                     spec:current ─► spec:diff ─► common-ground ─► (a conflict: back to spec:create,
+                                                                     or to spec:current when the state is wrong)
 ```
 
 A **spec** is a named group of tickets built on one branch, `spec/<spec-name>`, and merged in one PR. Its files sit in `docs/specs/todo/<spec-name>/` and move to `docs/specs/completed/` when the spec finishes:
