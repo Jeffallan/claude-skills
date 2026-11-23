@@ -56,9 +56,9 @@ Introduced 9 project workflow commands spanning discovery, planning, execution, 
 - [#122](https://github.com/Jeffallan/claude-skills/issues/122): Feature Forge runs inside `discovery:create` and `spec:create`
 
 ### Goal runs and review
-- Unattended goal runs with launch-scoped denies, test-first tickets with recorded RED and GREEN evidence, and the `ticket-guard` companion skill's hooks
+- Unattended goal runs with launch-scoped denies, test-first tickets with recorded RED and GREEN evidence, and the plugin's guard hooks
 - `spec:review` with blind per-finding verifiers, a rollup and a gate
-- The workflow runtime runs from [skill-linter](https://pypi.org/project/skill-linter/) through `uvx`
+- The workflow runtime ships inside the plugin (`runtime/guard.pyz`) and runs through `uv`
 
 ---
 

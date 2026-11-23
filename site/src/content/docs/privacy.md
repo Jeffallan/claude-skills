@@ -11,26 +11,26 @@ The plugin and documentation site are maintained by [@jeffallan](https://github.
 
 ## 1. The Plugin
 
-The plugin distributes static content: markdown skill files, slash command templates, and Python validation scripts. When you install the plugin in Claude Code, Claude Cowork, or another compatible host, the plugin:
+The plugin distributes markdown skill files, slash command templates, agent definitions, hooks and a small local runtime (`runtime/guard.pyz`) that the workflow commands and hooks run. When you install the plugin in Claude Code, Claude Cowork, or another compatible host, the plugin:
 
 - Does not collect, transmit, or store any personal information.
-- Does not make network requests on your behalf.
+- Makes no network requests of its own. It runs the bundled runtime through [uv](https://docs.astral.sh/uv/), which may download a Python interpreter the first time if a suitable one isn't installed.
 - Does not include telemetry, analytics, or usage tracking of any kind.
 - Runs entirely within your local Claude environment. All file reads, prompts, and tool calls happen within your existing Claude host process.
 
 Any data your Claude host sends to Anthropic during a session (prompts, tool results, etc.) is governed by Anthropic's privacy policy, not this one. The plugin itself adds no data collection.
 
-## 2. MCP Server Integrations
+## 2. Ticket Trackers and MCP Servers
 
-Some workflow commands in this plugin integrate with external services through [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers that you configure separately in your Claude host. The project workflow commands, for instance, require an Atlassian MCP server to interact with Jira and Confluence, as described in the [Atlassian MCP Setup Guide](https://github.com/jeffallan/claude-skills/blob/main/docs/ATLASSIAN_MCP_SETUP.md).
+The workflow commands reach your ticket tracker and code host through tools you already have: the `gh` CLI for GitHub, or a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server you configure separately in your Claude host for Jira or Linear (see the [Atlassian MCP Setup Guide](https://github.com/jeffallan/claude-skills/blob/main/docs/ATLASSIAN_MCP_SETUP.md)). With the text tracker, tickets stay as files in your repository and nothing is sent anywhere.
 
-The plugin does not bundle, run, or proxy any MCP server. When you use a command that invokes an MCP server:
+The plugin does not bundle, run, or proxy any MCP server, and it stores no tracker credentials. When you use a command that calls `gh` or an MCP server:
 
-- The MCP server runs in your local environment under your configuration and credentials.
-- Any data sent to the MCP server, and any data the MCP server forwards to a third-party vendor, is governed by that vendor's privacy policy, not this one.
-- This project has no visibility into, and assumes no responsibility for, the data flow between your MCP server and the underlying service.
+- The tool runs in your local environment under your configuration and credentials.
+- Any data sent to the tool, and any data it forwards to a third-party vendor, is governed by that vendor's privacy policy, not this one.
+- This project has no visibility into, and assumes no responsibility for, the data flow between that tool and the underlying service.
 
-Before configuring an MCP server, review the privacy policy of the vendor whose service it accesses. The Atlassian integration is covered by [Atlassian's privacy policy](https://www.atlassian.com/legal/privacy-policy).
+Before connecting a tracker, review the privacy policy of the vendor whose service it accesses. The Atlassian integration is covered by [Atlassian's privacy policy](https://www.atlassian.com/legal/privacy-policy).
 
 ## 3. The Documentation Site
 
