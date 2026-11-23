@@ -32,6 +32,9 @@ jobs:
       - name: Test that the docs match the commands
         run: bash scripts/test-command-docs.sh
 
+      - name: Test that the doc links and anchors resolve
+        run: bash scripts/test-doc-links.sh
+
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest

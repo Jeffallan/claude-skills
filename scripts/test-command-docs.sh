@@ -2,8 +2,8 @@
 #
 # Test that the user docs keep up with the commands: each command's inputs,
 # flags and output paths appear on its docs/workflow page, its argument hint
-# matches the Command reference in WORKFLOW_COMMANDS.md, and every relative
-# link in the user docs resolves.
+# matches the Command reference in WORKFLOW_COMMANDS.md. Links in the user
+# docs are checked by scripts/test-doc-links.sh.
 #
 # Usage: bash scripts/test-command-docs.sh
 # Exit codes: 0 = all tests pass, 1 = failure
@@ -89,38 +89,6 @@ for y in yamls:
     if cell is not None:
         want = "none" if hint == "" else f"`{hint}`"
         check(want in cell, f"{cmd}: the Command reference row shows {want}")
-
-print("relative links in the user docs resolve")
-docs = [root / p for p in ("README.md", "QUICKSTART.md", "SKILLS_GUIDE.md", "plugin/README.md")]
-# notes nothing published links to record the layout of their day: history, not user docs. The v0.5.0 plan stays
-# checked, since the site links it (site/scripts/sync-content.mjs linkMap), and so does the narrative it links.
-planning = re.compile(r"^docs/(v\d+\.\d+\.\d+-restructure-plan\.md|ideas/|prompts/|skill-ideas/|specs/)")
-docs += sorted(p for p in (root / "docs").rglob("*.md") if not planning.match(str(p.relative_to(root))))
-link = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)|!\[[^\]]*\]\(([^)\s]+)\)")
-fence = re.compile(r"^(```|~~~)")
-broken = []
-count = 0
-for d in docs:
-    in_fence = False
-    for n, line in enumerate(d.read_text().splitlines(), 1):
-        if fence.match(line.strip()):
-            in_fence = not in_fence
-            continue
-        if in_fence:
-            continue
-        line = re.sub(r"`[^`]*`", "", line)
-        for m in link.finditer(line):
-            target = m.group(1) or m.group(2)
-            if re.match(r"^[a-z][a-z0-9+.-]*:|^#|^//", target, re.I):
-                continue
-            count += 1
-            path = target.split("#", 1)[0]
-            if not (d.parent / path).exists():
-                broken.append(f"{d.relative_to(root)}:{n} -> {target}")
-check(count > 0, f"found relative links to check ({count})")
-for b in broken:
-    check(False, f"broken link {b}")
-check(not broken, f"every relative link resolves ({len(broken)} broken)")
 
 print("")
 print(f"Results: {passed} passed, {failed} failed")
