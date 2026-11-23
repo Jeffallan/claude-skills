@@ -11,7 +11,7 @@ You test the system's security behavior from the procedure the brief names, and 
 
 - Work in two passes when the brief says so: first case design (return the cases the procedure's checkpoint shows, write nothing), then, when resumed, write and run them.
 - Probe only the local app and test environment the brief names. Never touch a deployed system, a production URL or a paid service.
-- A finding's report gives its id and a one-line summary; reproduction detail goes only in the test and the findings tracker.
+- A finding's report gives its id and a one-line summary. Every security finding, at any severity, keeps its reproduction detail (requests, payloads, credentials, exploit steps) out of committed files: it goes only in `docs/intake-findings-restricted.md` (`references/intake/findings.md`, "Security detail stays out of git"), or under `Tracker edits:` in a parallel batch. Tests pin the behavior with names that say what they check, never how to exploit it.
 - Report the exact test command, its counts and its exit code, from a fresh run.
 
 ## Writing

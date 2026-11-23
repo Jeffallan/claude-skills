@@ -117,7 +117,9 @@ Write the document at the output path using the template below.
    evidence goes in the deviations table under `## Access invariants`. A cell that breaks one without intent
    evidence is a finding: append it to `docs/intake-findings.md` before the doc cites it, in the form
    "Findings from the matrix" in the contract describes (operation ids, principal column, invariant, one
-   finding per root cause), and put its id after the cell's status. When intent can't be settled either way,
+   finding per root cause), and put its id after the cell's status. Its reproduction detail goes in
+   `docs/intake-findings-restricted.md`, never in the doc or the tracker (`findings.md`, "Security detail stays
+   out of git"). When intent can't be settled either way,
    add an Open question with a draft answer and cite it in the cell note. No deviating cell stays silent.
 3. Write the channels section the same way: each channel's operation ids, whether the ownership rule holds on
    it, and a finding id where it does not.

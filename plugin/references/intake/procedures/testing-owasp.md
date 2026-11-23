@@ -183,6 +183,8 @@ When a category exposes a real weakness, write a passing test that **characteriz
 skipped or expected-fail test asserting the **hardened** behavior, both cross-referencing the tracked finding id.
 A weakness only a command can show (a vulnerable dependency, a secret in history, a deploy setting) gets a finding
 whose `Tests:` line reads `none: <why>; evidence: <command>` (`findings.md`, "Every finding has evidence").
+Every finding this procedure raises is a security finding: its payloads, requests, credentials and exploit steps go
+only in `docs/intake-findings-restricted.md`, never in the tracker or a test comment (`findings.md`, "Security detail stays out of git").
 The suite stays green while the gap stays visible. This is a documentation-and-regression task, not a remediation
 task; do not fix the code here.
 

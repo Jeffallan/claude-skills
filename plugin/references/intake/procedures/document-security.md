@@ -98,7 +98,8 @@ token types found and where each is issued, the authoritative-versus-UX split, a
 Write the document at the output path using the template below. Lead with the defense-layers overview table,
 then one section per mechanism. Keep each section grounded in code; prefer a small "where / authoritative? /
 enforced when" framing over prose. Write `## Tokens` as one row per token type. Before the doc cites a finding,
-append it to `docs/intake-findings.md` with the next free id. Add a "Gotchas for implementers" section for
+append it to `docs/intake-findings.md` with the next free id, its reproduction detail in `docs/intake-findings-restricted.md` and never in the
+doc (`findings.md`, "Security detail stays out of git"). Add a "Gotchas for implementers" section for
 asynchronous enforcement, fail-open behavior, UX-only gates, and cross-layer sync requirements.
 
 ### Accuracy audit (required; the output is agent-facing)

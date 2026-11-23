@@ -66,14 +66,29 @@ until triaged.
 - An access-control finding from the matrix names its operation ids, the principal column and the invariant it breaks, one finding per root cause (`references/intake/access-control.md`, "Findings from the matrix").
 - Cite code by symbol, never by line: `` `app/billing/services.py::round_minutes` ``, `` `app/models.py::Profile.save` `` for a method, the setting or key name for configuration, the path alone for a file with no symbol. `intake:document-codebase` and every later docstring move lines, so a line number goes stale inside the run. `<base-sha>` in the header is the commit the intake branch started from, the same one the checklist header names.
 
-## Security detail in a committed tracker
+## Security detail stays out of git
 
-The tracker is committed, and a Critical or High security finding with its tests is a working recipe against the deployed system until it's fixed. Before writing the first Critical or High security finding, check where the repo is visible (`gh repo view --json visibility`, the remote's host, or the owner's note in the checklist):
+The tracker and the tests are committed, and a pushed repo can be cloned, forked, mirrored or leaked well beyond the people who would fix it. Until the fix ships, a security finding's reproduction detail is a working recipe against the deployed system. It never goes in a committed file, at any severity, in any repo, private ones included.
 
-- **Private to the owner's team:** write it in full, as usual.
-- **Public, or shared wider than the people who would fix it, or unknown:** A repo with no git remote counts as unknown, and so does a remote `gh` can't read: nothing in the repo says who will see it once it is pushed. Write the Summary row and a Findings entry with severity, area, status, location and `Tests:` line, and put the reproduction detail (the exact requests, payloads and the steps) in `docs/intake-findings-restricted.md`, which the command adds to `.git/info/exclude` so it never gets committed. Record the choice in the item's checklist note and as an Open question, so the owner can move the detail back.
+A **security finding** is one someone could use against the app or its users: every finding from the access matrix, `intake:testing-authorization` or `intake:testing-owasp`, and any other finding about authentication, authorization, sessions or tokens, input handling (injection, unsafe deserialization, file paths, redirects), secrets, or one account reaching another account's data.
 
-The tests still pin the behavior either way; their names say what they check, not how to exploit it.
+**Reproduction detail** is anything that lets a reader carry out the attack without working it out from the code:
+
+- the exact requests: method, route with real ids, headers, cookies, query strings and bodies
+- payloads and inputs crafted to trigger it
+- credentials, tokens, session ids or keys used or obtained, test ones included
+- step-by-step exploitation: the account set-up, the order of calls, the timing
+- commands or scripts that run the attack (a `curl` line, a scanner invocation)
+
+For a security finding:
+
+- **The committed tracker entry** keeps the Summary row and a Findings entry with the id, `Severity:` (area), `Status:`, `Location:` (`path::symbol`), `What:` and `Impact:` in plain terms, `Recommendation:`, `Surfaced in:` and `Tests:`. `What:` says what is missing or wrong and who can reach what ("the invoice export checks the session but not the invoice's account"), never how to send it. It ends with `Reproduction: restricted file.`
+- **`docs/intake-findings-restricted.md`** holds the reproduction detail, one `### F-0xx <title>` section per finding. Whoever appends the finding to the tracker writes its section here, in the same step; in the parallel testing batch the agents report it under `Tracker edits:` and the `intake` command writes it. Before the file is first written, add `docs/intake-findings-restricted.md` to `.git/info/exclude`; the `intake` command confirms `git check-ignore -q docs/intake-findings-restricted.md` succeeds before every commit that follows.
+- **Docs** that cite the finding (`docs/security/*.md`, the access matrix) give the id and the plain-terms `What:`, never the detail.
+- **Tests** stay committed: they pin the behavior and the fix needs them. Their names and comments say what they check (`test_F012_member_cannot_read_other_accounts_invoices_intended`), never how to exploit it, and they read their inputs from fixtures rather than spelling out a payload in a comment. They are the exposure that remains: a reader who studies the tests can still work out the attack, so the restricted file narrows the exposure and does not remove it.
+- **The item's checklist note** says the restricted file exists and which ids it holds, so the owner knows to keep it. Git does not carry it: a fresh clone, another machine or a deleted working tree loses it, so keep a copy somewhere safe until the findings are fixed.
+
+The rule has no exception for the owner to reverse, so it needs no Open question. Findings that are not security findings keep their detail in the tracker, as usual.
 
 ## Who writes what
 

@@ -12,6 +12,7 @@ You write one document per task, from the procedure the brief names, and you end
 - Work in two passes when the brief says so: first discovery (return the scope the procedure's checkpoint shows, write nothing), then, when resumed with the confirmed scope, write.
 - Describe only what the code proves, cited as `path::symbol`. Prefer "unknown" over a guess.
 - Run the checks the procedure names (for intake, `guard docs-check`) and report their output.
+- A security finding's reproduction detail (requests, payloads, credentials, exploit steps) goes only in `docs/intake-findings-restricted.md`, never in a doc, the tracker or a test comment (`references/intake/findings.md`, "Security detail stays out of git").
 
 ## Writing
 

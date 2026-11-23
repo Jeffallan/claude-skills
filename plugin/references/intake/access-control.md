@@ -139,7 +139,7 @@ One pass over a codebase misses things another pass finds, and a reviewer shown 
 
 ## Findings from the matrix
 
-A matrix finding names the operation ids, the principal column and the invariant broken: "OP-031, OP-032 as `authenticated`: INV-3, any account can download another account's invoice export". One finding per root cause: when one missing guard opens ten rows, it's one finding citing ten rows. The characterization test is the table row as it behaves today; the intended-behavior test is the same row expected to fail.
+A matrix finding names the operation ids, the principal column and the invariant broken: "OP-031, OP-032 as `authenticated`: INV-3, any account can download another account's invoice export". One finding per root cause: when one missing guard opens ten rows, it's one finding citing ten rows. The characterization test is the table row as it behaves today; the intended-behavior test is the same row expected to fail. A matrix finding is a security finding: the tracker entry and the matrix give the rows and the invariant in plain terms, and the requests, ids, tokens and steps that exploit it go only in `docs/intake-findings-restricted.md` (`findings.md`, "Security detail stays out of git").
 
 ## Safety of the run
 

@@ -27,6 +27,8 @@ A bug gets an id in `docs/intake-findings.md` (`F-001`, `F-002`, ...) and, when 
 
 You decide what happens to each finding at close-out: ticket it, accept the risk, or mark it invalid.
 
+Every finding is committed with its severity. A security finding, at any severity and in any repo, keeps its reproduction detail (the requests, payloads, credentials and exploit steps) in `docs/intake-findings-restricted.md`. Intake adds that file to `.git/info/exclude` so it is never committed, and the tracker describes the problem in plain terms. The tests that pin the finding are committed, named for what they check and not for how to exploit it. Someone who reads them can still work out the attack, so they are the exposure that remains. Keep the restricted file somewhere safe until the findings are fixed: git doesn't carry it, so a fresh clone or another machine won't have it.
+
 ## Running it by hand
 
 Run `/fullstack-dev-skills:intake` on a branch of its own. It creates `docs/intake-checklist.md` when it is missing and works it in order, one procedure per item. Each procedure runs in one of the plugin's agents (`doc-writer`, `test-writer`, `security-prober`, `architect`). The agent stops at a checkpoint to show you its scope, you confirm or correct it, and the same agent then writes. The command reviews what the agent changed and commits the item. Stop whenever you like; the next run starts from the first unchecked item. `intake <procedure>` runs or reruns one procedure.

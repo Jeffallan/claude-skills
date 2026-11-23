@@ -292,6 +292,19 @@ for s in "broad claims" "describe the components the diff touches" "none, no, on
 done
 assert_contains "$PLUGIN/../docs/workflow/spec-complete.md" "absolute statements" "the spec:complete page explains the broad-claims pass"
 
+echo "security findings never commit reproduction detail, at any severity, in any repo"
+FINDINGS="$REF/intake/findings.md"
+RESTRICTED="docs/intake-findings-restricted.md"
+assert_contains "$FINDINGS" "never goes in a committed file, at any severity, in any repo, private ones included" "findings: security reproduction detail never goes in a committed file"
+assert_contains "$FINDINGS" "They are the exposure that remains" "findings: the committed tests are named as the remaining exposure"
+assert_not_contains "$FINDINGS" "Private to the owner's team" "findings: no private-repo exception"
+assert_not_contains "$FINDINGS" "gh repo view --json visibility" "findings: no visibility check"
+for f in agents/security-prober.md commands/intake.md references/intake/access-control.md references/intake/procedures/testing-authorization.md references/intake/procedures/testing-owasp.md references/intake/procedures/document-security.md references/intake/procedures/document-authorization.md; do
+    assert_contains "$PLUGIN/$f" "$RESTRICTED" "$f sends security reproduction detail to the restricted file"
+done
+assert_not_contains "$PLUGIN/agents/security-prober.md" "only in the test and the findings tracker" "security-prober no longer puts reproduction detail in the tracker"
+assert_contains "$PLUGIN/../docs/INTAKE.md" "at any severity" "the Intake guide states the rule for every security finding"
+
 echo "every attended-only guard ends with the BLOCKED line followed by git status --short (unattended.md)"
 while IFS= read -r line; do
     f=${line%%:*}

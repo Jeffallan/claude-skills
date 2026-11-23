@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-23
+
+### Changed
+- Intake: v0.5.0 kept reproduction detail out of git only for Critical and High security findings in public repos or repos of unknown visibility. Now every security finding, at any severity and in every repo, keeps its reproduction detail in the git-excluded `docs/intake-findings-restricted.md`, and its tests are committed with neutral names
+
+### Fixed
+- A Stop hook that can't find uv while a ticket is in progress blocks one stop per ticket, then lets the next stop through. A session can't install uv, so blocking every stop kept an unattended goal run going until Claude Code's continuation cap cut it off. The hook records the block in a flag file beside the ticket marker, keyed to the marker's content, so a new ticket is blocked once again. A stop it lets through shows the uv message and says the guard did not run, so GREEN was not checked. When the flag can't be written, the hook blocks every stop as before. The other hooks are unchanged
+
 ## [0.5.1] - 2026-11-23
 
 ### Fixed
@@ -673,7 +681,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/jeffallan/claude-skills/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/jeffallan/claude-skills/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...v0.5.0
 [0.4.22]: https://github.com/jeffallan/claude-skills/compare/v0.4.21...v0.4.22
