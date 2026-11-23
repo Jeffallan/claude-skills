@@ -131,7 +131,7 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
     NOUV=$(mktemp -d)
     CLEANUP_DIRS+=("$NOUV")
     mkdir -p "$NOUV/bin" "$NOUV/home"
-    for tool in sh git cat; do ln -s "$(command -v "$tool")" "$NOUV/bin/$tool"; done
+    for tool in sh git cksum; do ln -s "$(command -v "$tool")" "$NOUV/bin/$tool"; done
     for event in PreToolUse PostToolUse Stop SessionStart; do
         set +e
         err=$(cd "$RES" && edit S1 | env -i PATH="$NOUV/bin" HOME="$NOUV/home" CLAUDE_PROJECT_DIR="$RES" CLAUDE_PLUGIN_ROOT="$OUT" "$NOUV/bin/sh" -c "$(hook_cmd "$event")" 2>&1 >/dev/null)
@@ -143,30 +143,29 @@ export CLAUDE_PLUGIN_ROOT="$OUT"
             fail "the $event hook fails closed without uv while a ticket is in progress (rc $rc: $err)"
         fi
     done
-    # A Stop hook that already blocked once (stop_hook_active true) lets the stop through, saying the
-    # guard did not run, so a run that can't install uv doesn't loop on the block.
-    stopin() { printf '{"session_id":"S1","hook_event_name":"Stop","stop_hook_active":%s,"cwd":"%s"}' "$1" "$RES"; }
-    nouv_stop() { stopin "$1" | (cd "$RES" && env -i PATH="$NOUV/bin" HOME="$NOUV/home" CLAUDE_PROJECT_DIR="$RES" CLAUDE_PLUGIN_ROOT="$OUT" "$NOUV/bin/sh" -c "$(hook_cmd Stop)" 2>"$NOUV/err"); }
-    for active in true " true"; do
-        set +e
-        out=$(nouv_stop "$active")
-        rc=$?
-        set -e
-        if [ "$rc" -eq 0 ] && grep -q "uv not found" "$NOUV/err" && printf '%s' "$out" | python3 -c "import json,sys; m=json.load(sys.stdin)['systemMessage']; sys.exit(0 if 'uv not found' in m and 'did not run' in m else 1)"; then
-            pass "a Stop hook without uv lets the stop through once it has blocked (\"stop_hook_active\":$active), and says the guard did not run"
-        else
-            fail "a Stop hook without uv lets the stop through once it has blocked (\"stop_hook_active\":$active), and says the guard did not run (rc $rc, out: $out, err: $(cat "$NOUV/err"))"
-        fi
-    done
-    set +e
-    nouv_stop " false" >/dev/null
-    rc=$?
-    set -e
-    if [ "$rc" -eq 2 ] && grep -q "uv not found" "$NOUV/err"; then
-        pass "a Stop hook without uv blocks when stop_hook_active is false"
-    else
-        fail "a Stop hook without uv blocks when stop_hook_active is false (rc $rc)"
-    fi
+    # Without uv the Stop hook blocks once per ticket (a flag beside the marker, keyed to its content),
+    # then lets the stop through saying the guard did not run: a run can't install uv, so blocking
+    # every stop would loop. A new marker blocks again; an unwritable guard dir blocks every time.
+    GDIR="$(git -C "$RES" rev-parse --absolute-git-dir)/ticket-guard"
+    rm -f "$GDIR"/uv-missing-stop.*
+    nouv_stop() { printf '{"session_id":"S1","hook_event_name":"Stop","stop_hook_active":true,"cwd":"%s"}' "$RES" | (cd "$RES" && env -i PATH="$NOUV/bin" HOME="$NOUV/home" CLAUDE_PROJECT_DIR="$RES" CLAUDE_PLUGIN_ROOT="$OUT" "$NOUV/bin/sh" -c "$(hook_cmd Stop)" 2>"$NOUV/err"); }
+    stop_rc() { set +e; out=$(nouv_stop); rc=$?; set -e; }
+    let_through() { [ "$rc" -eq 0 ] && printf '%s' "$out" | python3 -c "import json,sys; m=json.load(sys.stdin)['systemMessage']; sys.exit(0 if 'uv not found' in m and 'did not run' in m else 1)"; }
+    stop_rc
+    if [ "$rc" -eq 2 ] && grep -q "uv not found" "$NOUV/err"; then pass "the first stop without uv blocks, even with stop_hook_active true"; else fail "the first stop without uv blocks, even with stop_hook_active true (rc $rc)"; fi
+    stop_rc
+    if let_through; then pass "the next stop for the same ticket goes through and says the guard did not run"; else fail "the next stop for the same ticket goes through and says the guard did not run (rc $rc, out: $out, err: $(cat "$NOUV/err"))"; fi
+    cp "$GDIR/marker.json" "$NOUV/marker.bak"
+    printf ' ' >>"$GDIR/marker.json"
+    stop_rc
+    if [ "$rc" -eq 2 ]; then pass "a new marker gets a fresh block without uv"; else fail "a new marker gets a fresh block without uv (rc $rc)"; fi
+    cp "$NOUV/marker.bak" "$GDIR/marker.json"
+    rm -f "$GDIR"/uv-missing-stop.*
+    chmod a-w "$GDIR"
+    stop_rc; first=$rc; stop_rc
+    chmod u+w "$GDIR"
+    if [ "$first" -eq 2 ] && [ "$rc" -eq 2 ]; then pass "an unwritable guard dir blocks every stop without uv"; else fail "an unwritable guard dir blocks every stop without uv (rc $first, $rc)"; fi
+    rm -f "$GDIR"/uv-missing-stop.*
     mkdir -p "$NOUV/home/.local/bin"
     ln -s "$(command -v uv)" "$NOUV/home/.local/bin/uv"
     mkdir -p "$NOUV/py" && ln -s "$(command -v python3)" "$NOUV/py/python3"

@@ -27,6 +27,8 @@ A bug gets an id in `docs/intake-findings.md` (`F-001`, `F-002`, ...) and, when 
 
 You decide what happens to each finding at close-out: ticket it, accept the risk, or mark it invalid.
 
+Every finding is committed with its severity. For a Critical or High security finding, intake also checks who can see the repo. When the repo is public, or intake can't confirm its visibility (a repo with no remote counts as unknown), the reproduction steps go to `docs/intake-findings-restricted.md` instead, which intake adds to `.git/info/exclude` so it is never committed. Intake records that choice as an Open question, so you can move the steps back into the tracker.
+
 ## Running it by hand
 
 Run `/fullstack-dev-skills:intake` on a branch of its own. It creates `docs/intake-checklist.md` when it is missing and works it in order, one procedure per item. Each procedure runs in one of the plugin's agents (`doc-writer`, `test-writer`, `security-prober`, `architect`). The agent stops at a checkpoint to show you its scope, you confirm or correct it, and the same agent then writes. The command reviews what the agent changed and commits the item. Stop whenever you like; the next run starts from the first unchecked item. `intake <procedure>` runs or reruns one procedure.
