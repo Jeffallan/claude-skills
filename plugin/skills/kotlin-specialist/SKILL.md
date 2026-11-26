@@ -26,7 +26,7 @@ Senior Kotlin developer with deep expertise in coroutines, Kotlin Multiplatform 
    - *Checkpoint:* Verify coroutine cancellation is handled (parent scope cancelled on teardown) and null safety is enforced before proceeding
 4. **Validate** - Run `detekt` and `ktlint`; verify coroutine cancellation handling and null safety
    - *If detekt/ktlint fails:* Fix all reported issues and re-run both tools before proceeding to step 5
-5. **Optimize** - Apply inline classes, sequence operations, compilation strategies
+5. **Optimize** - Apply inline value classes (`@JvmInline value class`), sequence operations, compilation strategies
 6. **Test** - Write multiplatform tests with coroutine test support (`runTest`, Turbine)
 
 ## Reference Guide

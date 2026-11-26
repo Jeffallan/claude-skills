@@ -385,7 +385,7 @@ inline fun <reified T : Any> Intent.getParcelableExtraCompat(key: String): T? =
         getParcelableExtra(key) as? T
     }
 
-// Value class (inline class)
+// Inline value class
 @JvmInline
 value class UserId(val value: String)
 
