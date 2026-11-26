@@ -62,7 +62,7 @@ cp -r plugin/skills/* ~/.claude/skills/
 Run skill-linter to catch issues before CI:
 
 ```bash
-uvx skill-linter@0.4.0 check --skill your-skill-name
+uvx skill-linter@0.5.0 check --skill your-skill-name
 ```
 
 #### 5. Commit Your Changes
