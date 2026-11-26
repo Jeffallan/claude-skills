@@ -125,3 +125,5 @@ For a remote tracker, offer, with the owner's approval per item, to file the pla
 
 Next spec in the build order: <spec-name or none>
 ```
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-complete/)

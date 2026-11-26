@@ -79,3 +79,5 @@ Print the banner line exactly as written, with only `<short HEAD>` filled in.
 
 - Write nothing: no file, no commit, no tracker call. It runs the same attended or under a goal.
 - Never present a target node as built, and never copy a claim from this report into the system description or another doc.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-diff/)

@@ -122,3 +122,5 @@ Write no triage record file: the group, the `Spec:` lines and the branch are the
 ### Next
 - `spec:create <spec-name>` for each spec, in build order
 ```
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-triage/)

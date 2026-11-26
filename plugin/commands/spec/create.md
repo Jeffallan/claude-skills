@@ -118,3 +118,5 @@ After the plan commit, the spec branch takes no commit before the run: the start
 - Subagents read and return text; only this session writes files and changes the tracker.
 - No tracker write outside Step 5 and no status change.
 - Links by name, never by path.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-create/)

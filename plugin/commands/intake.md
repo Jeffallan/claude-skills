@@ -116,3 +116,5 @@ Phase 4 (the gate) stays attended and outside this command. Report any Critical 
 - Agents write, one at a time except the parallel testing writers, and never commit. This session reviews each agent's diff and commits it.
 - Agents can't ask the owner: every question goes through this session's checkpoint.
 - Never edit a file an agent is writing while it runs, and never run a writing agent while a ticket marker exists (`references/intake/rules.md`).
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/intake-phase/)

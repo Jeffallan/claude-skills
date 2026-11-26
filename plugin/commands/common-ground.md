@@ -354,3 +354,5 @@ See `${CLAUDE_PLUGIN_ROOT}/references/common-ground/reasoning-graph.md` for deta
 - Overwrite ground file without preserving history
 - Generate graphs without first having confirmed assumptions
 - Remove alternative branches from graph (preserve for exploration)
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/common-ground/)

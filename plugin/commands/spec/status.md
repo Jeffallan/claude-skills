@@ -34,3 +34,5 @@ Read-only. List every spec with its state, ticket counts, build order, the ticke
 
 - Write nothing: no files, no commits, no tracker or PR writes.
 - Never call `AskUserQuestion`; this command runs the same attended or in a goal.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-status/)
