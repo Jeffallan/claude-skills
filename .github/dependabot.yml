@@ -9,3 +9,4 @@ updates:
       - ".github/workflows/handbook-update.yml"
       - ".github/workflows/docs-site.yml"
       - ".github/workflows/docs-deploy.yml"
+      - ".github/workflows/notes-check.yml"
