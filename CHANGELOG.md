@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- python-pro: records its official docs URL and version baseline in frontmatter (`metadata.upstream-docs`, `metadata.baseline: "Python 3.11"`) and gains an Official docs row in the Reference Guide, the first skill of the 41 in #354 (#355)
+
 ## [0.5.2] - 2026-11-23
 
 ### Changed
