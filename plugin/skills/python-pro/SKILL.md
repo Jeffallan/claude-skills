@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://docs.python.org/3/
+  baseline: "Python 3.11"
   related-skills: fastapi-expert, devops-engineer
 ---
 
@@ -44,6 +46,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://docs.python.org/3/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | Type System | `references/type-system.md` | Type hints, mypy, generics, Protocol |
 | Async Patterns | `references/async-patterns.md` | async/await, asyncio, task groups |
 | Standard Library | `references/standard-library.md` | pathlib, dataclasses, functools, itertools |
