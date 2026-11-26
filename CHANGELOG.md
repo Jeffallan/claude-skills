@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Workflow: each of the 13 command files ends with a Documentation link to its page on the docs site, in the same form as the skills' backlink. `scripts/test-command-docs.sh` checks the link and the blank line before it (#356, closing #353)
+
 ### Changed
 - python-pro: records its official docs URL and version baseline in frontmatter (`metadata.upstream-docs`, `metadata.baseline: "Python 3.11"`) and gains an Official docs row in the Reference Guide, the first skill of the 41 in #354 (#355)
 
