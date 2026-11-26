@@ -73,6 +73,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PostStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -179,6 +181,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Enums\PostStatus;
 use App\Models\Post;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -194,7 +197,7 @@ final class PublishPost implements ShouldQueue
     public int $backoff = 60;
 
     public function __construct(
-        private readonly Post $post,
+        public readonly Post $post,
     ) {}
 
     public function handle(): void
@@ -218,8 +221,10 @@ final class PublishPost implements ShouldQueue
 ```php
 <?php
 
+use App\Jobs\PublishPost;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\Queue;
 
 it('returns a published post for authenticated users', function (): void {
     $user = User::factory()->create();
