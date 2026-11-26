@@ -133,3 +133,5 @@ After the fix tickets are Done, rerun `spec:review <spec-name>`. With a rollup p
 ## Next
 
 When `guard gate <spec-name>` would pass, run `spec:complete <spec-name>`.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-review/)

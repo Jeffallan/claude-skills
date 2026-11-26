@@ -119,3 +119,5 @@ Commit `discovery.md`, any Feature Forge files and `sources/` on a small branch 
 - Never take a group key or offer to create a group. Grouping happens only in `spec:triage`.
 - Links use names, never paths: a ticket says `Discovery: <topic>`.
 - Subagents read and return text; only this session writes files.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/discovery-create/)

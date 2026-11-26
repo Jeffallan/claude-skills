@@ -114,3 +114,5 @@ Clear it only after the commit succeeds. When any step above stopped attended, t
 - No tracker writes and no status moves. Tracker status changes only in `spec:complete`.
 - One commit per ticket, holding the work, the Completion Status row and the evidence summary.
 - Never push.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/ticket-complete/)

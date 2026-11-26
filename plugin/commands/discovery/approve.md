@@ -168,3 +168,5 @@ Run `spec:triage discovery:<topic>` to group these tickets into specs.
 - No group keys and no group fallbacks: a ticket leaves this command ungrouped.
 - Links by name: `Discovery: <topic>`, never a path.
 - The tracker is written only in Step 3, and only after the owner approves the tickets.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/discovery-approve/)

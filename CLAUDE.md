@@ -113,6 +113,16 @@ Every `SKILL.md` MUST end with a single canonical Documentation link pointing ba
 
 **When adding or renaming a skill:** update both the directory name (which becomes `{skill-name}`) and the `metadata.domain` consistently with this URL formula, otherwise the backlink will 404.
 
+**Workflow command files carry the same link.** Each file under `plugin/commands/` ends with one blank line and then:
+
+```
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/{slug}/)
+```
+
+- `{slug}` is the file name, without `.md`, of the doc that the command's YAML names in its `description:` field (for example `intake-phase` for `intake`)
+- The docs site builds workflow pages from `docs/workflow/*.md`, not from the command files, so nothing needs stripping at build time
+- `scripts/test-command-docs.sh` (run by `make test`) fails when a command file's last line differs from this link
+
 ### Maintainer Credit
 
 Skills authored by @jeffallan (those with `metadata.company: https://synergetic.solutions`) carry one more line, directly above the Documentation backlink, separated by a blank line. It matches the docs site footer credit:

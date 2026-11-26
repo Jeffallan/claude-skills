@@ -74,6 +74,9 @@ for y in yamls:
         continue
     doc = page.read_text()
     md = (root / scalar(text, "path")).read_text()
+    link = f"[Documentation](https://jeffallan.github.io/claude-skills/workflows/{page.stem}/)"
+    check(md.splitlines()[-1] == link, f"{cmd}: its command file ends with the Documentation link")
+    check(md.endswith(f"\n\n{link}\n"), f"{cmd}: the link follows one blank line and ends the file")
     hint = scalar(text, "argument-hint")
     md_hint = re.search(r'^argument-hint:\s*"(.*)"\s*$', md, re.M)
     check(md_hint is not None and md_hint.group(1) == hint, f"{cmd}: the yaml's argument hint matches the command file's")

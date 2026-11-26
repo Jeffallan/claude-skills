@@ -74,3 +74,5 @@ It writes `docs/current-state.json` from section 2 of the system description, th
 ```
 
 A doc in drift is fixed by rerunning its intake procedure (`intake <procedure>`) or by the ticket that changed its code; this command reports it and changes no doc but the system description.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/spec-current/)

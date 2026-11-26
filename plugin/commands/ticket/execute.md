@@ -138,3 +138,5 @@ Show this summary, then run `ticket:complete <ticket>` (goal mode: at once; atte
 - Never delete, skip or weaken a test to get a pass.
 - RED, GREEN and verify commands run only files in the repo, never a scratch path.
 - Use the project's own checks, not a fixed coverage number.
+
+[Documentation](https://jeffallan.github.io/claude-skills/workflows/ticket-execute/)
