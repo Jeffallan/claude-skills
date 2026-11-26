@@ -190,10 +190,10 @@ trait StringExt {
 
 impl StringExt for str {
     fn truncate_to(&self, max_len: usize) -> String {
-        if self.len() <= max_len {
+        if self.chars().count() <= max_len {
             self.to_string()
         } else {
-            format!("{}...", &self[..max_len])
+            format!("{}...", self.chars().take(max_len).collect::<String>())
         }
     }
 }

@@ -62,7 +62,7 @@ use std::fmt;
 trait Summary {
     fn summarise(&self) -> String;
     fn preview(&self) -> String {          // default implementation
-        format!("{}...", &self.summarise()[..50])
+        format!("{}...", self.summarise().chars().take(50).collect::<String>())
     }
 }
 
