@@ -40,6 +40,7 @@ input-types = ["string", "url", "list[url]", "list[string]", "flag", "file[]"]
 output-types = ["url", "document", "tickets", "report", "file", "directory"]
 
 [tool.skill-linter.policy]
+upstream_baseline = true  # experimental POL-07 to POL-10: upstream-docs and baseline metadata (#354)
 allow_claude_hooks = true  # ticket-guard carries its hooks in skill frontmatter (T9)
 section_order = ["Role Definition", "When to Use This Skill", "Core Workflow", "Reference Guide", "Constraints", "Output Templates", "Knowledge Reference", "Related Skills"]
 workflow_steps = [5, 5]
@@ -60,7 +61,7 @@ plugin-icon = "off"  # #245: keep the GitHub avatar as the listing icon
 sidebar-links-workflows = "warning"  # H15: report workflow docs missing from the sidebar without failing
 
 [tool.skill-linter.stamp.values]
-runtimePin = "0.4.0"  # the skill-linter release this repo's lint and stamp checks run; the workflow runtime ships in plugin/runtime/
+runtimePin = "0.5.0"  # the skill-linter release this repo's lint and stamp checks run; the workflow runtime ships in plugin/runtime/
 
 # The runtime pin, written out wherever a command, reference, script or doc calls skill-linter
 [[tool.skill-linter.stamp.files]]

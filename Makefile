@@ -51,8 +51,8 @@ guard-test:
 	cd runtime && PYTHONPATH=. uv run --no-project --with pytest python -m pytest tests -q -p no:cacheprovider
 
 validate:
-	uvx skill-linter@0.4.0 release
-	uvx skill-linter@0.4.0 stamp --check
+	uvx skill-linter@0.5.0 release
+	uvx skill-linter@0.5.0 stamp --check
 
 test: guard-check guard-test
 	bash scripts/test-makefile.sh
