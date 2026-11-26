@@ -119,7 +119,7 @@ type RequireExactlyOne<T, Keys extends keyof T = keyof T> =
 - Implement branded types for domain modeling
 - Use `satisfies` operator for type validation
 - Create discriminated unions for state machines
-- Use `Annotated` pattern with type predicates
+- Use type predicates for custom type guards
 - Generate declaration files for libraries
 - Optimize for type inference
 
