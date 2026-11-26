@@ -1,13 +1,13 @@
 ---
 name: embedded-systems
-description: Use when developing firmware for microcontrollers, implementing RTOS applications, or optimizing power consumption. Invoke for STM32, ESP32, FreeRTOS, bare-metal, power optimization, real-time systems, configure peripherals, write interrupt handlers, implement DMA transfers, debug timing issues.
+description: Use when developing firmware for microcontrollers, implementing RTOS applications, or optimizing power consumption. Invoke for STM32, FreeRTOS, bare-metal, power optimization, real-time systems, configure peripherals, write interrupt handlers, implement DMA transfers, debug timing issues.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
   company: https://synergetic.solutions
   version: "1.1.0"
   domain: specialized
-  triggers: embedded systems, firmware, microcontroller, RTOS, FreeRTOS, STM32, ESP32, bare metal, interrupt, DMA, real-time
+  triggers: embedded systems, firmware, microcontroller, RTOS, FreeRTOS, STM32, bare metal, interrupt, DMA, real-time
   role: specialist
   scope: implementation
   output-format: code
@@ -146,7 +146,7 @@ void blink_init(void) {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
     GPIOA->MODER |= GPIO_MODER_MODER5_0;  /* PA5 output */
 
-    /* TIM2 @ ~1 Hz (84 MHz APB1 × 2 = 84 MHz timer clock) */
+    /* TIM2 @ ~1 Hz (APB1 = 42 MHz with /2 prescaler, so timer clock = 2 × 42 = 84 MHz) */
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
     TIM2->PSC  = 8399;   /* /8400  → 10 kHz  */
     TIM2->ARR  = 9999;   /* /10000 → 1 Hz    */
