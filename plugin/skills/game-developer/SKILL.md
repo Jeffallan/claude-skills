@@ -71,6 +71,9 @@ When implementing game features, provide:
 
 ### Object Pooling (Unity C#)
 ```csharp
+using System.Collections.Generic;
+using UnityEngine;
+
 public class ObjectPool<T> where T : Component
 {
     private readonly Queue<T> _pool = new();
@@ -106,6 +109,8 @@ public class ObjectPool<T> where T : Component
 ```csharp
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private float speed = 5f;
+
     // Cache all component references in Awake — never call GetComponent in Update
     private Rigidbody _rb;
     private Animator _animator;
