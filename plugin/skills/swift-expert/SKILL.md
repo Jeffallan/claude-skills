@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://www.swift.org/documentation/
+  baseline: "Swift 5.9"
   related-skills: ""
 ---
 
@@ -32,6 +34,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://www.swift.org/documentation/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | SwiftUI | `references/swiftui-patterns.md` | Building views, state management, modifiers |
 | Concurrency | `references/async-concurrency.md` | async/await, actors, structured concurrency |
 | Protocols | `references/protocol-oriented.md` | Protocol design, generics, type erasure |
