@@ -47,6 +47,7 @@ Load detailed guidance based on context:
 - Follow clean architecture principles
 - Write integration tests with `WebApplicationFactory<Program>`
 - Configure OpenAPI/Swagger documentation
+- Tell the user about MediatR's licence before adding it, and ask whether they want v12.5.0 (Apache-2.0), a current licensed version, or an alternative
 
 ### MUST NOT DO
 - Use synchronous I/O operations
@@ -59,6 +60,9 @@ Load detailed guidance based on context:
 ## Code Examples
 
 ### Minimal API Endpoint
+
+> **MediatR licence:** MediatR v13.0.0 (2025-07-02) and later are dual-licensed under the Reciprocal Public License 1.5 or a paid Lucky Penny Software commercial licence, and production use expects a licence key (without one, MediatR logs a warning). The free Community licence covers organizations under $5M gross annual revenue that have never received over $10M in outside capital. v12.5.0 (2025-04-01) is the last Apache-2.0 release.
+
 ```csharp
 // Program.cs
 var builder = WebApplication.CreateBuilder(args);
