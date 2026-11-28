@@ -14,17 +14,17 @@
 ### Partition Count Guidelines
 
 ```python
-# Rule of thumb: 2-4 partitions per CPU core
-# For 100 executor cores: 200-400 partitions
+# Spark tuning guide: 2-3 tasks per CPU core in the cluster
+# For 100 executor cores: 200-300 partitions
 
 # Check current partitions
 print(f"Number of partitions: {df.rdd.getNumPartitions()}")
 
 # Recommended formula
 total_cores = num_executors * cores_per_executor
-recommended_partitions = total_cores * 2 to 4
+recommended_partitions = total_cores * 2 to 3
 
-# Target partition size: 128MB - 256MB per partition
+# Target partition size: 128MB - 256MB per partition (rule of thumb; official defaults: maxPartitionBytes 128MB on read, advisoryPartitionSizeInBytes 64MB for AQE)
 # For 100GB data with 128MB target: ~800 partitions
 ```
 
@@ -531,9 +531,9 @@ result = large.join(also_large, "key")  # Sort-merge join
 
 ## Best Practices Summary
 
-1. **Target 128-256MB partitions** - Not too small (overhead) or large (OOM)
-2. **Use 2-4 partitions per core** - Maximize parallelism
-3. **Enable AQE in Spark 3.x** - Automatic partition optimization
+1. **Target 128-256MB partitions** - Rule of thumb: not too small (overhead) or large (OOM)
+2. **Use 2-3 tasks per core in the cluster** - Per the Spark tuning guide
+3. **Keep AQE on (default since Spark 3.2)** - It coalesces shuffle partitions automatically
 4. **Cache only reused DataFrames** - Measure before caching everything
 5. **Use MEMORY_AND_DISK** - Safe default storage level
 6. **Broadcast tables < 200MB** - Avoid shuffle for small dimension tables
