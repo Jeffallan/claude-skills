@@ -118,7 +118,7 @@ df_cleaned.unpersist()  # Release when done
 ### MUST DO
 - Use DataFrame API over RDD for structured data processing
 - Define explicit schemas for production pipelines
-- Partition data appropriately (200-1000 partitions per executor core)
+- Size partitions by data volume (roughly 128-256MB each as a rule of thumb, at least 2-3 tasks per core in the cluster) and leave AQE on to coalesce shuffle partitions
 - Cache intermediate results only when reused multiple times
 - Use broadcast joins for small dimension tables (<200MB)
 - Handle data skew with salting or custom partitioning
