@@ -136,20 +136,24 @@ void app_init(void) {
 
 void TIM2_IRQHandler(void) {
     if (TIM2->SR & TIM_SR_UIF) {
-        TIM2->SR &= ~TIM_SR_UIF;           /* clear update flag */
+        TIM2->SR = ~TIM_SR_UIF;            /* write 0 to clear (RMW is wrong) */
         GPIOA->ODR ^= GPIO_ODR_OD5;        /* toggle LED on PA5  */
     }
 }
 
 void blink_init(void) {
-    /* GPIO */
+    /* Nucleo-F401RE: PA5 is the user LED. After reset the MCU runs from the
+       16 MHz HSI, so TIM2 gets 16 MHz (APB1 prescaler 1, no x2). */
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-    GPIOA->MODER |= GPIO_MODER_MODER5_0;  /* PA5 output */
+    GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODER5_Msk)
+                 | GPIO_MODER_MODER5_0;  /* PA5 output, field cleared first */
 
-    /* TIM2 @ ~1 Hz (84 MHz APB1 × 2 = 84 MHz timer clock) */
+    /* TIM2 @ 1 Hz: 16 MHz / 16000 / 1000 = 1 Hz.
+       See clock setup in references/microcontroller-programming.md if the
+       PLL/84 MHz clock tree is configured first. */
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-    TIM2->PSC  = 8399;   /* /8400  → 10 kHz  */
-    TIM2->ARR  = 9999;   /* /10000 → 1 Hz    */
+    TIM2->PSC  = 15999;  /* /16000 → 1 kHz   */
+    TIM2->ARR  = 999;    /* /1000  → 1 Hz    */
     TIM2->DIER |= TIM_DIER_UIE;
     TIM2->CR1  |= TIM_CR1_CEN;
 
