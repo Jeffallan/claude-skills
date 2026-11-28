@@ -148,9 +148,9 @@ void blink_init(void) {
     GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODER5_Msk)
                  | GPIO_MODER_MODER5_0;  /* PA5 output, field cleared first */
 
-    /* TIM2 @ 1 Hz: 16 MHz / 16000 / 1000 = 1 Hz.
-       See clock setup in references/microcontroller-programming.md if the
-       PLL/84 MHz clock tree is configured first. */
+    /* TIM2 update at 1 Hz: 16 MHz / 16000 / 1000. The LED toggles on each
+       update, so it blinks at 0.5 Hz. If you switch to the PLL (84 MHz max
+       on the F401), recompute PSC and ARR for the new timer clock. */
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
     TIM2->PSC  = 15999;  /* /16000 → 1 kHz   */
     TIM2->ARR  = 999;    /* /1000  → 1 Hz    */

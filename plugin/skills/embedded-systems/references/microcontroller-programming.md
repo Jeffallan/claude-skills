@@ -275,7 +275,7 @@ void UART_SendString(const char *str) {
 ## System Clock Configuration
 
 ```c
-// Configure system clock to 168MHz (STM32F4)
+// Configure system clock to 168MHz (STM32F405/407; the F401 is limited to 84MHz)
 void SystemClock_Config(void) {
     // Enable HSE
     RCC->CR |= RCC_CR_HSEON;
