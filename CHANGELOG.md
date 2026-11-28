@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Workflow: each of the 13 command files ends with a Documentation link to its page on the docs site, in the same form as the skills' backlink. `scripts/test-command-docs.sh` checks the link and the blank line before it (#356, closing #353)
+- CI: a scheduled workflow (`baseline-eol.yml`, Mondays and on demand) checks each skill's `metadata.baseline` against endoflife.date and keeps one tracking issue listing the baselines past or within 90 days of end of support. It never edits skills (#367, closing #357)
 
 ### Changed
 - python-pro: records its official docs URL and version baseline in frontmatter (`metadata.upstream-docs`, `metadata.baseline: "Python 3.11"`) and gains an Official docs row in the Reference Guide, the first skill of the 41 in #354 (#355)
