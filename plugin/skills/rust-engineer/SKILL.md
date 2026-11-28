@@ -62,7 +62,11 @@ use std::fmt;
 trait Summary {
     fn summarise(&self) -> String;
     fn preview(&self) -> String {          // default implementation
-        format!("{}...", &self.summarise()[..50])
+        let s = self.summarise();
+        match s.char_indices().nth(50) {
+            Some((i, _)) => format!("{}...", &s[..i]),
+            None => s,
+        }
     }
 }
 

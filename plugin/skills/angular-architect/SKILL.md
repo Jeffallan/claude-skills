@@ -75,7 +75,7 @@ export class UserCardComponent {
 ### RxJS Subscription Management with `takeUntilDestroyed`
 
 ```typescript
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserService } from './user.service';
 

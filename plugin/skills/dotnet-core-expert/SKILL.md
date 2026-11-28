@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: fullstack-guardian, microservices-architect, cloud-architect, test-master
+  related-skills: fullstack-guardian, microservices-architect, cloud-architect, test-master, csharp-developer
 ---
 
 # .NET Core Expert
