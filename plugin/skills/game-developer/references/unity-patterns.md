@@ -9,32 +9,32 @@ using System.Collections.Generic;
 public class EnemyController : MonoBehaviour
 {
     // Serialize private fields for Inspector
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Transform target;
+    [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private Transform _target;
 
     // Cache component references
-    private Rigidbody rb;
-    private Animator animator;
+    private Rigidbody _rb;
+    private Animator _animator;
 
     private void Awake()
     {
         // Cache components in Awake
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        _rb = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
         // Initialize after all Awake calls complete
-        if (target == null)
-            target = GameObject.FindGameObjectWithTag("Player").transform;
+        if (_target == null)
+            _target = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void FixedUpdate()
     {
         // Physics calculations in FixedUpdate
-        Vector3 direction = (target.position - transform.position).normalized;
-        rb.MovePosition(transform.position + direction * moveSpeed * Time.fixedDeltaTime);
+        Vector3 direction = (_target.position - transform.position).normalized;
+        _rb.MovePosition(transform.position + direction * _moveSpeed * Time.fixedDeltaTime);
     }
 
     private void OnDisable()
@@ -67,16 +67,16 @@ public class WeaponData : ScriptableObject
 // Usage in MonoBehaviour
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private WeaponData weaponData;
-    private float nextFireTime;
+    [SerializeField] private WeaponData _weaponData;
+    private float _nextFireTime;
 
     public void Fire()
     {
-        if (Time.time < nextFireTime) return;
+        if (Time.time < _nextFireTime) return;
 
         // Use data from ScriptableObject
-        Instantiate(weaponData.projectilePrefab, transform.position, transform.rotation);
-        nextFireTime = Time.time + 1f / weaponData.fireRate;
+        Instantiate(_weaponData.projectilePrefab, transform.position, transform.rotation);
+        _nextFireTime = Time.time + 1f / _weaponData.fireRate;
     }
 }
 ```
@@ -88,56 +88,56 @@ Prefer Unity's built-in `UnityEngine.Pool.ObjectPool<T>` (Unity 2021.1+), which 
 ```csharp
 public class ObjectPool : MonoBehaviour
 {
-    [SerializeField] private GameObject prefab;
-    [SerializeField] private int poolSize = 20;
+    [SerializeField] private GameObject _prefab;
+    [SerializeField] private int _poolSize = 20;
 
-    private Queue<GameObject> pool = new Queue<GameObject>();
+    private Queue<GameObject> _pool = new Queue<GameObject>();
 
     private void Start()
     {
         // Pre-instantiate objects
-        for (int i = 0; i < poolSize; i++)
+        for (int i = 0; i < _poolSize; i++)
         {
-            GameObject obj = Instantiate(prefab);
+            GameObject obj = Instantiate(_prefab);
             obj.SetActive(false);
-            pool.Enqueue(obj);
+            _pool.Enqueue(obj);
         }
     }
 
     public GameObject Get()
     {
-        if (pool.Count > 0)
+        if (_pool.Count > 0)
         {
-            GameObject obj = pool.Dequeue();
+            GameObject obj = _pool.Dequeue();
             obj.SetActive(true);
             return obj;
         }
 
         // Expand pool if needed
-        return Instantiate(prefab);
+        return Instantiate(_prefab);
     }
 
     public void Return(GameObject obj)
     {
         obj.SetActive(false);
-        pool.Enqueue(obj);
+        _pool.Enqueue(obj);
     }
 }
 
 // Pooled object example
 public class Bullet : MonoBehaviour
 {
-    private ObjectPool pool;
+    private ObjectPool _pool;
 
     public void Initialize(ObjectPool pool)
     {
-        this.pool = pool;
+        _pool = pool;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         // Return to pool instead of destroying
-        pool.Return(gameObject);
+        _pool.Return(gameObject);
     }
 }
 ```
@@ -154,8 +154,8 @@ public class HealthChangedEvent : UnityEvent<int, int> { } // current, max
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
+    [SerializeField] private int _maxHealth = 100;
+    private int _currentHealth;
 
     // UnityEvent visible in Inspector
     public HealthChangedEvent onHealthChanged;
@@ -163,16 +163,16 @@ public class Health : MonoBehaviour
 
     private void Start()
     {
-        currentHealth = maxHealth;
-        onHealthChanged?.Invoke(currentHealth, maxHealth);
+        _currentHealth = _maxHealth;
+        onHealthChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
     public void TakeDamage(int damage)
     {
-        currentHealth = Mathf.Max(0, currentHealth - damage);
-        onHealthChanged?.Invoke(currentHealth, maxHealth);
+        _currentHealth = Mathf.Max(0, _currentHealth - damage);
+        onHealthChanged?.Invoke(_currentHealth, _maxHealth);
 
-        if (currentHealth <= 0)
+        if (_currentHealth <= 0)
             onDeath?.Invoke();
     }
 }
@@ -196,16 +196,16 @@ using System.Collections;
 public class TimedAbility : MonoBehaviour
 {
     // Cache WaitForSeconds to avoid GC
-    private WaitForSeconds cooldownWait = new WaitForSeconds(5f);
-    private Coroutine currentAbility;
+    private WaitForSeconds _cooldownWait = new WaitForSeconds(5f);
+    private Coroutine _currentAbility;
 
     public void ActivateAbility()
     {
         // Stop previous coroutine if running
-        if (currentAbility != null)
-            StopCoroutine(currentAbility);
+        if (_currentAbility != null)
+            StopCoroutine(_currentAbility);
 
-        currentAbility = StartCoroutine(AbilityCoroutine());
+        _currentAbility = StartCoroutine(AbilityCoroutine());
     }
 
     private IEnumerator AbilityCoroutine()
@@ -214,11 +214,11 @@ public class TimedAbility : MonoBehaviour
         Debug.Log("Ability activated");
 
         // Wait for duration
-        yield return cooldownWait;
+        yield return _cooldownWait;
 
         // Cooldown complete
         Debug.Log("Ability ready");
-        currentAbility = null;
+        _currentAbility = null;
     }
 
     // Animation-based coroutine
@@ -245,18 +245,18 @@ public class TimedAbility : MonoBehaviour
 ```csharp
 public class GameManager : MonoBehaviour
 {
-    private static GameManager instance;
-    public static GameManager Instance => instance;
+    private static GameManager _instance;
+    public static GameManager Instance => _instance;
 
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        _instance = this;
         DontDestroyOnLoad(gameObject);
     }
 }

@@ -36,21 +36,21 @@ void Update()
 }
 
 // GOOD: Zero allocations
-private StringBuilder statusBuilder = new StringBuilder(50);
-private Vector3 directionCache;
-private List<Enemy> enemyCache = new List<Enemy>(100);
+private StringBuilder _statusBuilder = new StringBuilder(50);
+private Vector3 _directionCache;
+private List<Enemy> _enemyCache = new List<Enemy>(100);
 
 void Update()
 {
     // Reuse StringBuilder
-    statusBuilder.Clear();
-    statusBuilder.Append("Health: ").Append(health).Append(" / ").Append(maxHealth);
+    _statusBuilder.Clear();
+    _statusBuilder.Append("Health: ").Append(health).Append(" / ").Append(maxHealth);
 
     // Reuse Vector3
-    directionCache = transform.position - target.position;
+    _directionCache = transform.position - target.position;
 
     // Cache references (done in Start)
-    foreach (var enemy in enemyCache)
+    foreach (var enemy in _enemyCache)
     {
         enemy.UpdateLogic();
     }
@@ -127,17 +127,17 @@ public class LODSetup : MonoBehaviour
 // Runtime check
 public class OcclusionCheck : MonoBehaviour
 {
-    private Camera mainCamera;
+    private Camera _mainCamera;
 
     void Start()
     {
-        mainCamera = Camera.main;
+        _mainCamera = Camera.main;
     }
 
     void Update()
     {
         // Check if object is visible to camera
-        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(_mainCamera);
         Bounds bounds = GetComponent<Renderer>().bounds;
 
         if (GeometryUtility.TestPlanesAABB(planes, bounds))
@@ -156,22 +156,22 @@ Prefer Unity's built-in `UnityEngine.Pool.ObjectPool<T>` (Unity 2021.1+) unless 
 ```csharp
 public class OptimizedPool<T> where T : Component
 {
-    private readonly Stack<T> available = new Stack<T>();
-    private readonly HashSet<T> inUse = new HashSet<T>();
-    private readonly T prefab;
-    private readonly Transform parent;
+    private readonly Stack<T> _available = new Stack<T>();
+    private readonly HashSet<T> _inUse = new HashSet<T>();
+    private readonly T _prefab;
+    private readonly Transform _parent;
 
     public OptimizedPool(T prefab, int initialSize, Transform parent = null)
     {
-        this.prefab = prefab;
-        this.parent = parent;
+        _prefab = prefab;
+        _parent = parent;
 
         // Pre-warm pool
         for (int i = 0; i < initialSize; i++)
         {
             T instance = Object.Instantiate(prefab, parent);
             instance.gameObject.SetActive(false);
-            available.Push(instance);
+            _available.Push(instance);
         }
     }
 
@@ -179,40 +179,40 @@ public class OptimizedPool<T> where T : Component
     {
         T instance;
 
-        if (available.Count > 0)
+        if (_available.Count > 0)
         {
-            instance = available.Pop();
+            instance = _available.Pop();
         }
         else
         {
             // Pool exhausted, create new
-            instance = Object.Instantiate(prefab, parent);
+            instance = Object.Instantiate(_prefab, _parent);
         }
 
         instance.gameObject.SetActive(true);
-        inUse.Add(instance);
+        _inUse.Add(instance);
         return instance;
     }
 
     public void Return(T instance)
     {
-        if (inUse.Remove(instance))
+        if (_inUse.Remove(instance))
         {
             instance.gameObject.SetActive(false);
-            available.Push(instance);
+            _available.Push(instance);
         }
     }
 
     public void Clear()
     {
-        foreach (var instance in inUse)
+        foreach (var instance in _inUse)
             Object.Destroy(instance.gameObject);
 
-        foreach (var instance in available)
+        foreach (var instance in _available)
             Object.Destroy(instance.gameObject);
 
-        inUse.Clear();
-        available.Clear();
+        _inUse.Clear();
+        _available.Clear();
     }
 }
 ```
@@ -240,23 +240,23 @@ public class PhysicsOptimization : MonoBehaviour
     }
 
     // Raycasts: cache and limit
-    private RaycastHit hitInfo;
-    private float raycastInterval = 0.1f;
-    private float nextRaycast;
+    private RaycastHit _hitInfo;
+    private float _raycastInterval = 0.1f;
+    private float _nextRaycast;
 
     void Update()
     {
-        if (Time.time >= nextRaycast)
+        if (Time.time >= _nextRaycast)
         {
             // Use layers to filter raycasts
             int layerMask = 1 << LayerMask.NameToLayer("Ground");
 
-            if (Physics.Raycast(transform.position, Vector3.down, out hitInfo, 10f, layerMask))
+            if (Physics.Raycast(transform.position, Vector3.down, out _hitInfo, 10f, layerMask))
             {
                 // Process hit
             }
 
-            nextRaycast = Time.time + raycastInterval;
+            _nextRaycast = Time.time + _raycastInterval;
         }
     }
 }
@@ -306,18 +306,18 @@ public class MaterialSharing : MonoBehaviour
 // Stagger updates to reduce per-frame cost
 public class StaggeredUpdate : MonoBehaviour
 {
-    private static int updateOffset = 0;
-    private int myOffset;
+    private static int _updateOffset = 0;
+    private int _myOffset;
 
     void Start()
     {
-        myOffset = updateOffset++;
+        _myOffset = _updateOffset++;
     }
 
     void Update()
     {
         // Only update every 5th frame, staggered
-        if ((Time.frameCount + myOffset) % 5 == 0)
+        if ((Time.frameCount + _myOffset) % 5 == 0)
         {
             ExpensiveUpdate();
         }
@@ -332,26 +332,26 @@ public class StaggeredUpdate : MonoBehaviour
 // Distance-based update rates
 public class DistanceBasedUpdate : MonoBehaviour
 {
-    private Transform player;
-    private float updateInterval;
-    private float nextUpdate;
+    private Transform _player;
+    private float _updateInterval;
+    private float _nextUpdate;
 
     void Update()
     {
-        if (Time.time < nextUpdate) return;
+        if (Time.time < _nextUpdate) return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _player.position);
 
         // Update more frequently when close
         if (distance < 10f)
-            updateInterval = 0.05f; // 20 fps
+            _updateInterval = 0.05f; // 20 fps
         else if (distance < 50f)
-            updateInterval = 0.1f; // 10 fps
+            _updateInterval = 0.1f; // 10 fps
         else
-            updateInterval = 0.5f; // 2 fps
+            _updateInterval = 0.5f; // 2 fps
 
         PerformUpdate();
-        nextUpdate = Time.time + updateInterval;
+        _nextUpdate = Time.time + _updateInterval;
     }
 }
 ```

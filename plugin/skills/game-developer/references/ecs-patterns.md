@@ -51,14 +51,14 @@ public class MovementSystem
 // Simple ECS World
 public class World
 {
-    private int nextEntityId = 0;
-    private Dictionary<int, PositionComponent> positions = new();
-    private Dictionary<int, VelocityComponent> velocities = new();
-    private Dictionary<int, HealthComponent> healths = new();
+    private int _nextEntityId = 0;
+    private Dictionary<int, PositionComponent> _positions = new();
+    private Dictionary<int, VelocityComponent> _velocities = new();
+    private Dictionary<int, HealthComponent> _healths = new();
 
     public Entity CreateEntity()
     {
-        return new Entity { Id = nextEntityId++ };
+        return new Entity { Id = _nextEntityId++ };
     }
 
     public void AddComponent<T>(Entity entity, T component)
@@ -79,38 +79,38 @@ public class World
 ```csharp
 public class ObjectPool<T> where T : class, new()
 {
-    private readonly Stack<T> pool = new();
-    private readonly Func<T> createFunc;
-    private readonly Action<T> resetAction;
-    private readonly int maxSize;
+    private readonly Stack<T> _pool = new();
+    private readonly Func<T> _createFunc;
+    private readonly Action<T> _resetAction;
+    private readonly int _maxSize;
 
     public ObjectPool(Func<T> createFunc, Action<T> resetAction, int initialSize = 10, int maxSize = 100)
     {
-        this.createFunc = createFunc;
-        this.resetAction = resetAction;
-        this.maxSize = maxSize;
+        _createFunc = createFunc;
+        _resetAction = resetAction;
+        _maxSize = maxSize;
 
         // Pre-populate pool
         for (int i = 0; i < initialSize; i++)
         {
-            pool.Push(createFunc());
+            _pool.Push(createFunc());
         }
     }
 
     public T Get()
     {
-        if (pool.Count > 0)
-            return pool.Pop();
+        if (_pool.Count > 0)
+            return _pool.Pop();
 
-        return createFunc();
+        return _createFunc();
     }
 
     public void Return(T obj)
     {
-        if (pool.Count < maxSize)
+        if (_pool.Count < _maxSize)
         {
-            resetAction?.Invoke(obj);
-            pool.Push(obj);
+            _resetAction?.Invoke(obj);
+            _pool.Push(obj);
         }
     }
 }
@@ -118,11 +118,11 @@ public class ObjectPool<T> where T : class, new()
 // Usage example
 public class BulletManager
 {
-    private ObjectPool<Bullet> bulletPool;
+    private ObjectPool<Bullet> _bulletPool;
 
     public void Initialize()
     {
-        bulletPool = new ObjectPool<Bullet>(
+        _bulletPool = new ObjectPool<Bullet>(
             createFunc: () => new Bullet(),
             resetAction: (bullet) => bullet.Reset(),
             initialSize: 50,
@@ -132,7 +132,7 @@ public class BulletManager
 
     public Bullet SpawnBullet()
     {
-        Bullet bullet = bulletPool.Get();
+        Bullet bullet = _bulletPool.Get();
         bullet.Activate();
         return bullet;
     }
@@ -140,7 +140,7 @@ public class BulletManager
     public void ReturnBullet(Bullet bullet)
     {
         bullet.Deactivate();
-        bulletPool.Return(bullet);
+        _bulletPool.Return(bullet);
     }
 }
 ```
@@ -157,37 +157,37 @@ public interface IState
 
 public class StateMachine
 {
-    private IState currentState;
+    private IState _currentState;
 
     public void ChangeState(IState newState)
     {
-        currentState?.Exit();
-        currentState = newState;
-        currentState?.Enter();
+        _currentState?.Exit();
+        _currentState = newState;
+        _currentState?.Enter();
     }
 
     public void Update(float deltaTime)
     {
-        currentState?.Update(deltaTime);
+        _currentState?.Update(deltaTime);
     }
 }
 
 // Example: Enemy AI States
 public class IdleState : IState
 {
-    private readonly EnemyController enemy;
+    private readonly EnemyController _enemy;
 
-    public IdleState(EnemyController enemy) => this.enemy = enemy;
+    public IdleState(EnemyController enemy) => _enemy = enemy;
 
     public void Enter()
     {
-        enemy.PlayAnimation("Idle");
+        _enemy.PlayAnimation("Idle");
     }
 
     public void Update(float deltaTime)
     {
-        if (enemy.PlayerInRange())
-            enemy.StateMachine.ChangeState(new ChaseState(enemy));
+        if (_enemy.PlayerInRange())
+            _enemy.StateMachine.ChangeState(new ChaseState(_enemy));
     }
 
     public void Exit() { }
@@ -195,23 +195,23 @@ public class IdleState : IState
 
 public class ChaseState : IState
 {
-    private readonly EnemyController enemy;
+    private readonly EnemyController _enemy;
 
-    public ChaseState(EnemyController enemy) => this.enemy = enemy;
+    public ChaseState(EnemyController enemy) => _enemy = enemy;
 
     public void Enter()
     {
-        enemy.PlayAnimation("Run");
+        _enemy.PlayAnimation("Run");
     }
 
     public void Update(float deltaTime)
     {
-        if (!enemy.PlayerInRange())
-            enemy.StateMachine.ChangeState(new IdleState(enemy));
-        else if (enemy.InAttackRange())
-            enemy.StateMachine.ChangeState(new AttackState(enemy));
+        if (!_enemy.PlayerInRange())
+            _enemy.StateMachine.ChangeState(new IdleState(_enemy));
+        else if (_enemy.InAttackRange())
+            _enemy.StateMachine.ChangeState(new AttackState(_enemy));
         else
-            enemy.MoveTowardsPlayer(deltaTime);
+            _enemy.MoveTowardsPlayer(deltaTime);
     }
 
     public void Exit() { }
@@ -229,43 +229,43 @@ public interface ICommand
 
 public class MoveCommand : ICommand
 {
-    private readonly Transform transform;
-    private readonly Vector3 movement;
-    private Vector3 previousPosition;
+    private readonly Transform _transform;
+    private readonly Vector3 _movement;
+    private Vector3 _previousPosition;
 
     public MoveCommand(Transform transform, Vector3 movement)
     {
-        this.transform = transform;
-        this.movement = movement;
+        _transform = transform;
+        _movement = movement;
     }
 
     public void Execute()
     {
-        previousPosition = transform.position;
-        transform.position += movement;
+        _previousPosition = _transform.position;
+        _transform.position += _movement;
     }
 
     public void Undo()
     {
-        transform.position = previousPosition;
+        _transform.position = _previousPosition;
     }
 }
 
 public class InputHandler
 {
-    private Stack<ICommand> commandHistory = new();
+    private Stack<ICommand> _commandHistory = new();
 
     public void ExecuteCommand(ICommand command)
     {
         command.Execute();
-        commandHistory.Push(command);
+        _commandHistory.Push(command);
     }
 
     public void UndoLastCommand()
     {
-        if (commandHistory.Count > 0)
+        if (_commandHistory.Count > 0)
         {
-            ICommand command = commandHistory.Pop();
+            ICommand command = _commandHistory.Pop();
             command.Undo();
         }
     }
@@ -277,21 +277,21 @@ public class InputHandler
 ```csharp
 public class GameEvent<T>
 {
-    private event Action<T> listeners;
+    private event Action<T> _listeners;
 
     public void Subscribe(Action<T> listener)
     {
-        listeners += listener;
+        _listeners += listener;
     }
 
     public void Unsubscribe(Action<T> listener)
     {
-        listeners -= listener;
+        _listeners -= listener;
     }
 
     public void Trigger(T data)
     {
-        listeners?.Invoke(data);
+        _listeners?.Invoke(data);
     }
 }
 
@@ -345,16 +345,16 @@ public class Player
 ```csharp
 public static class ServiceLocator
 {
-    private static Dictionary<Type, object> services = new();
+    private static Dictionary<Type, object> _services = new();
 
     public static void Register<T>(T service)
     {
-        services[typeof(T)] = service;
+        _services[typeof(T)] = service;
     }
 
     public static T Get<T>()
     {
-        if (services.TryGetValue(typeof(T), out object service))
+        if (_services.TryGetValue(typeof(T), out object service))
             return (T)service;
 
         throw new Exception($"Service {typeof(T)} not found");
@@ -362,7 +362,7 @@ public static class ServiceLocator
 
     public static bool TryGet<T>(out T service)
     {
-        if (services.TryGetValue(typeof(T), out object obj))
+        if (_services.TryGetValue(typeof(T), out object obj))
         {
             service = (T)obj;
             return true;
@@ -374,7 +374,7 @@ public static class ServiceLocator
 
     public static void Clear()
     {
-        services.Clear();
+        _services.Clear();
     }
 }
 
@@ -391,16 +391,16 @@ public class GameInitializer
 
 public class Player
 {
-    private IAudioManager audioManager;
+    private IAudioManager _audioManager;
 
     public void Start()
     {
-        audioManager = ServiceLocator.Get<IAudioManager>();
+        _audioManager = ServiceLocator.Get<IAudioManager>();
     }
 
     public void PlaySound(string soundName)
     {
-        audioManager.PlaySound(soundName);
+        _audioManager.PlaySound(soundName);
     }
 }
 ```
@@ -410,34 +410,34 @@ public class Player
 ```csharp
 public class SpatialGrid<T>
 {
-    private readonly Dictionary<(int, int), List<T>> grid = new();
-    private readonly float cellSize;
+    private readonly Dictionary<(int, int), List<T>> _grid = new();
+    private readonly float _cellSize;
 
     public SpatialGrid(float cellSize)
     {
-        this.cellSize = cellSize;
+        _cellSize = cellSize;
     }
 
     private (int, int) GetCell(Vector2 position)
     {
-        int x = Mathf.FloorToInt(position.x / cellSize);
-        int y = Mathf.FloorToInt(position.y / cellSize);
+        int x = Mathf.FloorToInt(position.x / _cellSize);
+        int y = Mathf.FloorToInt(position.y / _cellSize);
         return (x, y);
     }
 
     public void Insert(Vector2 position, T item)
     {
         var cell = GetCell(position);
-        if (!grid.ContainsKey(cell))
-            grid[cell] = new List<T>();
+        if (!_grid.ContainsKey(cell))
+            _grid[cell] = new List<T>();
 
-        grid[cell].Add(item);
+        _grid[cell].Add(item);
     }
 
     public List<T> Query(Vector2 position, float radius)
     {
         List<T> results = new();
-        int cellRadius = Mathf.CeilToInt(radius / cellSize);
+        int cellRadius = Mathf.CeilToInt(radius / _cellSize);
 
         var centerCell = GetCell(position);
 
@@ -446,7 +446,7 @@ public class SpatialGrid<T>
             for (int y = -cellRadius; y <= cellRadius; y++)
             {
                 var cell = (centerCell.Item1 + x, centerCell.Item2 + y);
-                if (grid.TryGetValue(cell, out List<T> items))
+                if (_grid.TryGetValue(cell, out List<T> items))
                     results.AddRange(items);
             }
         }
@@ -456,7 +456,7 @@ public class SpatialGrid<T>
 
     public void Clear()
     {
-        grid.Clear();
+        _grid.Clear();
     }
 }
 ```
@@ -466,36 +466,36 @@ public class SpatialGrid<T>
 ```csharp
 public class DoubleBuffer<T>
 {
-    private T[] buffers = new T[2];
-    private int currentIndex = 0;
+    private T[] _buffers = new T[2];
+    private int _currentIndex = 0;
 
     public DoubleBuffer(T buffer1, T buffer2)
     {
-        buffers[0] = buffer1;
-        buffers[1] = buffer2;
+        _buffers[0] = buffer1;
+        _buffers[1] = buffer2;
     }
 
-    public T Current => buffers[currentIndex];
-    public T Next => buffers[1 - currentIndex];
+    public T Current => _buffers[_currentIndex];
+    public T Next => _buffers[1 - _currentIndex];
 
     public void Swap()
     {
-        currentIndex = 1 - currentIndex;
+        _currentIndex = 1 - _currentIndex;
     }
 }
 
 // Usage for physics
 public class PhysicsSimulation
 {
-    private DoubleBuffer<PhysicsState> stateBuffer;
+    private DoubleBuffer<PhysicsState> _stateBuffer;
 
     public void Update(float deltaTime)
     {
         // Read from current, write to next
-        ComputeNextState(stateBuffer.Current, stateBuffer.Next, deltaTime);
+        ComputeNextState(_stateBuffer.Current, _stateBuffer.Next, deltaTime);
 
         // Swap buffers
-        stateBuffer.Swap();
+        _stateBuffer.Swap();
     }
 }
 ```

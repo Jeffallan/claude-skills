@@ -30,11 +30,11 @@ public class NetworkPlayer
 // Server
 public class GameServer
 {
-    private Dictionary<int, NetworkPlayer> players = new();
+    private Dictionary<int, NetworkPlayer> _players = new();
 
     public void ProcessPlayerInput(int playerId, PlayerInput input)
     {
-        if (!players.TryGetValue(playerId, out NetworkPlayer player))
+        if (!_players.TryGetValue(playerId, out NetworkPlayer player))
             return;
 
         // Server processes input
@@ -68,19 +68,19 @@ public class NetworkTransform
         public Quaternion Rotation;
     }
 
-    private State[] stateBuffer = new State[32];
-    private int bufferIndex = 0;
+    private State[] _stateBuffer = new State[32];
+    private int _bufferIndex = 0;
 
     public void ReceiveState(float timestamp, Vector3 position, Quaternion rotation)
     {
-        stateBuffer[bufferIndex] = new State
+        _stateBuffer[_bufferIndex] = new State
         {
             Timestamp = timestamp,
             Position = position,
             Rotation = rotation
         };
 
-        bufferIndex = (bufferIndex + 1) % stateBuffer.Length;
+        _bufferIndex = (_bufferIndex + 1) % _stateBuffer.Length;
     }
 
     public void Interpolate(float renderTime)
@@ -89,13 +89,13 @@ public class NetworkTransform
         State from = default;
         State to = default;
 
-        for (int i = 0; i < stateBuffer.Length; i++)
+        for (int i = 0; i < _stateBuffer.Length; i++)
         {
-            if (stateBuffer[i].Timestamp <= renderTime)
-                from = stateBuffer[i];
+            if (_stateBuffer[i].Timestamp <= renderTime)
+                from = _stateBuffer[i];
             else
             {
-                to = stateBuffer[i];
+                to = _stateBuffer[i];
                 break;
             }
         }
@@ -125,9 +125,9 @@ public class PredictivePlayer : MonoBehaviour
         public Vector3 Movement;
     }
 
-    private Queue<InputState> pendingInputs = new Queue<InputState>();
-    private int sequenceNumber = 0;
-    private Vector3 predictedPosition;
+    private Queue<InputState> _pendingInputs = new Queue<InputState>();
+    private int _sequenceNumber = 0;
+    private Vector3 _predictedPosition;
 
     void Update()
     {
@@ -141,7 +141,7 @@ public class PredictivePlayer : MonoBehaviour
         // Create input state
         InputState input = new InputState
         {
-            SequenceNumber = sequenceNumber++,
+            SequenceNumber = _sequenceNumber++,
             Timestamp = Time.time,
             Movement = movement
         };
@@ -150,35 +150,35 @@ public class PredictivePlayer : MonoBehaviour
         SendInputToServer(input);
 
         // Apply locally (prediction)
-        predictedPosition += movement;
-        transform.position = predictedPosition;
+        _predictedPosition += movement;
+        transform.position = _predictedPosition;
 
         // Store for reconciliation
-        pendingInputs.Enqueue(input);
+        _pendingInputs.Enqueue(input);
     }
 
     public void ReceiveServerState(int lastProcessedInput, Vector3 serverPosition)
     {
         // Remove acknowledged inputs
-        while (pendingInputs.Count > 0 && pendingInputs.Peek().SequenceNumber <= lastProcessedInput)
+        while (_pendingInputs.Count > 0 && _pendingInputs.Peek().SequenceNumber <= lastProcessedInput)
         {
-            pendingInputs.Dequeue();
+            _pendingInputs.Dequeue();
         }
 
         // Start from server position
-        predictedPosition = serverPosition;
+        _predictedPosition = serverPosition;
 
         // Replay pending inputs (reconciliation)
-        foreach (var input in pendingInputs)
+        foreach (var input in _pendingInputs)
         {
-            predictedPosition += input.Movement;
+            _predictedPosition += input.Movement;
         }
 
         // Smooth correction if needed
-        if (Vector3.Distance(transform.position, predictedPosition) > 0.1f)
+        if (Vector3.Distance(transform.position, _predictedPosition) > 0.1f)
         {
             // Snap or smooth based on distance
-            transform.position = predictedPosition;
+            transform.position = _predictedPosition;
         }
     }
 }
@@ -197,15 +197,15 @@ public class LagCompensation
         public Bounds Hitbox;
     }
 
-    private Dictionary<int, Queue<HistoricalState>> playerHistory = new();
+    private Dictionary<int, Queue<HistoricalState>> _playerHistory = new();
     private const float MaxHistoryTime = 1.0f; // 1 second of history
 
     public void RecordState(int playerId, Vector3 position, Quaternion rotation, Bounds hitbox)
     {
-        if (!playerHistory.ContainsKey(playerId))
-            playerHistory[playerId] = new Queue<HistoricalState>();
+        if (!_playerHistory.ContainsKey(playerId))
+            _playerHistory[playerId] = new Queue<HistoricalState>();
 
-        var queue = playerHistory[playerId];
+        var queue = _playerHistory[playerId];
 
         // Add current state
         queue.Enqueue(new HistoricalState
@@ -228,7 +228,7 @@ public class LagCompensation
         // Rewind to client's timestamp
         float targetTime = clientTimestamp; // Shooter's perceived time
 
-        foreach (var kvp in playerHistory)
+        foreach (var kvp in _playerHistory)
         {
             int playerId = kvp.Key;
             if (playerId == shooterPlayerId) continue; // Don't shoot self
@@ -277,32 +277,32 @@ using System.IO;
 // Efficient binary serialization
 public class NetworkWriter
 {
-    private MemoryStream stream = new MemoryStream();
-    private BinaryWriter writer;
+    private MemoryStream _stream = new MemoryStream();
+    private BinaryWriter _writer;
 
     public NetworkWriter()
     {
-        writer = new BinaryWriter(stream);
+        _writer = new BinaryWriter(_stream);
     }
 
-    public void WriteInt(int value) => writer.Write(value);
-    public void WriteFloat(float value) => writer.Write(value);
-    public void WriteBool(bool value) => writer.Write(value);
-    public void WriteString(string value) => writer.Write(value);
+    public void WriteInt(int value) => _writer.Write(value);
+    public void WriteFloat(float value) => _writer.Write(value);
+    public void WriteBool(bool value) => _writer.Write(value);
+    public void WriteString(string value) => _writer.Write(value);
 
     public void WriteVector3(Vector3 value)
     {
-        writer.Write(value.x);
-        writer.Write(value.y);
-        writer.Write(value.z);
+        _writer.Write(value.x);
+        _writer.Write(value.y);
+        _writer.Write(value.z);
     }
 
     // Compressed vector (16-bit per component)
     public void WriteVector3Compressed(Vector3 value, float min, float max)
     {
-        writer.Write(CompressFloat(value.x, min, max));
-        writer.Write(CompressFloat(value.y, min, max));
-        writer.Write(CompressFloat(value.z, min, max));
+        _writer.Write(CompressFloat(value.x, min, max));
+        _writer.Write(CompressFloat(value.y, min, max));
+        _writer.Write(CompressFloat(value.z, min, max));
     }
 
     private ushort CompressFloat(float value, float min, float max)
@@ -311,38 +311,38 @@ public class NetworkWriter
         return (ushort)(normalized * ushort.MaxValue);
     }
 
-    public byte[] ToArray() => stream.ToArray();
+    public byte[] ToArray() => _stream.ToArray();
 }
 
 public class NetworkReader
 {
-    private BinaryReader reader;
+    private BinaryReader _reader;
 
     public NetworkReader(byte[] data)
     {
-        reader = new BinaryReader(new MemoryStream(data));
+        _reader = new BinaryReader(new MemoryStream(data));
     }
 
-    public int ReadInt() => reader.ReadInt32();
-    public float ReadFloat() => reader.ReadSingle();
-    public bool ReadBool() => reader.ReadBoolean();
-    public string ReadString() => reader.ReadString();
+    public int ReadInt() => _reader.ReadInt32();
+    public float ReadFloat() => _reader.ReadSingle();
+    public bool ReadBool() => _reader.ReadBoolean();
+    public string ReadString() => _reader.ReadString();
 
     public Vector3 ReadVector3()
     {
         return new Vector3(
-            reader.ReadSingle(),
-            reader.ReadSingle(),
-            reader.ReadSingle()
+            _reader.ReadSingle(),
+            _reader.ReadSingle(),
+            _reader.ReadSingle()
         );
     }
 
     public Vector3 ReadVector3Compressed(float min, float max)
     {
         return new Vector3(
-            DecompressFloat(reader.ReadUInt16(), min, max),
-            DecompressFloat(reader.ReadUInt16(), min, max),
-            DecompressFloat(reader.ReadUInt16(), min, max)
+            DecompressFloat(_reader.ReadUInt16(), min, max),
+            DecompressFloat(_reader.ReadUInt16(), min, max),
+            DecompressFloat(_reader.ReadUInt16(), min, max)
         );
     }
 
@@ -359,22 +359,22 @@ public class NetworkReader
 ```csharp
 public class InterestManager
 {
-    private Dictionary<int, Vector3> playerPositions = new();
-    private float relevancyRadius = 100f;
+    private Dictionary<int, Vector3> _playerPositions = new();
+    private float _relevancyRadius = 100f;
 
     public HashSet<int> GetRelevantPlayers(int playerId)
     {
-        if (!playerPositions.TryGetValue(playerId, out Vector3 playerPos))
+        if (!_playerPositions.TryGetValue(playerId, out Vector3 playerPos))
             return new HashSet<int>();
 
         HashSet<int> relevant = new HashSet<int>();
 
-        foreach (var kvp in playerPositions)
+        foreach (var kvp in _playerPositions)
         {
             if (kvp.Key == playerId) continue;
 
             float distance = Vector3.Distance(playerPos, kvp.Value);
-            if (distance <= relevancyRadius)
+            if (distance <= _relevancyRadius)
             {
                 relevant.Add(kvp.Key);
             }
@@ -400,11 +400,11 @@ public class InterestManager
 ```csharp
 public class DeltaCompressor
 {
-    private Dictionary<int, NetworkPlayer> lastSentState = new();
+    private Dictionary<int, NetworkPlayer> _lastSentState = new();
 
     public byte[] CompressState(NetworkPlayer current)
     {
-        if (!lastSentState.TryGetValue(current.PlayerId, out NetworkPlayer previous))
+        if (!_lastSentState.TryGetValue(current.PlayerId, out NetworkPlayer previous))
         {
             // First time - send full state
             return SerializeFullState(current);
@@ -439,7 +439,7 @@ public class DeltaCompressor
         Array.Copy(data, 0, result, 1, data.Length);
 
         // Update last sent state
-        lastSentState[current.PlayerId] = current;
+        _lastSentState[current.PlayerId] = current;
 
         return result;
     }
