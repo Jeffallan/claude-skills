@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - csharp-developer, dotnet-core-expert: the baseline moves from .NET 8 and C# 12 to .NET 10 (LTS) and C# 14; `.NET 8` stays as a trigger keyword in dotnet-core-expert (#363, closing #343)
 - game-developer: the pooling example uses Unity's built-in `UnityEngine.Pool.ObjectPool<T>` (2021.1+), and two reference files point to it above their hand-rolled pools (#366, closing #345)
 - spark-engineer: partition guidance follows the Spark tuning guide (2-3 tasks per core in the cluster, AQE left on), with 128-256MB labelled as a rule of thumb (#369, closing #349)
+- kotlin-specialist: uses the official term "inline value class" (#352, closing #350)
 
 ## [0.5.2] - 2026-11-23
 
