@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://react.dev/
+  baseline: "React 18"
   related-skills: fullstack-guardian, playwright-expert, test-master, firebase-expert
 ---
 
@@ -43,6 +45,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://react.dev/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | Server Components | `references/server-components.md` | RSC patterns, Next.js App Router |
 | React 19 | `references/react-19-features.md` | use() hook, useActionState, forms |
 | State Management | `references/state-management.md` | Context, Zustand, Redux, TanStack |

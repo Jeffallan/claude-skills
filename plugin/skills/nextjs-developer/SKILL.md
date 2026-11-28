@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://nextjs.org/docs
+  baseline: "Next.js 14"
   related-skills: typescript-pro, nuxt-expert, firebase-expert
 ---
 
@@ -33,6 +35,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://nextjs.org/docs | An API or behaviour not covered here; read the docs for the version the project pins |
 | App Router | `references/app-router.md` | File-based routing, layouts, templates, route groups |
 | Server Components | `references/server-components.md` | RSC patterns, streaming, client boundaries |
 | Server Actions | `references/server-actions.md` | Form handling, mutations, revalidation |

@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://docs.flutter.dev/
+  baseline: "Flutter 3"
   related-skills: react-native-expert, test-master, fullstack-guardian, firebase-expert
 ---
 
@@ -45,6 +47,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://docs.flutter.dev/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | Riverpod | `references/riverpod-state.md` | State management, providers, notifiers |
 | Bloc | `references/bloc-state.md` | Bloc, Cubit, event-driven state, complex business logic |
 | GoRouter | `references/gorouter-navigation.md` | Navigation, routing, deep linking |
