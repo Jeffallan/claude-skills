@@ -129,7 +129,7 @@ export const selectUsersLoading = createSelector(selectUsersState, (s) => s.load
 - Use OnPush change detection strategy
 - Use strict TypeScript configuration
 - Implement proper error handling in RxJS streams
-- Use `trackBy` functions in `*ngFor` loops
+- Use `@for` with a `track` expression for every loop; for legacy `*ngFor` code you are keeping, use a `trackBy` function
 - Write tests with >85% coverage
 - Follow Angular style guide
 

@@ -259,7 +259,7 @@ export class ModernControlFlowComponent {
 }
 ```
 
-## Performance: OnPush & TrackBy
+## Performance: OnPush & Track
 
 ```typescript
 @Component({
@@ -276,7 +276,7 @@ export class ModernControlFlowComponent {
 export class ProductListComponent {
   products = input.required<Product[]>();
 
-  // TrackBy for optimal rendering
+  // track expression for optimal rendering
   trackByProductId(index: number, product: Product): number {
     return product.id;
   }
