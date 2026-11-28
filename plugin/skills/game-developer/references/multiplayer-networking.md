@@ -125,6 +125,8 @@ public class PredictivePlayer : MonoBehaviour
         public Vector3 Movement;
     }
 
+    [SerializeField] private float _moveSpeed = 5f;
+
     private Queue<InputState> _pendingInputs = new Queue<InputState>();
     private int _sequenceNumber = 0;
     private Vector3 _predictedPosition;
@@ -136,7 +138,7 @@ public class PredictivePlayer : MonoBehaviour
             Input.GetAxis("Horizontal"),
             0,
             Input.GetAxis("Vertical")
-        ) * moveSpeed * Time.deltaTime;
+        ) * _moveSpeed * Time.deltaTime;
 
         // Create input state
         InputState input = new InputState
@@ -311,6 +313,37 @@ public class NetworkWriter
         return (ushort)(normalized * ushort.MaxValue);
     }
 
+    // Smallest-three quaternion compression (2-bit index + three 10-bit components = 32 bits)
+    public void WriteQuaternionCompressed(Quaternion value)
+    {
+        const float maxRange = 0.70710678f; // 1 / sqrt(2)
+        float[] comps = { value.x, value.y, value.z, value.w };
+        int maxIdx = 0;
+        float maxAbs = Mathf.Abs(comps[0]);
+        for (int i = 1; i < 4; i++)
+        {
+            float abs = Mathf.Abs(comps[i]);
+            if (abs > maxAbs)
+            {
+                maxAbs = abs;
+                maxIdx = i;
+            }
+        }
+
+        float sign = comps[maxIdx] < 0f ? -1f : 1f;
+        uint packed = (uint)maxIdx << 30;
+        int shift = 20;
+        for (int i = 0; i < 4; i++)
+        {
+            if (i == maxIdx) continue;
+            float norm = Mathf.Clamp01((comps[i] * sign + maxRange) / (2f * maxRange));
+            uint q = (uint)Mathf.RoundToInt(norm * 1023f);
+            packed |= q << shift;
+            shift -= 10;
+        }
+        _writer.Write(packed);
+    }
+
     public byte[] ToArray() => _stream.ToArray();
 }
 
@@ -350,6 +383,28 @@ public class NetworkReader
     {
         float normalized = value / (float)ushort.MaxValue;
         return min + normalized * (max - min);
+    }
+
+    // Smallest-three quaternion decompression (matches WriteQuaternionCompressed)
+    public Quaternion ReadQuaternionCompressed()
+    {
+        const float maxRange = 0.70710678f; // 1 / sqrt(2)
+        uint packed = _reader.ReadUInt32();
+        int maxIdx = (int)(packed >> 30);
+        float[] comps = new float[4];
+        float sumSq = 0f;
+        int shift = 20;
+        for (int i = 0; i < 4; i++)
+        {
+            if (i == maxIdx) continue;
+            uint q = (packed >> shift) & 0x3FFu;
+            float val = (q / 1023f) * (2f * maxRange) - maxRange;
+            comps[i] = val;
+            sumSq += val * val;
+            shift -= 10;
+        }
+        comps[maxIdx] = Mathf.Sqrt(Mathf.Max(0f, 1f - sumSq));
+        return new Quaternion(comps[0], comps[1], comps[2], comps[3]);
     }
 }
 ```
@@ -400,13 +455,26 @@ public class InterestManager
 ```csharp
 public class DeltaCompressor
 {
-    private Dictionary<int, NetworkPlayer> _lastSentState = new();
+    private struct SentState
+    {
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public float Health;
+    }
+
+    private Dictionary<int, SentState> _lastSentState = new();
 
     public byte[] CompressState(NetworkPlayer current)
     {
-        if (!_lastSentState.TryGetValue(current.PlayerId, out NetworkPlayer previous))
+        if (!_lastSentState.TryGetValue(current.PlayerId, out SentState previous))
         {
-            // First time - send full state
+            // First time - record snapshot and send full state
+            _lastSentState[current.PlayerId] = new SentState
+            {
+                Position = current.Position,
+                Rotation = current.Rotation,
+                Health = current.Health
+            };
             return SerializeFullState(current);
         }
 
@@ -438,8 +506,13 @@ public class DeltaCompressor
         result[0] = flags;
         Array.Copy(data, 0, result, 1, data.Length);
 
-        // Update last sent state
-        _lastSentState[current.PlayerId] = current;
+        // Update last sent state with a value copy
+        _lastSentState[current.PlayerId] = new SentState
+        {
+            Position = current.Position,
+            Rotation = current.Rotation,
+            Health = current.Health
+        };
 
         return result;
     }
