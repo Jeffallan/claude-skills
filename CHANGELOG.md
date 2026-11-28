@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - dotnet-core-expert: notes that MediatR v13.0.0 and later are no longer Apache-2.0, and tells the agent to ask the user before adding it (#362, closing #342)
+- angular-architect: the MUST DO rule steers loops to `@for` with `track`, keeping `trackBy` for legacy `*ngFor` code (#361, closing #348)
 
 ## [0.5.2] - 2026-11-23
 
