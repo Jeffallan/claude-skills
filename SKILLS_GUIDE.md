@@ -61,6 +61,7 @@ A guide for choosing the right skill for your task. For installation, see [Quick
 ### Quality & Testing
 - **[Test Master](https://jeffallan.github.io/claude-skills/skills/quality/test-master/)**: Overall testing strategy (unit, integration, E2E, performance, security)
 - **[Playwright Expert](https://jeffallan.github.io/claude-skills/skills/quality/playwright-expert/)**: Browser automation and E2E testing
+- **[Playwright Recording Processor](https://jeffallan.github.io/claude-skills/skills/quality/playwright-recording-processor/)**: Process codegen recordings into E2E tests
 - **[Code Reviewer](https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/)**: Conducting thorough code reviews
 - **[Code Documenter](https://jeffallan.github.io/claude-skills/skills/quality/code-documenter/)**: Adding inline documentation and API docs
 
@@ -197,6 +198,7 @@ To install the code review skill and see an example report, open the [Code Revie
 
 ### Testing
 - **E2E Browser Tests** → Playwright Expert
+- **Process Codegen Recordings** → Playwright Recording Processor
 - **All Other Testing** → Test Master
 
 ### Operations
@@ -317,6 +319,7 @@ Skills that are often combined:
 ### Specific Requests
 - "Generate OpenAPI docs for my Django REST API" → Code Documenter + API Designer
 - "Write Playwright tests for the login flow" → Playwright Expert
+- "Convert this codegen recording to an E2E test" → Playwright Recording Processor
 - "Analyze this legacy codebase and create a spec" → Spec Miner
 - "Help me implement RBAC in NestJS" → NestJS Expert + Secure Code Guardian
 - "Set up SRE practices and SLOs" → SRE Engineer + Monitoring Expert

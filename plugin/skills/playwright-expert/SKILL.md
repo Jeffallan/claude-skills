@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: testing
   output-format: code
-  related-skills: test-master, react-expert, devops-engineer
+  related-skills: test-master, react-expert, devops-engineer, playwright-recording-processor
 ---
 
 # Playwright Expert
