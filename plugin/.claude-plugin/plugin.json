@@ -1,6 +1,6 @@
 {
   "name": "fullstack-dev-skills",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Comprehensive skill pack with 71 specialized skills for full-stack developers: 12 language experts (Python, TypeScript, Go, Rust, C++, Swift, Kotlin, C#, PHP, Java, SQL, JavaScript), 9 backend frameworks, 8 frontend/mobile, plus infrastructure, DevOps, security, and testing. Features progressive disclosure architecture for 50% faster loading.",
   "author": {
     "name": "jeffallan",
