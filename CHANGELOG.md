@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - dotnet-core-expert: notes that MediatR v13.0.0 and later are no longer Apache-2.0, and tells the agent to ask the user before adding it (#362, closing #342)
 - angular-architect: the MUST DO rule steers loops to `@for` with `track`, keeping `trackBy` for legacy `*ngFor` code (#361, closing #348)
 - embedded-systems: the TIM2 blink example runs from the 16 MHz reset clock with matching prescaler values, clears the mode field before setting it and clears the update flag with a plain write (#364, closing #346)
+- laravel-specialist: adds the `PostStatus` enum template the other templates use, types the test closure parameter and adds `declare(strict_types=1);` to the migration and test templates (#365, closing #347)
 
 ## [0.5.2] - 2026-11-23
 
