@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: Dependabot skips `notes-check.yml`, which the handbook delivers and bumps (#341)
 - CI: lint runs on skill-linter 0.5.0 with its experimental `upstream-docs` and `baseline` rules on; they warn and cannot fail the run (#358)
 - golang-pro, javascript-pro, php-pro, swift-expert: each records its official docs URL and version baseline in frontmatter and gains an Official docs row in the Reference Guide, four more of the 41 in #354 (#360)
+- csharp-developer, dotnet-core-expert: the baseline moves from .NET 8 and C# 12 to .NET 10 (LTS) and C# 14; `.NET 8` stays as a trigger keyword in dotnet-core-expert (#363, closing #343)
 
 ## [0.5.2] - 2026-11-23
 
