@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-11-28
+
 ### Added
 - Workflow: each of the 13 command files ends with a Documentation link to its page on the docs site, in the same form as the skills' backlink. `scripts/test-command-docs.sh` checks the link and the blank line before it (#356, closing #353)
 - CI: a scheduled workflow (`baseline-eol.yml`, Mondays and on demand) checks each skill's `metadata.baseline` against endoflife.date and keeps one tracking issue listing the baselines past or within 90 days of end of support. It never edits skills (#367, closing #357)
@@ -39,6 +41,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - embedded-systems: drops ESP32 from the description and triggers, since the skill has no ESP32 content (#340)
 - csharp-developer: drops the CQRS and MediatR claims it did not cover and links `dotnet-core-expert`, which does (#340)
 - laravel-specialist: the templates import `Builder` and `Queue`, and the job's `$post` is public so the test can read it (#340)
+
+### Contributors
+- @chemouvski: Defined the Laravel `PostStatus` enum, moved the Unity pooling example to the built-in pool, fixed the `PlayerController` example, aligned the Spark partition guidance with the Apache docs and built the scheduled end-of-support check (#365, #366, #368, #369, #367)
+- @dheerajc8073: Recorded official docs and version baselines for nine skills (#355, #360, #371)
+- @milddrunker: Found and fixed example and description errors across nine skills (#340)
+- @harsha-1009: Added the Documentation link to every workflow command file (#356)
+- @sgxcoffeecat: Corrected kotlin-specialist to the official "inline value class" term (#352)
+- @hussain-alsaibai: Moved the angular-architect loop rule to `@for` with `track` (#361)
+- @MannXo: Added the MediatR licence note to dotnet-core-expert (#362)
+- @Kiddo4993: Moved csharp-developer and dotnet-core-expert to the .NET 10 baseline (#363)
+- @MSedgeMC: Fixed the embedded-systems TIM2 blink example (#364)
 
 ## [0.5.2] - 2026-11-23
 
@@ -714,7 +727,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitoring: Prometheus, Grafana, ELK, DataDog
 - Security: OWASP Top 10, SAST tools
 
-[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/jeffallan/claude-skills/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/jeffallan/claude-skills/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/jeffallan/claude-skills/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/jeffallan/claude-skills/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/jeffallan/claude-skills/compare/v0.4.22...v0.5.0
