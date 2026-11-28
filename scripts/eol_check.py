@@ -18,6 +18,7 @@ API_BASE = "https://endoflife.date/api/v1/products"
 USER_AGENT = "claude-skills-baseline-check"
 REPORT_SECTIONS = ("past end of support", "inside warning window", "not checked")
 ATTENTION_STATUSES = frozenset({"past end of support", "inside warning window"})
+FETCH_FAILED = "could not fetch support data"
 
 
 @dataclass(frozen=True)
@@ -108,13 +109,22 @@ def check(
     window_days: int = WINDOW_DAYS,
 ) -> list[Result]:
     cache: dict[str, list[dict[str, Any]] | None] = {}
+    failed: set[str] = set()
     results: list[Result] = []
     for baseline in baselines:
         slug = slugs.get(baseline.product)
         releases: list[dict[str, Any]] | None = None
         if slug is not None:
             if slug not in cache:
-                cache[slug] = fetch(slug)
+                try:
+                    cache[slug] = fetch(slug)
+                except (OSError, ValueError, KeyError):
+                    # One product's network or payload error must not sink the whole run.
+                    cache[slug] = None
+                    failed.add(slug)
+            if slug in failed:
+                results.append(Result(baseline, "not checked", None, FETCH_FAILED))
+                continue
             releases = cache[slug]
         results.append(evaluate(baseline, slug, releases, today, window_days=window_days))
     return results
@@ -150,6 +160,13 @@ def needs_attention(results: list[Result]) -> bool:
     return any(r.status in ATTENTION_STATUSES for r in results)
 
 
+def attention_flag(results: list[Result]) -> str:
+    if needs_attention(results):
+        return "true"
+    # "unknown" keeps the workflow from closing the tracking issue on an outage.
+    return "unknown" if any(r.note == FETCH_FAILED for r in results) else "false"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Check baselines against endoflife.date.")
     parser.add_argument("--input", required=True, type=Path, help="Path to baselines JSON file.")
@@ -178,8 +195,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         sys.stdout.write(report)
 
-    flag = "true" if needs_attention(results) else "false"
-    print(f"attention={flag}")
+    print(f"attention={attention_flag(results)}")
     return 0
 
 

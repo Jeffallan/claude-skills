@@ -177,3 +177,33 @@ def test_read_baselines(tmp_path: Path) -> None:
         {"source": "php-expert", "product": "PHP", "version": "8.3"},
         {"source": "php-expert", "product": "Laravel", "version": "11"},
     ]
+
+
+def test_fetch_failure_is_not_checked_and_other_products_still_run() -> None:
+    def flaky_fetch(slug: str) -> list[dict[str, Any]] | None:
+        if slug == "php":
+            raise OSError("network down")
+        return RELEASES.get(slug)
+
+    baselines = [
+        eol_check.Baseline(source="php-skill", product="PHP", version="8.3"),
+        eol_check.Baseline(source="py-old", product="Python", version="3.9"),
+    ]
+    failed, ok = eol_check.check(baselines, SLUGS, TODAY, fetch=flaky_fetch)
+    assert failed.status == "not checked"
+    assert failed.note == eol_check.FETCH_FAILED
+    assert ok.status == "past end of support"
+
+
+def test_attention_flag_is_unknown_when_a_fetch_failed_and_nothing_else_needs_attention() -> None:
+    def down(slug: str) -> list[dict[str, Any]] | None:
+        raise OSError("network down")
+
+    baselines = [eol_check.Baseline(source="py-ok", product="Python", version="3.12")]
+    results = eol_check.check(baselines, SLUGS, TODAY, fetch=down)
+    assert eol_check.attention_flag(results) == "unknown"
+
+    fetch, _ = _make_fetcher()
+    assert eol_check.attention_flag(eol_check.check(baselines, SLUGS, TODAY, fetch=fetch)) == "false"
+    old = [eol_check.Baseline(source="py-old", product="Python", version="3.9")]
+    assert eol_check.attention_flag(eol_check.check(old, SLUGS, TODAY, fetch=fetch)) == "true"

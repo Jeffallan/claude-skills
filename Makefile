@@ -1,4 +1,4 @@
-.PHONY: dev-link dev-unlink guard guard-check guard-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground eval-goal-guard eval-spec-current-diff eval-spec-complete-docs site-dev site-build lint format lint-fix
+.PHONY: dev-link dev-unlink guard guard-check guard-test scripts-test validate test evidence eval-workflow eval-intake eval-baseline eval-discovery eval-common-ground eval-goal-guard eval-spec-current-diff eval-spec-complete-docs site-dev site-build lint format lint-fix
 
 PLUGIN_NAME := fullstack-dev-skills
 VERSION := $(shell python -c "import json; print(json.load(open('version.json'))['version'])")
@@ -50,11 +50,14 @@ guard-check:
 guard-test:
 	cd runtime && PYTHONPATH=. uv run --no-project --with pytest python -m pytest tests -q -p no:cacheprovider
 
+scripts-test:
+	cd scripts && uv run --no-project --python 3.11 --with pytest python -m pytest tests -q -p no:cacheprovider
+
 validate:
 	uvx skill-linter@0.5.0 release
 	uvx skill-linter@0.5.0 stamp --check
 
-test: guard-check guard-test
+test: guard-check guard-test scripts-test
 	bash scripts/test-makefile.sh
 	bash scripts/test-plugin-tree.sh
 	bash scripts/test-review-wiring.sh
