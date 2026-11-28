@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - kotlin-specialist: uses the official term "inline value class" (#352, closing #350)
 - embedded-systems: the blink example's comment states the 0.5 Hz blink rate and no longer points F401 readers to the 168 MHz clock setup, which the reference now labels as F405/F407 (correction to #364)
 - game-developer: the pooling example names the `Bullet` type, and serialized fields in the `SKILL.md` examples take the underscore (`_prefab`, `_speed`) like the other private fields (correction to #366 and #368)
+- game-developer: private fields in the four C# reference files take the underscore (`_camelCase`), so the skill's examples follow one naming style, the one the other C# skills use
 - CI: the baseline check reports a failed lookup as not checked and leaves the tracking issue open during an outage; its tests run in `make test` (follow-up to #367)
 
 ### Fixed
