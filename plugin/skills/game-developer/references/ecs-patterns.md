@@ -332,10 +332,12 @@ public class UIController
 // Publisher
 public class Player
 {
+    private float _health = 100f;
+
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        GameEvents.OnHealthChanged.Trigger(health);
+        _health -= damage;
+        GameEvents.OnHealthChanged.Trigger(_health);
     }
 }
 ```
@@ -487,7 +489,7 @@ public class DoubleBuffer<T>
 // Usage for physics
 public class PhysicsSimulation
 {
-    private DoubleBuffer<PhysicsState> _stateBuffer;
+    private DoubleBuffer<PhysicsState> _stateBuffer = new DoubleBuffer<PhysicsState>(new PhysicsState(), new PhysicsState());
 
     public void Update(float deltaTime)
     {
