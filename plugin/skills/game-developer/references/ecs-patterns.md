@@ -332,10 +332,12 @@ public class UIController
 // Publisher
 public class Player
 {
+    private float _health = 100f;
+
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        GameEvents.OnHealthChanged.Trigger(health);
+        _health -= damage;
+        GameEvents.OnHealthChanged.Trigger(_health);
     }
 }
 ```
@@ -485,9 +487,16 @@ public class DoubleBuffer<T>
 }
 
 // Usage for physics
+public class PhysicsState
+{
+    public Vector3 Position;
+    public Vector3 Velocity;
+}
+
 public class PhysicsSimulation
 {
-    private DoubleBuffer<PhysicsState> _stateBuffer;
+    private readonly DoubleBuffer<PhysicsState> _stateBuffer =
+        new DoubleBuffer<PhysicsState>(new PhysicsState(), new PhysicsState());
 
     public void Update(float deltaTime)
     {
@@ -496,6 +505,14 @@ public class PhysicsSimulation
 
         // Swap buffers
         _stateBuffer.Swap();
+    }
+
+    // PhysicsState is a class on purpose. As a struct it would be copied on the way
+    // in, so the writes below would land on a temporary instead of the next buffer.
+    private static void ComputeNextState(PhysicsState current, PhysicsState next, float deltaTime)
+    {
+        next.Velocity = current.Velocity;
+        next.Position = current.Position + current.Velocity * deltaTime;
     }
 }
 ```
