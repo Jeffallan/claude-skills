@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://go.dev/doc/
+  baseline: "Go 1.21"
   related-skills: devops-engineer, microservices-architect, test-master
 ---
 
@@ -33,6 +35,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://go.dev/doc/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | Concurrency | `references/concurrency.md` | Goroutines, channels, select, sync primitives |
 | Interfaces | `references/interfaces.md` | Interface design, io.Reader/Writer, composition |
 | Generics | `references/generics.md` | Type parameters, constraints, generic patterns |
