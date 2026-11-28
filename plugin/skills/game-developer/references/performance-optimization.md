@@ -28,26 +28,26 @@ public class PerformanceMonitor : MonoBehaviour
 
 ```csharp
 // BAD: Allocates garbage every frame
+private int _health = 100;
+private int _maxHealth = 100;
+
 void Update()
 {
-    string status = "Health: " + health + " / " + maxHealth; // Boxing + allocation
-    Vector3 direction = transform.position - target.position; // Allocation
+    string status = "Health: " + _health + " / " + _maxHealth; // Boxing + allocation
     var enemies = GameObject.FindGameObjectsWithTag("Enemy"); // Allocation
 }
 
 // GOOD: Zero allocations
+private int _health = 100;
+private int _maxHealth = 100;
 private StringBuilder _statusBuilder = new StringBuilder(50);
-private Vector3 _directionCache;
 private List<Enemy> _enemyCache = new List<Enemy>(100);
 
 void Update()
 {
     // Reuse StringBuilder
     _statusBuilder.Clear();
-    _statusBuilder.Append("Health: ").Append(health).Append(" / ").Append(maxHealth);
-
-    // Reuse Vector3
-    _directionCache = transform.position - target.position;
+    _statusBuilder.Append("Health: ").Append(_health).Append(" / ").Append(_maxHealth);
 
     // Cache references (done in Start)
     foreach (var enemy in _enemyCache)
@@ -128,17 +128,19 @@ public class LODSetup : MonoBehaviour
 public class OcclusionCheck : MonoBehaviour
 {
     private Camera _mainCamera;
+    private Renderer _renderer;
 
     void Start()
     {
         _mainCamera = Camera.main;
+        _renderer = GetComponent<Renderer>();
     }
 
     void Update()
     {
         // Check if object is visible to camera
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(_mainCamera);
-        Bounds bounds = GetComponent<Renderer>().bounds;
+        Bounds bounds = _renderer.bounds;
 
         if (GeometryUtility.TestPlanesAABB(planes, bounds))
         {
@@ -332,7 +334,7 @@ public class StaggeredUpdate : MonoBehaviour
 // Distance-based update rates
 public class DistanceBasedUpdate : MonoBehaviour
 {
-    private Transform _player;
+    [SerializeField] private Transform _player;
     private float _updateInterval;
     private float _nextUpdate;
 
