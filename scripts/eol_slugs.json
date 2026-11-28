@@ -1,0 +1,17 @@
+{
+  "Python": "python",
+  "Node.js": "nodejs",
+  ".NET": "dotnet",
+  "Laravel": "laravel",
+  "Angular": "angular",
+  "Kotlin": "kotlin",
+  "Spring Boot": "spring-boot",
+  "Django": "django",
+  "Rails": "rails",
+  "Go": "go",
+  "PHP": "php",
+  "Symfony": "symfony",
+  "React": "react",
+  "Vue": "vue",
+  "Next.js": "nextjs"
+}

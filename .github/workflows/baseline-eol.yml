@@ -1,0 +1,46 @@
+name: Baseline end-of-support check
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.11"
+
+      - name: Extract skill baselines
+        run: python scripts/skill_baselines.py --output pairs.json
+
+      - name: Check baselines against endoflife.date
+        id: check
+        run: python scripts/eol_check.py --input pairs.json --slugs scripts/eol_slugs.json --report report.md >> "$GITHUB_OUTPUT"
+
+      - name: Update tracking issue and job summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: Skill baselines past or near end of support
+          ATTENTION: ${{ steps.check.outputs.attention }}
+        run: |
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+          number=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == env.TITLE) | .number" | head -n1)
+          if [ "$ATTENTION" = "true" ]; then
+            if [ -n "$number" ]; then
+              gh issue edit "$number" --body-file report.md
+            else
+              gh issue create --title "$TITLE" --body-file report.md
+            fi
+          elif [ "$ATTENTION" = "false" ] && [ -n "$number" ]; then
+            gh issue comment "$number" --body "All baselines are supported as of $(date -u +%F). Closing."
+            gh issue close "$number"
+          fi
