@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - spark-engineer: partition guidance follows the Spark tuning guide (2-3 tasks per core in the cluster, AQE left on), with 128-256MB labelled as a rule of thumb (#369, closing #349)
 - kotlin-specialist: uses the official term "inline value class" (#352, closing #350)
 
+### Fixed
+
+- dotnet-core-expert: notes that MediatR v13.0.0 and later are no longer Apache-2.0, and tells the agent to ask the user before adding it (#362, closing #342)
+
 ## [0.5.2] - 2026-11-23
 
 ### Changed
