@@ -58,7 +58,7 @@ public class GameServer
 
 ```csharp
 // Network state with interpolation
-public class NetworkTransform
+public class NetworkTransform : MonoBehaviour
 {
     // Circular buffer for state history
     private struct State
@@ -70,6 +70,7 @@ public class NetworkTransform
 
     private State[] _stateBuffer = new State[32];
     private int _bufferIndex = 0;
+    private int _count = 0;
 
     public void ReceiveState(float timestamp, Vector3 position, Quaternion rotation)
     {
@@ -81,26 +82,37 @@ public class NetworkTransform
         };
 
         _bufferIndex = (_bufferIndex + 1) % _stateBuffer.Length;
+        if (_count < _stateBuffer.Length)
+            _count++;
     }
 
     public void Interpolate(float renderTime)
     {
-        // Find two states to interpolate between
+        // Walk backwards from newest entry to find states bracketing renderTime
         State from = default;
         State to = default;
+        bool hasFrom = false;
+        bool hasTo = false;
 
-        for (int i = 0; i < _stateBuffer.Length; i++)
+        for (int k = 0; k < _count; k++)
         {
-            if (_stateBuffer[i].Timestamp <= renderTime)
-                from = _stateBuffer[i];
+            int idx = (_bufferIndex - 1 - k + _stateBuffer.Length) % _stateBuffer.Length;
+            State s = _stateBuffer[idx];
+
+            if (s.Timestamp > renderTime)
+            {
+                to = s;
+                hasTo = true;
+            }
             else
             {
-                to = _stateBuffer[i];
+                from = s;
+                hasFrom = true;
                 break;
             }
         }
 
-        if (from.Timestamp == 0 || to.Timestamp == 0)
+        if (!hasFrom || !hasTo || to.Timestamp <= from.Timestamp)
             return;
 
         // Interpolate between states
