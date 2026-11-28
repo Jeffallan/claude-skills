@@ -100,24 +100,28 @@ public class BulletSpawner : MonoBehaviour
 
 ### Component Caching (Unity C#)
 ```csharp
+using UnityEngine;
+using UnityEngine.InputSystem;
+
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private float speed = 5f;
+
     // Cache all component references in Awake — never call GetComponent in Update
     private Rigidbody _rb;
-    private Animator _animator;
-    private PlayerInput _input;
+    private InputAction _move;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _animator = GetComponent<Animator>();
-        _input = GetComponent<PlayerInput>();
+        _move = GetComponent<PlayerInput>().actions["Move"];
     }
 
     private void FixedUpdate()
     {
-        // Use cached references; use deltaTime for frame-independence
-        Vector3 move = _input.MoveDirection * (speed * Time.fixedDeltaTime);
+        // Use cached references; scale by fixedDeltaTime in FixedUpdate
+        Vector2 input = _move.ReadValue<Vector2>();
+        Vector3 move = new Vector3(input.x, 0f, input.y) * (speed * Time.fixedDeltaTime);
         _rb.MovePosition(_rb.position + move);
     }
 }
@@ -125,6 +129,8 @@ public class PlayerController : MonoBehaviour
 
 ### State Machine (Unity C#)
 ```csharp
+using UnityEngine;
+
 public abstract class State
 {
     public abstract void Enter();
