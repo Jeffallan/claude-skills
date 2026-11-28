@@ -1,6 +1,6 @@
 ---
 name: laravel-specialist
-description: Build and configure Laravel 10+ applications, including creating Eloquent models and relationships, implementing Sanctum authentication, configuring Horizon queues, designing RESTful APIs with API resources, and building reactive interfaces with Livewire. Use when creating Laravel models, setting up queue workers, implementing Sanctum auth flows, building Livewire components, optimising Eloquent queries, or writing Pest/PHPUnit tests for Laravel features.
+description: Build and configure Laravel 12+ applications, including creating Eloquent models and relationships, implementing Sanctum authentication, configuring Horizon queues, designing RESTful APIs with API resources, and building reactive interfaces with Livewire. Use when creating Laravel models, setting up queue workers, implementing Sanctum auth flows, building Livewire components, optimising Eloquent queries, or writing Pest/PHPUnit tests for Laravel features.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
@@ -16,7 +16,7 @@ metadata:
 
 # Laravel Specialist
 
-Senior Laravel specialist with deep expertise in Laravel 10+, Eloquent ORM, and modern PHP 8.2+ development.
+Senior Laravel specialist with deep expertise in Laravel 12+, Eloquent ORM, and modern PHP 8.2+ development.
 
 ## Core Workflow
 
@@ -90,6 +90,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\PostStatus;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -103,10 +104,13 @@ final class Post extends Model
 
     protected $fillable = ['title', 'body', 'status', 'user_id'];
 
-    protected $casts = [
-        'status' => PostStatus::class, // backed enum
-        'published_at' => 'immutable_datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'status' => PostStatus::class, // backed enum
+            'published_at' => 'immutable_datetime',
+        ];
+    }
 
     // Relationships — always eager-load via ::with() at call site
     public function author(): BelongsTo
@@ -120,9 +124,10 @@ final class Post extends Model
     }
 
     // Local scope
-    public function scopePublished(Builder $query): Builder
+    #[Scope]
+    protected function published(Builder $query): void
     {
-        return $query->where('status', PostStatus::Published);
+        $query->where('status', PostStatus::Published);
     }
 }
 ```
@@ -201,15 +206,12 @@ namespace App\Jobs;
 
 use App\Enums\PostStatus;
 use App\Models\Post;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Queue\Queueable;
 
 final class PublishPost implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Queueable;
 
     public int $tries = 3;
     public int $backoff = 60;
@@ -285,7 +287,7 @@ Run these at each workflow stage to confirm correctness before proceeding:
 
 ## Knowledge Reference
 
-Laravel 10+, Eloquent ORM, PHP 8.2+, API resources, Sanctum/Passport, queues, Horizon, Livewire, Inertia, Octane, Pest/PHPUnit, Redis, broadcasting, events/listeners, notifications, task scheduling
+Laravel 12+, Eloquent ORM, PHP 8.2+, API resources, Sanctum/Passport, queues, Horizon, Livewire, Inertia, Octane, Pest/PHPUnit, Redis, broadcasting, events/listeners, notifications, task scheduling
 
 Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
 
