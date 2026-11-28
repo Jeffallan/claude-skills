@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  baseline: "JavaScript ES2023"
   related-skills: fullstack-guardian
 ---
 
@@ -39,6 +41,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://developer.mozilla.org/en-US/docs/Web/JavaScript | An API or behaviour not covered here; read the docs for the version the project pins |
 | Modern Syntax | `references/modern-syntax.md` | ES2023+ features, optional chaining, private fields |
 | Async Patterns | `references/async-patterns.md` | Promises, async/await, error handling, event loop |
 | Modules | `references/modules.md` | ESM vs CJS, dynamic imports, package.json exports |

@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://www.php.net/manual/en/
+  baseline: "PHP 8.3, Laravel 11, Symfony 7"
   related-skills: fullstack-guardian, fastapi-expert
 ---
 
@@ -32,6 +34,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://www.php.net/manual/en/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | Modern PHP | `references/modern-php-features.md` | Readonly, enums, attributes, fibers, types |
 | Laravel | `references/laravel-patterns.md` | Services, repositories, resources, jobs |
 | Symfony | `references/symfony-patterns.md` | DI, events, commands, voters |
