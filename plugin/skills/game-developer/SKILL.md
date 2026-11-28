@@ -72,18 +72,19 @@ When implementing game features, provide:
 ### Object Pooling (Unity C#)
 ```csharp
 // UnityEngine.Pool.ObjectPool<T> is built in since Unity 2021.1
+// Bullet is your own MonoBehaviour on the prefab
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class BulletSpawner : MonoBehaviour
 {
-    [SerializeField] private Bullet prefab;
+    [SerializeField] private Bullet _prefab;
     private ObjectPool<Bullet> _pool;
 
     private void Awake()
     {
         _pool = new ObjectPool<Bullet>(
-            createFunc: () => Instantiate(prefab),
+            createFunc: () => Instantiate(_prefab),
             actionOnGet: bullet => bullet.gameObject.SetActive(true),
             actionOnRelease: bullet => bullet.gameObject.SetActive(false),
             actionOnDestroy: bullet => Destroy(bullet.gameObject),
@@ -105,7 +106,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float _speed = 5f;
 
     // Cache all component references in Awake — never call GetComponent in Update
     private Rigidbody _rb;
@@ -121,7 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         // Use cached references; scale by fixedDeltaTime in FixedUpdate
         Vector2 input = _move.ReadValue<Vector2>();
-        Vector3 move = new Vector3(input.x, 0f, input.y) * (speed * Time.fixedDeltaTime);
+        Vector3 move = new Vector3(input.x, 0f, input.y) * (_speed * Time.fixedDeltaTime);
         _rb.MovePosition(_rb.position + move);
     }
 }
