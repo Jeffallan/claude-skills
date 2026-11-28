@@ -11,6 +11,8 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+  upstream-docs: https://angular.dev/
+  baseline: "Angular 17"
   related-skills: typescript-pro, test-master
 ---
 
@@ -33,6 +35,7 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
+| Official docs | https://angular.dev/ | An API or behaviour not covered here; read the docs for the version the project pins |
 | Components | `references/components.md` | Standalone components, signals, input/output |
 | RxJS | `references/rxjs.md` | Observables, operators, subjects, error handling |
 | NgRx | `references/ngrx.md` | Store, effects, selectors, entity adapter |
