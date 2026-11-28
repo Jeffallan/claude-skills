@@ -151,6 +151,8 @@ public class OcclusionCheck : MonoBehaviour
 
 ## Object Pooling (Performance-Focused)
 
+Prefer Unity's built-in `UnityEngine.Pool.ObjectPool<T>` (Unity 2021.1+) unless you need behaviour it lacks, such as the in-use tracking below.
+
 ```csharp
 public class OptimizedPool<T> where T : Component
 {

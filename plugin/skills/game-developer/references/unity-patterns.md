@@ -83,6 +83,8 @@ public class Weapon : MonoBehaviour
 
 ## Object Pooling Pattern
 
+Prefer Unity's built-in `UnityEngine.Pool.ObjectPool<T>` (Unity 2021.1+), which adds a double-release check, a size cap and a destroy callback; the hand-rolled pool below shows the mechanics.
+
 ```csharp
 public class ObjectPool : MonoBehaviour
 {

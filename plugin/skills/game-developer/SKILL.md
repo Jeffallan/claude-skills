@@ -71,34 +71,30 @@ When implementing game features, provide:
 
 ### Object Pooling (Unity C#)
 ```csharp
-public class ObjectPool<T> where T : Component
+// UnityEngine.Pool.ObjectPool<T> is built in since Unity 2021.1
+using UnityEngine;
+using UnityEngine.Pool;
+
+public class BulletSpawner : MonoBehaviour
 {
-    private readonly Queue<T> _pool = new();
-    private readonly T _prefab;
-    private readonly Transform _parent;
+    [SerializeField] private Bullet prefab;
+    private ObjectPool<Bullet> _pool;
 
-    public ObjectPool(T prefab, int initialSize, Transform parent = null)
+    private void Awake()
     {
-        _prefab = prefab;
-        _parent = parent;
-        for (int i = 0; i < initialSize; i++)
-            Release(Create());
+        _pool = new ObjectPool<Bullet>(
+            createFunc: () => Instantiate(prefab),
+            actionOnGet: bullet => bullet.gameObject.SetActive(true),
+            actionOnRelease: bullet => bullet.gameObject.SetActive(false),
+            actionOnDestroy: bullet => Destroy(bullet.gameObject),
+            collectionCheck: true,
+            defaultCapacity: 20,
+            maxSize: 100
+        );
     }
 
-    public T Get()
-    {
-        T obj = _pool.Count > 0 ? _pool.Dequeue() : Create();
-        obj.gameObject.SetActive(true);
-        return obj;
-    }
-
-    public void Release(T obj)
-    {
-        obj.gameObject.SetActive(false);
-        _pool.Enqueue(obj);
-    }
-
-    private T Create() => Object.Instantiate(_prefab, _parent);
+    public Bullet Spawn() => _pool.Get();
+    public void Despawn(Bullet bullet) => _pool.Release(bullet);
 }
 ```
 
